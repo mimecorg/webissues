@@ -1,0 +1,62 @@
+Requirements
+============
+
+ * Web server with PHP version 5.2.1 or newer (http://php.net/)
+
+ * The following PHP extensions:
+
+     * mbstring (required)
+     * mysqli (required when using MySQL database)
+     * pgsql (required when using PostgreSQL database)
+     * com_dotnet (required since PHP 5.3.15 / 5.4.5 when using SQL Server)
+
+ * One of the following database servers:
+ 
+     * MySQL (version 5.0.15 or newer)
+     * PostgreSQL (version 8.0 or newer)
+     * Microsoft SQL Server (version 2005 or newer)
+
+
+Installation
+============
+
+Quick steps:
+
+1. Unpack the entire WebIssues server package to the root directory
+   of the web server.
+
+2. Create a database and a user account with sufficient privileges to create
+   tables in that database.
+
+3. Make sure that the data/ subdirectory is writable for the web server.
+
+4. Point your browser to the URL of the WebIssues server and follow
+   the instructions.
+
+For more information please refer to the manual which is included
+in the 'doc' subdirectory of this package.
+
+
+Updating
+========
+
+Quick steps:
+
+1. Backup the database.
+
+2. Delete all files and subdirectories from the directory where you installed
+   the WebIssues server, except the data/ subdirectory.
+
+3. Unpack the entire WebIssues server package to the directory where
+   the WebIssues server was previously installed.
+
+4. Point your browser to the URL of the WebIssues server and follow
+   the instructions.
+
+For more information please refer to the manual which is included
+in the 'doc' subdirectory of this package.
+
+NOTE: In order to update the WebIssues server from version 0.8.5, you must
+install a new instance of WebIssues server version 1.0 and select the option
+to migrate data from version 0.8.5 in the installer. Refer to the manual for
+more information.

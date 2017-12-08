@@ -1,0 +1,147 @@
+/**************************************************************************
+* This file is part of the WebIssues Server program
+* Copyright (C) 2006 Michał Męciński
+* Copyright (C) 2007-2017 WebIssues Team
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU Affero General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Affero General Public License for more details.
+*
+* You should have received a copy of the GNU Affero General Public License
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.
+**************************************************************************/
+
+@import "variables.less";
+@import "mixins.less";
+
+@import "~bootstrap/less/normalize.less";
+@import "~bootstrap/less/scaffolding.less";
+@import "~bootstrap/less/type.less";
+@import "~bootstrap/less/code.less";
+@import "~bootstrap/less/grid.less";
+@import "~bootstrap/less/tables.less";
+@import "~bootstrap/less/forms.less";
+@import "~bootstrap/less/buttons.less";
+@import "~bootstrap/less/component-animations.less";
+@import "~bootstrap/less/dropdowns.less";
+@import "~bootstrap/less/button-groups.less";
+@import "~bootstrap/less/input-groups.less";
+@import "~bootstrap/less/badges.less";
+@import "~bootstrap/less/alerts.less";
+@import "~bootstrap/less/utilities.less";
+@import "~bootstrap/less/responsive-utilities.less";
+
+@import "~font-awesome/less/path.less";
+@import "~font-awesome/less/core.less";
+@import "~font-awesome/less/larger.less";
+@import "~font-awesome/less/fixed-width.less";
+@import "~font-awesome/less/list.less";
+@import "~font-awesome/less/animated.less";
+@import "~font-awesome/less/rotated-flipped.less";
+@import "~font-awesome/less/stacked.less";
+@import "~font-awesome/less/icons.less";
+
+.btn .fa {
+  .fa-fw();
+}
+
+.dropdown-toggle {
+  text-align: left;
+  .ellipsis();
+}
+
+.dropdown-has-caret {
+  position: relative;
+  padding-right: 23px;
+
+  .caret {
+    position: absolute;
+    top: 15px; right: 12px;
+  }
+}
+
+.dropdown-menu {
+  min-width: 120px;
+}
+
+.dropdown-menu > li > a, .dropdown-header {
+  padding: 3px 12px;
+  .ellipsis();
+}
+
+.dropdown-menu-scroll {
+  max-height: 156px;
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  @media ( min-width: @screen-sm-min ) {
+    max-height: 260px;
+  }
+
+  > li > a {
+    display: block;
+    clear: both;
+    padding: 3px 12px;
+    font-weight: normal;
+    line-height: @line-height-base;
+    color: @dropdown-link-color;
+    .ellipsis();
+    cursor: pointer;
+  }
+}
+
+.dropdown-menu-scroll > li > a {
+  &:hover,
+  &:focus {
+    text-decoration: none;
+    color: @dropdown-link-hover-color;
+    background-color: @dropdown-link-hover-bg;
+  }
+}
+
+.dropdown-menu-scroll > .active > a {
+  &,
+  &:hover,
+  &:focus {
+    text-decoration: none;
+    color: @dropdown-link-active-color;
+    background-color: @dropdown-link-active-bg;
+  }
+}
+
+.dropdown-menu > li > a:focus, .dropdown-menu-scroll > li > a:focus {
+  outline: 0;
+  box-shadow: inset 1px 1px @input-border-focus, inset -1px -1px @input-border-focus;
+}
+
+.dropdown-menu > .active > a:focus, .dropdown-menu-scroll > .active > a:focus {
+  box-shadow: none;
+}
+
+.dropdown-menu .fa {
+  color: @dropdown-icon-color;
+  .fa-fw();
+}
+
+.input-group-btn:last-child > .btn:not(:last-child):not(.dropdown-toggle):last-of-type {
+  border-top-right-radius: @btn-border-radius-base;
+  border-bottom-right-radius: @btn-border-radius-base;
+}
+
+.input-group.has-error .btn {
+  color: @state-danger-text;
+  border-color: @state-danger-text;
+  background-color: @state-danger-bg;
+}
+
+.input-group .btn {
+  &:hover, &:focus {
+    z-index: 3;
+  }
+}

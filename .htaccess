@@ -1,0 +1,18 @@
+# Apache settings for the WebIssues Server
+
+# protect include files and templates
+<FilesMatch (\.(inc\.php|html\.php|svn-base)$)>
+  Order allow,deny
+  Deny from all
+</FilesMatch>
+
+# do not show directory listings
+Options -Indexes
+
+# set the default handler
+DirectoryIndex index.php
+
+# set error handlers
+ErrorDocument 401 /common/errors/handle401.php
+ErrorDocument 403 /common/errors/handle403.php
+ErrorDocument 404 /common/errors/handle404.php

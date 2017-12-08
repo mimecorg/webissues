@@ -1,0 +1,21 @@
+/* emulate border-spacing which is missing in IE <= 7 */
+
+table.pane-layout {
+  border-collapse: expression( 'separate', cellSpacing = '10px' );
+}
+
+table.pane-layout td.left-pane, table.pane-layout td.top-pane, table.pane-layout td.bottom-pane {
+  padding: 0;
+}
+
+.pane-wrapper {
+  margin: 8px;
+}
+
+.sub-pane-wrapper {
+  margin: -8px;
+}
+
+table.sub-pane-layout {
+  border-collapse: expression( 'separate', cellSpacing = '8px' );
+}

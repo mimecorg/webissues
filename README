@@ -1,0 +1,153 @@
+WebIssues Server
+Version 1.1.5 (2017-05-17)
+
+Server and Web Client for the WebIssues team collaboration system.
+
+WebIssues is an open source, multi-platform system for issue tracking
+and team collaboration. It can be used to store, share and track issues
+with various attributes, comments and file attachments. The system
+is easy to install and use but has many capabilities and is highly
+customizable.
+
+For more information please refer to the manual which is included
+in the 'doc' subdirectory of this package.
+
+
+Copyrights
+==========
+
+Copyright (C) 2006 Michał Męciński
+Copyright (C) 2007-2017 WebIssues Team
+
+The WebIssues Manual is licensed under the terms of the GNU Free
+Documentation License, Version 1.3
+
+Icons based on the KDE Crystal theme copyright (C) 2002 and following
+years KDE Artists
+
+Includes PHPMailer copyright (C) 2012-2014 Marcus Bointon
+
+Includes Mobile Detect Library copyright (C) 2011-2015 Serban Ghita,
+Nick Ilyin and contributors
+
+Includes jQuery JavaScript Library copyright (C) 2005, 2015 jQuery
+Foundation, Inc.
+
+Includes jQuery UI copyright (C) 2015 jQuery Foundation, Inc.
+
+Includes markItUp! copyright (C) 2007-2012 Jay Salvat
+
+Includes Prettify copyright (C) 2006 Google Inc.
+
+
+License
+=======
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
+WebIssues Team
+==============
+
+Authors:
+
+ * Michał Męciński (mimec at mimec org)
+
+Contributors:
+
+ * Francine Lai Doo Woo (fldw.fladsc at orange fr)
+    - Supporting Web Client developer
+
+ * Patrick Matthäi (patrick.matthaei at web de)
+    - Debian packaging, patches
+
+ * Filipe Azevedo (pasnox at gmail com)
+    - OS X packaging, patches
+
+ * Yvan Rodrigues (yvan at redcell ca)
+    - prototype of the email inbox
+
+Translators:
+
+ * Flávio Veras
+    - Portuguese (Brazil) translation
+
+ * Dara Sarnirand
+ * Ashwin Vekaria
+ * BourdonGrognon
+    - French translation
+
+ * Torsten Bielen
+ * David Keller
+ * Patrick Kindler
+    - German translation
+
+ * Rob Hiddinga
+ * Steven Heyse
+    - Dutch translation
+
+ * René Villegas
+    - Spanish translation
+
+ * Petr Stasiak
+    - Czech translation
+
+ * Alexey Mokrov
+    - Russian translation
+
+ * Giovanni Petrella
+    - Italian translation
+
+ * Patlatus
+ * drwolf
+    - Ukrainian translation
+
+ * Liu Jian
+ * wahoosoft
+ * swish chinese
+    - Chinese translation
+
+ * Mustafa Ergüven
+ * Ozan Hacibekiroglu
+ * Orkun Genel
+    - Turkish translation
+
+ * Kornél Kovács
+ * Csontos Peter
+ * Janos Meszaros
+ * András Tóth
+    - Hungarian translation
+
+ * Lasse Jaegersborg
+    - Norwegian translation
+
+ * Aleksandar Trajkovic
+ * Ivan Ikanovic
+    - Serbian translation
+
+
+Resources
+=========
+
+ * http://webissues.mimec.org/
+    - Main site of the project
+
+ * http://webissues.mimec.org/forum/general
+    - General support forum
+
+ * http://webissues.mimec.org/forum/tracker
+    - Bugs & requests forum
+
+ * http://wiki.mimec.org/wiki/WebIssues
+    - Site for advanced users, administrators and developers
