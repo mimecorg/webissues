@@ -37,7 +37,7 @@ export default {
         this.cancellation = () => {
           cancelled = true;
         };
-        route.handler( ( component, props, { size = 'normal' } = {} ) => {
+        route.handler( route.params ).then( ( { component, size = 'normal', ...props } ) => {
           if ( !cancelled ) {
             this.childComponent = component;
             this.childProps = props;
@@ -45,12 +45,12 @@ export default {
             this.busy = false;
             this.cancellation = null;
           }
-        }, error => {
+        } ).catch( error => {
           if ( !cancelled ) {
             this.$emit( 'error', error.message );
             this.cancellation = null;
           }
-        }, route.params );
+        } );
       } else {
         this.childComponent = UnexpectedError;
         this.childProps = { error: route.message };

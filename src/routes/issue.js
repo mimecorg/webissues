@@ -20,11 +20,9 @@
 import EditIssue from '@/components/forms/EditIssue.vue';
 
 export default ajax => route => {
-  route( 'edit_issue', '/issue/:issueId/edit', ( resolve, reject, { issueId } ) => {
-    ajax.post( '/server/api/issue/load.php', { issueId } ).then( ( { name } ) => {
-      resolve( EditIssue, { issueId, name: name } );
-    } ).catch( error => {
-      reject( error );
+  route( 'edit_issue', '/issue/:issueId/edit', ( { issueId } ) => {
+    return ajax.post( '/server/api/issue/load.php', { issueId } ).then( ( { name } ) => {
+      return { component: EditIssue, issueId, name };
     } );
   } );
 }
