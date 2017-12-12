@@ -21,9 +21,8 @@
   <div class="container-fluid">
     <title-bar v-bind:title="$t( 'edit_issue.title' )" v-on:close="close"></title-bar>
     <info-prompt path="edit_issue.prompt"><strong>{{ name }}</strong></info-prompt>
-    <error-alert v-bind:error="error"></error-alert>
-    <form-group id="name" v-bind:label="$t( 'edit_issue.name' )" v-bind:error="nameError">
-      <input ref="name" id="name" type="text" class="form-control" v-bind:maxlength="nameLength" v-model="nameValue">
+    <form-group id="name" v-bind:label="$t( 'edit_issue.name' )" v-bind:error="error">
+      <input ref="name" id="name" type="text" class="form-control" v-bind:maxlength="maxLength" v-model="value">
     </form-group>
     <form-buttons v-on:ok="submit" v-on:cancel="close"></form-buttons>
   </div>
@@ -39,33 +38,31 @@ export default {
   },
   data() {
     return {
+      value: this.name,
       error: null,
-      nameValue: this.name,
-      nameError: null,
-      nameLength: MaxLength.Value
+      maxLength: MaxLength.Value
     };
   },
   methods: {
     submit() {
       this.error = null;
-      this.nameError = null;
-      const name = this.nameValue.trim();
+      const name = this.value.trim();
       if ( name == '' ) {
-        this.nameError = this.$t( 'error_code.' + ErrorCode.EmptyValue );
+        this.error = this.$t( 'error_code.' + ErrorCode.EmptyValue );
         this.$refs.name.focus();
         return;
       }
+      if ( name == this.name ) {
+        this.close();
+        return;
+      }
       this.$emit( 'block' );
-      this.$ajax.post( '/server/api/issue/edit.php', { issueId: this.issueId, name } ).then( ( { updated } ) => {
-        if ( updated )
+      this.$ajax.post( '/server/api/issue/edit.php', { issueId: this.issueId, name } ).then( stampId => {
+        if ( stampId != false )
           this.$store.commit( 'list/setDirty' );
         this.close();
       } ).catch( error => {
-        this.error = error.message;
-        this.$emit( 'unblock' );
-        this.$nextTick( () => {
-          this.$refs.name.focus();
-        } );
+        this.$emit( 'error', error );
       } );
     },
     close() {

@@ -31,7 +31,22 @@ class Client_Index extends System_Web_Component
     {
         $this->getView()->setDecoratorClass( null );
 
+        $principal = System_Api_Principal::getCurrent();
+        $session = System_Core_Application::getInstance()->getSession();
         $serverManager = new System_Api_ServerManager();
+
+        if ( $principal->isAuthenticated() ) {
+            $csrfToken = $session->getValue( 'CSRF_TOKEN' );
+            if ( $csrfToken == null ) {
+                $csrfToken = $serverManager->generateUuid();
+                $session->setValue( 'CSRF_TOKEN', $csrfToken );
+            }
+        } else {
+            if ( $session->isDestroyed() || $serverManager->getSetting( 'anonymous_access' ) != 1 )
+                $this->response->redirect( '/index.php' );
+            $csrfToken = null;
+        }
+
         $server = $serverManager->getServer();
         $this->siteName = $server[ 'server_name' ];
 
@@ -56,9 +71,9 @@ class Client_Index extends System_Web_Component
             $this->scriptUrl = $devUrl . 'js/webissues.js';
         }
 
-        $principal = System_Api_Principal::getCurrent();
-
         $options[ 'baseURL' ] = WI_BASE_URL;
+        $options[ 'csrfToken' ] = $csrfToken;
+
         $options[ 'locale' ] = $this->translator->getLanguage( System_Core_Translator::UserLanguage );
 
         $options[ 'serverName' ] = $server[ 'server_name' ];

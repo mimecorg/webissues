@@ -1,14 +1,16 @@
 <template>
   <div ref="overlay" id="overlay" tabindex="-1" v-bind:class="{ 'overlay-busy': busy }" v-on:click.self="close">
     <div id="overlay-window" v-bind:class="'overlay-' + size">
-      <component v-if="childComponent != null" v-bind:is="childComponent" v-bind="childProps" v-on:close="close" v-on:block="block" v-on:unblock="unblock"></component>
+      <component v-if="childComponent != null" v-bind:is="childComponent" v-bind="childProps"
+                 v-on:error="error" v-on:close="close" v-on:block="block" v-on:unblock="unblock">
+      </component>
       <busy-overlay v-if="busy"></busy-overlay>
     </div>
   </div>
 </template>
 
 <script>
-import UnexpectedError from '@/components/forms/UnexpectedError'
+import ErrorMessage from '@/components/forms/ErrorMessage'
 
 export default {
   props: {
@@ -47,13 +49,13 @@ export default {
           }
         } ).catch( error => {
           if ( !cancelled ) {
-            this.$emit( 'error', error.message );
+            this.$emit( 'error', error );
             this.cancellation = null;
           }
         } );
       } else {
-        this.childComponent = UnexpectedError;
-        this.childProps = { error: route.message };
+        this.childComponent = ErrorMessage;
+        this.childProps = { error: route.error };
         this.size = 'small';
         this.busy = false;
       }
@@ -68,6 +70,9 @@ export default {
         this.size = 'small';
         this.busy = true;
       }
+    },
+    error( error ) {
+      this.$emit( 'error', error );
     },
     close() {
       this.$emit( 'close' );

@@ -39,6 +39,19 @@ class Server_Api_Application extends System_Core_Application
         if ( $this->request->getContentType() != 'application/json' )
             throw new Server_Error( Server_Error::SyntaxError );
 
+        $principal = System_Api_Principal::getCurrent();
+        $serverManager = new System_Api_ServerManager();
+
+        if ( $principal->isAuthenticated() ) {
+            $headerCsrfToken = $this->request->getCsrfToken();
+            $sessionCsrfToken = $this->session->getValue( 'CSRF_TOKEN' );
+            if ( $headerCsrfToken == null || $sessionCsrfToken == null || $headerCsrfToken != $sessionCsrfToken )
+                throw new System_Api_Error( Server_Error::SyntaxError );
+        } else {
+            if ( $this->session->isDestroyed() || $serverManager->getSetting( 'anonymous_access' ) != 1 )
+                throw new System_Api_Error( System_Api_Error::LoginRequired );
+        }
+
         $body = $this->request->getPostBody();
 
         if ( !mb_check_encoding( $body ) )
@@ -54,12 +67,10 @@ class Server_Api_Application extends System_Core_Application
 
         $result = $this->command->run( $arguments );
 
-        if ( $result != null ) {
-            $this->response->setContentType( 'application/json' );
-            $this->response->setContent( json_encode( $result ) );
-        } else {
-            $this->response->setStatus( '204 No Content' );
-        }
+        $response[ 'result' ] = $result;
+
+        $this->response->setContentType( 'application/json' );
+        $this->response->setContent( json_encode( $response ) );
     }
 
     protected function displayErrorPage()

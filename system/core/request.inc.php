@@ -26,7 +26,7 @@ if ( !defined( 'WI_VERSION' ) ) die( -1 );
 * This class provides access to URL query strings, posted fields and uploaded
 * files, and returns other information about the request. It should be used
 * instead of directly accessing $_GET, $_POST etc.
-* 
+*
 * An instance of this class is accessible through the System_Core_Application
 * object and as a property of classes inheriting System_Web_Base.
 */
@@ -237,6 +237,14 @@ class System_Core_Request
     public function getPostBody()
     {
         return file_get_contents( 'php://input' );
+    }
+
+    /**
+    * Return the value of the X-CSRF-Token header.
+    */
+    public function getCsrfToken()
+    {
+        return isset( $_SERVER[ 'HTTP_X_CSRF_TOKEN' ] ) ? $_SERVER[ 'HTTP_X_CSRF_TOKEN' ] : null;
     }
 
     private static function stripSlashesDeep( $value )

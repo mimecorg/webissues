@@ -29,6 +29,8 @@
 <script>
 import { mapState, mapGetters } from 'vuex'
 
+import { ErrorCode } from '@/constants'
+
 import PageHeader from '@/components/PageHeader'
 import MainToolbar from '@/components/MainToolbar'
 import MainGrid from '@/components/MainGrid'
@@ -56,6 +58,7 @@ export default {
   },
   computed: {
     ...mapState( 'global', [ 'baseURL' ] ),
+    ...mapGetters( 'global', [ 'isAuthenticated' ] ),
     ...mapGetters( 'global', { checkGlobalUpdate: 'checkUpdate' } ),
     ...mapState( 'list', [ 'searchColumn', 'searchText' ] ),
     ...mapGetters( 'list', [ 'areFiltersEqual', 'hasFilters', 'type' ] ),
@@ -68,7 +71,7 @@ export default {
     handleHashChange() {
       const route = this.$router.route;
       if ( route == null ) {
-        this.showError( this.$t( 'error.not_found' ) );
+        this.showError( this.makeRouteError() );
       } else if ( route.handler == null ) {
         this.mainRoute = route;
         this.overlayRoute = null;
@@ -105,7 +108,7 @@ export default {
         else
           this.finishLoading();
       } ).catch( error => {
-        this.showError( error.message );
+        this.showError( error );
       } );
     },
     updateList() {
@@ -114,7 +117,7 @@ export default {
       this.$store.dispatch( 'list/load' ).then( () => {
         this.finishLoading();
       } ).catch( error => {
-        this.showError( error.message );
+        this.showError( error );
       } );
     },
     finishLoading() {
@@ -127,19 +130,30 @@ export default {
       }
     },
     closeOverlay() {
-      if ( this.overlayRoute != null && this.overlayRoute.name == 'error' )
-        window.location = this.baseURL + '/client/index.php';
-      else if ( this.mainRoute != null )
-        this.$router.push( this.mainRoute.name, this.mainRoute.params );
-      else
-        this.$router.push( 'home' );
+      if ( this.overlayRoute != null && this.overlayRoute.name == 'error' ) {
+        if ( this.isAuthenticated && this.overlayRoute.error.errorCode == ErrorCode.LoginRequired )
+          window.location = this.baseURL + '/index.php';
+        else
+          window.location = this.baseURL + '/client/index.php';
+      } else {
+        if ( this.mainRoute != null )
+          this.$router.push( this.mainRoute.name, this.mainRoute.params );
+        else
+          this.$router.push( 'home' );
+      }
     },
-    showError( message ) {
+    makeRouteError() {
+      const error = new Error( 'No matching route for path: ' + this.$router.path );
+      error.reason = 'page_not_found';
+      return error;
+    },
+    showError( error ) {
       this.state = State.Idle;
       this.$store.commit( 'list/clear' );
       this.$nextTick( () => {
-        this.overlayRoute = { name: 'error', message };
+        this.overlayRoute = { name: 'error', error };
       } );
+      console.error( error );
     },
     reload() {
       if ( this.state != State.GlobalUpdate ) {
@@ -154,7 +168,7 @@ export default {
     window.addEventListener( 'hashchange', this.handleHashChange );
     const route = this.$router.route;
     if ( route == null ) {
-      this.showError( this.$t( 'error.not_found' ) );
+      this.showError( this.makeRouteError() );
     } else {
       if ( route.handler == null ) {
         this.mainRoute = route;

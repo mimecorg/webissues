@@ -21,7 +21,7 @@
   <div v-bind:class="[ 'form-group', { 'has-error': error != null } ]">
     <label v-if="label != null" v-bind:for="id" class="control-label">{{ label }}</label>
     <slot></slot>
-    <i18n v-if="error != null" tag="p" path="form_group.error_format" class="help-block"><strong>{{ $t( 'form_group.incorrect_value' ) }}</strong><template>{{ error }}</template></i18n>
+    <p v-if="error != null" class="help-block">{{ error }}</p>
   </div>
 </template>
 

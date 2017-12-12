@@ -30,7 +30,7 @@ if ( !defined( 'WI_VERSION' ) ) die( -1 );
 * in the database. It also uses the PHP garbage collection mechanism to call
 * System_Core_Application::collectGarbage() every 100th request. See also
 * http://php.net/session_set_save_handler.
-* 
+*
 * An instance of this class is accessible through the System_Core_Application
 * object.
 */
@@ -39,6 +39,7 @@ class System_Core_Session
     private $started = false;
     private $valid = false;
     private $initialized = false;
+    private $destroyed = false;
 
     /**
     * Constructor.
@@ -128,6 +129,7 @@ class System_Core_Session
 
         $this->started = true;
         $this->initialized = true;
+        $this->destroyed = false;
     }
 
     /**
@@ -148,6 +150,7 @@ class System_Core_Session
         session_destroy();
 
         $this->started = false;
+        $this->destroyed = true;
     }
 
     /**
@@ -220,6 +223,14 @@ class System_Core_Session
     {
         $params = session_get_cookie_params();
         return $params[ 'secure' ];
+    }
+
+    /**
+    * Return @c true if the session was destroyed.
+    */
+    public function isDestroyed()
+    {
+        return $this->destroyed;
     }
 
     /**

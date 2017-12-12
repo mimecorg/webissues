@@ -62,9 +62,11 @@ class Server_Error extends System_Core_Exception
         list( $code, $message ) = explode( ' ', $error, 2 );
 
         if ( $code >= 500 )
-            $status = '500 Server Error';
-        else
+            $status = '500 Internal Server Error';
+        else if ( $code >= 400 )
             $status = '400 Bad Request';
+        else
+            $status = '200 OK';
 
         $response[ 'errorCode' ] = (int)$code;
         $response[ 'errorMessage' ] = $message;

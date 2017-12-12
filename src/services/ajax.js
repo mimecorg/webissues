@@ -29,59 +29,70 @@ Vue.mixin( {
   }
 } );
 
-export default function makeAjax( baseURL, i18n ) {
+export default function makeAjax( baseURL, csrfToken ) {
   return {
     post( url, data = {} ) {
       return new Promise( ( resolve, reject ) => {
         fetch( baseURL + url, {
           method: 'POST',
           body: JSON.stringify( data ),
-          headers: {
-            'Content-Type': 'application/json'
-          },
+          headers: makeHeaders( csrfToken ),
           credentials: 'same-origin'
         } ).then( response => {
-          if ( response.status != 204 ) {
-            response.json().then( data => {
-              if ( response.ok )
-                resolve( data );
-              else
-                reject( convertError( data, i18n ) );
-            } ).catch( error => {
-              reject( new Error( i18n.t( 'error.invalid_response' ) ) );
-            } );
-          } else {
-            resolve( null );
-          }
+          response.json().then( ( { result, errorCode, errorMessage } ) => {
+            if ( errorCode != null )
+              reject( makeError( errorCode, errorMessage, response ) );
+            else if ( !response.ok )
+              reject( makeHttpError( response ) );
+            else
+              resolve( result );
+          } ).catch( error => {
+            if ( !response.ok ) {
+              reject( makeHttpError( response ) );
+            } else {
+              error.response = response;
+              error.reason = 'invalid_response';
+              reject( error );
+            }
+          } );
         } ).catch( error => {
-          reject( new Error( i18n.t( 'error.network_error' ) ) );
+          error.reason = 'network_error';
+          reject( error );
         } );
       } );
     }
   };
 }
 
-function convertError( { errorCode, errorMessage }, i18n ) {
-  if ( errorCode >= 500 ) {
-    if ( errorCode == 501 || errorCode == 502 )
-      return new Error( i18n.t( 'error.server_not_configured' ) );
-    else
-      return new Error( i18n.t( 'error.server_error' ) );
-  } else if ( errorCode >= 400 ) {
-    if ( errorCode == 403 )
-      return new Error( i18n.t( 'error.upload_error' ) );
-    else
-      return new Error( i18n.t( 'error.bad_request' ) );
-  } else if ( errorCode >= 300 ) {
-    let message;
-    if ( i18n.te( 'error_code.' + errorCode ) )
-      message = i18n.t( 'error_code.' + errorCode );
-    else
-      message = i18n.t( 'error.unknown_error', [ errorCode, errorMessage ] );
-    const apiError = new Error( message );
-    apiError.errorCode = errorCode;
-    return apiError;
-  } else {
-    return new Error( i18n.t( 'error.invalid_response' ) );
-  }
+function makeHeaders( csrfToken ) {
+  const headers = {
+    'Content-Type': 'application/json',
+  };
+  if ( csrfToken != null )
+    headers[ 'X-CSRF-Token' ] = csrfToken;
+  return headers;
+}
+
+function makeError( errorCode, errorMessage, response ) {
+  const error = new Error( 'Server returned an error: ' + errorCode + ' (' + errorMessage + ')' );
+  if ( errorCode >= 500 )
+    error.reason = 'server_error';
+  else if ( errorCode >= 400 )
+    error.reason = 'bad_request';
+  else
+    error.reason = 'api_error';
+  error.errorCode = errorCode;
+  error.errorMessage = errorMessage;
+  error.response = response;
+  return error;
+}
+
+function makeHttpError( response ) {
+  const error = new Error( 'HTTP error: ' + response.status + ' (' + response.statusText + ')' );
+  if ( response.status >= 500 )
+    error.reason = 'server_error';
+  else
+    error.reason = 'bad_request';
+  error.response = response;
+  return error;
 }

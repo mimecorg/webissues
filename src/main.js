@@ -31,7 +31,6 @@ import Application from '@/components/Application'
 import ActionLink from '@/components/common/ActionLink.vue'
 import BusyOverlay from '@/components/common/BusyOverlay.vue'
 import DropdownButton from '@/components/common/DropdownButton.vue'
-import ErrorAlert from '@/components/common/ErrorAlert.vue'
 import FormButtons from '@/components/common/FormButtons.vue'
 import FormGroup from '@/components/common/FormGroup.vue'
 import GridView from '@/components/common/GridView.vue'
@@ -54,7 +53,7 @@ Vue.use( Vuex );
 
 let app = null;
 
-export function main( { baseURL, locale, ...initialState } ) {
+export function main( { baseURL, csrfToken, locale, ...initialState } ) {
   if ( app )
     throw new Error( 'Application already initialized' );
 
@@ -67,7 +66,7 @@ export function main( { baseURL, locale, ...initialState } ) {
     messages: { en_US }
   } );
 
-  const ajax = makeAjax( baseURL, i18n );
+  const ajax = makeAjax( baseURL, csrfToken );
 
   const store = new Vuex.Store( {
     modules: {
@@ -85,7 +84,6 @@ export function main( { baseURL, locale, ...initialState } ) {
     ActionLink,
     BusyOverlay,
     DropdownButton,
-    ErrorAlert,
     FormButtons,
     FormGroup,
     GridView,

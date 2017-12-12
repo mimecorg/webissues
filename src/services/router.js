@@ -43,6 +43,9 @@ export default function makeRouter( factories ) {
   } );
 
   return {
+    get path() {
+      return getCurrentPath();
+    },
     get route() {
       const path = getCurrentPath();
       if ( path != lastPath ) {

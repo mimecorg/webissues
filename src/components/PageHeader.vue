@@ -44,7 +44,7 @@
                            text-class="hidden-sm hidden-md" v-bind:title="$t( 'header.administration_menu' )">
             <li><action-link><span class="fa fa-object-group" aria-hidden="true"></span> {{ $t( 'header.projects' ) }}</action-link></li>
             <template v-if="isAdministrator">
-              <li><action-link><span class="fa fa-user-o" aria-hidden="true"></span> {{ $t( 'header.user_accounts' ) }}</action-link></li>
+              <li><action-link><span class="fa fa-users" aria-hidden="true"></span> {{ $t( 'header.user_accounts' ) }}</action-link></li>
               <li><action-link><span class="fa fa-user-circle-o" aria-hidden="true"></span> {{ $t( 'header.registration_requests' ) }}</action-link></li>
               <li><action-link><span class="fa fa-list" aria-hidden="true"></span> {{ $t( 'header.issue_types' ) }}</action-link></li>
             </template>
@@ -63,13 +63,19 @@
             </template>
           </dropdown-button>
           <dropdown-button fa-class="fa-user" v-bind:text="userName" text-class="hidden-sm hidden-md" v-bind:title="userTitle">
-            <li><action-link><span class="fa fa-filter" aria-hidden="true"></span> {{ $t( 'header.personal_views' ) }}</action-link></li>
-            <li><action-link><span class="fa fa-bell-o" aria-hidden="true"></span> {{ $t( 'header.personal_alerts' ) }}</action-link></li>
-            <li role="separator" class="divider"></li>
-            <li><action-link><span class="fa fa-sliders" aria-hidden="true"></span> {{ $t( 'header.user_preferences' ) }}</action-link></li>
-            <li><action-link><span class="fa fa-unlock-alt" aria-hidden="true"></span> {{ $t( 'header.change_password' ) }}</action-link></li>
-            <li role="separator" class="divider"></li>
-            <li><a v-bind:href="baseURL + '/index.php'"><span class="fa fa-sign-out" aria-hidden="true"></span> {{ $t( 'header.log_out' ) }}</a></li>
+            <template v-if="isAuthenticated">
+              <li><action-link><span class="fa fa-filter" aria-hidden="true"></span> {{ $t( 'header.personal_views' ) }}</action-link></li>
+              <li><action-link><span class="fa fa-bell-o" aria-hidden="true"></span> {{ $t( 'header.personal_alerts' ) }}</action-link></li>
+              <li role="separator" class="divider"></li>
+              <li><action-link><span class="fa fa-sliders" aria-hidden="true"></span> {{ $t( 'header.user_preferences' ) }}</action-link></li>
+              <li><action-link><span class="fa fa-unlock-alt" aria-hidden="true"></span> {{ $t( 'header.change_password' ) }}</action-link></li>
+              <li role="separator" class="divider"></li>
+              <li><a v-bind:href="baseURL + '/index.php'"><span class="fa fa-sign-out" aria-hidden="true"></span> {{ $t( 'header.log_out' ) }}</a></li>
+            </template>
+            <template v-else>
+              <li><a v-bind:href="baseURL + '/index.php'"><span class="fa fa-sign-in" aria-hidden="true"></span> {{ $t( 'header.log_in' ) }}</a></li>
+              <li><a v-bind:href="baseURL + '/register.php'"><span class="fa fa-user-plus" aria-hidden="true"></span> {{ $t( 'header.register' ) }}</a></li>
+            </template>
           </dropdown-button>
           <div class="header-sub-group">
             <div class="header-sub-element header-sub-element-wide">
@@ -107,10 +113,13 @@ export default {
   },
   computed: {
     ...mapState( 'global', [ 'baseURL', 'serverName', 'serverVersion', 'userName' ] ),
-    ...mapGetters( 'global', [ 'isAdministrator', 'canManageProjects' ] ),
+    ...mapGetters( 'global', [ 'isAuthenticated', 'isAdministrator', 'canManageProjects' ] ),
     ...mapGetters( 'list', [ 'type' ] ),
     userTitle() {
-      return this.$t( 'header.user_title', [ this.userName ] );
+      if ( this.isAuthenticated )
+        return this.$t( 'header.user_title', [ this.userName ] );
+      else
+        return this.$t( 'header.anonymous_user' );
     }
   },
   methods: {

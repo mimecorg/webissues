@@ -36,11 +36,7 @@ class Server_Api_Issue_Edit
         $parser = new System_Api_Parser();
         $name = $parser->normalizeString( $name, System_Const::ValueMaxLength );
 
-        $stampId = $issueManager->renameIssue( $issue, $name );
-
-        $result[ 'updated' ] = $stampId != false;
-
-        return $result;
+        return $issueManager->renameIssue( $issue, $name );
     }
 }
 

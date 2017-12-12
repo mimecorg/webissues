@@ -47,6 +47,9 @@ function makeState( baseURL, { serverName, serverVersion, userId, userName, user
 
 function makeGetters() {
   return {
+    isAuthenticated( state ) {
+      return state.userId != 0;
+    },
     isAdministrator( state ) {
       return state.userAccess == Access.AdministratorAccess;
     },
