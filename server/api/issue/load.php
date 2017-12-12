@@ -24,9 +24,6 @@ class Server_Api_Issue_Load
 {
     public function run( $arguments )
     {
-        $principal = System_Api_Principal::getCurrent();
-        $principal->checkAuthenticated();
-
         $issueId = (int)$arguments[ 'issueId' ];
 
         $issueManager = new System_Api_IssueManager();

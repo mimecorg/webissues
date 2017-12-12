@@ -124,15 +124,20 @@ class System_Api_ProjectManager extends System_Api_Base
         $principal = System_Api_Principal::getCurrent();
 
         $query = 'SELECT f.folder_id, f.project_id, f.folder_name, f.type_id, f.stamp_id, t.type_name FROM {folders} AS f';
-        if ( !$principal->isAdministrator() ) {
+        if ( $principal->isAuthenticated() && !$principal->isAdministrator() ) {
             $query .= ' JOIN {effective_rights} AS r ON r.project_id = f.project_id AND r.user_id = %1d';
             if ( $flags & self::RequireAdministrator )
                 $query .= ' AND r.project_access = %2d';
         }
         $query .= ' JOIN {projects} AS p ON p.project_id = f.project_id'
             . ' JOIN {issue_types} AS t ON t.type_id = f.type_id'
-            . ' WHERE p.is_archived = 0'
-            . ' ORDER BY f.folder_name COLLATE LOCALE';
+            . ' WHERE p.is_archived = 0';
+        if ( !$principal->isAuthenticated() ) {
+            if ( $flags & self::RequireAdministrator )
+                throw new System_Api_Error( System_Api_Error::AccessDenied );
+            $query .= ' AND p.is_public = 1';
+        }
+        $query .= ' ORDER BY f.folder_name COLLATE LOCALE';
 
         return $this->connection->queryTable( $query, $principal->getUserId(), System_Const::AdministratorAccess );
     }

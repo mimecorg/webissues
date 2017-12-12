@@ -24,9 +24,6 @@ class Server_Api_Issue_List
 {
     public function run( $arguments )
     {
-        $principal = System_Api_Principal::getCurrent();
-        $principal->checkAuthenticated();
-
         $typeId = isset( $arguments[ 'typeId' ] ) ? (int)$arguments[ 'typeId' ] : null;
         $viewId = isset( $arguments[ 'viewId' ] ) ? (int)$arguments[ 'viewId' ] : null;
         $projectId = isset( $arguments[ 'projectId' ] ) ? (int)$arguments[ 'projectId' ] : null;

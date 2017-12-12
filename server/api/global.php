@@ -24,14 +24,13 @@ class Server_Api_Global
 {
     public function run( $arguments )
     {
-        $principal = System_Api_Principal::getCurrent();
-        $principal->checkAuthenticated();
-
         $serverManager = new System_Api_ServerManager();
         $server = $serverManager->getServer();
 
         $result[ 'serverName' ] = $server[ 'server_name' ];
         $result[ 'serverVersion' ] = $server[ 'server_version' ];
+
+        $principal = System_Api_Principal::getCurrent();
 
         $result[ 'userId' ] = $principal->getUserId();
         $result[ 'userName' ] = $principal->getUserName();
