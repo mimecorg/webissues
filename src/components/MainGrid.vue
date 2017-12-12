@@ -18,9 +18,9 @@
 -->
 
 <template>
-  <grid-view id="main-grid" v-bind:items="issues" v-bind:column-names="columnNames" v-bind:column-classes="columnClasses"
-             v-bind:sort-column="sortColumnIndex" v-bind:sort-ascending="sortAscending" v-bind:previous-enabled="previousEnabled" v-bind:next-enabled="nextEnabled"
-             v-bind:status-text="statusText" v-bind:busy="busy" v-on:sort="sort" v-on:previous="previous" v-on:next="next" v-on:row-click="rowClick">
+  <Grid id="main-grid" v-bind:items="issues" v-bind:column-names="columnNames" v-bind:column-classes="columnClasses"
+        v-bind:sort-column="sortColumnIndex" v-bind:sort-ascending="sortAscending" v-bind:previous-enabled="previousEnabled" v-bind:next-enabled="nextEnabled"
+        v-bind:status-text="statusText" v-bind:busy="busy" v-on:sort="sort" v-on:previous="previous" v-on:next="next" v-on:row-click="rowClick">
     <template slot-scope="{ item, columnIndex, columnClass }">
       <td v-if="isNameColumn( columnIndex )" v-bind:class="columnClass">
         <span v-if="item.read < item.stamp" v-bind:class="getUnreadClass( item )" aria-hidden="true"></span> {{ item.name }}
@@ -29,7 +29,7 @@
       <td v-else-if="isUserColumn( columnIndex )" v-bind:class="columnClass" v-html="getUserCellValue( columnIndex, item )"></td>
       <td v-else v-bind:class="columnClass">{{ getCellValue( columnIndex, item ) }}</td>
     </template>
-  </grid-view>
+  </Grid>
 </template>
 
 <script>
@@ -136,17 +136,17 @@ export default {
 #main-grid {
   position: absolute;
   left: 0; right: 0;
-  top: @header-height + @main-toolbar-height; bottom: 0;
+  top: @navbar-height + @main-toolbar-height; bottom: 0;
 
   .type-selected & {
-    top: @header-height + @main-toolbar-3x-height;
+    top: @navbar-height + @main-toolbar-3x-height;
 
     @media ( min-width: @screen-sm-min ) {
-      top: @header-height + @main-toolbar-2x-height;
+      top: @navbar-height + @main-toolbar-2x-height;
     }
 
     @media ( min-width: @screen-lg-min ) {
-      top: @header-height + @main-toolbar-height;
+      top: @navbar-height + @main-toolbar-height;
     }
   }
 

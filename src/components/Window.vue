@@ -1,10 +1,28 @@
+<!--
+* This file is part of the WebIssues Server program
+* Copyright (C) 2006 Michał Męciński
+* Copyright (C) 2007-2017 WebIssues Team
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU Affero General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Affero General Public License for more details.
+*
+* You should have received a copy of the GNU Affero General Public License
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
 <template>
-  <div ref="overlay" id="overlay" tabindex="-1" v-bind:class="{ 'overlay-busy': busy }" v-on:click.self="close">
-    <div id="overlay-window" v-bind:class="'overlay-' + size">
+  <div ref="overlay" id="window-overlay" tabindex="-1" v-bind:class="{ 'window-busy': busy }" v-on:click.self="close">
+    <div id="window" v-bind:class="'window-' + size">
       <component v-if="childComponent != null" v-bind:is="childComponent" v-bind="childProps"
-                 v-on:error="error" v-on:close="close" v-on:block="block" v-on:unblock="unblock">
-      </component>
-      <busy-overlay v-if="busy"></busy-overlay>
+                 v-on:error="error" v-on:close="close" v-on:block="block" v-on:unblock="unblock"/>
+      <BusyOverlay v-if="busy"/>
     </div>
   </div>
 </template>
@@ -114,7 +132,7 @@ function isChildElement( element, parent ) {
 @import "~@/styles/variables.less";
 @import "~@/styles/mixins.less";
 
-#overlay {
+#window-overlay {
   position: absolute;
   left: 0; right: 0;
   top: 0; bottom: 0;
@@ -123,12 +141,12 @@ function isChildElement( element, parent ) {
   z-index: 10;
   outline: 0;
 
-  &.overlay-busy {
+  &.window-busy {
     cursor: wait;
   }
 }
 
-#overlay-window {
+#window {
   position: relative;
   width: auto;
   min-height: 66px;
@@ -143,19 +161,19 @@ function isChildElement( element, parent ) {
     margin: 60px auto 30px auto;
     .box-shadow( 0 5px 15px rgba( 0, 0, 0, 0.5 ) );
 
-    &.overlay-small {
+    &.window-small {
       width: 400px;
     }
   }
 
   @media ( min-width: @screen-md-min ) {
-    &.overlay-large {
+    &.window-large {
       width: @screen-md-min - 60px;
     }
   }
 
   @media ( min-width: @screen-lg-min ) {
-    &.overlay-large {
+    &.window-large {
       width: @screen-lg-min - 60px;
     }
   }

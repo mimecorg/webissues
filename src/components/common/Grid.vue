@@ -36,13 +36,12 @@
           <tbody>
             <tr v-for="( item, rowIndex ) in items" v-on:click="rowClick( rowIndex )">
               <slot v-for="( columnName, columnIndex ) in columnNames" v-bind:item="item" v-bind:column-index="columnIndex"
-                    v-bind:row-index="rowIndex" v-bind:column-class="getColumnClass( columnIndex )">
-              </slot>
+                    v-bind:row-index="rowIndex" v-bind:column-class="getColumnClass( columnIndex )"/>
             </tr>
           </tbody>
         </table>
       </div>
-      <busy-overlay v-if="busy"></busy-overlay>
+      <BusyOverlay v-if="busy"/>
     </div>
     <div class="grid-footer">
       <div class="container-fluid">

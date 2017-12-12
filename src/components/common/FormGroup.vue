@@ -20,7 +20,7 @@
 <template>
   <div v-bind:class="[ 'form-group', { 'has-error': error != null } ]">
     <label v-if="label != null" v-bind:for="id" class="control-label">{{ label }}</label>
-    <slot></slot>
+    <slot/>
     <p v-if="error != null" class="help-block">{{ error }}</p>
   </div>
 </template>

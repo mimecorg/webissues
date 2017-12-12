@@ -29,7 +29,7 @@
     </button>
     <div v-if="open" class="dropdown-backdrop" v-on:click="close"></div>
     <ul ref="menu" v-bind:class="[ 'dropdown-menu', menuClass ]" v-on:click="close" v-on:keydown="keyDown">
-      <slot></slot>
+      <slot/>
     </ul>
   </div>
 </template>

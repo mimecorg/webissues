@@ -19,12 +19,12 @@
 
 <template>
   <div class="container-fluid">
-    <title-bar v-bind:title="$t( 'edit_issue.title' )" v-on:close="close"></title-bar>
-    <info-prompt path="edit_issue.prompt"><strong>{{ name }}</strong></info-prompt>
-    <form-group id="name" v-bind:label="$t( 'edit_issue.name' )" v-bind:error="error">
+    <FormHeader v-bind:title="$t( 'edit_issue.title' )" v-on:close="close"/>
+    <Prompt path="edit_issue.prompt"><strong>{{ name }}</strong></Prompt>
+    <FormGroup id="name" v-bind:label="$t( 'edit_issue.name' )" v-bind:error="error">
       <input ref="name" id="name" type="text" class="form-control" v-bind:maxlength="maxLength" v-model="value">
-    </form-group>
-    <form-buttons v-on:ok="submit" v-on:cancel="close"></form-buttons>
+    </FormGroup>
+    <FormButtons v-on:ok="submit" v-on:cancel="close"/>
   </div>
 </template>
 

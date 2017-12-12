@@ -19,10 +19,10 @@
 
 <template>
   <div id="application" v-bind:class="{ 'type-selected': type != null }">
-    <page-header></page-header>
-    <main-toolbar v-on:update="updateList" v-on:reload="reload"></main-toolbar>
-    <main-grid v-bind:busy="busy" v-on:update="updateList"></main-grid>
-    <overlay-window v-if="overlayRoute != null" v-bind:route="overlayRoute" v-on:error="showError" v-on:close="closeOverlay"></overlay-window>
+    <Navbar/>
+    <MainToolbar v-on:update="updateList" v-on:reload="reload"/>
+    <MainGrid v-bind:busy="busy" v-on:update="updateList"/>
+    <Window v-if="windowRoute != null" v-bind:route="windowRoute" v-on:error="showError" v-on:close="closeWindow"/>
   </div>
 </template>
 
@@ -31,10 +31,10 @@ import { mapState, mapGetters } from 'vuex'
 
 import { ErrorCode } from '@/constants'
 
-import PageHeader from '@/components/PageHeader'
+import Navbar from '@/components/Navbar'
 import MainToolbar from '@/components/MainToolbar'
 import MainGrid from '@/components/MainGrid'
-import OverlayWindow from '@/components/OverlayWindow'
+import Window from '@/components/Window'
 
 const State = {
   Idle: 0,
@@ -44,16 +44,16 @@ const State = {
 
 export default {
   components: {
-    PageHeader,
+    Navbar,
     MainToolbar,
     MainGrid,
-    OverlayWindow
+    Window
   },
   data() {
     return {
       state: State.Idle,
       mainRoute: null,
-      overlayRoute: null
+      windowRoute: null
     };
   },
   computed: {
@@ -74,7 +74,7 @@ export default {
         this.showError( this.makeRouteError() );
       } else if ( route.handler == null ) {
         this.mainRoute = route;
-        this.overlayRoute = null;
+        this.windowRoute = null;
         if ( this.areFiltersEqual( route.params ) ) {
           if ( this.state != State.GlobalUpdate ) {
             if ( this.checkGlobalUpdate() )
@@ -96,7 +96,7 @@ export default {
         }
       } else {
         if ( this.state == State.Idle )
-          this.overlayRoute = route;
+          this.windowRoute = route;
       }
     },
     updateGlobal() {
@@ -125,13 +125,13 @@ export default {
       const route = this.$router.route;
       if ( route != null && route.handler != null ) {
         this.$nextTick( () => {
-          this.overlayRoute = route;
+          this.windowRoute = route;
         } );
       }
     },
-    closeOverlay() {
-      if ( this.overlayRoute != null && this.overlayRoute.name == 'error' ) {
-        if ( this.isAuthenticated && this.overlayRoute.error.errorCode == ErrorCode.LoginRequired )
+    closeWindow() {
+      if ( this.windowRoute != null && this.windowRoute.name == 'error' ) {
+        if ( this.isAuthenticated && this.windowRoute.error.errorCode == ErrorCode.LoginRequired )
           window.location = this.baseURL + '/index.php';
         else
           window.location = this.baseURL + '/client/index.php';
@@ -151,7 +151,7 @@ export default {
       this.state = State.Idle;
       this.$store.commit( 'list/clear' );
       this.$nextTick( () => {
-        this.overlayRoute = { name: 'error', error };
+        this.windowRoute = { name: 'error', error };
       } );
       console.error( error );
     },

@@ -28,14 +28,14 @@ import '@/styles/global.less'
 
 import Application from '@/components/Application'
 
-import ActionLink from '@/components/common/ActionLink.vue'
 import BusyOverlay from '@/components/common/BusyOverlay.vue'
 import DropdownButton from '@/components/common/DropdownButton.vue'
 import FormButtons from '@/components/common/FormButtons.vue'
 import FormGroup from '@/components/common/FormGroup.vue'
-import GridView from '@/components/common/GridView.vue'
-import InfoPrompt from '@/components/common/InfoPrompt.vue'
-import TitleBar from '@/components/common/TitleBar.vue'
+import FormHeader from '@/components/common/FormHeader.vue'
+import Grid from '@/components/common/Grid.vue'
+import Link from '@/components/common/Link.vue'
+import Prompt from '@/components/common/Prompt.vue'
 
 import makeAjax from '@/services/ajax'
 import makeRouter from '@/services/router'
@@ -81,14 +81,14 @@ export function main( { baseURL, csrfToken, locale, ...initialState } ) {
   ] );
 
   registerComponents( {
-    ActionLink,
     BusyOverlay,
     DropdownButton,
     FormButtons,
     FormGroup,
-    GridView,
-    InfoPrompt,
-    TitleBar,
+    FormHeader,
+    Grid,
+    Link,
+    Prompt
   } );
 
   app = new Vue( {

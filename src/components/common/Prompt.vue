@@ -18,15 +18,16 @@
 -->
 
 <template>
-  <div class="alert alert-info">
-    <i18n tag="p" v-bind:path="path"><slot></slot></i18n>
+  <div v-bind:class="[ 'alert', alertClass ]">
+    <i18n tag="p" v-bind:path="path"><slot/></i18n>
   </div>
 </template>
 
 <script>
 export default {
   props: {
-    path: String
+    path: String,
+    alertClass: { type: String, default: 'alert-info' }
   }
 }
 </script>

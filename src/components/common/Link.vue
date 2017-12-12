@@ -18,24 +18,15 @@
 -->
 
 <template>
-  <div class="titlebar">
-    <div class="titlebar-title">
-      <h1>{{ title }}</h1>
-    </div>
-    <div class="titlebar-buttons">
-      <button type="button" class="btn btn-default" v-bind:title="$t( 'common.close' )" v-on:click="close"><span class="fa fa-remove" aria-hidden="true"></span></button>
-    </div>
-  </div>
+  <a ref="link" role="link" tabindex="0" v-on:click="click" v-on:keydown.enter="click"><slot/></a>
 </template>
 
 <script>
 export default {
-  props: {
-    title: String
-  },
   methods: {
-    close() {
-      this.$emit( 'close' );
+    click() {
+      this.$emit( 'click' );
+      this.$refs.link.blur();
     }
   }
 }
@@ -45,26 +36,7 @@ export default {
 @import "~@/styles/variables.less";
 @import "~@/styles/mixins.less";
 
-.titlebar {
-  .group();
-  margin-top: 15px;
-  margin-bottom: 15px;
-}
-
-.titlebar-title {
-  .element();
-  .element-wide();
-
-  > h1 {
-    margin: 6px 0;
-    font-weight: bold;
-    font-size: @titlebar-font-size;
-    line-height: @line-height-base;
-    white-space: normal;
-  }
-}
-
-.titlebar-buttons {
-  .element();
+a[role="link"] {
+  cursor: pointer;
 }
 </style>

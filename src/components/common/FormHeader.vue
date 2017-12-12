@@ -18,15 +18,24 @@
 -->
 
 <template>
-  <a ref="link" role="link" tabindex="0" v-on:click="click" v-on:keydown.enter="click"><slot></slot></a>
+  <div class="form-header">
+    <div class="form-title">
+      <h1>{{ title }}</h1>
+    </div>
+    <div class="form-header-buttons">
+      <button type="button" class="btn btn-default" v-bind:title="$t( 'common.close' )" v-on:click="close"><span class="fa fa-remove" aria-hidden="true"></span></button>
+    </div>
+  </div>
 </template>
 
 <script>
 export default {
+  props: {
+    title: String
+  },
   methods: {
-    click() {
-      this.$emit( 'click' );
-      this.$refs.link.blur();
+    close() {
+      this.$emit( 'close' );
     }
   }
 }
@@ -36,7 +45,26 @@ export default {
 @import "~@/styles/variables.less";
 @import "~@/styles/mixins.less";
 
-a[role="link"] {
-  cursor: pointer;
+.form-header {
+  .group();
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.form-title {
+  .element();
+  .element-wide();
+
+  > h1 {
+    margin: 6px 0;
+    font-weight: bold;
+    font-size: @form-header-font-size;
+    line-height: @line-height-base;
+    white-space: normal;
+  }
+}
+
+.form-header-buttons {
+  .element();
 }
 </style>

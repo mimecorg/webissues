@@ -22,80 +22,80 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-xs-12 col-sm-6 col-lg-4 main-filters">
-          <dropdown-button v-if="types.length > 0" fa-class="fa-list" v-bind:text="typeName" v-bind:title="typeTitle">
+          <DropdownButton v-if="types.length > 0" fa-class="fa-list" v-bind:text="typeName" v-bind:title="typeTitle">
             <div class="dropdown-menu-scroll">
               <li v-for="t in types" v-bind:key="t.id" v-bind:class="{ active: type != null && t.id == type.id }">
-                <action-link v-on:click="selectType( t )">{{ t.name }}</action-link>
+                <Link v-on:click="selectType( t )">{{ t.name }}</Link>
               </li>
             </div>
-          </dropdown-button>
-          <dropdown-button v-if="type != null" fa-class="fa-filter" v-bind:text="viewName" v-bind:title="viewTitle">
+          </DropdownButton>
+          <DropdownButton v-if="type != null" fa-class="fa-filter" v-bind:text="viewName" v-bind:title="viewTitle">
             <div class="dropdown-menu-scroll">
               <li v-bind:class="{ active: view == null }">
-                <action-link v-on:click="selectView( null )">{{ $t( 'main.all_issues' ) }}</action-link>
+                <Link v-on:click="selectView( null )">{{ $t( 'main.all_issues' ) }}</Link>
               </li>
               <template v-if="personalViews.length > 0">
                 <li role="separator" class="divider"></li>
                 <li class="dropdown-header">{{ $t( 'main.personal_views' ) }}</li>
                 <li v-for="v in personalViews" v-bind:key="v.id" v-bind:class="{ active: view != null && v.id == view.id }">
-                  <action-link v-on:click="selectView( v )">{{ v.name }}</action-link>
+                  <Link v-on:click="selectView( v )">{{ v.name }}</Link>
                 </li>
               </template>
               <template v-if="publicViews.length > 0">
                 <li role="separator" class="divider"></li>
                 <li class="dropdown-header">{{ $t( 'main.public_views' ) }}</li>
                 <li v-for="v in publicViews" v-bind:key="v.id" v-bind:class="{ active: view != null && v.id == view.id }">
-                  <action-link v-on:click="selectView( v )">{{ v.name }}</action-link>
+                  <Link v-on:click="selectView( v )">{{ v.name }}</Link>
                 </li>
               </template>
             </div>
-          </dropdown-button>
+          </DropdownButton>
         </div>
         <div v-if="type != null" class="col-xs-12 col-sm-6 col-lg-4 main-filters">
-          <dropdown-button fa-class="fa-object-group" v-bind:text="projectName" v-bind:title="projectTitle">
+          <DropdownButton fa-class="fa-object-group" v-bind:text="projectName" v-bind:title="projectTitle">
             <div class="dropdown-menu-scroll">
               <li v-bind:class="{ active: project == null }">
-                <action-link v-on:click="selectProject( null )">{{ $t( 'main.all_projects' ) }}</action-link>
+                <Link v-on:click="selectProject( null )">{{ $t( 'main.all_projects' ) }}</Link>
               </li>
               <template v-if="projects.length > 0">
                 <li role="separator" class="divider"></li>
                 <li v-for="p in projects" v-bind:key="p.id" v-bind:class="{ active: project != null && p.id == project.id }">
-                  <action-link v-on:click="selectProject( p )">{{ p.name }}</action-link>
+                  <Link v-on:click="selectProject( p )">{{ p.name }}</Link>
                 </li>
               </template>
             </div>
-          </dropdown-button>
-          <dropdown-button fa-class="fa-folder-open-o" v-bind:text="folderName" v-bind:title="folderTitle">
+          </DropdownButton>
+          <DropdownButton fa-class="fa-folder-open-o" v-bind:text="folderName" v-bind:title="folderTitle">
             <div class="dropdown-menu-scroll">
               <li v-bind:class="{ active: folder == null }">
-                <action-link v-on:click="selectFolder( null )">{{ $t( 'main.all_folders' ) }}</action-link>
+                <Link v-on:click="selectFolder( null )">{{ $t( 'main.all_folders' ) }}</Link>
               </li>
               <template v-if="folders.length > 0">
                 <li role="separator" class="divider"></li>
                 <li v-for="f in folders" v-bind:key="f.id" v-bind:class="{ active: folder != null && f.id == folder.id }">
-                  <action-link v-on:click="selectFolder( f )">{{ f.name }}</action-link>
+                  <Link v-on:click="selectFolder( f )">{{ f.name }}</Link>
                 </li>
               </template>
             </div>
-          </dropdown-button>
+          </DropdownButton>
         </div>
         <div v-if="type != null" class="col-xs-12 col-lg-4">
           <div class="main-group">
             <div class="main-element main-element-wide">
               <div class="input-group" v-bind:class="{ 'has-error': searchError }">
-                <dropdown-button class="input-group-btn" fa-class="fa-chevron-down" v-bind:title="searchTitle">
+                <DropdownButton class="input-group-btn" fa-class="fa-chevron-down" v-bind:title="searchTitle">
                   <div class="dropdown-menu-scroll">
                     <li v-for="c in systemColumns" v-bind:class="{ active: isSearchColumn( c ) }">
-                      <action-link v-on:click="setSearchColumn( c )">{{ c.name }}</action-link>
+                      <Link v-on:click="setSearchColumn( c )">{{ c.name }}</Link>
                     </li>
                     <template v-if="type.attributes.length > 0">
                       <li role="separator" class="divider"></li>
                       <li v-for="a in type.attributes" v-bind:class="{ active: isSearchAttribute( a ) }">
-                        <action-link v-on:click="setSearchAttribute( a )">{{ a.name }}</action-link>
+                        <Link v-on:click="setSearchAttribute( a )">{{ a.name }}</Link>
                       </li>
                     </template>
                   </div>
-                </dropdown-button>
+                </DropdownButton>
                 <input ref="search" type="search" class="form-control" v-bind:placeholder="searchName" v-bind:maxlength="searchLength"
                        v-bind:value="searchText" v-on:keydown.enter="search">
                 <div class="input-group-btn">
@@ -105,14 +105,14 @@
             </div>
             <div class="main-element">
               <button type="button" class="btn btn-default" v-bind:title="$t( 'main.reload' )" v-on:click="reload"><span class="fa fa-refresh" aria-hidden="true"></span></button>
-              <dropdown-button fa-class="fa-ellipsis-v" menu-class="dropdown-menu-right" v-bind:title="$t( 'main.more' )">
-                <li><action-link><span class="fa fa-check-circle-o" aria-hidden="true"></span> {{ $t( 'main.mark_all_as_read' ) }}</action-link></li>
-                <li><action-link><span class="fa fa-check-circle" aria-hidden="true"></span> {{ $t( 'main.mark_all_as_unread' ) }}</action-link></li>
+              <DropdownButton fa-class="fa-ellipsis-v" menu-class="dropdown-menu-right" v-bind:title="$t( 'main.more' )">
+                <li><Link><span class="fa fa-check-circle-o" aria-hidden="true"></span> {{ $t( 'main.mark_all_as_read' ) }}</Link></li>
+                <li><Link><span class="fa fa-check-circle" aria-hidden="true"></span> {{ $t( 'main.mark_all_as_unread' ) }}</Link></li>
                 <li role="separator" class="divider"></li>
-                <li><action-link><span class="fa fa-pencil-square-o" aria-hidden="true"></span> {{ $t( 'main.project_description' ) }}</action-link></li>
+                <li><Link><span class="fa fa-pencil-square-o" aria-hidden="true"></span> {{ $t( 'main.project_description' ) }}</Link></li>
                 <li role="separator" class="divider"></li>
-                <li><action-link><span class="fa fa-file-text-o" aria-hidden="true"></span> {{ $t( 'main.export_to_csv' ) }}</action-link></li>
-              </dropdown-button>
+                <li><Link><span class="fa fa-file-text-o" aria-hidden="true"></span> {{ $t( 'main.export_to_csv' ) }}</Link></li>
+              </DropdownButton>
             </div>
           </div>
         </div>
@@ -280,7 +280,7 @@ export default {
 #main-toolbar {
   position: absolute;
   left: 0; right: 0;
-  top: @header-height; height: @main-toolbar-height;
+  top: @navbar-height; height: @main-toolbar-height;
   padding: 4px 0;
   background-color: @main-toolbar-bg;
   border-bottom: 1px solid @main-toolbar-border-color;

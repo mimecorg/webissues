@@ -27,7 +27,7 @@ export default {
     previous: 'Previous',
     next: 'Next'
   },
-  header: {
+  navbar: {
     add: 'Add',
     add_issue: 'Add Issue',
     go_to: 'Go To',

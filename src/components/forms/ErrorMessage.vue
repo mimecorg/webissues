@@ -19,11 +19,11 @@
 
 <template>
   <div class="container-fluid">
-    <title-bar v-bind:title="title" v-on:close="close"></title-bar>
+    <FormHeader v-bind:title="title" v-on:close="close"/>
     <div class="alert alert-danger">
       <p>{{ message }}</p>
     </div>
-    <form-buttons v-bind:has-cancel="false" v-on:ok="close"></form-buttons>
+    <FormButtons v-bind:has-cancel="false" v-on:ok="close"/>
   </div>
 </template>
 
