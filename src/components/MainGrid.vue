@@ -38,10 +38,8 @@ import { mapState, mapGetters } from 'vuex'
 import { Column } from '@/constants'
 
 export default {
-  props: {
-    busy: Boolean
-  },
   computed: {
+    ...mapGetters( [ 'busy' ] ),
     ...mapState( 'list', [ 'sortColumn', 'sortAscending', 'columns', 'issues', 'totalCount' ] ),
     ...mapGetters( 'list', [ 'firstIndex', 'lastIndex' ] ),
     columnNames() {
@@ -112,15 +110,15 @@ export default {
         sortColumn: this.columns[ columnIndex ].id,
         sortAscending: ( columnIndex == this.sortColumnIndex ) ? !this.sortAscending : true
       } );
-      this.$emit( 'update' );
+      this.$store.dispatch( 'updateList' );
     },
     previous() {
       this.$store.commit( 'list/setPreviousPage' );
-      this.$emit( 'update' );
+      this.$store.dispatch( 'updateList' );
     },
     next() {
       this.$store.commit( 'list/setNextPage' );
-      this.$emit( 'update' );
+      this.$store.dispatch( 'updateList' );
     },
     rowClick( rowIndex ) {
       this.$router.push( 'edit_issue', { issueId: this.issues[ rowIndex ].id } );

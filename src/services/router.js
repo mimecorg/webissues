@@ -60,6 +60,9 @@ export default function makeRouter( factories ) {
     replace( name, params = {} ) {
       replacePath( buildPath( routes, name, params ) );
     },
+    redirect( url ) {
+      window.location = url;
+    },
     hotUpdate( factories ) {
       factories.forEach( factory => {
         factory( ( name, path, handler = null ) => {

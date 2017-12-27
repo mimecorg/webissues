@@ -21,85 +21,31 @@
   <div ref="overlay" id="window-overlay" tabindex="-1" v-bind:class="{ 'window-busy': busy }" v-on:click.self="close">
     <div id="window" v-bind:class="'window-' + size">
       <component v-if="childComponent != null" v-bind:is="childComponent" v-bind="childProps"
-                 v-on:error="error" v-on:close="close" v-on:block="block" v-on:unblock="unblock"/>
+                 v-on:close="close" v-on:block="block" v-on:unblock="unblock" v-on:error="error"/>
       <BusyOverlay v-if="busy"/>
     </div>
   </div>
 </template>
 
 <script>
-import ErrorMessage from '@/components/forms/ErrorMessage'
+import { mapState } from 'vuex'
 
 export default {
-  props: {
-    route: Object
-  },
-  data() {
-    return {
-      childComponent: null,
-      childProps: null,
-      size: 'small',
-      busy: true,
-      cancellation: null
-    };
-  },
-  watch: {
-    route( value ) {
-      this.cancelRoute();
-      if ( value != null )
-        this.handleRoute( value );
-    }
+  computed: {
+    ...mapState( 'window', [ 'childComponent', 'childProps', 'size', 'busy' ] )
   },
   methods: {
-    handleRoute( route ) {
-      if ( route.name != 'error' ) {
-        let cancelled = false;
-        this.cancellation = () => {
-          cancelled = true;
-        };
-        route.handler( route.params ).then( ( { component, size = 'normal', ...props } ) => {
-          if ( !cancelled ) {
-            this.childComponent = component;
-            this.childProps = props;
-            this.size = size;
-            this.busy = false;
-            this.cancellation = null;
-          }
-        } ).catch( error => {
-          if ( !cancelled ) {
-            this.$emit( 'error', error );
-            this.cancellation = null;
-          }
-        } );
-      } else {
-        this.childComponent = ErrorMessage;
-        this.childProps = { error: route.error };
-        this.size = 'small';
-        this.busy = false;
-      }
-    },
-    cancelRoute() {
-      if ( this.cancellation != null ) {
-        this.cancellation();
-        this.cancellation = null;
-      } else {
-        this.childComponent = null;
-        this.childProps = null;
-        this.size = 'small';
-        this.busy = true;
-      }
-    },
-    error( error ) {
-      this.$emit( 'error', error );
-    },
     close() {
-      this.$emit( 'close' );
+      this.$store.dispatch( 'window/close' );
     },
     block() {
-      this.busy = true;
+      this.$store.commit( 'window/setBusy', true );
     },
     unblock() {
-      this.busy = false;
+      this.$store.commit( 'window/setBusy', false );
+    },
+    error( error ) {
+      this.$store.dispatch( 'showError', error );
     },
     handleFocusIn( e ) {
       if ( e.target != document && e.target != this.$refs.overlay && !isChildElement( e.target, this.$refs.overlay ) )
@@ -109,12 +55,9 @@ export default {
   mounted() {
     this.$refs.overlay.focus();
     document.addEventListener( 'focusin', this.handleFocusIn );
-    if ( this.route != null )
-      this.handleRoute( this.route );
   },
   beforeDestroy() {
     document.removeEventListener( 'focusin', this.handleFocusIn );
-    this.cancelRoute();
   }
 }
 

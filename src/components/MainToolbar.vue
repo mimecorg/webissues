@@ -264,10 +264,10 @@ export default {
     },
     search() {
       this.$store.commit( 'list/setSearchText', { searchText: this.$refs.search.value } );
-      this.$emit( 'update' );
+      this.$store.dispatch( 'updateList' );
     },
     reload() {
-      this.$emit( 'reload' );
+      this.$store.dispatch( 'reload' );
     }
   }
 }

@@ -21,7 +21,7 @@ import { Access } from '@/constants'
 
 const UpdateInterval = 5 * 60 * 1000; // 5 minutes
 
-export default function makeModule( baseURL, initialState, ajax ) {
+export default function makeGlobalModule( baseURL, initialState, ajax ) {
   return {
     namespaced: true,
     state: makeState( baseURL, initialState ),
@@ -83,7 +83,7 @@ function makeMutations() {
 
 function makeActions( ajax ) {
   return {
-    load( { commit, dispatch } ) {
+    load( { commit } ) {
       commit( 'beginUpdate' );
       return ajax.post( '/server/api/global.php' ).then( data => {
         commit( 'setData', data );

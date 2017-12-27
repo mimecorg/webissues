@@ -22,7 +22,6 @@ import 'whatwg-fetch'
 
 import Vue from 'vue'
 import VueI18n from 'vue-i18n'
-import Vuex from 'vuex'
 
 import '@/styles/global.less'
 
@@ -40,8 +39,7 @@ import Prompt from '@/components/common/Prompt.vue'
 import makeAjax from '@/services/ajax'
 import makeRouter from '@/services/router'
 
-import makeGlobalModule from '@/store/global'
-import makeListModule from '@/store/list'
+import makeStore from '@/store'
 
 import applicationRoutes from '@/routes/application'
 import makeIssueRoutes from '@/routes/issue'
@@ -49,7 +47,6 @@ import makeIssueRoutes from '@/routes/issue'
 import en_US from '@/translations/en_US'
 
 Vue.use( VueI18n );
-Vue.use( Vuex );
 
 let app = null;
 
@@ -68,17 +65,12 @@ export function main( { baseURL, csrfToken, locale, ...initialState } ) {
 
   const ajax = makeAjax( baseURL, csrfToken );
 
-  const store = new Vuex.Store( {
-    modules: {
-      global: makeGlobalModule( baseURL, initialState, ajax ),
-      list: makeListModule( i18n, ajax )
-    }
-  } );
-
   const router = makeRouter( [
     applicationRoutes,
     makeIssueRoutes( ajax )
   ] );
+
+  const store = makeStore( baseURL, initialState, ajax, router );
 
   registerComponents( {
     BusyOverlay,
@@ -105,15 +97,6 @@ export function main( { baseURL, csrfToken, locale, ...initialState } ) {
   if ( process.env.NODE_ENV != 'production' && module.hot != null ) {
     module.hot.accept( '@/translations/en_US', () => {
       i18n.setLocaleMessage( 'en_US', en_US );
-    } );
-
-    module.hot.accept( [ '@/store/global', '@/store/list' ], () => {
-      store.hotUpdate( {
-        modules: {
-          global: makeGlobalModule( baseURL, initialState, ajax ),
-          list: makeListModule( i18n, ajax )
-        }
-      } );
     } );
 
     module.hot.accept( [ '@/routes/application', '@/routes/issue' ], () => {

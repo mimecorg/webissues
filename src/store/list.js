@@ -23,13 +23,13 @@ const PageSize = 50;
 
 const UpdateInterval = 60 * 1000; // 1 minute
 
-export default function makeModule( i18n, ajax ) {
+export default function makeListModule( ajax ) {
   return {
     namespaced: true,
     state: makeState(),
     getters: makeGetters(),
     mutations: makeMutations(),
-    actions: makeActions( i18n, ajax )
+    actions: makeActions( ajax )
   };
 }
 
@@ -210,9 +210,9 @@ function makeMutations() {
   };
 }
 
-function makeActions( i18n, ajax ) {
+function makeActions( ajax ) {
   return {
-    load( { commit, state } ) {
+    load( { state, commit } ) {
       let cancelled = false;
       commit( 'setCancellation', () => {
         cancelled = true;
