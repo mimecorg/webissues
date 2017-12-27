@@ -170,7 +170,7 @@ function makeActions( router ) {
       if ( state.mainRoute != null )
         router.push( state.mainRoute.name, state.mainRoute.params );
       else
-        router.push( 'home' );
+        router.push( 'Home' );
     },
 
     redirect( { state }, url ) {

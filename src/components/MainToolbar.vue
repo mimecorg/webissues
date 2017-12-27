@@ -231,18 +231,18 @@ export default {
     updateFilters( { type, view, project, folder } ) {
       if ( view != null ) {
         if ( folder != null )
-          this.$router.push( 'list_view_folder', { viewId: view.id, folderId: folder.id } );
+          this.$router.push( 'ListViewFolder', { viewId: view.id, folderId: folder.id } );
         else if ( project != null )
-          this.$router.push( 'list_view_project', { viewId: view.id, projectId: project.id } );
+          this.$router.push( 'ListViewProject', { viewId: view.id, projectId: project.id } );
         else
-          this.$router.push( 'list_view', { viewId: view.id } );
+          this.$router.push( 'ListView', { viewId: view.id } );
       } else {
         if ( folder != null )
-          this.$router.push( 'list_folder', { folderId: folder.id } );
+          this.$router.push( 'ListFolder', { folderId: folder.id } );
         else if ( project != null )
-          this.$router.push( 'list_project', { typeId: type.id, projectId: project.id } );
+          this.$router.push( 'ListProject', { typeId: type.id, projectId: project.id } );
         else
-          this.$router.push( 'list', { typeId: type.id } );
+          this.$router.push( 'List', { typeId: type.id } );
       }
     },
     isSearchColumn( column ) {

@@ -17,12 +17,12 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-export default route => {
-  route( 'home', '' );
-  route( 'list', '/type/:typeId' );
-  route( 'list_view', '/view/:viewId' );
-  route( 'list_project', '/type/:typeId/project/:projectId' );
-  route( 'list_view_project', '/view/:viewId/project/:projectId' );
-  route( 'list_folder', '/folder/:folderId' );
-  route( 'list_view_folder', '/view/:viewId/folder/:folderId' );
+export default function staticRoutes( route ) {
+  route( 'Home', '' );
+  route( 'List', '/type/:typeId' );
+  route( 'ListView', '/view/:viewId' );
+  route( 'ListProject', '/type/:typeId/project/:projectId' );
+  route( 'ListViewProject', '/view/:viewId/project/:projectId' );
+  route( 'ListFolder', '/folder/:folderId' );
+  route( 'ListViewFolder', '/view/:viewId/folder/:folderId' );
 }

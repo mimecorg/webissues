@@ -41,8 +41,7 @@ import makeRouter from '@/services/router'
 import makeI18n from '@/i18n';
 import makeStore from '@/store'
 
-import applicationRoutes from '@/routes/application'
-import makeIssueRoutes from '@/routes/issue'
+import registerRoutes from '@/routes'
 
 let app = null;
 
@@ -54,15 +53,11 @@ export function main( { baseURL, csrfToken, locale, ...initialState } ) {
     __webpack_public_path__ = baseURL + '/assets/';
 
   const i18n = makeI18n( locale );
-
   const ajax = makeAjax( baseURL, csrfToken );
-
-  const router = makeRouter( [
-    applicationRoutes,
-    makeIssueRoutes( ajax )
-  ] );
-
+  const router = makeRouter();
   const store = makeStore( baseURL, initialState, ajax, router );
+
+  registerRoutes( router, ajax, store );
 
   registerComponents( {
     BusyOverlay,
@@ -85,15 +80,6 @@ export function main( { baseURL, csrfToken, locale, ...initialState } ) {
       return createElement( Application );
     }
   } );
-
-  if ( process.env.NODE_ENV != 'production' && module.hot != null ) {
-    module.hot.accept( [ '@/routes/application', '@/routes/issue' ], () => {
-      router.hotUpdate( [
-        applicationRoutes,
-        makeIssueRoutes( ajax )
-      ] );
-    } );
-  }
 }
 
 function registerComponents( components ) {

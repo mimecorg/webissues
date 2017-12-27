@@ -17,14 +17,22 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-import EditIssue from '@/components/forms/EditIssue.vue';
+import staticRoutes from '@/routes/static'
+import makeIssueRoutes from '@/routes/issue'
 
-export default function makeIssueRoutes( ajax ) {
-  return function issueRoutes( route ) {
-    route( 'EditIssue', '/issue/:issueId/edit', ( { issueId } ) => {
-      return ajax.post( '/server/api/issue/load.php', { issueId } ).then( ( { name } ) => {
-        return { component: EditIssue, issueId, name };
-      } );
+export default function registerRoutes( router, ajax, store ) {
+  function makeRoutes() {
+    return [
+      staticRoutes,
+      makeIssueRoutes( ajax )
+    ];
+  }
+
+  router.register( makeRoutes() );
+
+  if ( process.env.NODE_ENV != 'production' && module.hot != null ) {
+    module.hot.accept( [ '@/routes/static', '@/routes/issue' ], () => {
+      router.hotUpdate( makeRoutes() );
     } );
   }
 }

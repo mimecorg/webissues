@@ -121,7 +121,7 @@ export default {
       this.$store.dispatch( 'updateList' );
     },
     rowClick( rowIndex ) {
-      this.$router.push( 'edit_issue', { issueId: this.issues[ rowIndex ].id } );
+      this.$router.push( 'EditIssue', { issueId: this.issues[ rowIndex ].id } );
     }
   }
 }

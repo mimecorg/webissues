@@ -30,17 +30,11 @@ Vue.mixin( {
   }
 } );
 
-export default function makeRouter( factories ) {
+export default function makeRouter() {
   const routes = [];
 
   let lastPath = null;
   let lastRoute = null;
-
-  factories.forEach( factory => {
-    factory( ( name, path, handler = null ) => {
-      addRoute( routes, name, path, handler );
-    } );
-  } );
 
   return {
     get path() {
@@ -62,6 +56,13 @@ export default function makeRouter( factories ) {
     },
     redirect( url ) {
       window.location = url;
+    },
+    register( factories ) {
+      factories.forEach( factory => {
+        factory( ( name, path, handler = null ) => {
+          addRoute( routes, name, path, handler );
+        } );
+      } );
     },
     hotUpdate( factories ) {
       factories.forEach( factory => {
