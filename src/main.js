@@ -26,14 +26,7 @@ import '@/styles/global.less'
 
 import Application from '@/components/Application'
 
-import BusyOverlay from '@/components/common/BusyOverlay.vue'
-import DropdownButton from '@/components/common/DropdownButton.vue'
-import FormButtons from '@/components/common/FormButtons.vue'
-import FormGroup from '@/components/common/FormGroup.vue'
-import FormHeader from '@/components/common/FormHeader.vue'
-import Grid from '@/components/common/Grid.vue'
-import Link from '@/components/common/Link.vue'
-import Prompt from '@/components/common/Prompt.vue'
+import commonComponents from '@/components/common'
 
 import makeAjax from '@/services/ajax'
 import makeRouter from '@/services/router'
@@ -59,16 +52,7 @@ export function main( { baseURL, csrfToken, locale, ...initialState } ) {
 
   registerRoutes( router, ajax, store );
 
-  registerComponents( {
-    BusyOverlay,
-    DropdownButton,
-    FormButtons,
-    FormGroup,
-    FormHeader,
-    Grid,
-    Link,
-    Prompt
-  } );
+  registerComponents( commonComponents );
 
   app = new Vue( {
     i18n,
