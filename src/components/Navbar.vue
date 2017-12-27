@@ -34,47 +34,47 @@
           </div>
         </div>
         <div id="navbar-element-collapse" v-bind:class="[ 'navbar-element', 'collapse', { 'in' : expanded } ]" v-bind:aria-expanded="expanded ? 'true' : 'false'">
-          <button v-if="type != null" type="button" class="btn btn-success hidden-xs" v-bind:title="$t( 'navbar.add_issue' )">
-            <span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'navbar.add' ) }}
+          <button v-if="type != null" type="button" class="btn btn-success hidden-xs" v-bind:title="$t( 'Navbar.AddIssue' )">
+            <span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'Navbar.Add' ) }}
           </button>
-          <button type="button" class="btn btn-default" v-bind:title="$t( 'navbar.go_to_item' )">
-            <span class="fa fa-arrow-right" aria-hidden="true"></span> <span class="hidden-sm hidden-md">{{ $t( 'navbar.go_to' ) }}</span>
+          <button type="button" class="btn btn-default" v-bind:title="$t( 'Navbar.GoToItem' )">
+            <span class="fa fa-arrow-right" aria-hidden="true"></span> <span class="hidden-sm hidden-md">{{ $t( 'Navbar.GoTo' ) }}</span>
           </button>
-          <DropdownButton v-if="isAdministrator || canManageProjects" fa-class="fa-cog" v-bind:text="$t( 'navbar.administration' )"
-                           text-class="hidden-sm hidden-md" v-bind:title="$t( 'navbar.administration_menu' )">
-            <li><Link><span class="fa fa-object-group" aria-hidden="true"></span> {{ $t( 'navbar.projects' ) }}</Link></li>
+          <DropdownButton v-if="isAdministrator || canManageProjects" fa-class="fa-cog" v-bind:text="$t( 'Navbar.Administration' )"
+                           text-class="hidden-sm hidden-md" v-bind:title="$t( 'Navbar.AdministrationMenu' )">
+            <li><Link><span class="fa fa-object-group" aria-hidden="true"></span> {{ $t( 'Navbar.Projects' ) }}</Link></li>
             <template v-if="isAdministrator">
-              <li><Link><span class="fa fa-users" aria-hidden="true"></span> {{ $t( 'navbar.user_accounts' ) }}</Link></li>
-              <li><Link><span class="fa fa-user-circle-o" aria-hidden="true"></span> {{ $t( 'navbar.registration_requests' ) }}</Link></li>
-              <li><Link><span class="fa fa-list" aria-hidden="true"></span> {{ $t( 'navbar.issue_types' ) }}</Link></li>
+              <li><Link><span class="fa fa-users" aria-hidden="true"></span> {{ $t( 'Navbar.UserAccounts' ) }}</Link></li>
+              <li><Link><span class="fa fa-user-circle-o" aria-hidden="true"></span> {{ $t( 'Navbar.RegistrationRequests' ) }}</Link></li>
+              <li><Link><span class="fa fa-list" aria-hidden="true"></span> {{ $t( 'Navbar.IssueTypes' ) }}</Link></li>
             </template>
-            <li><Link><span class="fa fa-bell-o" aria-hidden="true"></span> {{ $t( 'navbar.public_alerts' ) }}</Link></li>
+            <li><Link><span class="fa fa-bell-o" aria-hidden="true"></span> {{ $t( 'Navbar.PublicAlerts' ) }}</Link></li>
             <template v-if="isAdministrator">
-              <li><Link><span class="fa fa-clock-o" aria-hidden="true"></span> {{ $t( 'navbar.archived_projects' ) }}</Link></li>
+              <li><Link><span class="fa fa-clock-o" aria-hidden="true"></span> {{ $t( 'Navbar.ArchivedProjects' ) }}</Link></li>
               <li role="separator" class="divider"></li>
-              <li><Link><span class="fa fa-wrench" aria-hidden="true"></span> {{ $t( 'navbar.general_settings' ) }}</Link></li>
-              <li><Link><span class="fa fa-lock" aria-hidden="true"></span> {{ $t( 'navbar.access_settings' ) }}</Link></li>
-              <li><Link><span class="fa fa-envelope-o" aria-hidden="true"></span> {{ $t( 'navbar.email_settings' ) }}</Link></li>
-              <li><Link><span class="fa fa-inbox" aria-hidden="true"></span> {{ $t( 'navbar.inbox_settings' ) }}</Link></li>
-              <li><Link><span class="fa fa-cogs" aria-hidden="true"></span> {{ $t( 'navbar.advanced_settings' ) }}</Link></li>
+              <li><Link><span class="fa fa-wrench" aria-hidden="true"></span> {{ $t( 'Navbar.GeneralSettings' ) }}</Link></li>
+              <li><Link><span class="fa fa-lock" aria-hidden="true"></span> {{ $t( 'Navbar.AccessSettings' ) }}</Link></li>
+              <li><Link><span class="fa fa-envelope-o" aria-hidden="true"></span> {{ $t( 'Navbar.EmailSettings' ) }}</Link></li>
+              <li><Link><span class="fa fa-inbox" aria-hidden="true"></span> {{ $t( 'Navbar.InboxSettings' ) }}</Link></li>
+              <li><Link><span class="fa fa-cogs" aria-hidden="true"></span> {{ $t( 'Navbar.AdvancedSettings' ) }}</Link></li>
               <li role="separator" class="divider"></li>
-              <li><Link><span class="fa fa-info" aria-hidden="true"></span> {{ $t( 'navbar.status_report' ) }}</Link></li>
-              <li><Link><span class="fa fa-book" aria-hidden="true"></span> {{ $t( 'navbar.event_log' ) }}</Link></li>
+              <li><Link><span class="fa fa-info" aria-hidden="true"></span> {{ $t( 'Navbar.StatusReport' ) }}</Link></li>
+              <li><Link><span class="fa fa-book" aria-hidden="true"></span> {{ $t( 'Navbar.EventLog' ) }}</Link></li>
             </template>
           </DropdownButton>
           <DropdownButton fa-class="fa-user" v-bind:text="userName" text-class="hidden-sm hidden-md" v-bind:title="userTitle">
             <template v-if="isAuthenticated">
-              <li><Link><span class="fa fa-filter" aria-hidden="true"></span> {{ $t( 'navbar.personal_views' ) }}</Link></li>
-              <li><Link><span class="fa fa-bell-o" aria-hidden="true"></span> {{ $t( 'navbar.personal_alerts' ) }}</Link></li>
+              <li><Link><span class="fa fa-filter" aria-hidden="true"></span> {{ $t( 'Navbar.PersonalViews' ) }}</Link></li>
+              <li><Link><span class="fa fa-bell-o" aria-hidden="true"></span> {{ $t( 'Navbar.PersonalAlerts' ) }}</Link></li>
               <li role="separator" class="divider"></li>
-              <li><Link><span class="fa fa-sliders" aria-hidden="true"></span> {{ $t( 'navbar.user_preferences' ) }}</Link></li>
-              <li><Link><span class="fa fa-unlock-alt" aria-hidden="true"></span> {{ $t( 'navbar.change_password' ) }}</Link></li>
+              <li><Link><span class="fa fa-sliders" aria-hidden="true"></span> {{ $t( 'Navbar.UserPreferences' ) }}</Link></li>
+              <li><Link><span class="fa fa-unlock-alt" aria-hidden="true"></span> {{ $t( 'Navbar.ChangePassword' ) }}</Link></li>
               <li role="separator" class="divider"></li>
-              <li><a v-bind:href="baseURL + '/index.php'"><span class="fa fa-sign-out" aria-hidden="true"></span> {{ $t( 'navbar.log_out' ) }}</a></li>
+              <li><a v-bind:href="baseURL + '/index.php'"><span class="fa fa-sign-out" aria-hidden="true"></span> {{ $t( 'Navbar.LogOut' ) }}</a></li>
             </template>
             <template v-else>
-              <li><a v-bind:href="baseURL + '/index.php'"><span class="fa fa-sign-in" aria-hidden="true"></span> {{ $t( 'navbar.log_in' ) }}</a></li>
-              <li><a v-bind:href="baseURL + '/register.php'"><span class="fa fa-user-plus" aria-hidden="true"></span> {{ $t( 'navbar.register' ) }}</a></li>
+              <li><a v-bind:href="baseURL + '/index.php'"><span class="fa fa-sign-in" aria-hidden="true"></span> {{ $t( 'Navbar.LogIn' ) }}</a></li>
+              <li><a v-bind:href="baseURL + '/register.php'"><span class="fa fa-user-plus" aria-hidden="true"></span> {{ $t( 'Navbar.Register' ) }}</a></li>
             </template>
           </DropdownButton>
           <div class="navbar-sub-group">
@@ -82,18 +82,18 @@
               <div class="navbar-version">WebIssues {{ serverVersion }}</div>
             </div>
             <div class="navbar-sub-element">
-              <button type="button" class="btn btn-default" v-bind:title="$t( 'navbar.about_webissues' )"><span class="fa fa-info-circle" aria-hidden="true"></span></button>
-              <a type="button" class="btn btn-default" v-bind:title="$t( 'navbar.webissues_manual' )" v-bind:href="baseURL + '/doc/en/index.html'" target="_blank">
+              <button type="button" class="btn btn-default" v-bind:title="$t( 'Navbar.AboutWebIssues' )"><span class="fa fa-info-circle" aria-hidden="true"></span></button>
+              <a type="button" class="btn btn-default" v-bind:title="$t( 'Navbar.WebIssuesManual' )" v-bind:href="baseURL + '/doc/en/index.html'" target="_blank">
                 <span class="fa fa-question-circle" aria-hidden="true"></span>
               </a>
             </div>
           </div>
         </div>
         <div id="navbar-element-toggle" class="navbar-element">
-          <button v-if="type != null" type="button" class="btn btn-success" v-bind:title="$t( 'navbar.add_issue' )">
-            <span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'navbar.add' ) }}
+          <button v-if="type != null" type="button" class="btn btn-success" v-bind:title="$t( 'Navbar.AddIssue' )">
+            <span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'Navbar.Add' ) }}
           </button>
-          <button type="button" class="btn btn-default" v-bind:title="$t( 'navbar.toggle_navigation' )" v-on:click="toggle">
+          <button type="button" class="btn btn-default" v-bind:title="$t( 'Navbar.ToggleNavigation' )" v-on:click="toggle">
             <span class="fa fa-bars" aria-hidden="true"></span>
           </button>
         </div>
@@ -117,9 +117,9 @@ export default {
     ...mapGetters( 'list', [ 'type' ] ),
     userTitle() {
       if ( this.isAuthenticated )
-        return this.$t( 'navbar.user_title', [ this.userName ] );
+        return this.$t( 'Navbar.UserTitle', [ this.userName ] );
       else
-        return this.$t( 'navbar.anonymous_user' );
+        return this.$t( 'Navbar.AnonymousUser' );
     }
   },
   methods: {

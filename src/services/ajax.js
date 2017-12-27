@@ -51,12 +51,12 @@ export default function makeAjax( baseURL, csrfToken ) {
               reject( makeHttpError( response ) );
             } else {
               error.response = response;
-              error.reason = 'invalid_response';
+              error.reason = 'InvalidResponse';
               reject( error );
             }
           } );
         } ).catch( error => {
-          error.reason = 'network_error';
+          error.reason = 'NetworkError';
           reject( error );
         } );
       } );
@@ -76,11 +76,11 @@ function makeHeaders( csrfToken ) {
 function makeError( errorCode, errorMessage, response ) {
   const error = new Error( 'Server returned an error: ' + errorCode + ' (' + errorMessage + ')' );
   if ( errorCode >= 500 )
-    error.reason = 'server_error';
+    error.reason = 'ServerError';
   else if ( errorCode >= 400 )
-    error.reason = 'bad_request';
+    error.reason = 'BadRequest';
   else
-    error.reason = 'api_error';
+    error.reason = 'APIError';
   error.errorCode = errorCode;
   error.errorMessage = errorMessage;
   error.response = response;
@@ -90,9 +90,9 @@ function makeError( errorCode, errorMessage, response ) {
 function makeHttpError( response ) {
   const error = new Error( 'HTTP error: ' + response.status + ' (' + response.statusText + ')' );
   if ( response.status >= 500 )
-    error.reason = 'server_error';
+    error.reason = 'ServerError';
   else
-    error.reason = 'bad_request';
+    error.reason = 'BadRequest';
   error.response = response;
   return error;
 }

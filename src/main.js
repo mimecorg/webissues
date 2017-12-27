@@ -21,7 +21,6 @@ import 'babel-polyfill'
 import 'whatwg-fetch'
 
 import Vue from 'vue'
-import VueI18n from 'vue-i18n'
 
 import '@/styles/global.less'
 
@@ -39,14 +38,11 @@ import Prompt from '@/components/common/Prompt.vue'
 import makeAjax from '@/services/ajax'
 import makeRouter from '@/services/router'
 
+import makeI18n from '@/i18n';
 import makeStore from '@/store'
 
 import applicationRoutes from '@/routes/application'
 import makeIssueRoutes from '@/routes/issue'
-
-import en_US from '@/translations/en_US'
-
-Vue.use( VueI18n );
 
 let app = null;
 
@@ -57,11 +53,7 @@ export function main( { baseURL, csrfToken, locale, ...initialState } ) {
   if ( process.env.NODE_ENV == 'production' )
     __webpack_public_path__ = baseURL + '/assets/';
 
-  const i18n = new VueI18n( {
-    locale,
-    fallbackLocale: 'en_US',
-    messages: { en_US }
-  } );
+  const i18n = makeI18n( locale );
 
   const ajax = makeAjax( baseURL, csrfToken );
 
@@ -95,10 +87,6 @@ export function main( { baseURL, csrfToken, locale, ...initialState } ) {
   } );
 
   if ( process.env.NODE_ENV != 'production' && module.hot != null ) {
-    module.hot.accept( '@/translations/en_US', () => {
-      i18n.setLocaleMessage( 'en_US', en_US );
-    } );
-
     module.hot.accept( [ '@/routes/application', '@/routes/issue' ], () => {
       router.hotUpdate( [
         applicationRoutes,
@@ -109,7 +97,7 @@ export function main( { baseURL, csrfToken, locale, ...initialState } ) {
 }
 
 function registerComponents( components ) {
-  for ( name in components ) {
+  for ( const name in components ) {
     if ( components.hasOwnProperty( name ) )
       Vue.component( name, components[ name ] );
   }

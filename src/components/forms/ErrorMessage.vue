@@ -40,58 +40,58 @@ export default {
     ...mapGetters( 'global', [ 'isAuthenticated' ] ),
     title() {
       switch ( this.error.reason ) {
-        case 'page_not_found':
-          return this.$t( 'error.page_not_found' );
-        case 'network_error':
-          return this.$t( 'error.network_error' );
-        case 'api_error':
+        case 'PageNotFound':
+          return this.$t( 'Error.PageNotFound' );
+        case 'NetworkError':
+          return this.$t( 'Error.NetworkError' );
+        case 'APIError':
           if ( this.error.errorCode == ErrorCode.LoginRequired ) {
             if ( this.isAuthenticated )
-              return this.$t( 'error.session_expired' );
+              return this.$t( 'Error.SessionExpired' );
             else
-              return this.$t( 'error.login_required' );
+              return this.$t( 'Error.LoginRequired' );
           } else if ( this.error.errorCode == ErrorCode.AccessDenied ) {
-            return this.$t( 'error.access_denied' );
+            return this.$t( 'Error.AccessDenied' );
           } else {
-            return this.$t( 'error.unexpected_error' );
+            return this.$t( 'Error.UnexpectedError' );
           }
         default:
-          return this.$t( 'error.unexpected_error' );
+          return this.$t( 'Error.UnexpectedError' );
       }
     },
     message() {
       switch ( this.error.reason ) {
-        case 'page_not_found':
-          return this.$t( 'error_message.page_not_found' );
-        case 'network_error':
-          return this.$t( 'error_messsage.network_error' );
-        case 'api_error':
+        case 'PageNotFound':
+          return this.$t( 'ErrorMessage.PageNotFound' );
+        case 'NetworkError':
+          return this.$t( 'ErrorMessage.NetworkError' );
+        case 'APIError':
           if ( this.error.errorCode == ErrorCode.LoginRequired ) {
             if ( this.isAuthenticated )
-              return this.$t( 'error_message.session_expired' );
+              return this.$t( 'ErrorMessage.SessionExpired' );
             else
-              return this.$t( 'error_message.login_required' );
+              return this.$t( 'ErrorMessage.LoginRequired' );
           } else if ( this.error.errorCode == ErrorCode.AccessDenied ) {
-            return this.$t( 'error_message.access_denied' );
-          } else if ( this.$te( 'error_code.' + this.error.errorCode ) ) {
-            return this.$t( 'error_code.' + this.error.errorCode );
+            return this.$t( 'ErrorMessage.AccessDenied' );
+          } else if ( this.$te( 'ErrorCode.' + this.error.errorCode ) ) {
+            return this.$t( 'ErrorCode.' + this.error.errorCode );
           } else {
-            return this.$t( 'error_message.unknown_error' );
+            return this.$t( 'ErrorMessage.UnknownError' );
           }
-        case 'invalid_response':
-          return this.$t( 'error_message.invalid_response' );
-        case 'server_error':
+        case 'InvalidResponse':
+          return this.$t( 'ErrorMessage.InvalidResponse' );
+        case 'ServerError':
           if ( this.error.errorCode == 501 || this.error.errorCode == 502 )
-            return this.$t( 'error_message.server_not_configured' );
+            return this.$t( 'ErrorMessage.ServerNotConfigured' );
           else
-            return this.$t( 'error_message.server_error' );
-        case 'bad_request':
+            return this.$t( 'ErrorMessage.ServerError' );
+        case 'BadRequest':
           if ( this.error.errorCode == 403 )
-            return this.$t( 'error_message.upload_error' );
+            return this.$t( 'ErrorMessage.UploadError' );
           else
-            return this.$t( 'error_message.bad_request' );
+            return this.$t( 'ErrorMessage.BadRequest' );
         default:
-          return this.$t( 'error_message.unknown_error' );
+          return this.$t( 'ErrorMessage.UnknownError' );
       }
     }
   },

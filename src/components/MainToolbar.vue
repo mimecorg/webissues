@@ -32,18 +32,18 @@
           <DropdownButton v-if="type != null" fa-class="fa-filter" v-bind:text="viewName" v-bind:title="viewTitle">
             <div class="dropdown-menu-scroll">
               <li v-bind:class="{ active: view == null }">
-                <Link v-on:click="selectView( null )">{{ $t( 'main.all_issues' ) }}</Link>
+                <Link v-on:click="selectView( null )">{{ $t( 'Main.AllIssues' ) }}</Link>
               </li>
               <template v-if="personalViews.length > 0">
                 <li role="separator" class="divider"></li>
-                <li class="dropdown-header">{{ $t( 'main.personal_views' ) }}</li>
+                <li class="dropdown-header">{{ $t( 'Main.PersonalViews' ) }}</li>
                 <li v-for="v in personalViews" v-bind:key="v.id" v-bind:class="{ active: view != null && v.id == view.id }">
                   <Link v-on:click="selectView( v )">{{ v.name }}</Link>
                 </li>
               </template>
               <template v-if="publicViews.length > 0">
                 <li role="separator" class="divider"></li>
-                <li class="dropdown-header">{{ $t( 'main.public_views' ) }}</li>
+                <li class="dropdown-header">{{ $t( 'Main.PublicViews' ) }}</li>
                 <li v-for="v in publicViews" v-bind:key="v.id" v-bind:class="{ active: view != null && v.id == view.id }">
                   <Link v-on:click="selectView( v )">{{ v.name }}</Link>
                 </li>
@@ -55,7 +55,7 @@
           <DropdownButton fa-class="fa-object-group" v-bind:text="projectName" v-bind:title="projectTitle">
             <div class="dropdown-menu-scroll">
               <li v-bind:class="{ active: project == null }">
-                <Link v-on:click="selectProject( null )">{{ $t( 'main.all_projects' ) }}</Link>
+                <Link v-on:click="selectProject( null )">{{ $t( 'Main.AllProjects' ) }}</Link>
               </li>
               <template v-if="projects.length > 0">
                 <li role="separator" class="divider"></li>
@@ -68,7 +68,7 @@
           <DropdownButton fa-class="fa-folder-open-o" v-bind:text="folderName" v-bind:title="folderTitle">
             <div class="dropdown-menu-scroll">
               <li v-bind:class="{ active: folder == null }">
-                <Link v-on:click="selectFolder( null )">{{ $t( 'main.all_folders' ) }}</Link>
+                <Link v-on:click="selectFolder( null )">{{ $t( 'Main.AllFolders' ) }}</Link>
               </li>
               <template v-if="folders.length > 0">
                 <li role="separator" class="divider"></li>
@@ -99,19 +99,19 @@
                 <input ref="search" type="search" class="form-control" v-bind:placeholder="searchName" v-bind:maxlength="searchLength"
                        v-bind:value="searchText" v-on:keydown.enter="search">
                 <div class="input-group-btn">
-                  <button type="button" class="btn btn-default" v-bind:title="$t( 'main.search' )" v-on:click="search"><span class="fa fa-search" aria-hidden="true"></span></button>
+                  <button type="button" class="btn btn-default" v-bind:title="$t( 'Main.Search' )" v-on:click="search"><span class="fa fa-search" aria-hidden="true"></span></button>
                 </div>
               </div>
             </div>
             <div class="main-element">
-              <button type="button" class="btn btn-default" v-bind:title="$t( 'main.reload' )" v-on:click="reload"><span class="fa fa-refresh" aria-hidden="true"></span></button>
-              <DropdownButton fa-class="fa-ellipsis-v" menu-class="dropdown-menu-right" v-bind:title="$t( 'main.more' )">
-                <li><Link><span class="fa fa-check-circle-o" aria-hidden="true"></span> {{ $t( 'main.mark_all_as_read' ) }}</Link></li>
-                <li><Link><span class="fa fa-check-circle" aria-hidden="true"></span> {{ $t( 'main.mark_all_as_unread' ) }}</Link></li>
+              <button type="button" class="btn btn-default" v-bind:title="$t( 'Main.Reload' )" v-on:click="reload"><span class="fa fa-refresh" aria-hidden="true"></span></button>
+              <DropdownButton fa-class="fa-ellipsis-v" menu-class="dropdown-menu-right" v-bind:title="$t( 'Main.More' )">
+                <li><Link><span class="fa fa-check-circle-o" aria-hidden="true"></span> {{ $t( 'Main.MarkAllAsRead' ) }}</Link></li>
+                <li><Link><span class="fa fa-check-circle" aria-hidden="true"></span> {{ $t( 'Main.MarkAllAsUnread' ) }}</Link></li>
                 <li role="separator" class="divider"></li>
-                <li><Link><span class="fa fa-pencil-square-o" aria-hidden="true"></span> {{ $t( 'main.project_description' ) }}</Link></li>
+                <li><Link><span class="fa fa-pencil-square-o" aria-hidden="true"></span> {{ $t( 'Main.ProjectDescription' ) }}</Link></li>
                 <li role="separator" class="divider"></li>
-                <li><Link><span class="fa fa-file-text-o" aria-hidden="true"></span> {{ $t( 'main.export_to_csv' ) }}</Link></li>
+                <li><Link><span class="fa fa-file-text-o" aria-hidden="true"></span> {{ $t( 'Main.ExportToCSV' ) }}</Link></li>
               </DropdownButton>
             </div>
           </div>
@@ -140,58 +140,58 @@ export default {
       if ( this.type != null )
         return this.type.name;
       else
-        return this.$t( 'main.select_type' );
+        return this.$t( 'Main.SelectType' );
     },
     typeTitle() {
       if ( this.type != null )
-        return this.$t( 'main.type_title', [ this.type.name ] );
+        return this.$t( 'Main.TypeTitle', [ this.type.name ] );
       else
-        return this.$t( 'main.select_type' );
+        return this.$t( 'Main.SelectType' );
     },
     viewName() {
       if ( this.view != null )
         return this.view.name;
       else
-        return this.$t( 'main.all_issues' );
+        return this.$t( 'Main.AllIssues' );
     },
     viewTitle() {
       if ( this.view != null )
-        return this.$t( 'main.view_title', [ this.viewName ] );
+        return this.$t( 'Main.ViewTitle', [ this.viewName ] );
       else
-        return this.$t( 'main.all_issues' );
+        return this.$t( 'Main.AllIssues' );
     },
     projectName() {
       if ( this.project != null )
         return this.project.name;
       else
-        return this.$t( 'main.all_projects' );
+        return this.$t( 'Main.AllProjects' );
     },
     projectTitle() {
       if ( this.project != null )
-        return this.$t( 'main.project_title', [ this.projectName ] );
+        return this.$t( 'Main.ProjectTitle', [ this.projectName ] );
       else
-        return this.$t( 'main.all_projects' );
+        return this.$t( 'Main.AllProjects' );
     },
     folderName() {
       if ( this.folder != null )
         return this.folder.name;
       else
-        return this.$t( 'main.all_folders' );
+        return this.$t( 'Main.AllFolders' );
     },
     folderTitle() {
       if ( this.folder != null )
-        return this.$t( 'main.folder_title', [ this.folderName ] );
+        return this.$t( 'Main.FolderTitle', [ this.folderName ] );
       else
-        return this.$t( 'main.all_folders' );
+        return this.$t( 'Main.AllFolders' );
     },
     systemColumns() {
       return [
-        { id: Column.ID, name: this.$t( 'main.id' ) },
-        { id: Column.Name, name: this.$t( 'main.name' ) },
-        { id: Column.CreatedDate, name: this.$t( 'main.created_date' ) },
-        { id: Column.CreatedBy, name: this.$t( 'main.created_by' ) },
-        { id: Column.ModifiedDate, name: this.$t( 'main.modified_date' ) },
-        { id: Column.ModifiedBy, name: this.$t( 'main.modified_by' ) }
+        { id: Column.ID, name: this.$t( 'Main.ID' ) },
+        { id: Column.Name, name: this.$t( 'Main.Name' ) },
+        { id: Column.CreatedDate, name: this.$t( 'Main.CreatedDate' ) },
+        { id: Column.CreatedBy, name: this.$t( 'Main.CreatedBy' ) },
+        { id: Column.ModifiedDate, name: this.$t( 'Main.ModifiedDate' ) },
+        { id: Column.ModifiedBy, name: this.$t( 'Main.ModifiedBy' ) }
       ];
     },
     searchName() {
@@ -210,7 +210,7 @@ export default {
     },
     searchTitle() {
       if ( this.searchName != null )
-        return this.$t( 'main.search_by', [ this.searchName ] );
+        return this.$t( 'Main.SearchBy', [ this.searchName ] );
       else
         return null;
     }

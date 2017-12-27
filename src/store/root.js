@@ -181,6 +181,6 @@ function makeActions( router ) {
 
 function makeRouteError( router ) {
   const error = new Error( 'No matching route for path: ' + router.path );
-  error.reason = 'page_not_found';
+  error.reason = 'PageNotFound';
   return error;
 }

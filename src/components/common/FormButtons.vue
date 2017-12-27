@@ -19,8 +19,8 @@
 
 <template>
   <div class="form-buttons">
-    <button v-if="hasOK" class="btn btn-primary" v-on:click="ok">{{ $t( 'common.ok' ) }}</button>
-    <button v-if="hasCancel" class="btn btn-default" v-on:click="cancel">{{ $t( 'common.cancel' ) }}</button>
+    <button v-if="hasOK" class="btn btn-primary" v-on:click="ok">{{ $t( 'Common.OK' ) }}</button>
+    <button v-if="hasCancel" class="btn btn-default" v-on:click="cancel">{{ $t( 'Common.Cancel' ) }}</button>
   </div>
 </template>
 

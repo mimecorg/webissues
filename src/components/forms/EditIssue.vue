@@ -19,9 +19,9 @@
 
 <template>
   <div class="container-fluid">
-    <FormHeader v-bind:title="$t( 'edit_issue.title' )" v-on:close="close"/>
-    <Prompt path="edit_issue.prompt"><strong>{{ name }}</strong></Prompt>
-    <FormGroup id="name" v-bind:label="$t( 'edit_issue.name' )" v-bind:error="error">
+    <FormHeader v-bind:title="$t( 'EditIssue.Title' )" v-on:close="close"/>
+    <Prompt path="EditIssue.Prompt"><strong>{{ name }}</strong></Prompt>
+    <FormGroup id="name" v-bind:label="$t( 'EditIssue.Name' )" v-bind:error="error">
       <input ref="name" id="name" type="text" class="form-control" v-bind:maxlength="maxLength" v-model="value">
     </FormGroup>
     <FormButtons v-on:ok="submit" v-on:cancel="close"/>
@@ -48,7 +48,7 @@ export default {
       this.error = null;
       const name = this.value.trim();
       if ( name == '' ) {
-        this.error = this.$t( 'error_code.' + ErrorCode.EmptyValue );
+        this.error = this.$t( 'ErrorCode.' + ErrorCode.EmptyValue );
         this.$refs.name.focus();
         return;
       }

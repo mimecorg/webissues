@@ -66,11 +66,11 @@ export default {
     },
     statusText() {
       if ( this.totalCount == 0 )
-        return this.$t( 'main.no_issues' );
+        return this.$t( 'Main.NoIssues' );
       else if ( this.firstIndex == 1 && this.lastIndex == this.totalCount )
-        return this.$t( 'main.issues_count', [ this.totalCount ] );
+        return this.$t( 'Main.IssuesCount', [ this.totalCount ] );
       else
-        return this.$t( 'main.issues_count_of', [ this.firstIndex, this.lastIndex, this.totalCount ] );
+        return this.$t( 'Main.IssuesCountOf', [ this.firstIndex, this.lastIndex, this.totalCount ] );
     }
   },
   methods: {
