@@ -31,6 +31,11 @@
 import { mapState } from 'vuex'
 
 export default {
+  data() {
+    return {
+      top: 0
+    };
+  },
   computed: {
     ...mapState( 'window', [ 'childComponent', 'childProps', 'size', 'busy' ] )
   },
@@ -39,9 +44,12 @@ export default {
       this.$store.dispatch( 'window/close' );
     },
     block() {
+      this.top = this.$refs.overlay.scrollTop;
+      this.$refs.overlay.addEventListener( 'scroll', this.restoreScroll );
       this.$store.commit( 'window/setBusy', true );
     },
     unblock() {
+      this.$refs.overlay.removeEventListener( 'scroll', this.restoreScroll );
       this.$store.commit( 'window/setBusy', false );
     },
     error( error ) {
@@ -50,6 +58,10 @@ export default {
     handleFocusIn( e ) {
       if ( e.target != document && e.target != this.$refs.overlay && !isChildElement( e.target, this.$refs.overlay ) )
         this.$refs.overlay.focus();
+    },
+    restoreScroll() {
+      this.$refs.overlay.removeEventListener( 'scroll', this.restoreScroll );
+      this.$refs.overlay.scrollTop = this.top;
     }
   },
   mounted() {
