@@ -23,6 +23,7 @@
       <h1>{{ title }}</h1>
     </div>
     <div class="form-header-buttons">
+      <slot/>
       <button type="button" class="btn btn-default" v-bind:title="$t( 'Common.Close' )" v-on:click="close"><span class="fa fa-remove" aria-hidden="true"></span></button>
     </div>
   </div>

@@ -320,7 +320,7 @@ export default {
 }
 
 .main-group {
-  .group( @margin-top: 0; @margin-bottom: 0 );
+  .group();
 }
 
 .main-element {

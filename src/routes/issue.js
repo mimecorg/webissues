@@ -18,12 +18,23 @@
 **************************************************************************/
 
 import EditIssue from '@/components/forms/EditIssue.vue';
+import IssueDetails from '@/components/forms/IssueDetails.vue';
 
-export default function makeIssueRoutes( ajax ) {
+export default function makeIssueRoutes( ajax, store ) {
   return function issueRoutes( route ) {
+    route( 'IssueDetails', '/issue/:issueId', ( { issueId } ) => {
+      if ( store.state.issue.issueId != issueId ) {
+        store.commit( 'issue/clear' );
+        store.commit( 'issue/setIssueId', issueId );
+      }
+      return store.dispatch( 'issue/load' ).then( () => {
+        return { component: IssueDetails, size: 'large' };
+      } );
+    } );
+
     route( 'EditIssue', '/issue/:issueId/edit', ( { issueId } ) => {
-      return ajax.post( '/server/api/issue/load.php', { issueId } ).then( ( { name } ) => {
-        return { component: EditIssue, issueId, name };
+      return ajax.post( '/server/api/issue/load.php', { issueId } ).then( ( { details } ) => {
+        return { component: EditIssue, issueId, name: details.name };
       } );
     } );
   }

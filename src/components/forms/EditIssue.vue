@@ -24,7 +24,7 @@
     <FormGroup id="name" v-bind:label="$t( 'EditIssue.Name' )" v-bind:error="error">
       <input ref="name" id="name" type="text" class="form-control" v-bind:maxlength="maxLength" v-model="value">
     </FormGroup>
-    <FormButtons v-on:ok="submit" v-on:cancel="close"/>
+    <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
   </div>
 </template>
 
@@ -60,10 +60,13 @@ export default {
       this.$ajax.post( '/server/api/issue/edit.php', { issueId: this.issueId, name } ).then( stampId => {
         if ( stampId != false )
           this.$store.commit( 'list/setDirty' );
-        this.close();
+        this.$router.push( 'IssueDetails', { issueId: this.issueId } );
       } ).catch( error => {
         this.$emit( 'error', error );
       } );
+    },
+    cancel() {
+      this.$router.push( 'IssueDetails', { issueId: this.issueId } );
     },
     close() {
       this.$emit( 'close' );

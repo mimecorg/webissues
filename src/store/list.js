@@ -191,6 +191,11 @@ function makeMutations() {
     setDirty( state ) {
       state.dirty = true;
     },
+    setIssueRead( state, { issueId, stamp } ) {
+      const issue = state.issues.find( i => i.id == issueId );
+      if ( issue != null )
+        issue.read = stamp;
+    },
     setData( state, { searchText, searchError, sortColumn, sortAscending, columns, issues, totalCount } ) {
       state.searchText = searchText;
       state.searchError = searchError;

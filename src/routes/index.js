@@ -24,7 +24,7 @@ export default function registerRoutes( router, ajax, store ) {
   function makeRoutes() {
     return [
       staticRoutes,
-      makeIssueRoutes( ajax )
+      makeIssueRoutes( ajax, store )
     ];
   }
 
