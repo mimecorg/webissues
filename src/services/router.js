@@ -23,30 +23,51 @@ import Vue from 'vue'
 Vue.mixin( {
   beforeCreate() {
     const options = this.$options;
-    if ( options.router )
+    if ( options.router != null )
       this.$router = options.router;
-    else if ( options.parent && options.parent.$router )
+    else if ( options.parent != null && options.parent.$router != null )
       this.$router = options.parent.$router;
+  },
+  mounted() {
+    const options = this.$options;
+    if ( this.$router != null && options.routeChanged != null ) {
+      this.$routeChangedHandler = options.routeChanged.bind( this );
+      this.$router.addHandler( this.$routeChangedHandler );
+    }
+  },
+  beforeDestroy() {
+    if ( this.$router != null && this.$routeChangedHandler != null )
+      this.$router.removeHandler( this.$routeChangedHandler );
   }
 } );
 
 export default function makeRouter() {
   const routes = [];
 
+  const handlers = [];
+
   let lastPath = null;
   let lastRoute = null;
+
+  function getCurrentRoute() {
+    const path = getCurrentPath();
+    if ( path != lastPath ) {
+      lastPath = path;
+      lastRoute = resolveRoute( routes, path );
+    }
+    return lastRoute;
+  }
+
+  window.addEventListener( 'hashchange', () => {
+    callHandlers( handlers, getCurrentRoute() );
+  } );
 
   return {
     get path() {
       return getCurrentPath();
     },
     get route() {
-      const path = getCurrentPath();
-      if ( path != lastPath ) {
-        lastPath = path;
-        lastRoute = resolveRoute( routes, path );
-      }
-      return lastRoute;
+      return getCurrentRoute();
     },
     push( name, params = {} ) {
       pushPath( buildPath( routes, name, params ) );
@@ -71,6 +92,14 @@ export default function makeRouter() {
           addRoute( routes, name, path, handler );
         } );
       } );
+    },
+    addHandler( handler ) {
+      handlers.push( handler );
+    },
+    removeHandler( handler ) {
+      const index = handlers.indexOf( handler );
+      if ( index >= 0 )
+        handlers.splice( index, 1 );
     }
   };
 }
@@ -140,4 +169,11 @@ function replacePath( path ) {
     if ( index >= 0 )
       href = href.slice( 0, index );
     window.location.replace( href + '#' + path );
+}
+
+function callHandlers( handlers, route ) {
+  for ( let i = handlers.length - 1; i >= 0; i-- ) {
+    if ( handlers[ i ]( route ) )
+      break;
+  }
 }

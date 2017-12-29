@@ -45,18 +45,14 @@ export default {
     ...mapGetters( 'list', [ 'type' ] ),
     ...mapState( 'window', [ 'route' ] )
   },
-  methods: {
-    handleHashChange() {
-      this.$store.dispatch( 'navigate' );
-    }
-  },
   mounted() {
-    window.addEventListener( 'hashchange', this.handleHashChange );
     this.$store.dispatch( 'initialize' );
   },
   beforeDestroy() {
-    window.removeEventListener( 'hashchange', this.handleHashChange );
     this.$store.dispatch( 'destroy' );
+  },
+  routeChanged( route ) {
+    this.$store.dispatch( 'navigate', route );
   }
 }
 </script>
