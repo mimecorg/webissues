@@ -37,15 +37,15 @@ export default {
     };
   },
   computed: {
-    ...mapState( 'window', [ 'childComponent', 'childProps', 'size', 'busy', 'anchor' ] )
+    ...mapState( 'window', [ 'childComponent', 'childProps', 'size', 'busy' ] )
   },
   watch: {
-    anchor( value ) {
-      if ( value != null ) {
-        this.$nextTick( () => {
-          this.scrollToAnchor( value );
-          this.$store.commit( 'window/setAnchor', null );
-        } );
+    busy( value ) {
+      if ( value ) {
+        this.top = this.$refs.overlay.scrollTop;
+        this.$refs.overlay.addEventListener( 'scroll', this.restoreScroll );
+      } else {
+        this.$refs.overlay.removeEventListener( 'scroll', this.restoreScroll );
       }
     }
   },
@@ -54,12 +54,9 @@ export default {
       this.$store.dispatch( 'window/close' );
     },
     block() {
-      this.top = this.$refs.overlay.scrollTop;
-      this.$refs.overlay.addEventListener( 'scroll', this.restoreScroll );
       this.$store.commit( 'window/setBusy', true );
     },
     unblock() {
-      this.$refs.overlay.removeEventListener( 'scroll', this.restoreScroll );
       this.$store.commit( 'window/setBusy', false );
     },
     scrollToAnchor( anchor ) {

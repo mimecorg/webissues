@@ -18,7 +18,7 @@
 -->
 
 <template>
-  <div class="container-fluid"  v-on:click.capture="handleClick">
+  <div class="container-fluid">
 
     <FormHeader v-bind:title="details.name" v-on:close="close">
       <button v-if="isAuthenticated" type="button" class="btn btn-primary" v-on:click="editIssue"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'IssueDetails.Edit' ) }}</button>
@@ -259,27 +259,22 @@ export default {
       } );
     },
 
-    handleClick( e ) {
-      if ( e.target.tagName == 'A' ) {
-        const href = e.target.href;
-        const index = href.indexOf( '#/item/' );
-        if ( index >= 0 ) {
-          const route = this.$router.route;
-          if ( route != null && route.name == 'GoToItem' && route.params.itemId == href.substr( index + 7 ) ) {
-            this.$emit( 'scrollToAnchor', 'item' + route.params.itemId );
-            e.preventDefault();
-          }
-        }
-      }
-    },
-
     close() {
       this.$emit( 'close' );
     },
   },
 
+  mounted() {
+    const route = this.$router.route;
+    if ( route != null && route.name == 'IssueItem' && route.params.issueId == this.issueId )
+      this.$emit( 'scrollToAnchor', 'item' + route.params.itemId );
+  },
+
   routeChanged( route ) {
-    if ( route != null && route.name == 'GoToItem' && this.isItemInHistory( route.params.itemId ) ) {
+    if ( route != null && route.name == 'Item' && this.isItemInHistory( route.params.itemId ) ) {
+      this.$router.replace( 'IssueItem', { issueId: this.issueId, itemId: route.params.itemId } );
+      return true;
+    } else if ( route != null && route.name == 'IssueItem' && route.params.issueId == this.issueId ) {
       this.$emit( 'scrollToAnchor', 'item' + route.params.itemId );
       return true;
     }

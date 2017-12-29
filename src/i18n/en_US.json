@@ -73,6 +73,11 @@
     "Prompt": "Edit attributes of issue {0}.",
     "Name": "Name:"
   },
+  "GoToItem": {
+    "Title": "Go To Item",
+    "Prompt": "Enter the identifier of an issue, comment or attachment.",
+    "ID": "ID:"
+  },
   "IssueDetails": {
     "Edit": "Edit",
     "More": "More",

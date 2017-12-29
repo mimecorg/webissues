@@ -38,7 +38,6 @@ function makeState() {
     childProps: null,
     size: 'small',
     busy: true,
-    anchor: null,
     cancellation: null
   };
 }
@@ -62,7 +61,6 @@ function makeMutations() {
       state.childProps = null;
       state.size = 'small';
       state.busy = true;
-      state.anchor = null;
       if ( state.cancellation != null ) {
         state.cancellation();
         state.cancellation = null;
@@ -70,9 +68,6 @@ function makeMutations() {
     },
     setBusy( state, value ) {
       state.busy = value;
-    },
-    setAnchor( state, value ) {
-      state.anchor = value;
     },
     setRoute( state, value ) {
       state.route = value;
@@ -97,15 +92,13 @@ function makeActions( router ) {
         commit( 'setCancellation', () => {
           cancelled = true;
         } );
-        route.handler( route.params ).then( ( { component, size = 'normal', anchor, replace, ...props } ) => {
+        route.handler( route.params ).then( ( { component, size = 'normal', replace, ...props } ) => {
           if ( !cancelled ) {
             if ( replace != null ) {
               router.replace( replace, props );
             } else {
               commit( 'setComponent', { component, props, size } );
               commit( 'setBusy', false );
-              if ( anchor != null )
-                commit( 'setAnchor', anchor );
             }
             commit( 'setCancellation', null );
           }

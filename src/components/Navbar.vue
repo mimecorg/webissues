@@ -37,7 +37,7 @@
           <button v-if="type != null" type="button" class="btn btn-success hidden-xs" v-bind:title="$t( 'Navbar.AddIssue' )">
             <span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'Navbar.Add' ) }}
           </button>
-          <button type="button" class="btn btn-default" v-bind:title="$t( 'Navbar.GoToItem' )">
+          <button type="button" class="btn btn-default" v-bind:title="$t( 'Navbar.GoToItem' )" v-on:click="goToItem">
             <span class="fa fa-arrow-right" aria-hidden="true"></span> <span class="hidden-sm hidden-md">{{ $t( 'Navbar.GoTo' ) }}</span>
           </button>
           <DropdownButton v-if="isAdministrator || canManageProjects" fa-class="fa-cog" v-bind:text="$t( 'Navbar.Administration' )"
@@ -123,6 +123,9 @@ export default {
     }
   },
   methods: {
+    goToItem() {
+      this.$router.push( 'GoToItem' );
+    },
     toggle() {
       this.expanded = !this.expanded;
     },

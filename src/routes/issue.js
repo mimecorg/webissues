@@ -18,37 +18,40 @@
 **************************************************************************/
 
 import EditIssue from '@/components/forms/EditIssue.vue';
+import GoToItem from '@/components/forms/GoToItem.vue';
 import IssueDetails from '@/components/forms/IssueDetails.vue';
 
 export default function makeIssueRoutes( ajax, store ) {
   return function issueRoutes( route ) {
-    function loadIssueDetails( issueId, anchor ) {
+    function loadIssueDetails( issueId ) {
       if ( store.state.issue.issueId != issueId ) {
         store.commit( 'issue/clear' );
         store.commit( 'issue/setIssueId', issueId );
       }
       return store.dispatch( 'issue/load' ).then( () => {
-        return { component: IssueDetails, size: 'large', anchor };
+        return { component: IssueDetails, size: 'large' };
       } );
     }
 
     route( 'IssueDetails', '/issue/:issueId', ( { issueId } ) => {
-      return loadIssueDetails( issueId, null );
+      return loadIssueDetails( issueId );
     } );
 
-    route( 'GoToItem', '/item/:itemId', ( { itemId } ) => {
-      if ( store.getters[ 'issue/isItemInHistory' ]( itemId ) ) {
-        return store.dispatch( 'issue/load' ).then( () => {
-          return { component: IssueDetails, size: 'large', anchor: 'item' + itemId };
-        } );
-      } else {
-        return ajax.post( '/server/api/issue/finditem.php', { itemId } ).then( issueId => {
-          if ( itemId == issueId )
-            return { replace: 'IssueDetails', issueId };
-          else
-            return loadIssueDetails( issueId, 'item' + itemId );
-        } );
-      }
+    route( 'IssueItem', '/issue/:issueId/item/:itemId', ( { issueId, itemId } ) => {
+      return loadIssueDetails( issueId );
+    } );
+
+    route( 'GoToItem', '/item/goto', () => {
+      return Promise.resolve( { component: GoToItem } );
+    } );
+
+    route( 'Item', '/item/:itemId', ( { itemId } ) => {
+      return ajax.post( '/server/api/issue/finditem.php', { itemId } ).then( issueId => {
+        if ( itemId == issueId )
+          return { replace: 'IssueDetails', issueId };
+        else
+          return { replace: 'IssueItem', issueId, itemId };
+      } );
     } );
 
     route( 'EditIssue', '/issue/:issueId/edit', ( { issueId } ) => {
