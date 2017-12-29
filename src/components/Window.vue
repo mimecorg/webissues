@@ -21,7 +21,7 @@
   <div ref="overlay" id="window-overlay" tabindex="-1" v-bind:class="{ 'window-busy': busy }" v-on:click.self="close">
     <div id="window" v-bind:class="'window-' + size">
       <component v-if="childComponent != null" v-bind:is="childComponent" v-bind="childProps"
-                 v-on:close="close" v-on:block="block" v-on:unblock="unblock" v-on:error="error"/>
+                 v-on:close="close" v-on:block="block" v-on:unblock="unblock" v-on:scrollToAnchor="scrollToAnchor" v-on:error="error"/>
       <BusyOverlay v-if="busy"/>
     </div>
   </div>
@@ -37,7 +37,17 @@ export default {
     };
   },
   computed: {
-    ...mapState( 'window', [ 'childComponent', 'childProps', 'size', 'busy' ] )
+    ...mapState( 'window', [ 'childComponent', 'childProps', 'size', 'busy', 'anchor' ] )
+  },
+  watch: {
+    anchor( value ) {
+      if ( value != null ) {
+        this.$nextTick( () => {
+          this.scrollToAnchor( value );
+          this.$store.commit( 'window/setAnchor', null );
+        } );
+      }
+    }
   },
   methods: {
     close() {
@@ -51,6 +61,17 @@ export default {
     unblock() {
       this.$refs.overlay.removeEventListener( 'scroll', this.restoreScroll );
       this.$store.commit( 'window/setBusy', false );
+    },
+    scrollToAnchor( anchor ) {
+      let element = document.getElementById( anchor );
+      let top = 0;
+      if ( element != null ) {
+        while ( element != null && element != this.$refs.overlay ) {
+          top += element.offsetTop;
+          element = element.offsetParent;
+        }
+        this.$refs.overlay.scrollTop = top;
+      }
     },
     error( error ) {
       this.$store.dispatch( 'showError', error );

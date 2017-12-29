@@ -41,7 +41,7 @@ class System_Web_LinkLocator extends System_Web_Base
     public static function convertToHtml( $text, $maxLength = null )
     {
         // regex for emails and URLs is based on:
-        //  - http://www.regular-expressions.info/email.html 
+        //  - http://www.regular-expressions.info/email.html
         //  - http://www.regexguru.com/2008/11/detecting-urls-in-a-block-of-text/
 
         $mail = '\b(?:mailto:)?[\w.%+-]+@[\w.-]+\.[a-z]{2,}\b';
@@ -117,10 +117,13 @@ class System_Web_LinkLocator extends System_Web_Base
     public static function convertUrl( $url )
     {
         if ( $url[ 0 ] == '#' ) {
-            if ( self::getLinkMode() == self::AutoLinks ) {
+            $mode = self::getLinkMode();
+            if ( $mode == self::AutoLinks ) {
                 $baseUrl = WI_BASE_URL;
                 if ( $baseUrl != '' && System_Core_Application::getInstance()->getRequest()->isRelativePathUnder( '/mobile' ) )
                     $baseUrl .= '/mobile';
+            } else if ( $mode == self::RouteLinks ) {
+                return '#/item/' . substr( $url, 1 );
             } else {
                 $baseUrl = self::getBaseUrl();
             }

@@ -79,8 +79,7 @@ function makeActions( router ) {
       commit( 'list/clear' );
     },
 
-    navigate( { state, getters, commit, dispatch } ) {
-      const route = router.route;
+    navigate( { state, getters, commit, dispatch }, route ) {
       if ( route == null ) {
         dispatch( 'showError', makeRouteError( router ) );
       } else if ( route.handler == null ) {

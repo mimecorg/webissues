@@ -59,6 +59,9 @@ class Server_Api_Issue_Load
 
         $result[ 'details' ] = $resultDetails;
 
+        if ( $html )
+            System_Web_Base::setLinkMode( System_Web_Base::RouteLinks );
+
         if ( $description ) {
             if ( $issue[ 'descr_id' ] != null ) {
                 $descr = $issueManager->getDescription( $issue );

@@ -38,6 +38,8 @@ class System_Web_Base
     const MailLinks = 1;
     /** Do not use internal links in System_Web_LinkLocator and mailLink(). */
     const NoInternalLinks = 2;
+    /** Use route links in System_Web_LinkLocator. */
+    const RouteLinks = 3;
     /*@}*/
 
     protected $request = null;

@@ -107,7 +107,7 @@
                 <div class="issue-history-title">{{ item.createdDate }} &mdash; {{ item.createdBy }}</div>
               </div>
               <div class="issue-element">
-                <span class="issue-history-id">#{{ item.id }}</span>
+                <a class="issue-history-id" v-bind:href="'#/item/' + item.id">#{{ item.id }}</a>
                 <DropdownButton v-if="canReply( item ) || canEditItem( item )" fa-class="fa-ellipsis-v" menu-class="dropdown-menu-right" v-bind:title="$t( 'IssueDetails.Menu' )">
                   <li v-if="canReply( item )"><Link><span class="fa fa-reply" aria-hidden="true"></span> {{ $t( 'IssueDetails.Reply' ) }}</Link></li>
                   <li v-if="canEditItem( item )"><Link><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'IssueDetails.Edit' ) }}</Link></li>
@@ -156,6 +156,7 @@ export default {
   computed: {
     ...mapGetters( 'global', [ 'isAuthenticated' ] ),
     ...mapState( 'issue', [ 'issueId', 'filter', 'unread', 'details', 'description', 'attributes', 'history' ] ),
+    ...mapGetters( 'issue', [ 'isItemInHistory' ] ),
     canMoveDelete() {
       return this.details.access == Access.AdministratorAccess;
     },
@@ -171,6 +172,7 @@ export default {
       ];
     }
   },
+
   methods: {
     canEditItem( item ) {
       return this.details.access == Access.AdministratorAccess || item.own;
@@ -259,7 +261,15 @@ export default {
 
     close() {
       this.$emit( 'close' );
+    },
+  },
+
+  routeChanged( route ) {
+    if ( route != null && route.name == 'GoToItem' && this.isItemInHistory( route.params.itemId ) ) {
+      this.$emit( 'scrollToAnchor', 'item' + route.params.itemId );
+      return true;
     }
+    return false;
   }
 }
 
@@ -338,8 +348,12 @@ function escape( text ) {
 }
 
 .issue-history-id {
-  color: @issue-text-muted;
+  color: @issue-history-id-color;
   padding-right: 5px;
+
+  &:hover, &:focus {
+    color: @issue-history-id-hover-color;
+  }
 }
 
 .issue-description {
@@ -387,7 +401,7 @@ function escape( text ) {
 }
 
 .issue-last-edited {
-  color: @issue-text-muted;
+  color: @issue-last-edited-color;
   text-align: right;
   margin-top: 5px;
 

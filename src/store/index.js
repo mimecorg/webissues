@@ -36,7 +36,7 @@ export default function makeStore( baseURL, initialState, ajax, router ) {
         global: makeGlobalModule( baseURL, initialState, ajax ),
         issue: makeIssueModule( ajax ),
         list: makeListModule( ajax ),
-        window: makeWindowModule()
+        window: makeWindowModule( router )
       }
     };
   }

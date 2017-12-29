@@ -22,14 +22,33 @@ import IssueDetails from '@/components/forms/IssueDetails.vue';
 
 export default function makeIssueRoutes( ajax, store ) {
   return function issueRoutes( route ) {
-    route( 'IssueDetails', '/issue/:issueId', ( { issueId } ) => {
+    function loadIssueDetails( issueId, anchor ) {
       if ( store.state.issue.issueId != issueId ) {
         store.commit( 'issue/clear' );
         store.commit( 'issue/setIssueId', issueId );
       }
       return store.dispatch( 'issue/load' ).then( () => {
-        return { component: IssueDetails, size: 'large' };
+        return { component: IssueDetails, size: 'large', anchor };
       } );
+    }
+
+    route( 'IssueDetails', '/issue/:issueId', ( { issueId } ) => {
+      return loadIssueDetails( issueId, null );
+    } );
+
+    route( 'GoToItem', '/item/:itemId', ( { itemId } ) => {
+      if ( store.getters[ 'issue/isItemInHistory' ]( itemId ) ) {
+        return store.dispatch( 'issue/load' ).then( () => {
+          return { component: IssueDetails, size: 'large', anchor: 'item' + itemId };
+        } );
+      } else {
+        return ajax.post( '/server/api/issue/finditem.php', { itemId } ).then( issueId => {
+          if ( itemId == issueId )
+            return { replace: 'IssueDetails', issueId };
+          else
+            return loadIssueDetails( issueId, 'item' + itemId );
+        } );
+      }
     } );
 
     route( 'EditIssue', '/issue/:issueId/edit', ( { issueId } ) => {

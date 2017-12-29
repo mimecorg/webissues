@@ -17,12 +17,13 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-import { History } from '@/constants'
+import { Change, History } from '@/constants'
 
 export default function makeIssueModule( ajax ) {
   return {
     namespaced: true,
     state: makeState(),
+    getters: makeGetters(),
     mutations: makeMutations(),
     actions: makeActions( ajax )
   };
@@ -39,6 +40,14 @@ function makeState() {
     attributes: [],
     history: [],
     cancellation: null
+  };
+}
+
+function makeGetters() {
+  return {
+    isItemInHistory( state ) {
+      return id => state.history.some( item => item.id == id && ( item.type == Change.CommentAdded || item.type == Change.FileAdded ) );
+    }
   };
 }
 

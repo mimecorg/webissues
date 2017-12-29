@@ -21,13 +21,13 @@ import { ErrorCode } from '@/constants'
 
 import ErrorMessage from '@/components/forms/ErrorMessage'
 
-export default function makeWindowModule() {
+export default function makeWindowModule( router ) {
   return {
     namespaced: true,
     state: makeState(),
     getters: makeGetters(),
     mutations: makeMutations(),
-    actions: makeActions()
+    actions: makeActions( router )
   };
 }
 
@@ -38,6 +38,7 @@ function makeState() {
     childProps: null,
     size: 'small',
     busy: true,
+    anchor: null,
     cancellation: null
   };
 }
@@ -61,6 +62,7 @@ function makeMutations() {
       state.childProps = null;
       state.size = 'small';
       state.busy = true;
+      state.anchor = null;
       if ( state.cancellation != null ) {
         state.cancellation();
         state.cancellation = null;
@@ -68,6 +70,9 @@ function makeMutations() {
     },
     setBusy( state, value ) {
       state.busy = value;
+    },
+    setAnchor( state, value ) {
+      state.anchor = value;
     },
     setRoute( state, value ) {
       state.route = value;
@@ -83,7 +88,7 @@ function makeMutations() {
   };
 }
 
-function makeActions() {
+function makeActions( router ) {
   return {
     handleRoute( { commit, dispatch }, route ) {
       commit( 'setRoute', route );
@@ -92,10 +97,16 @@ function makeActions() {
         commit( 'setCancellation', () => {
           cancelled = true;
         } );
-        route.handler( route.params ).then( ( { component, size = 'normal', ...props } ) => {
+        route.handler( route.params ).then( ( { component, size = 'normal', anchor, replace, ...props } ) => {
           if ( !cancelled ) {
-            commit( 'setComponent', { component, props, size } );
-            commit( 'setBusy', false );
+            if ( replace != null ) {
+              router.replace( replace, props );
+            } else {
+              commit( 'setComponent', { component, props, size } );
+              commit( 'setBusy', false );
+              if ( anchor != null )
+                commit( 'setAnchor', anchor );
+            }
             commit( 'setCancellation', null );
           }
         } ).catch( error => {
