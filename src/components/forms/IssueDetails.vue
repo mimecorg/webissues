@@ -18,7 +18,7 @@
 -->
 
 <template>
-  <div class="container-fluid">
+  <div class="container-fluid"  v-on:click.capture="handleClick">
 
     <FormHeader v-bind:title="details.name" v-on:close="close">
       <button v-if="isAuthenticated" type="button" class="btn btn-primary" v-on:click="editIssue"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'IssueDetails.Edit' ) }}</button>
@@ -257,6 +257,20 @@ export default {
       } ).catch( error => {
         this.$emit( 'error', error );
       } );
+    },
+
+    handleClick( e ) {
+      if ( e.target.tagName == 'A' ) {
+        const href = e.target.href;
+        const index = href.indexOf( '#/item/' );
+        if ( index >= 0 ) {
+          const route = this.$router.route;
+          if ( route != null && route.name == 'GoToItem' && route.params.itemId == href.substr( index + 7 ) ) {
+            this.$emit( 'scrollToAnchor', 'item' + route.params.itemId );
+            e.preventDefault();
+          }
+        }
+      }
     },
 
     close() {
