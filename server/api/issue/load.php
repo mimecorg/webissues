@@ -28,7 +28,7 @@ class Server_Api_Issue_Load
         $description = isset( $arguments[ 'description' ] ) ? (bool)$arguments[ 'description' ] : false;
         $attributes = isset( $arguments[ 'attributes' ] ) ? (bool)$arguments[ 'attributes' ] : false;
         $history = isset( $arguments[ 'history' ] ) ? (bool)$arguments[ 'history' ] : false;
-        $sinceStamp = isset( $arguments[ 'sinceStamp' ] ) ? (int)$arguments[ 'sinceStamp' ] : 0;
+        $modifiedSince = isset( $arguments[ 'modifiedSince' ] ) ? (int)$arguments[ 'modifiedSince' ] : 0;
         $filter = isset( $arguments[ 'filter' ] ) ? (int)$arguments[ 'filter' ] : System_Api_HistoryProvider::AllHistory;
         $html = isset( $arguments[ 'html' ] ) ? (bool)$arguments[ 'html' ] : false;
         $unread = isset( $arguments[ 'unread' ] ) ? (bool)$arguments[ 'unread' ] : false;
@@ -112,8 +112,8 @@ class Server_Api_Issue_Load
             $historyProvider = new System_Api_HistoryProvider();
             $historyProvider->setIssueId( $issueId );
 
-            if ( $sinceStamp > 0 )
-                $historyProvider->setSinceStamp( $sinceStamp );
+            if ( $modifiedSince > 0 )
+                $historyProvider->setModifiedSince( $modifiedSince );
 
             $connection = System_Core_Application::getInstance()->getConnection();
 

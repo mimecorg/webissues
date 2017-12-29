@@ -61,6 +61,7 @@ class System_Api_HistoryProvider
 
     private $issueId = 0;
     private $sinceStamp = null;
+    private $modifiedSince = null;
     private $exceptOwn = false;
     private $exceptSubscriptionId = null;
 
@@ -90,6 +91,14 @@ class System_Api_HistoryProvider
     }
 
     /**
+    * Only include changes with modified stamp greater than specified value.
+    */
+    public function setModifiedSince( $stamp )
+    {
+        $this->modifiedSince = $stamp;
+    }
+
+    /**
     * Exclude changes made by the current user.
     */
     public function setExceptOwnChanges()
@@ -113,7 +122,8 @@ class System_Api_HistoryProvider
     {
         $principal = System_Api_Principal::getCurrent();
 
-        $this->arguments = array( $this->issueId, System_Const::CommentAdded, System_Const::FileAdded, $principal->getUserId(), $this->sinceStamp, $this->exceptSubscriptionId );
+        $this->arguments = array( $this->issueId, System_Const::CommentAdded, System_Const::FileAdded, $principal->getUserId(),
+            $this->sinceStamp, $this->modifiedSince, $this->exceptSubscriptionId );
 
         $query = 'SELECT COUNT(*) FROM {changes} AS ch';
         if ( $this->exceptOwn )
@@ -127,10 +137,12 @@ class System_Api_HistoryProvider
             $query .= ' AND ch.change_type = %3d';
         if ( $this->sinceStamp != null )
             $query .= ' AND ch.change_id > %5d';
+        if ( $this->modifiedSince != null )
+            $query .= ' AND ch.stamp_id > %6d';
         if ( $this->exceptOwn )
             $query .= ' AND sc.user_id <> %4d';
         if ( $this->exceptSubscriptionId != null )
-            $query .= ' AND COALESCE( ch.subscription_id, 0 ) <> %6d';
+            $query .= ' AND COALESCE( ch.subscription_id, 0 ) <> %7d';
 
         return $query;
     }
@@ -163,7 +175,8 @@ class System_Api_HistoryProvider
     {
         $principal = System_Api_Principal::getCurrent();
 
-        $this->arguments = array( $this->issueId, System_Const::CommentAdded, System_Const::FileAdded, $principal->getUserId(), $this->sinceStamp, $this->exceptSubscriptionId );
+        $this->arguments = array( $this->issueId, System_Const::CommentAdded, System_Const::FileAdded, $principal->getUserId(),
+            $this->sinceStamp, $this->modifiedSince, $this->exceptSubscriptionId );
 
         $query = 'SELECT ch.change_id, ch.change_type, ch.stamp_id,'
             . ' sc.stamp_time AS created_date, uc.user_id AS created_user, uc.user_name AS created_by,'
@@ -212,10 +225,12 @@ class System_Api_HistoryProvider
             $query .= ' AND ( ch.change_type = %2d OR ch.change_type = %3d )';
         if ( $this->sinceStamp != null )
             $query .= ' AND ch.change_id > %5d';
+        if ( $this->modifiedSince != null )
+            $query .= ' AND ch.stamp_id > %6d';
         if ( $this->exceptOwn )
             $query .= ' AND sc.user_id <> %4d';
         if ( $this->exceptSubscriptionId != null )
-            $query .= ' AND COALESCE( ch.subscription_id, 0 ) <> %6d';
+            $query .= ' AND COALESCE( ch.subscription_id, 0 ) <> %7d';
 
         return $query;
     }

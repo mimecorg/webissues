@@ -31,7 +31,7 @@ export default function makeIssueModule( ajax ) {
 function makeState() {
   return {
     issueId: null,
-    sinceStamp: 0,
+    modifiedSince: 0,
     filter: History.AllHistory,
     unread: false,
     details: null,
@@ -46,7 +46,7 @@ function makeMutations() {
   return {
     clear( state ) {
       state.issueId = null;
-      state.sinceStamp = 0;
+      state.modifiedSince = 0;
       state.filter = History.AllHistory;
       state.unread = false;
       state.details = null;
@@ -63,7 +63,7 @@ function makeMutations() {
     },
     setFilter( state, value ) {
       state.filter = value;
-      state.sinceStamp = 0;
+      state.modifiedSince = 0;
     },
     setUnread( state, value ) {
       state.unread = value;
@@ -72,11 +72,20 @@ function makeMutations() {
       state.details = details;
       state.description = description;
       state.attributes = attributes;
-      if ( state.sinceStamp > 0 )
-        state.history = [ ...state.history, ...history ];
-      else
+      if ( state.modifiedSince > 0 ) {
+        history.forEach( item => {
+          if ( item.id <= state.modifiedSince ) {
+            const index = state.history.findIndex( i => i.id == item.id );
+            if ( index >= 0 )
+              state.history.splice( index, 1, item );
+          } else {
+            state.history.push( item );
+          }
+        } );
+      } else {
         state.history = history;
-      state.sinceStamp = details.stamp;
+      }
+      state.modifiedSince = details.stamp;
     },
     setCancellation( state, cancellation ) {
       state.cancellation = cancellation;
@@ -96,7 +105,7 @@ function makeActions( ajax ) {
         description: true,
         attributes: true,
         history: true,
-        sinceStamp: state.sinceStamp,
+        modifiedSince: state.modifiedSince,
         filter: state.filter,
         html: true,
         unread: state.unread
