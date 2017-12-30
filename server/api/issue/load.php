@@ -100,6 +100,7 @@ class Server_Api_Issue_Load
 
             foreach( $attributeValues as $value ) {
                 $resultAttr = array();
+                $resultAttr[ 'id' ] = $value[ 'attr_id' ];
                 $resultAttr[ 'name' ] = $value[ 'attr_name' ];
                 $resultAttr[ 'value' ] = $value[ 'attr_value' ];
                 $result[ 'attributes' ][] = $resultAttr;

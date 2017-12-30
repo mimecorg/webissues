@@ -21,10 +21,15 @@
   <div class="container-fluid">
     <FormHeader v-bind:title="$t( 'EditIssue.Title' )" v-on:close="close"/>
     <Prompt path="EditIssue.Prompt"><strong>{{ name }}</strong></Prompt>
-    <FormGroup id="name" v-bind:label="$t( 'EditIssue.Name' )" v-bind:error="error">
-      <input ref="name" id="name" type="text" class="form-control" v-bind:maxlength="maxLength" v-model="value">
+    <FormGroup id="name" v-bind:label="$t( 'EditIssue.Name' )" v-bind:error="nameError">
+      <input ref="name" id="name" type="text" class="form-control" v-bind:maxlength="maxLength" v-model="nameValue">
     </FormGroup>
-    <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
+    <Panel v-bind:title="$t( 'EditIssue.Attributes' )">
+      <FormGroup v-for="( attribute, index ) in attributes" v-bind:key="attribute.id" v-bind:id="'attribute' + attribute.id" v-bind:label="$t( 'EditIssue.AttributeLabel', [ attribute.name ] )">
+        <input v-bind:ref="'attribute' + attribute.id" v-bind:id="'attribute' + attribute.id" type="text" class="form-control" v-bind:maxlength="maxLength" v-model="attributeValues[ index ]">
+      </FormGroup>
+    </Panel>
+    <FormButtons v-on:ok="submit" v-on:cancel="returnToDetails"/>
   </div>
 </template>
 
@@ -34,44 +39,72 @@ import { ErrorCode, MaxLength } from '@/constants'
 export default {
   props: {
     issueId: Number,
-    name: String
+    name: String,
+    attributes: Array
   },
+
   data() {
     return {
-      value: this.name,
-      error: null,
-      maxLength: MaxLength.Value
+      nameValue: this.name,
+      nameError: null,
+      maxLength: MaxLength.Value,
+      attributeValues: this.attributes.map( a => a.value )
     };
   },
+
   methods: {
     submit() {
-      this.error = null;
-      const name = this.value.trim();
+      this.nameError = null;
+
+      const name = this.nameValue.trim();
       if ( name == '' ) {
-        this.error = this.$t( 'ErrorCode.' + ErrorCode.EmptyValue );
+        this.nameError = this.$t( 'ErrorCode.' + ErrorCode.EmptyValue );
         this.$refs.name.focus();
         return;
       }
-      if ( name == this.name ) {
-        this.close();
+
+      const data = { issueId: this.issueId };
+      let modified = false;
+
+      if ( name != this.name ) {
+        data.name = name;
+        modified = true;
+      }
+
+      data.values = [];
+      for ( let i = 0; i < this.attributes.length; i++ ) {
+        const value = this.attributeValues[ i ].trim();
+        if ( value != this.attributes[ i ].value ) {
+          data.values.push( { id: this.attributes[ i ].id, value } );
+          modified = true;
+        }
+      }
+
+      if ( !modified ) {
+        this.returnToDetails();
         return;
       }
+
       this.$emit( 'block' );
-      this.$ajax.post( '/server/api/issue/edit.php', { issueId: this.issueId, name } ).then( stampId => {
+
+      this.$ajax.post( '/server/api/issue/edit.php', data ).then( stampId => {
         if ( stampId != false )
           this.$store.commit( 'list/setDirty' );
-        this.$router.push( 'IssueDetails', { issueId: this.issueId } );
+        this.returnToDetails();
       } ).catch( error => {
         this.$emit( 'error', error );
       } );
     },
-    cancel() {
+
+    returnToDetails() {
       this.$router.push( 'IssueDetails', { issueId: this.issueId } );
     },
+
     close() {
       this.$emit( 'close' );
     }
   },
+
   mounted() {
     this.$refs.name.focus();
   }

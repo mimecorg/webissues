@@ -27,16 +27,78 @@ class Server_Api_Issue_Edit
         $principal = System_Api_Principal::getCurrent();
         $principal->checkAuthenticated();
 
-        $issueId = (int)$arguments[ 'issueId' ];
-        $name = $arguments[ 'name' ];
+        $issueId = isset( $arguments[ 'issueId' ] ) ? (int)$arguments[ 'issueId' ] : null;
+        $name = isset( $arguments[ 'name' ] ) ? $arguments[ 'name' ] : null;
+
+        if ( $issueId == null )
+            throw new Server_Error( Server_Error::InvalidArguments );
+
+        $values = array();
+
+        if ( isset( $arguments[ 'values' ] ) ) {
+            if ( !is_array( $arguments[ 'values' ] ) )
+                throw new Server_Error( Server_Error::InvalidArguments );
+
+            foreach ( $arguments[ 'values' ] as $item ) {
+                $id = isset( $item[ 'id' ] ) ? (int)$item[ 'id' ] : null;
+                $value = isset( $item[ 'value' ] ) ? $item[ 'value' ] : null;
+
+                if ( $id == null )
+                    throw new Server_Error( Server_Error::InvalidArguments );
+
+                $values[ $id ] = $value;
+            }
+        }
 
         $issueManager = new System_Api_IssueManager();
         $issue = $issueManager->getIssue( $issueId );
 
         $parser = new System_Api_Parser();
-        $name = $parser->normalizeString( $name, System_Const::ValueMaxLength );
 
-        return $issueManager->renameIssue( $issue, $name );
+        if ( $name != null )
+            $name = $parser->normalizeString( $name, System_Const::ValueMaxLength );
+
+        $attributes = array();
+
+        if ( !empty( $values ) ) {
+            $rows = $issueManager->getAllAttributeValuesForIssue( $issue );
+
+            foreach ( $values as $id => &$value ) {
+                $attribute = null;
+                foreach ( $rows as $row ) {
+                    if ( $row[ 'attr_id' ] == $id ) {
+                        $attribute = $row;
+                        break;
+                    }
+                }
+
+                if ( $attribute == null )
+                    throw new Server_Error( Server_Error::UnknownAttribute );
+
+                $attributes[ $id ] = $attribute;
+
+                $value = $parser->normalizeString( $value, System_Const::ValueMaxLength, System_Api_Parser::AllowEmpty );
+                $value = $parser->convertAttributeValue( $attribute[ 'attr_def' ], $value );
+            }
+        }
+
+        $result = false;
+
+        if ( $name != null ) {
+            $stampId = $issueManager->renameIssue( $issue, $name );
+            if ( $stampId != false )
+                $result = $stampId;
+        }
+
+        if ( !empty( $values ) ) {
+            foreach ( $values as $id => $newValue ) {
+                $stampId = $issueManager->setValue( $issue, $attributes[ $id ], $newValue );
+                if ( $stampId != false )
+                    $result = $stampId;
+            }
+        }
+
+        return $result;
     }
 }
 

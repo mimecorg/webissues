@@ -1,4 +1,4 @@
-/**************************************************************************
+<!--
 * This file is part of the WebIssues Server program
 * Copyright (C) 2006 Michał Męciński
 * Copyright (C) 2007-2017 WebIssues Team
@@ -15,26 +15,24 @@
 *
 * You should have received a copy of the GNU Affero General Public License
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-**************************************************************************/
+-->
 
-import BusyOverlay from '@/components/common/BusyOverlay'
-import DropdownButton from '@/components/common/DropdownButton'
-import FormButtons from '@/components/common/FormButtons'
-import FormGroup from '@/components/common/FormGroup'
-import FormHeader from '@/components/common/FormHeader'
-import Grid from '@/components/common/Grid'
-import Link from '@/components/common/Link'
-import Panel from '@/components/common/Panel'
-import Prompt from '@/components/common/Prompt'
+<template>
+  <div v-bind:class="[ 'panel', panelClass ]">
+    <div class="panel-heading">
+      <h2 class="panel-title">{{ title }}</h2>
+    </div>
+    <div class="panel-body">
+      <slot/>
+    </div>
+  </div>
+</template>
 
+<script>
 export default {
-  BusyOverlay,
-  DropdownButton,
-  FormButtons,
-  FormGroup,
-  FormHeader,
-  Grid,
-  Link,
-  Panel,
-  Prompt
+  props: {
+    title: String,
+    panelClass: { type: String, default: 'panel-default' },
+  }
 }
+</script>

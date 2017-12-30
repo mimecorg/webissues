@@ -71,7 +71,9 @@
   "EditIssue": {
     "Title": "Edit Attributes",
     "Prompt": "Edit attributes of issue {0}.",
-    "Name": "Name:"
+    "Name": "Name:",
+    "Attributes": "Attributes",
+    "AttributeLabel": "{0}:"
   },
   "GoToItem": {
     "Title": "Go To Item",
