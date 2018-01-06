@@ -26,7 +26,8 @@
     </FormGroup>
     <Panel v-bind:title="$t( 'EditIssue.Attributes' )">
       <FormGroup v-for="( attribute, index ) in attributes" v-bind:key="attribute.id" v-bind:id="'attribute' + attribute.id" v-bind:label="$t( 'EditIssue.AttributeLabel', [ attribute.name ] )">
-        <input v-bind:ref="'attribute' + attribute.id" v-bind:id="'attribute' + attribute.id" type="text" class="form-control" v-bind:maxlength="maxLength" v-model="attributeValues[ index ]">
+        <ValueEditor v-bind:ref="'attribute' + attribute.id" v-bind:id="'attribute' + attribute.id" v-bind:attribute="getAttribute( attribute.id )"
+                     v-bind:project="project" v-bind:users="users" v-model="attributeValues[ index ]"/>
       </FormGroup>
     </Panel>
     <FormButtons v-on:ok="submit" v-on:cancel="returnToDetails"/>
@@ -34,11 +35,15 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 import { ErrorCode, MaxLength } from '@/constants'
 
 export default {
   props: {
     issueId: Number,
+    typeId: Number,
+    projectId: Number,
     name: String,
     attributes: Array
   },
@@ -52,7 +57,25 @@ export default {
     };
   },
 
+  computed: {
+    ...mapState( 'global', [ 'projects', 'types', 'users' ] ),
+    project() {
+      if ( this.projectId != null )
+        return this.projects.find( p => p.id = this.projectId );
+      else
+        return null;
+    },
+  },
+
   methods: {
+    getAttribute( id ) {
+      const type = this.types.find( t => t.id == this.typeId );
+      if ( type != null )
+        return type.attributes.find( a => a.id == id );
+      else
+        return null;
+    },
+
     submit() {
       this.nameError = null;
 

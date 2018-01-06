@@ -47,8 +47,11 @@ class Server_Api_Issue_Load
         $resultDetails[ 'id' ] = $issue[ 'issue_id' ];
         $resultDetails[ 'name' ] = $issue[ 'issue_name' ];
         $resultDetails[ 'project' ] = $issue[ 'project_name' ];
+        $resultDetails[ 'projectId' ] = $issue[ 'project_id' ];
         $resultDetails[ 'folder' ] = $issue[ 'folder_name' ];
+        $resultDetails[ 'folderId' ] = $issue[ 'folder_id' ];
         $resultDetails[ 'type' ] = $issue[ 'type_name' ];
+        $resultDetails[ 'typeId' ] = $issue[ 'type_id' ];
         $resultDetails[ 'access' ] = $issue[ 'project_access' ];
         $resultDetails[ 'createdDate' ] = $formatter->formatDateTime( $issue[ 'created_date' ], System_Api_Formatter::ToLocalTimeZone );
         $resultDetails[ 'createdBy' ] = $issue[ 'created_by' ];

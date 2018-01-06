@@ -40,6 +40,9 @@ class Server_Api_Global
         $projects = $projectManager->getProjects();
         $folders = $projectManager->getFolders();
 
+        $userManager = new System_Api_UserManager();
+        $rights = $userManager->getRights();
+
         $result[ 'projects' ] = array();
 
         foreach ( $projects as $project ) {
@@ -49,6 +52,7 @@ class Server_Api_Global
             $resultProject[ 'name' ] = $project[ 'project_name' ];
             $resultProject[ 'access' ] = (int)$project[ 'project_access' ];
             $resultProject[ 'folders' ] = array();
+            $resultProject[ 'members' ] = array();
 
             foreach ( $folders as $folder ) {
                 if ( $folder[ 'project_id' ] == $project[ 'project_id' ] ) {
@@ -58,6 +62,11 @@ class Server_Api_Global
                     $resultFolder[ 'typeId' ] = (int)$folder[ 'type_id' ];
                     $resultProject[ 'folders' ][] = $resultFolder;
                 }
+            }
+
+            foreach ( $rights as $right ) {
+                if ( $right[ 'project_id' ] == $project[ 'project_id' ] )
+                    $resultProject[ 'members' ][] = (int)$right[ 'user_id' ];
             }
 
             $result[ 'projects' ][] = $resultProject;
@@ -93,6 +102,12 @@ class Server_Api_Global
                     $resultAttribute = array();
                     $resultAttribute[ 'id' ] = (int)$attribute[ 'attr_id' ];
                     $resultAttribute[ 'name' ] = $attribute[ 'attr_name' ];
+
+                    $info = System_Api_DefinitionInfo::fromString( $attribute[ 'attr_def' ] );
+                    $resultAttribute[ 'type' ] = $info->getType();
+                    foreach ( $info->getAllMetadata() as $key => $value )
+                        $resultAttribute[ $key ] = $value;
+
                     $resultType[ 'attributes' ][] = $resultAttribute;
                 }
             }
@@ -110,6 +125,20 @@ class Server_Api_Global
             }
 
             $result[ 'types' ][] = $resultType;
+        }
+
+        if ( $principal->isAdministrator() )
+            $users = $userManager->getUsers();
+        else
+            $users = $userManager->getVisibleUsers();
+
+        $result[ 'users' ] = array();
+
+        foreach ( $users as $user ) {
+            $resultUser = array();
+            $resultUser[ 'id' ] = (int)$user[ 'user_id' ];
+            $resultUser[ 'name' ] = $user[ 'user_name' ];
+            $result[ 'users' ][] = $resultUser;
         }
 
         return $result;

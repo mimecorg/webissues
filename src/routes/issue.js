@@ -56,7 +56,7 @@ export default function makeIssueRoutes( ajax, store ) {
 
     route( 'EditIssue', '/issue/:issueId/edit', ( { issueId } ) => {
       return ajax.post( '/server/api/issue/load.php', { issueId, attributes: true } ).then( ( { details, attributes } ) => {
-        return { component: EditIssue, issueId, name: details.name, attributes };
+        return { component: EditIssue, issueId, typeId: details.typeId, projectId: details.projectId, name: details.name, attributes };
       } );
     } );
   }
