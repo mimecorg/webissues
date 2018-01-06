@@ -336,6 +336,8 @@ function escape( text ) {
 
 .issue-details-value {
   min-height: 20px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
 }
 
 .issue-history {
@@ -354,6 +356,10 @@ function escape( text ) {
 
 .issue-history-list {
   margin-bottom: 0;
+
+  > li {
+    word-wrap: break-word;
+  }
 }
 
 .issue-history-id {
@@ -384,10 +390,12 @@ function escape( text ) {
   border: 1px solid @issue-attachment-border;
   color: @issue-attachment-text;
   border-radius: @border-radius-base;
+  word-wrap: break-word;
 }
 
 .issue-description-text, .issue-comment-text {
   white-space: pre-wrap;
+  word-wrap: break-word;
 
   ul {
     margin-bottom: 0;
