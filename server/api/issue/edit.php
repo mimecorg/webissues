@@ -77,7 +77,13 @@ class Server_Api_Issue_Edit
 
                 $attributes[ $id ] = $attribute;
 
-                $value = $parser->normalizeString( $value, System_Const::ValueMaxLength, System_Api_Parser::AllowEmpty );
+                $info = System_Api_DefinitionInfo::fromString( $attribute[ 'attr_def' ] );
+
+                $flags = System_Api_Parser::AllowEmpty;
+                if ( $info->getType() == 'TEXT' && $info->getMetadata( 'multi-line', 0 ) )
+                    $flags |= System_Api_Parser::MultiLine;
+                $value = $parser->normalizeString( $value, System_Const::ValueMaxLength, $flags );
+
                 $value = $parser->convertAttributeValue( $attribute[ 'attr_def' ], $value );
             }
         }
