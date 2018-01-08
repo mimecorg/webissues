@@ -109,7 +109,7 @@ function makeActions( router ) {
           }
         } );
       } else {
-        commit( 'setComponent', { component: ErrorMessage, props: { error: route.error }, size: 'small' } );
+        commit( 'setComponent', { component: () => ErrorMessage, props: { error: route.error }, size: 'small' } );
         commit( 'setBusy', false );
       }
     },
