@@ -46,6 +46,10 @@ export default {
         this.$refs.overlay.addEventListener( 'scroll', this.restoreScroll );
       } else {
         this.$refs.overlay.removeEventListener( 'scroll', this.restoreScroll );
+        this.$nextTick( () => {
+          if ( document.activeElement != this.$refs.overlay && !isChildElement( document.activeElement, this.$refs.overlay ) )
+            this.$refs.overlay.focus();
+        } );
       }
     }
   },
