@@ -37,7 +37,8 @@ export default function makeStore( baseURL, initialState, ajax, router ) {
         issue: makeIssueModule( ajax ),
         list: makeListModule( ajax ),
         window: makeWindowModule( router )
-      }
+      },
+      strict: process.env.NODE_ENV != 'production'
     };
   }
 
