@@ -61,7 +61,7 @@ export default {
     ...mapState( 'global', [ 'projects', 'types', 'users' ] ),
     project() {
       if ( this.projectId != null )
-        return this.projects.find( p => p.id = this.projectId );
+        return this.projects.find( p => p.id == this.projectId );
       else
         return null;
     },
