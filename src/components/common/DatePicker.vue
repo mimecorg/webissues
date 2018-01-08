@@ -457,8 +457,12 @@ export default {
       if ( e.keyCode == KeyCode.Down || e.keyCode == KeyCode.F4 ) {
         if ( !this.open )
           this.toggle( 'date' );
+        e.preventDefault();
       } else if ( e.keyCode == KeyCode.Esc ) {
-        this.close();
+        if ( this.open ) {
+          this.close();
+          e.stopPropagation();
+        }
       }
     },
 

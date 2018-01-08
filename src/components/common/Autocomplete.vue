@@ -148,7 +148,10 @@ export default {
         if ( !this.open )
           this.dropdown();
       } else if ( e.keyCode == KeyCode.Esc ) {
-        this.close();
+        if ( this.open ) {
+          this.close();
+          e.stopPropagation();
+        }
       }
     }
   }

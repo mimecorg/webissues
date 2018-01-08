@@ -82,8 +82,11 @@ export default {
         }
         e.preventDefault();
       } else if ( e.keyCode == KeyCode.Esc ) {
-        this.$refs.button.focus();
-        this.close();
+        if ( this.open ) {
+          this.$refs.button.focus();
+          this.close();
+          e.stopPropagation();
+        }
       } else if ( e.keyCode == KeyCode.Enter ) {
         this.close();
       }

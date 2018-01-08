@@ -150,7 +150,7 @@
 <script>
 import { mapState, mapGetters } from 'vuex'
 
-import { Access, Change, History } from '@/constants'
+import { Access, Change, History, KeyCode } from '@/constants'
 
 export default {
   computed: {
@@ -262,12 +262,23 @@ export default {
     close() {
       this.$emit( 'close' );
     },
+
+    handleKeyDown( e ) {
+      if ( e.keyCode == KeyCode.Esc )
+        this.close();
+    }
   },
 
   mounted() {
     const route = this.$router.route;
     if ( route != null && route.name == 'IssueItem' && route.params.issueId == this.issueId )
       this.$emit( 'scrollToAnchor', 'item' + route.params.itemId );
+
+    document.addEventListener( 'keydown', this.handleKeyDown );
+  },
+
+  beforeDestroy() {
+    document.removeEventListener( 'keydown', this.handleKeyDown );
   },
 
   routeChanged( route ) {
