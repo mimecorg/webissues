@@ -97,7 +97,7 @@ function makeActions( router ) {
             if ( replace != null ) {
               router.replace( replace, props );
             } else {
-              commit( 'setComponent', { component, props, size } );
+              commit( 'setComponent', { component: () => component, props, size } );
               commit( 'setBusy', false );
             }
             commit( 'setCancellation', null );

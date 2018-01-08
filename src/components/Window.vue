@@ -20,7 +20,7 @@
 <template>
   <div ref="overlay" id="window-overlay" tabindex="-1" v-bind:class="{ 'window-busy': busy }" v-on:click.self="close">
     <div id="window" v-bind:class="'window-' + size">
-      <component v-if="childComponent != null" v-bind:is="childComponent" v-bind="childProps"
+      <component v-if="childComponent != null" v-bind:is="childComponent()" v-bind="childProps"
                  v-on:close="close" v-on:block="block" v-on:unblock="unblock" v-on:scrollToAnchor="scrollToAnchor" v-on:error="error"/>
       <BusyOverlay v-if="busy"/>
     </div>
