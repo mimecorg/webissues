@@ -243,6 +243,10 @@ export default {
   },
 
   methods: {
+    focus() {
+      this.$refs.input.focus();
+    },
+
     /* changing state */
 
     toggle( mode ) {
@@ -471,7 +475,7 @@ export default {
           const day = Number( parts[ 2 ] );
           const year = Number( parts[ 3 ] );
           const date = this.createDate( year, month - 1, day );
-          if ( date.getFullYear() == year && date.getMonth() == month - 1 && date.getDate( day ) == day ) {
+          if ( year != 0 && date.getFullYear() == year && date.getMonth() == month - 1 && date.getDate( day ) == day ) {
             if ( this.withTime && parts[ 4 ] != null ) {
               let hours = Number( parts[ 4 ] );
               const minutes = Number( parts[ 5 ] );

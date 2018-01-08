@@ -18,12 +18,12 @@
 -->
 
 <template>
-  <Autocomplete v-if="isAutocomplete" v-bind:id="id" v-bind:value="value" v-bind:maxlength="maxLength" v-bind:items="items" v-bind:multi-select="multiSelect"
+  <Autocomplete v-if="isAutocomplete" ref="child" v-bind:id="id" v-bind:value="value" v-bind:maxlength="maxLength" v-bind:items="items" v-bind:multi-select="multiSelect"
                 v-on:input="value => valueChanged( value )"/>
-  <DatePicker v-else-if="isDatePicker" v-bind:id="id" v-bind:value="value" v-bind:maxlength="maxLength" v-bind:with-time="withTime"
+  <DatePicker v-else-if="isDatePicker" ref="child" v-bind:id="id" v-bind:value="value" v-bind:maxlength="maxLength" v-bind:with-time="withTime"
               v-on:input="value => valueChanged( value )"/>
-  <textarea v-else-if="isMultiLine" v-bind:id="id" class="form-control" rows="6" v-bind:value="value" v-on:input="valueChanged( $event.target.value )"></textarea>
-  <input v-else v-bind:id="id" type="text" class="form-control" v-bind:value="value" v-bind:maxlength="maxLength" v-on:input="valueChanged( $event.target.value )">
+  <textarea v-else-if="isMultiLine" ref="child" v-bind:id="id" class="form-control" rows="6" v-bind:value="value" v-on:input="valueChanged( $event.target.value )"></textarea>
+  <input v-else ref="child" v-bind:id="id" type="text" class="form-control" v-bind:value="value" v-bind:maxlength="maxLength" v-on:input="valueChanged( $event.target.value )">
 </template>
 
 <script>
@@ -84,6 +84,9 @@ export default {
     }
   },
   methods: {
+    focus() {
+      this.$refs.child.focus();
+    },
     valueChanged( value ) {
       this.$emit( 'input', value );
     }

@@ -22,14 +22,14 @@
     <FormHeader v-bind:title="$t( 'GoToItem.Title' )" v-on:close="close"/>
     <Prompt path="GoToItem.Prompt"/>
     <FormGroup id="item" v-bind:label="$t( 'GoToItem.ID' )" v-bind:error="error">
-      <input ref="item" id="item" type="text" class="form-control" v-model="value" v-on:keydown.enter="submit">
+      <input ref="item" id="item" type="text" class="form-control" maxlength="11" v-model="value" v-on:keydown.enter="submit">
     </FormGroup>
     <FormButtons v-on:ok="submit" v-on:cancel="close"/>
   </div>
 </template>
 
 <script>
-import { ErrorCode, MaxLength } from '@/constants'
+import { ErrorCode } from '@/constants'
 
 export default {
   data() {
@@ -41,29 +41,19 @@ export default {
   methods: {
     submit() {
       this.error = null;
-      let itemId = this.value.trim();
-      if ( itemId == '' ) {
-        this.error = this.$t( 'ErrorCode.' + ErrorCode.EmptyValue );
-        this.$refs.item.focus();
-        return;
-      }
-      if ( itemId.substr( 0, 1 ) == '#' )
-        itemId = itemId.substr( 1 );
-      if ( !/^-?[0-9]+$/.test( itemId ) ) {
-        this.error = this.$t( 'ErrorCode.' + ErrorCode.InvalidFormat );
-        this.$refs.item.focus();
-        return;
-      }
-      itemId = Number( itemId );
-      if ( itemId < 1 ) {
-        this.error = this.$t( 'ErrorCode.' + ErrorCode.NumberTooLittle );
-        this.$refs.item.focus();
-        return;
-      }
-      if ( itemId >= 2**31 ) {
-        this.error = this.$t( 'ErrorCode.' + ErrorCode.NumberTooGreat );
-        this.$refs.item.focus();
-        return;
+      let itemId;
+      try {
+        this.value = this.$parser.normalizeString( this.value, 11 );
+        itemId = this.$parser.parseInteger( this.value.replace( /^#/, '' ), 1 );
+        this.value = itemId.toString();
+      } catch ( error ) {
+        if ( error.reason == 'APIError' ) {
+          this.error = this.$t( 'ErrorCode.' + error.errorCode );
+          this.$refs.item.focus();
+          return;
+        } else {
+          throw error;
+        }
       }
       this.$emit( 'block' );
       this.$ajax.post( '/server/api/issue/finditem.php', { itemId } ).then( issueId => {
@@ -74,7 +64,7 @@ export default {
       } ).catch( error => {
         if ( error.reason == 'APIError' && error.errorCode == ErrorCode.ItemNotFound ) {
           this.$emit( 'unblock' );
-          this.error = this.$t( 'ErrorCode.' + ErrorCode.ItemNotFound );
+          this.error = this.$t( 'ErrorCode.' + error.errorCode );
           this.$nextTick( () => {
             this.$refs.item.focus();
           } );

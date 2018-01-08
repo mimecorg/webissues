@@ -25,8 +25,9 @@
       <input ref="name" id="name" type="text" class="form-control" v-bind:maxlength="maxLength" v-model="nameValue">
     </FormGroup>
     <Panel v-bind:title="$t( 'EditIssue.Attributes' )">
-      <FormGroup v-for="( attribute, index ) in attributes" v-bind:key="attribute.id" v-bind:id="'attribute' + attribute.id" v-bind:label="$t( 'EditIssue.AttributeLabel', [ attribute.name ] )">
-        <ValueEditor v-bind:ref="'attribute' + attribute.id" v-bind:id="'attribute' + attribute.id" v-bind:attribute="getAttribute( attribute.id )"
+      <FormGroup v-for="( attribute, index ) in attributes" v-bind:key="attribute.id" v-bind:id="'attribute' + attribute.id" v-bind:label="$t( 'EditIssue.AttributeLabel', [ attribute.name ] )"
+                 v-bind:error="attributeErrors[ index ]">
+        <ValueEditor ref="attribute" v-bind:id="'attribute' + attribute.id" v-bind:attribute="getAttribute( attribute.id )"
                      v-bind:project="project" v-bind:users="users" v-model="attributeValues[ index ]"/>
       </FormGroup>
     </Panel>
@@ -37,7 +38,7 @@
 <script>
 import { mapState } from 'vuex'
 
-import { ErrorCode, MaxLength } from '@/constants'
+import { MaxLength } from '@/constants'
 
 export default {
   props: {
@@ -53,7 +54,8 @@ export default {
       nameValue: this.name,
       nameError: null,
       maxLength: MaxLength.Value,
-      attributeValues: this.attributes.map( a => a.value )
+      attributeValues: this.attributes.map( a => a.value ),
+      attributeErrors: this.attributes.map( a => null )
     };
   },
 
@@ -78,30 +80,55 @@ export default {
 
     submit() {
       this.nameError = null;
-
-      const name = this.nameValue.trim();
-      if ( name == '' ) {
-        this.nameError = this.$t( 'ErrorCode.' + ErrorCode.EmptyValue );
-        this.$refs.name.focus();
-        return;
-      }
+      this.attributeErrors = this.attributes.map( a => null );
 
       const data = { issueId: this.issueId };
       let modified = false;
+      let valid = true;
 
-      if ( name != this.name ) {
-        data.name = name;
-        modified = true;
+      try {
+        this.nameValue = this.$parser.normalizeString( this.nameValue, MaxLength.Value );
+        if ( this.nameValue != this.name ) {
+          data.name = this.nameValue;
+          modified = true;
+        }
+      } catch ( error ) {
+        if ( error.reason == 'APIError' ) {
+          this.nameError = this.$t( 'ErrorCode.' + error.errorCode );
+          if ( valid )
+            this.$refs.name.focus();
+          valid = false;
+        } else {
+          throw error;
+        }
       }
 
       data.values = [];
       for ( let i = 0; i < this.attributes.length; i++ ) {
-        const value = this.attributeValues[ i ].trim();
-        if ( value != this.attributes[ i ].value ) {
-          data.values.push( { id: this.attributes[ i ].id, value } );
-          modified = true;
+        try {
+          const attribute = this.getAttribute( this.attributes[ i ].id );
+          const multiLine = attribute != null && attribute.type == 'TEXT' && attribute[ 'multi-line' ] == 1;
+          this.attributeValues[ i ] = this.$parser.normalizeString( this.attributeValues[ i ], MaxLength.Value, { allowEmpty: true, multiLine } );
+          if ( attribute != null )
+            this.attributeValues[ i ] = this.$parser.normalizeAttributeValue( this.attributeValues[ i ], attribute, this.project, this.users );
+          if ( this.attributeValues[ i ] != this.attributes[ i ].value ) {
+            data.values.push( { id: this.attributes[ i ].id, value: this.attributeValues[ i ] } );
+            modified = true;
+          }
+        } catch ( error ) {
+          if ( error.reason == 'APIError' ) {
+            this.attributeErrors[ i ] = this.$t( 'ErrorCode.' + error.errorCode );
+            if ( valid )
+              this.$refs.attribute[ i ].focus();
+            valid = false;
+          } else {
+            throw error;
+          }
         }
       }
+
+      if ( !valid )
+        return;
 
       if ( !modified ) {
         this.returnToDetails();

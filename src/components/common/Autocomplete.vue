@@ -72,6 +72,9 @@ export default {
     }
   },
   methods: {
+    focus() {
+      this.$refs.input.focus();
+    },
     toggle( mode ) {
       if ( this.open ) {
         this.close();
