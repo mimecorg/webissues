@@ -23,16 +23,16 @@
     <Prompt v-if="mode == 'edit'" path="EditIssue.EditAttributesPrompt"><strong>{{ name }}</strong></Prompt>
     <Prompt v-else-if="mode == 'add'" path="EditIssue.AddIssuePrompt"/>
     <Prompt v-else-if="mode == 'clone'" path="EditIssue.CloneIssuePrompt"><strong>{{ name }}</strong></Prompt>
-    <FormGroup id="name" v-bind:label="$t( 'EditIssue.Name' )" v-bind:error="nameError">
+    <FormGroup id="name" v-bind:label="$t( 'EditIssue.Name' )" v-bind:required="true" v-bind:error="nameError">
       <input ref="name" id="name" type="text" class="form-control" v-bind:maxlength="maxLength" v-model="nameValue">
     </FormGroup>
-    <FormGroup v-if="mode == 'add' || mode == 'clone'" v-bind:label="$t( 'EditIssue.Location' )" v-bind:error="locationError">
+    <FormGroup v-if="mode == 'add' || mode == 'clone'" v-bind:label="$t( 'EditIssue.Location' )" v-bind:required="true" v-bind:error="locationError">
       <LocationFilters ref="location" v-bind:projects="projects" v-bind:project="project" v-bind:folders="folders" v-bind:folder="folder"
                        v-on:select-project="selectProject" v-on:select-folder="selectFolder"/>
     </FormGroup>
     <Panel v-if="attributes.length > 0" v-bind:title="$t( 'EditIssue.Attributes' )">
       <FormGroup v-for="( attribute, index ) in attributes" v-bind:key="attribute.id" v-bind:id="'attribute' + attribute.id" v-bind:label="$t( 'EditIssue.AttributeLabel', [ attribute.name ] )"
-                 v-bind:error="attributeErrors[ index ]">
+                 v-bind:required="isAttributeRequired( attribute.id )" v-bind:error="attributeErrors[ index ]">
         <ValueEditor ref="attribute" v-bind:id="'attribute' + attribute.id" v-bind:attribute="getAttribute( attribute.id )"
                      v-bind:project="project" v-bind:users="users" v-model="attributeValues[ index ]"/>
       </FormGroup>
@@ -113,6 +113,13 @@ export default {
         return type.attributes.find( a => a.id == id );
       else
         return null;
+    },
+    isAttributeRequired( id ) {
+      const attribute = this.getAttribute( id );
+      if ( attribute != null )
+        return attribute.required == 1;
+      else
+        return false;
     },
 
     selectProject( project ) {

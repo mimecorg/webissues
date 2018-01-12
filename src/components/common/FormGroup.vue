@@ -19,7 +19,7 @@
 
 <template>
   <div v-bind:class="[ 'form-group', { 'has-error': error != null } ]">
-    <label v-if="label != null" v-bind:for="id" class="control-label">{{ label }}</label>
+    <label v-if="label != null" v-bind:for="id" class="control-label">{{ required ? label + ' *' : label }}</label>
     <slot/>
     <p v-if="error != null" class="help-block">{{ error }}</p>
   </div>
@@ -30,6 +30,7 @@ export default {
   props: {
     id: String,
     label: String,
+    required: Boolean,
     error: String
   }
 }
