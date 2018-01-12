@@ -87,7 +87,7 @@ function makeGetters() {
     },
     publicViews( state, getters ) {
       if ( getters.type != null )
-        return getters.type.views.filter( v => v.public )
+        return getters.type.views.filter( v => v.public );
       else
         return [];
     },
@@ -113,7 +113,7 @@ function makeGetters() {
     },
     folders( state, getters ) {
       if ( getters.project != null && getters.type != null )
-        return getters.project.folders.filter( f => f.typeId == getters.type.id )
+        return getters.project.folders.filter( f => f.typeId == getters.type.id );
       else
         return [];
     },
