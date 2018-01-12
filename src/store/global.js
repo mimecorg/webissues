@@ -42,6 +42,7 @@ function makeState( baseURL, { serverName, serverVersion, userId, userName, user
     projects: [],
     types: [],
     users: [],
+    settings: {},
     lastUpdate: null
   };
 }
@@ -67,7 +68,7 @@ function makeGetters() {
 
 function makeMutations() {
   return {
-    setData( state, { serverName, serverVersion, userId, userName, userAccess, projects, types, users } ) {
+    setData( state, { serverName, serverVersion, userId, userName, userAccess, projects, types, users, settings } ) {
       state.serverName = serverName;
       state.serverVersion = serverVersion;
       state.userId = userId;
@@ -76,6 +77,7 @@ function makeMutations() {
       state.projects = projects;
       state.types = types;
       state.users = users;
+      state.settings = settings;
     },
     beginUpdate( state ) {
       state.lastUpdate = Date.now();

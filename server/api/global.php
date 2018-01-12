@@ -149,6 +149,11 @@ class Server_Api_Global
             $result[ 'users' ][] = $resultUser;
         }
 
+        $serverManager = new System_Api_ServerManager();
+        $settings[ 'commentMaxLength' ] = (int)$serverManager->getSetting( 'comment_max_length' );
+
+        $result[ 'settings' ] = $settings;
+
         return $result;
     }
 }

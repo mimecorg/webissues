@@ -38,7 +38,7 @@
       </FormGroup>
     </Panel>
     <FormGroup v-if="mode == 'add' || mode == 'clone'" id="description" v-bind:label="$t( 'EditIssue.Description' )" v-bind:error="descriptionError">
-      <textarea ref="description" id="description" class="form-control" rows="10" v-model="descriptionValue"></textarea>
+      <textarea ref="description" id="description" class="form-control" rows="10" v-bind:maxlength="settings.commentMaxLength" v-model="descriptionValue"></textarea>
     </FormGroup>
     <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
   </div>
@@ -77,7 +77,7 @@ export default {
   },
 
   computed: {
-    ...mapState( 'global', [ 'projects', 'types', 'users' ] ),
+    ...mapState( 'global', [ 'projects', 'types', 'users', 'settings' ] ),
     title() {
       if ( this.mode == 'edit' )
         return this.$t( 'EditIssue.EditAttributes' );
@@ -196,8 +196,7 @@ export default {
 
       if ( this.mode == 'add' || this.mode == 'clone' ) {
         try {
-          // TODO: get max_comment_length setting from server
-          this.descriptionValue = this.$parser.normalizeString( this.descriptionValue, null, { allowEmpty: true, multiLine: true } );
+          this.descriptionValue = this.$parser.normalizeString( this.descriptionValue, this.settings.commentMaxLength, { allowEmpty: true, multiLine: true } );
           if ( this.descriptionValue != '' )
             data.description = this.descriptionValue;
         } catch ( error ) {
