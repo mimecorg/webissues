@@ -148,6 +148,8 @@ class Server_Api_Issue_List
         if ( $searchError )
             return $result;
 
+        System_Web_Base::setLinkMode( System_Web_Base::RouteLinks );
+
         $connection = System_Core_Application::getInstance()->getConnection();
 
         $query = $queryGenerator->generateSelectQuery();
