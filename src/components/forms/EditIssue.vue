@@ -22,10 +22,11 @@
     <FormHeader v-bind:title="title" v-on:close="close"/>
     <Prompt v-if="mode == 'edit'" path="EditIssue.EditAttributesPrompt"><strong>{{ name }}</strong></Prompt>
     <Prompt v-else-if="mode == 'add'" path="EditIssue.AddIssuePrompt"/>
+    <Prompt v-else-if="mode == 'clone'" path="EditIssue.CloneIssuePrompt"><strong>{{ name }}</strong></Prompt>
     <FormGroup id="name" v-bind:label="$t( 'EditIssue.Name' )" v-bind:error="nameError">
       <input ref="name" id="name" type="text" class="form-control" v-bind:maxlength="maxLength" v-model="nameValue">
     </FormGroup>
-    <FormGroup v-if="mode == 'add'" v-bind:label="$t( 'EditIssue.Location' )" v-bind:error="locationError">
+    <FormGroup v-if="mode == 'add' || mode == 'clone'" v-bind:label="$t( 'EditIssue.Location' )" v-bind:error="locationError">
       <LocationFilters ref="location" v-bind:projects="projects" v-bind:project="project" v-bind:folders="folders" v-bind:folder="folder"
                        v-on:select-project="selectProject" v-on:select-folder="selectFolder"/>
     </FormGroup>
@@ -36,7 +37,7 @@
                      v-bind:project="project" v-bind:users="users" v-model="attributeValues[ index ]"/>
       </FormGroup>
     </Panel>
-    <FormGroup v-if="mode == 'add'" id="description" v-bind:label="$t( 'EditIssue.Description' )" v-bind:error="descriptionError">
+    <FormGroup v-if="mode == 'add' || mode == 'clone'" id="description" v-bind:label="$t( 'EditIssue.Description' )" v-bind:error="descriptionError">
       <textarea ref="description" id="description" class="form-control" rows="10" v-model="descriptionValue"></textarea>
     </FormGroup>
     <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
@@ -56,7 +57,8 @@ export default {
     projectId: Number,
     folderId: Number,
     name: String,
-    attributes: Array
+    attributes: Array,
+    description: String
   },
 
   data() {
@@ -69,7 +71,7 @@ export default {
       locationError: null,
       attributeValues: this.attributes.map( a => a.value ),
       attributeErrors: this.attributes.map( a => null ),
-      descriptionValue: '',
+      descriptionValue: this.description,
       descriptionError: null
     };
   },
@@ -81,6 +83,8 @@ export default {
         return this.$t( 'EditIssue.EditAttributes' );
       else if ( this.mode == 'add' )
         return this.$t( 'EditIssue.AddIssue' );
+      else if ( this.mode == 'clone' )
+        return this.$t( 'EditIssue.CloneIssue' );
     },
     project() {
       if ( this.selectedProjectId != null )
@@ -135,12 +139,12 @@ export default {
       let modified = false;
       let valid = true;
 
-      if ( this.mode == 'edit' )
+      if ( this.mode == 'edit' || this.mode == 'clone' )
         data.issueId = this.issueId;
 
       try {
         this.nameValue = this.$parser.normalizeString( this.nameValue, MaxLength.Value );
-        if ( this.mode == 'add' || this.nameValue != this.name ) {
+        if ( this.mode == 'add' || this.mode == 'clone' || this.nameValue != this.name ) {
           data.name = this.nameValue;
           modified = true;
         }
@@ -155,7 +159,7 @@ export default {
         }
       }
 
-      if ( this.mode == 'add' ) {
+      if ( this.mode == 'add' || this.mode == 'clone' ) {
         if ( this.selectedFolderId != null ) {
           data.folderId = this.selectedFolderId;
         } else {
@@ -190,7 +194,7 @@ export default {
         }
       }
 
-      if ( this.mode == 'add' ) {
+      if ( this.mode == 'add' || this.mode == 'clone' ) {
         try {
           // TODO: get max_comment_length setting from server
           this.descriptionValue = this.$parser.normalizeString( this.descriptionValue, null, { allowEmpty: true, multiLine: true } );
@@ -228,7 +232,7 @@ export default {
     },
 
     cancel() {
-      if ( this.mode == 'edit' )
+      if ( this.mode == 'edit' || this.mode == 'clone' )
         this.returnToDetails( this.issueId );
       else
         this.close();

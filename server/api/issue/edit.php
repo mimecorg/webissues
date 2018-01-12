@@ -42,6 +42,10 @@ class Server_Api_Issue_Edit
                 if ( $issueId == null || $folderId != null || $description != null )
                     throw new Server_Error( Server_Error::InvalidArguments );
                 break;
+            case 'clone':
+                if ( $issueId == null || $folderId == null || $name == null )
+                    throw new Server_Error( Server_Error::InvalidArguments );
+                break;
             default:
                 throw new Server_Error( Server_Error::InvalidArguments );
         }
@@ -73,6 +77,8 @@ class Server_Api_Issue_Edit
         if ( $folderId != null ) {
             $projectManager = new System_Api_ProjectManager();
             $folder = $projectManager->getFolder( $folderId );
+            if ( $issue != null && $issue[ 'type_id' ] != $folder[ 'type_id' ] )
+                throw new System_Api_Error( System_Api_Error::UnknownFolder );
         } else {
             $folder = null;
         }
@@ -91,10 +97,12 @@ class Server_Api_Issue_Edit
             $description = $parser->normalizeString( $description, $serverManager->getSetting( 'comment_max_length' ), System_Api_Parser::AllowEmpty | System_Api_Parser::MultiLine );
         }
 
+        $typeManager = new System_Api_TypeManager();
+
         if ( $issue != null ) {
+            $type = $typeManager->getIssueTypeForIssue( $issue );
             $rows = $issueManager->getAllAttributeValuesForIssue( $issue );
         } else {
-            $typeManager = new System_Api_TypeManager();
             $type = $typeManager->getIssueTypeForFolder( $folder );
             $rows = $typeManager->getAttributeTypesForIssueType( $type );
         }
@@ -103,13 +111,16 @@ class Server_Api_Issue_Edit
         foreach ( $rows as $row )
             $attributes[ $row[ 'attr_id' ] ] = $row;
 
-        if ( $issue == null ) {
+        if ( $issue == null || $mode == 'clone' ) {
             $initialValues = array();
             foreach ( $attributes as $id => $attribute ) {
                 $info = System_Api_DefinitionInfo::fromString( $attribute[ 'attr_def' ] );
                 $initialValue = $info->getMetadata( 'default', '' );
                 $initialValues[ $id ] = $typeManager->convertInitialValue( $info, $initialValue );
             }
+        }
+
+        if ( $issue == null ) {
             $oldValues = $initialValues;
         } else {
             $oldValues = array();
@@ -136,12 +147,28 @@ class Server_Api_Issue_Edit
             if ( !isset( $values[ $id ] ) ) {
                 $attribute = $attributes[ $id ];
                 $parser->checkAttributeValue( $attribute[ 'attr_def' ], $oldValue );
+
+                if ( $mode == 'clone' && $oldValue != $initialValues[ $id ] )
+                    $values[ $id ] = $oldValue;
             }
+        }
+
+        $orderedValues = array();
+        foreach ( $values as $id => $newValue ) {
+            $row = array();
+            $row[ 'attr_id' ] = $id;
+            $row[ 'attr_value' ] = $newValue;
+            $orderedValues[] = $row;
+        }
+
+        if ( !empty( $orderedValues ) ) {
+            $viewManager = new System_Api_ViewManager();
+            $orderedValues = $viewManager->sortByAttributeOrder( $type, $orderedValues );
         }
 
         $lastStampId = null;
 
-        if ( $issue == null ) {
+        if ( $issue == null || $mode == 'clone' ) {
             $issueId = $issueManager->addIssue( $folder, $name, $initialValues );
             $lastStampId = $issueId;
 
@@ -157,8 +184,8 @@ class Server_Api_Issue_Edit
             }
         }
 
-        foreach ( $values as $id => $newValue ) {
-            $stampId = $issueManager->setValue( $issue, $attributes[ $id ], $newValue );
+        foreach ( $orderedValues as $row ) {
+            $stampId = $issueManager->setValue( $issue, $attributes[ $row[ 'attr_id' ] ], $row[ 'attr_value' ] );
             if ( $stampId != false )
                 $lastStampId = $stampId;
         }

@@ -77,8 +77,10 @@
   "EditIssue": {
     "EditAttributes": "Edit Attributes",
     "AddIssue": "Add Issue",
+    "CloneIssue": "Clone Issue",
     "EditAttributesPrompt": "Edit attributes of issue {0}.",
     "AddIssuePrompt": "Create a new issue in the selected folder.",
+    "CloneIssuePrompt": "Clone issue {0} as a new issue in the selected folder.",
     "Name": "Name:",
     "Location": "Location:",
     "Attributes": "Attributes",

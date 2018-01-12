@@ -23,7 +23,7 @@
     <FormHeader v-bind:title="details.name" v-on:close="close">
       <button v-if="isAuthenticated" type="button" class="btn btn-primary" v-on:click="editIssue"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'IssueDetails.Edit' ) }}</button>
       <DropdownButton v-if="isAuthenticated" fa-class="fa-ellipsis-v" menu-class="dropdown-menu-right" v-bind:title="$t( 'IssueDetails.More' )">
-        <li><Link><span class="fa fa-clone" aria-hidden="true"></span> {{ $t( 'IssueDetails.CloneIssue' ) }}</Link></li>
+        <li><Link v-on:click="cloneIssue"><span class="fa fa-clone" aria-hidden="true"></span> {{ $t( 'IssueDetails.CloneIssue' ) }}</Link></li>
         <li v-if="canMoveDelete"><Link><span class="fa fa-exchange" aria-hidden="true"></span> {{ $t( 'IssueDetails.MoveIssue' ) }}</Link></li>
         <li v-if="canMoveDelete"><Link><span class="fa fa-trash" aria-hidden="true"></span> {{ $t( 'IssueDetails.DeleteIssue' ) }}</Link></li>
         <li role="separator" class="divider"></li>
@@ -240,6 +240,9 @@ export default {
 
     editIssue() {
       this.$router.push( 'EditIssue', { issueId: this.issueId } );
+    },
+    cloneIssue() {
+      this.$router.push( 'CloneIssue', { issueId: this.issueId } );
     },
 
     setUnread( unread ) {

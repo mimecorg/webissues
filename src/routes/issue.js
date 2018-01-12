@@ -58,7 +58,15 @@ export default function makeIssueRoutes( ajax, parser, store ) {
 
     route( 'EditIssue', '/issue/:issueId/edit', ( { issueId } ) => {
       return ajax.post( '/server/api/issue/load.php', { issueId, attributes: true } ).then( ( { details, attributes } ) => {
-        return { component: EditIssue, mode: 'edit', issueId, typeId: details.typeId, projectId: details.projectId, name: details.name, attributes };
+        return {
+          component: EditIssue,
+          mode: 'edit',
+          issueId,
+          typeId: details.typeId,
+          projectId: details.projectId,
+          name: details.name,
+          attributes
+        };
       } );
     } );
 
@@ -70,12 +78,37 @@ export default function makeIssueRoutes( ajax, parser, store ) {
         const folder = store.getters[ 'list/folder' ];
         const folderId = folder != null ? folder.id : null;
         const attributes = type.attributes.map( attribute => ( {
-          id: attribute.id, name: attribute.name, value: parser.convertInitialValue( attribute.default, attribute, store.state.global.userName )
+          id: attribute.id,
+          name: attribute.name,
+          value: parser.convertInitialValue( attribute.default, attribute, store.state.global.userName )
         } ) );
-        return Promise.resolve( { component: EditIssue, mode: 'add', typeId, projectId, folderId, attributes } );
+        return Promise.resolve( {
+          component: EditIssue,
+          mode: 'add',
+          typeId,
+          projectId,
+          folderId,
+          attributes
+        } );
       } else {
         return Promise.reject( makeError( ErrorCode.UnknownType ) );
       }
+    } );
+
+    route( 'CloneIssue', '/issue/:issueId/clone', ( { issueId } ) => {
+      return ajax.post( '/server/api/issue/load.php', { issueId, description: true, attributes: true } ).then( ( { details, description, attributes } ) => {
+        return {
+          component: EditIssue,
+          mode: 'clone',
+          issueId,
+          typeId: details.typeId,
+          projectId: details.projectId,
+          folderId: details.folderId,
+          name: details.name,
+          attributes,
+          description: description.text
+        };
+      } );
     } );
   }
 }
