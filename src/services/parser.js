@@ -39,7 +39,8 @@ export default function makeParser() {
     normalizeDecimalNumber,
     normalizeDate,
     normalizeDateTime,
-    normalizeAttributeValue
+    normalizeAttributeValue,
+    convertInitialValue
   };
 }
 
@@ -256,6 +257,27 @@ function normalizeAttributeValue( value, attribute, project = null, users = [] )
 
     default:
       throw makeError( ErrorCode.InvalidDefinition );
+  }
+
+  return value;
+}
+
+function convertInitialValue( value, attribute, userName ) {
+  if ( value == null || value == '' )
+    return '';
+
+  if ( ( attribute.type == 'TEXT' || attribute.type == 'ENUM' || attribute.type == 'USER' ) && value.substr( 0, 4 ) == '[Me]' )
+    return userName;
+
+  if ( attribute.type == 'DATETIME' && value.substr( 0, 7 ) == '[Today]' ) {
+    let date = new Date();
+    const offset = value.substr( 7 );
+    if ( offset != '' )
+      date.setDate( date.getDate() + Number( offset ) );
+    let formatted = '' + ( date.getMonth() + 1 ) + '/' + date.getDate() + '/' + date.getFullYear().toString().padStart( 4, '0' );
+    if ( attribute.time == 1 )
+      formatted += ' ' + ( ( date.getHours() + 11 ) % 12 + 1 ) + ':' + date.getMinutes().toString().padStart( 2, '0' ) + ' ' + ( date.getHours() >= 12 ? 'pm' : 'am' );
+    return formatted;
   }
 
   return value;

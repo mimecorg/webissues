@@ -52,7 +52,7 @@ export function main( { baseURL, csrfToken, locale, ...initialState } ) {
   const router = makeRouter();
   const store = makeStore( baseURL, initialState, ajax, router );
 
-  registerRoutes( router, ajax, store );
+  registerRoutes( router, ajax, parser, store );
 
   registerComponents( commonComponents );
 

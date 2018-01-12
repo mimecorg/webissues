@@ -17,11 +17,13 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-import EditIssue from '@/components/forms/EditIssue.vue';
-import GoToItem from '@/components/forms/GoToItem.vue';
-import IssueDetails from '@/components/forms/IssueDetails.vue';
+import { ErrorCode } from '@/constants'
 
-export default function makeIssueRoutes( ajax, store ) {
+import EditIssue from '@/components/forms/EditIssue'
+import GoToItem from '@/components/forms/GoToItem'
+import IssueDetails from '@/components/forms/IssueDetails'
+
+export default function makeIssueRoutes( ajax, parser, store ) {
   return function issueRoutes( route ) {
     function loadIssueDetails( issueId ) {
       if ( store.state.issue.issueId != issueId ) {
@@ -56,8 +58,31 @@ export default function makeIssueRoutes( ajax, store ) {
 
     route( 'EditIssue', '/issue/:issueId/edit', ( { issueId } ) => {
       return ajax.post( '/server/api/issue/load.php', { issueId, attributes: true } ).then( ( { details, attributes } ) => {
-        return { component: EditIssue, issueId, typeId: details.typeId, projectId: details.projectId, name: details.name, attributes };
+        return { component: EditIssue, mode: 'edit', issueId, typeId: details.typeId, projectId: details.projectId, name: details.name, attributes };
       } );
     } );
+
+    route( 'AddIssue', '/issue/add/:typeId', ( { typeId } ) => {
+      const type = store.state.global.types.find( t => t.id == typeId );
+      if ( type != null ) {
+        const project = store.getters[ 'list/project' ];
+        const projectId = project != null ? project.id : null;
+        const folder = store.getters[ 'list/folder' ];
+        const folderId = folder != null ? folder.id : null;
+        const attributes = type.attributes.map( attribute => ( {
+          id: attribute.id, name: attribute.name, value: parser.convertInitialValue( attribute.default, attribute, store.state.global.userName )
+        } ) );
+        return Promise.resolve( { component: EditIssue, mode: 'add', typeId, projectId, folderId, attributes } );
+      } else {
+        return Promise.reject( makeError( ErrorCode.UnknownType ) );
+      }
+    } );
   }
+}
+
+function makeError( errorCode ) {
+  const error = new Error( 'Route error: ' + errorCode );
+  error.reason = 'APIError';
+  error.errorCode = errorCode;
+  return error;
 }

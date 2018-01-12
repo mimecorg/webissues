@@ -27,11 +27,24 @@ class Server_Api_Issue_Edit
         $principal = System_Api_Principal::getCurrent();
         $principal->checkAuthenticated();
 
+        $mode = isset( $arguments[ 'mode' ] ) ? $arguments[ 'mode' ] : null;
         $issueId = isset( $arguments[ 'issueId' ] ) ? (int)$arguments[ 'issueId' ] : null;
+        $folderId = isset( $arguments[ 'folderId' ] ) ? (int)$arguments[ 'folderId' ] : null;
         $name = isset( $arguments[ 'name' ] ) ? $arguments[ 'name' ] : null;
+        $description = isset( $arguments[ 'description' ] ) ? $arguments[ 'description' ] : null;
 
-        if ( $issueId == null )
-            throw new Server_Error( Server_Error::InvalidArguments );
+        switch ( $mode ) {
+            case 'add':
+                if ( $issueId != null || $folderId == null || $name == null )
+                    throw new Server_Error( Server_Error::InvalidArguments );
+                break;
+            case 'edit':
+                if ( $issueId == null || $folderId != null || $description != null )
+                    throw new Server_Error( Server_Error::InvalidArguments );
+                break;
+            default:
+                throw new Server_Error( Server_Error::InvalidArguments );
+        }
 
         $values = array();
 
@@ -51,58 +64,107 @@ class Server_Api_Issue_Edit
         }
 
         $issueManager = new System_Api_IssueManager();
-        $issue = $issueManager->getIssue( $issueId );
+
+        if ( $issueId != null )
+            $issue = $issueManager->getIssue( $issueId );
+        else
+            $issue = null;
+
+        if ( $folderId != null ) {
+            $projectManager = new System_Api_ProjectManager();
+            $folder = $projectManager->getFolder( $folderId );
+        } else {
+            $folder = null;
+        }
 
         $parser = new System_Api_Parser();
+        if ( $folder != null )
+            $parser->setProjectId( $folder[ 'project_id' ] );
+        else
+            $parser->setProjectId( $issue[ 'project_id' ] );
 
         if ( $name != null )
             $name = $parser->normalizeString( $name, System_Const::ValueMaxLength );
 
-        $attributes = array();
+        if ( $description != null ) {
+            $serverManager = new System_Api_ServerManager();
+            $description = $parser->normalizeString( $description, $serverManager->getSetting( 'comment_max_length' ), System_Api_Parser::AllowEmpty | System_Api_Parser::MultiLine );
+        }
 
-        if ( !empty( $values ) ) {
+        if ( $issue != null ) {
             $rows = $issueManager->getAllAttributeValuesForIssue( $issue );
+        } else {
+            $typeManager = new System_Api_TypeManager();
+            $type = $typeManager->getIssueTypeForFolder( $folder );
+            $rows = $typeManager->getAttributeTypesForIssueType( $type );
+        }
 
-            foreach ( $values as $id => &$value ) {
-                $attribute = null;
-                foreach ( $rows as $row ) {
-                    if ( $row[ 'attr_id' ] == $id ) {
-                        $attribute = $row;
-                        break;
-                    }
-                }
+        $attributes = array();
+        foreach ( $rows as $row )
+            $attributes[ $row[ 'attr_id' ] ] = $row;
 
-                if ( $attribute == null )
-                    throw new Server_Error( Server_Error::UnknownAttribute );
-
-                $attributes[ $id ] = $attribute;
-
+        if ( $issue == null ) {
+            $initialValues = array();
+            foreach ( $attributes as $id => $attribute ) {
                 $info = System_Api_DefinitionInfo::fromString( $attribute[ 'attr_def' ] );
+                $initialValue = $info->getMetadata( 'default', '' );
+                $initialValues[ $id ] = $typeManager->convertInitialValue( $info, $initialValue );
+            }
+            $oldValues = $initialValues;
+        } else {
+            $oldValues = array();
+            foreach ( $rows as $row )
+                $oldValues[ $row[ 'attr_id' ] ] = $row[ 'attr_value' ];
+        }
 
-                $flags = System_Api_Parser::AllowEmpty;
-                if ( $info->getType() == 'TEXT' && $info->getMetadata( 'multi-line', 0 ) )
-                    $flags |= System_Api_Parser::MultiLine;
-                $value = $parser->normalizeString( $value, System_Const::ValueMaxLength, $flags );
+        foreach ( $values as $id => &$value ) {
+            if ( !isset( $attributes[ $id ] ) )
+                throw new System_Api_Error( System_Api_Error::UnknownAttribute );
 
-                $value = $parser->convertAttributeValue( $attribute[ 'attr_def' ], $value );
+            $attribute = $attributes[ $id ];
+            $info = System_Api_DefinitionInfo::fromString( $attribute[ 'attr_def' ] );
+
+            $flags = System_Api_Parser::AllowEmpty;
+            if ( $info->getType() == 'TEXT' && $info->getMetadata( 'multi-line', 0 ) )
+                $flags |= System_Api_Parser::MultiLine;
+            $value = $parser->normalizeString( $value, System_Const::ValueMaxLength, $flags );
+
+            $value = $parser->convertAttributeValue( $attribute[ 'attr_def' ], $value );
+        }
+
+        foreach ( $oldValues as $id => $oldValue ) {
+            if ( !isset( $values[ $id ] ) ) {
+                $attribute = $attributes[ $id ];
+                $parser->checkAttributeValue( $attribute[ 'attr_def' ], $oldValue );
             }
         }
 
-        $result = false;
+        $lastStampId = null;
 
-        if ( $name != null ) {
-            $stampId = $issueManager->renameIssue( $issue, $name );
-            if ( $stampId != false )
-                $result = $stampId;
-        }
+        if ( $issue == null ) {
+            $issueId = $issueManager->addIssue( $folder, $name, $initialValues );
+            $lastStampId = $issueId;
 
-        if ( !empty( $values ) ) {
-            foreach ( $values as $id => $newValue ) {
-                $stampId = $issueManager->setValue( $issue, $attributes[ $id ], $newValue );
+            $issue = $issueManager->getIssue( $issueId );
+
+            if ( $description != '' )
+                $lastStampId = $issueManager->addDescription( $issue, $description, System_Const::PlainText );
+        } else {
+            if ( $name != null ) {
+                $stampId = $issueManager->renameIssue( $issue, $name );
                 if ( $stampId != false )
-                    $result = $stampId;
+                    $lastStampId = $stampId;
             }
         }
+
+        foreach ( $values as $id => $newValue ) {
+            $stampId = $issueManager->setValue( $issue, $attributes[ $id ], $newValue );
+            if ( $stampId != false )
+                $lastStampId = $stampId;
+        }
+
+        $result[ 'issueId' ] = $issueId;
+        $result[ 'stampId' ] = $lastStampId;
 
         return $result;
     }

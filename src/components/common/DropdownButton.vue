@@ -52,6 +52,9 @@ export default {
     }
   },
   methods: {
+    focus() {
+      this.$refs.button.focus();
+    },
     toggle() {
       if ( this.open ) {
         this.close();

@@ -26,6 +26,7 @@ import FormGroup from '@/components/common/FormGroup'
 import FormHeader from '@/components/common/FormHeader'
 import Grid from '@/components/common/Grid'
 import Link from '@/components/common/Link'
+import LocationFilters from '@/components/common/LocationFilters'
 import Panel from '@/components/common/Panel'
 import Prompt from '@/components/common/Prompt'
 import ValueEditor from '@/components/common/ValueEditor'
@@ -40,6 +41,7 @@ export default {
   FormHeader,
   Grid,
   Link,
+  LocationFilters,
   Panel,
   Prompt,
   ValueEditor

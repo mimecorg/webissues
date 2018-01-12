@@ -6,6 +6,12 @@
     "Previous": "Previous",
     "Next": "Next"
   },
+  "LocationFilters": {
+    "SelectProject": "Select Project",
+    "SelectFolder": "Select Folder",
+    "ProjectTitle": "Project: {0}",
+    "FolderTitle": "Folder: {0}"
+  },
   "Navbar": {
     "Add": "Add",
     "AddIssue": "Add Issue",
@@ -69,11 +75,16 @@
     "IssuesCountOf": "{0}-{1} of {2} issues"
   },
   "EditIssue": {
-    "Title": "Edit Attributes",
-    "Prompt": "Edit attributes of issue {0}.",
+    "EditAttributes": "Edit Attributes",
+    "AddIssue": "Add Issue",
+    "EditAttributesPrompt": "Edit attributes of issue {0}.",
+    "AddIssuePrompt": "Create a new issue in the selected folder.",
     "Name": "Name:",
+    "Location": "Location:",
     "Attributes": "Attributes",
-    "AttributeLabel": "{0}:"
+    "AttributeLabel": "{0}:",
+    "Description": "Description:",
+    "NoFolderSelected": "No folder selected."
   },
   "GoToItem": {
     "Title": "Go To Item",

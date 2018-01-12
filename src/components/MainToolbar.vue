@@ -21,7 +21,7 @@
   <div id="main-toolbar">
     <div class="container-fluid">
       <div class="row">
-        <div class="col-xs-12 col-sm-6 col-lg-4 main-filters">
+        <div class="col-xs-12 col-sm-6 col-lg-4 dropdown-filters">
           <DropdownButton v-if="types.length > 0" fa-class="fa-list" v-bind:text="typeName" v-bind:title="typeTitle">
             <div class="dropdown-menu-scroll">
               <li v-for="t in types" v-bind:key="t.id" v-bind:class="{ active: type != null && t.id == type.id }">
@@ -51,7 +51,7 @@
             </div>
           </DropdownButton>
         </div>
-        <div v-if="type != null" class="col-xs-12 col-sm-6 col-lg-4 main-filters">
+        <div v-if="type != null" class="col-xs-12 col-sm-6 col-lg-4 dropdown-filters">
           <DropdownButton fa-class="fa-object-group" v-bind:text="projectName" v-bind:title="projectTitle">
             <div class="dropdown-menu-scroll">
               <li v-bind:class="{ active: project == null }">
@@ -300,22 +300,6 @@ export default {
   .row > div {
     margin-top: 4px;
     margin-bottom: 4px;
-  }
-}
-
-.main-filters {
-  white-space: nowrap;
-
-  .dropdown-toggle {
-    width: 140px;
-
-    @media ( min-width: @screen-sm-min ) {
-      width: 175px;
-    }
-  }
-
-  .dropdown-menu {
-    right: 0;
   }
 }
 
