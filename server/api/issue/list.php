@@ -63,7 +63,7 @@ class Server_Api_Issue_List
         if ( $folderId != null ) {
             $folder = $projectManager->getFolder( $folderId );
             if ( $type != null && $type[ 'type_id' ] != $folder[ 'type_id' ] )
-                throw new System_Api_Error( System_Api_Error::InvalidArguments );
+                throw new System_Api_Error( System_Api_Error::UnknownFolder );
             $type = $typeManager->getIssueTypeForFolder( $folder );
             $project = null;
         } else if ( $projectId != null ) {
