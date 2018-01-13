@@ -51,7 +51,7 @@
           <div class="issue-details-value">{{ details.modifiedDate }} &mdash; {{ details.modifiedBy }}</div>
         </div>
 
-        <div class="issue-details">
+        <div v-if="filteredAttributes.length > 0" class="issue-details">
           <div class="issue-header">{{ $t( 'IssueDetails.Attributes' ) }}</div>
           <template v-for="attribute in filteredAttributes">
             <div class="issue-details-title">{{ attribute.name }}</div>
