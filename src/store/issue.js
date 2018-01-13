@@ -48,7 +48,7 @@ function makeGetters() {
     isItemInHistory( state ) {
       return id => state.history.some( item => item.id == id && ( item.type == Change.CommentAdded || item.type == Change.FileAdded ) );
     },
-    processedHistory( state ) {
+    processedHistory( state, getters, rootState ) {
       const items = [];
       let change = null;
       for ( let i = 0; i < state.history.length; i++ ) {
@@ -72,6 +72,8 @@ function makeGetters() {
       }
       if ( change != null )
         items.push( change );
+      if ( rootState.global.settings.historyOrder == 'desc' )
+        items.reverse();
       return items;
     }
   };

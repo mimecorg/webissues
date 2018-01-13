@@ -152,6 +152,9 @@ class Server_Api_Global
         $serverManager = new System_Api_ServerManager();
         $settings[ 'commentMaxLength' ] = (int)$serverManager->getSetting( 'comment_max_length' );
 
+        $preferencesManager = new System_Api_PreferencesManager();
+        $settings[ 'historyOrder' ] = $preferencesManager->getPreferenceOrSetting( 'history_order' );
+
         $result[ 'settings' ] = $settings;
 
         return $result;
