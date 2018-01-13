@@ -83,10 +83,7 @@ class Server_Api_Issue_Load
         }
 
         if ( $attributes ) {
-            $serverManager = new System_Api_ServerManager();
-            $hideEmpty = $serverManager->getSetting( 'hide_empty_values' );
-
-            $attributeValues = $issueManager->getAllAttributeValuesForIssue( $issue, $hideEmpty == '1' ? System_Api_IssueManager::HideEmptyValues : 0 );
+            $attributeValues = $issueManager->getAllAttributeValuesForIssue( $issue );
 
             foreach ( $attributeValues as &$value ) {
                 $formatted = $formatter->convertAttributeValue( $value[ 'attr_def' ], $value[ 'attr_value' ], System_Api_Formatter::MultiLine );

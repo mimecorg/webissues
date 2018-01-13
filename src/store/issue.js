@@ -45,6 +45,12 @@ function makeState() {
 
 function makeGetters() {
   return {
+    filteredAttributes( state, getters, rootState ) {
+      if ( rootState.global.settings.hideEmptyValues )
+        return state.attributes.filter( a => a.value != '' );
+      else
+        return state.attributes;
+    },
     isItemInHistory( state ) {
       return id => state.history.some( item => item.id == id && ( item.type == Change.CommentAdded || item.type == Change.FileAdded ) );
     },

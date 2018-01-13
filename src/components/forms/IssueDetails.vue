@@ -53,7 +53,7 @@
 
         <div class="issue-details">
           <div class="issue-header">{{ $t( 'IssueDetails.Attributes' ) }}</div>
-          <template v-for="attribute in attributes">
+          <template v-for="attribute in filteredAttributes">
             <div class="issue-details-title">{{ attribute.name }}</div>
             <div class="issue-details-value" v-html="attribute.value"></div>
           </template>
@@ -155,8 +155,8 @@ import { Access, Change, History, KeyCode } from '@/constants'
 export default {
   computed: {
     ...mapGetters( 'global', [ 'isAuthenticated' ] ),
-    ...mapState( 'issue', [ 'issueId', 'filter', 'unread', 'details', 'description', 'attributes' ] ),
-    ...mapGetters( 'issue', [ 'isItemInHistory', 'processedHistory' ] ),
+    ...mapState( 'issue', [ 'issueId', 'filter', 'unread', 'details', 'description' ] ),
+    ...mapGetters( 'issue', [ 'filteredAttributes', 'isItemInHistory', 'processedHistory' ] ),
     canMoveDelete() {
       return this.details.access == Access.AdministratorAccess;
     },
