@@ -100,7 +100,7 @@
         </div>
 
         <div class="issue-history">
-          <div v-for="item in history" v-bind:key="item.id" class="issue-history-item" v-bind:id="'item' + item.id">
+          <div v-for="item in processedHistory" v-bind:key="item.id" class="issue-history-item" v-bind:id="'item' + item.id">
 
             <div v-if="isCommentAdded( item ) || isFileAdded( item )" class="issue-group">
               <div class="issue-element issue-element-wide">
@@ -138,7 +138,7 @@
             </ul>
 
           </div>
-          <div v-if="history.length == 0" class="alert alert-info">
+          <div v-if="processedHistory.length == 0" class="alert alert-info">
             {{ getNoItemsText( filter ) }}
           </div>
         </div>
@@ -155,8 +155,8 @@ import { Access, Change, History, KeyCode } from '@/constants'
 export default {
   computed: {
     ...mapGetters( 'global', [ 'isAuthenticated' ] ),
-    ...mapState( 'issue', [ 'issueId', 'filter', 'unread', 'details', 'description', 'attributes', 'history' ] ),
-    ...mapGetters( 'issue', [ 'isItemInHistory' ] ),
+    ...mapState( 'issue', [ 'issueId', 'filter', 'unread', 'details', 'description', 'attributes' ] ),
+    ...mapGetters( 'issue', [ 'isItemInHistory', 'processedHistory' ] ),
     canMoveDelete() {
       return this.details.access == Access.AdministratorAccess;
     },

@@ -47,6 +47,32 @@ function makeGetters() {
   return {
     isItemInHistory( state ) {
       return id => state.history.some( item => item.id == id && ( item.type == Change.CommentAdded || item.type == Change.FileAdded ) );
+    },
+    processedHistory( state ) {
+      const items = [];
+      let change = null;
+      for ( let i = 0; i < state.history.length; i++ ) {
+        const row = state.history[ i ];
+        if ( row.type <= Change.ValueChanged && change != null ) {
+          if ( row.uid == change.changes[ 0 ].uid && ( row.ts - change.changes[ 0 ].ts ) < 180 ) {
+            change.changes.push( row );
+            continue;
+          }
+        }
+        if ( change != null ) {
+          items.push( change );
+          change = null;
+        }
+        if ( row.type <= Change.ValueChanged ) {
+          change = row;
+          change.changes = [ row ];
+        } else {
+          items.push( row );
+        }
+      }
+      if ( change != null )
+        items.push( change );
+      return items;
     }
   };
 }

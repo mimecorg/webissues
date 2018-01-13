@@ -127,13 +127,11 @@ class Server_Api_Issue_Load
             $query = $historyProvider->generateSelectQuery( $filter );
             $page = $connection->queryPageArgs( $query, $historyProvider->getOrderBy( System_Api_HistoryProvider::Ascending ), System_Const::INT_MAX, 0, $historyProvider->getQueryArguments() );
 
-            $history = $historyProvider->processPage( $page );
-
             $localeHelper = new System_Web_LocaleHelper();
 
             $result[ 'history' ] = array();
 
-            foreach ( $history as $id => $item ) {
+            foreach ( $page as $item ) {
                 $resultItem = array();
 
                 $resultItem[ 'id' ] = $item[ 'change_id' ];
@@ -145,50 +143,42 @@ class Server_Api_Issue_Load
                     $resultItem[ 'modifiedBy' ] = $item[ 'modified_by' ];
                 }
 
-                if ( isset( $item[ 'comment_text' ] ) )
+                if ( $item[ 'change_type' ] == System_Const::CommentAdded )
                     $resultItem[ 'text' ] = $this->convertText( $item[ 'comment_text' ], $html, $item[ 'comment_format' ] );
 
-                if ( isset( $item[ 'file_name' ] ) )
+                if ( $item[ 'change_type' ] == System_Const::FileAdded ) {
                     $resultItem[ 'name' ] = $item[ 'file_name' ];
-                if ( isset( $item[ 'file_descr' ] ) )
                     $resultItem[ 'description' ] = $this->convertText( $item[ 'file_descr' ], $html );
-                if ( isset( $item[ 'file_size' ] ) )
                     $resultItem[ 'size' ] = $localeHelper->formatFileSize( $item[ 'file_size' ] );
-
-                if ( isset( $item[ 'from_project_name' ] ) )
-                    $resultItem[ 'fromProject' ] = $item[ 'from_project_name' ];
-                if ( isset( $item[ 'from_folder_name' ] ) )
-                    $resultItem[ 'fromFolder' ] = $item[ 'from_folder_name' ];
-                if ( isset( $item[ 'to_project_name' ] ) )
-                    $resultItem[ 'toProject' ] = $item[ 'to_project_name' ];
-                if ( isset( $item[ 'to_folder_name' ] ) )
-                    $resultItem[ 'toFolder' ] = $item[ 'to_folder_name' ];
-
-                if ( isset( $item[ 'changes' ] ) ) {
-                    $resultItem[ 'changes' ] = array();
-
-                    foreach ( $item[ 'changes' ] as $change ) {
-                        $resultChange = array();
-
-                        $resultChange[ 'type' ] = $change[ 'change_type' ];
-                        if ( isset( $change[ 'attr_name' ] ) )
-                            $resultChange[ 'name' ] = $change[ 'attr_name' ];
-
-                        $newValue = $change[ 'value_new' ];
-                        $oldValue = $change[ 'value_old' ];
-                        if ( $change[ 'attr_def' ] != null ) {
-                            $newValue = $formatter->convertAttributeValue( $change[ 'attr_def' ], $newValue );
-                            $oldValue = $formatter->convertAttributeValue( $change[ 'attr_def' ], $oldValue );
-                        }
-
-                        $resultChange[ 'new' ] = $this->convertText( $newValue, $html );
-                        $resultChange[ 'old' ] = $this->convertText( $oldValue, $html );
-
-                        $resultItem[ 'changes' ][] = $resultChange;
-                    }
                 }
 
-                $resultItem[ 'own' ] = $item[ 'created_user' ] == $principal->getUserId();
+                if ( $item[ 'change_type' ] == System_Const::IssueMoved ) {
+                    $resultItem[ 'fromProject' ] = $item[ 'from_project_name' ];
+                    $resultItem[ 'fromFolder' ] = $item[ 'from_folder_name' ];
+                    $resultItem[ 'toProject' ] = $item[ 'to_project_name' ];
+                    $resultItem[ 'toFolder' ] = $item[ 'to_folder_name' ];
+                }
+
+                if ( $item[ 'change_type' ] <= System_Const::ValueChanged ) {
+                    if ( $item[ 'change_type' ] == System_Const::ValueChanged )
+                        $resultItem[ 'name' ] = $item[ 'attr_name' ];
+
+                    $newValue = $item[ 'value_new' ];
+                    $oldValue = $item[ 'value_old' ];
+                    if ( $item[ 'attr_def' ] != null ) {
+                        $newValue = $formatter->convertAttributeValue( $item[ 'attr_def' ], $newValue );
+                        $oldValue = $formatter->convertAttributeValue( $item[ 'attr_def' ], $oldValue );
+                    }
+
+                    $resultItem[ 'new' ] = $this->convertText( $newValue, $html );
+                    $resultItem[ 'old' ] = $this->convertText( $oldValue, $html );
+
+                    $resultItem[ 'ts' ] = $item[ 'created_date' ];
+                    $resultItem[ 'uid' ] = $item[ 'created_user' ];
+                }
+
+                if ( $item[ 'change_type' ] == System_Const::CommentAdded || $row[ 'change_type' ] == System_Const::FileAdded )
+                    $resultItem[ 'own' ] = $item[ 'created_user' ] == $principal->getUserId();
 
                 $result[ 'history' ][] = $resultItem;
             }
