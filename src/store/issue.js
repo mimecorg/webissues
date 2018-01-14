@@ -69,12 +69,10 @@ function makeGetters() {
           items.push( change );
           change = null;
         }
-        if ( row.type <= Change.ValueChanged ) {
-          change = row;
-          change.changes = [ row ];
-        } else {
+        if ( row.type <= Change.ValueChanged )
+          change = { ...row, changes: [ row ] };
+        else
           items.push( row );
-        }
       }
       if ( change != null )
         items.push( change );
