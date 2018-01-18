@@ -48,9 +48,9 @@ export function main( { baseURL, csrfToken, locale, ...initialState } ) {
 
   const i18n = makeI18n( locale );
   const ajax = makeAjax( baseURL, csrfToken );
-  const parser = makeParser();
   const router = makeRouter();
   const store = makeStore( baseURL, initialState, ajax, router );
+  const parser = makeParser( store );
 
   registerRoutes( router, ajax, parser, store );
 
@@ -59,8 +59,8 @@ export function main( { baseURL, csrfToken, locale, ...initialState } ) {
   app = new Vue( {
     i18n,
     ajax,
-    parser,
     router,
+    parser,
     store,
     el: '#application',
     render( createElement ) {

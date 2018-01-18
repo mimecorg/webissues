@@ -156,6 +156,25 @@ class Server_Api_Global
         $preferencesManager = new System_Api_PreferencesManager();
         $settings[ 'historyOrder' ] = $preferencesManager->getPreferenceOrSetting( 'history_order' );
 
+        $locale = new System_Api_Locale();
+
+        $info = System_Api_DefinitionInfo::fromString( $locale->getSettingFormat( 'number_format' ) );
+        $settings[ 'groupSeparator' ] = $info->getMetadata( 'group-separator' );
+        $settings[ 'decimalSeparator' ] = $info->getMetadata( 'decimal-separator' );
+
+        $info = System_Api_DefinitionInfo::fromString( $locale->getSettingFormat( 'date_format' ) );
+        $settings[ 'dateOrder' ] = $info->getMetadata( 'date-order' );
+        $settings[ 'dateSeparator' ] = $info->getMetadata( 'date-separator' );
+        $settings[ 'padMonth' ] = $info->getMetadata( 'pad-month' ) == 1;
+        $settings[ 'padDay' ] = $info->getMetadata( 'pad-day' ) == 1;
+
+        $info = System_Api_DefinitionInfo::fromString( $locale->getSettingFormat( 'time_format' ) );
+        $settings[ 'timeMode' ] = $info->getMetadata( 'time-mode' );
+        $settings[ 'timeSeparator' ] = $info->getMetadata( 'time-separator' );
+        $settings[ 'padHours' ] = $info->getMetadata( 'pad-hour' ) == 1;
+
+        $settings[ 'firstDayOfWeek' ] = (int)$locale->getSetting( 'first_day_of_week' );
+
         $result[ 'settings' ] = $settings;
 
         return $result;

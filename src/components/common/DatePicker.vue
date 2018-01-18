@@ -48,7 +48,7 @@
             <table class="datepicker datepicker-7-cols">
               <thead>
                 <tr>
-                  <th v-for="day in weekdays">{{ day }}</th>
+                  <th v-for="col in 7">{{ getWeekDay( col ) }}</th>
                 </tr>
               </thead>
               <tbody>
@@ -57,7 +57,7 @@
                 </tr>
                 <tr>
                   <td colspan="2"></td>
-                  <td class="datepicker-btn" colspan="3" v-on:click="selectToday()">Today</td>
+                  <td class="datepicker-btn" colspan="3" v-on:click="selectToday()">{{ $t( 'Common.Today' ) }}</td>
                   <td colspan="2"></td>
                 </tr>
               </tbody>
@@ -112,25 +112,25 @@
           <!-- time picker -->
 
           <template v-if="selector == null">
-            <table class="datepicker datepicker-time datepicker-timepicker">
+            <table v-bind:class="[ 'datepicker', 'datepicker-time', isTimeMode12 ? 'datepicker-timepicker12' : 'datepicker-timepicker24' ]">
               <tbody>
                 <tr>
                   <td class="datepicker-btn" v-on:click="changeTime( 1, 0 )"><span class="fa fa-chevron-up" aria-hidden="true"></span></td>
                   <td class="datepicker-separator"></td>
                   <td class="datepicker-btn" v-on:click="changeTime( 0, 1 )"><span class="fa fa-chevron-up" aria-hidden="true"></span></td>
-                  <td></td>
+                  <td v-if="isTimeMode12"></td>
                 </tr>
                 <tr>
                   <td class="datepicker-btn" v-on:click="openSelector( 'hours' )">{{ hours }}</td>
-                  <td class="datepicker-separator">:</td>
+                  <td class="datepicker-separator">{{ settings.timeSeparator }}</td>
                   <td class="datepicker-btn" v-on:click="openSelector( 'minutes' )">{{ minutes }}</td>
-                  <td class="datepicker-btn" v-on:click="toggleAmPm()">{{ amPm }}</td>
+                  <td v-if="isTimeMode12" class="datepicker-btn" v-on:click="toggleAmPm()">{{ amPm }}</td>
                 </tr>
                 <tr>
                   <td class="datepicker-btn" v-on:click="changeTime( -1, 0 )"><span class="fa fa-chevron-down" aria-hidden="true"></span></td>
                   <td class="datepicker-separator"></td>
                   <td class="datepicker-btn" v-on:click="changeTime( 0, -1 )"><span class="fa fa-chevron-down" aria-hidden="true"></span></td>
-                  <td></td>
+                  <td v-if="isTimeMode12"></td>
                 </tr>
               </tbody>
             </table>
@@ -141,7 +141,7 @@
           <template v-else-if="selector == 'hours'">
             <table class="datepicker datepicker-time datepicker-4-cols">
               <tbody>
-                <tr v-for="row in 3">
+                <tr v-for="row in hoursRows">
                   <td v-for="col in 4" class="datepicker-btn" v-on:click="selectHours( row, col )">{{ getHoursCell( row, col ) }}</td>
                 </tr>
               </tbody>
@@ -168,6 +168,8 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 import { KeyCode } from '@/constants'
 
 export default {
@@ -187,13 +189,21 @@ export default {
       selectedDate: null,
       open: false,
       mode: null,
-      selector: null,
-      weekdays: [ 'Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa' ],
-      months: [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ]
+      selector: null
     }
   },
 
   computed: {
+    ...mapState( 'global', [ 'settings' ] ),
+    weekdays() {
+      return [ 'Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa' ].map( d => this.$t( 'WeekDay.' + d ) );
+    },
+    months() {
+      return [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ].map( m => this.$t( 'Month.' + m ) );
+    },
+    isTimeMode12() {
+      return this.settings.timeMode == 12;
+    },
     currentMonth() {
       return this.currentDate.getMonth();
     },
@@ -206,9 +216,6 @@ export default {
     currentYearPadded() {
       return this.currentYear.toString().padStart( 4, '0' );
     },
-    firstWeekDay() {
-      return this.currentDate.getDay();
-    },
     selectedDay() {
       return this.selectedDate != null ? this.selectedDate.getDate() : null;
     },
@@ -219,7 +226,10 @@ export default {
       return this.selectedDate != null ? this.selectedDate.getFullYear() : null;
     },
     hours() {
-      return this.selectedDate != null ? ( this.selectedDate.getHours() + 11 ) % 12 + 1 : 12;
+      if ( this.isTimeMode12 )
+        return this.selectedDate != null ? ( this.selectedDate.getHours() + 11 ) % 12 + 1 : 12;
+      else
+        return this.selectedDate != null ? this.selectedDate.getHours() : 0;
     },
     minutes() {
       return this.selectedDate != null ? this.selectedDate.getMinutes().toString().padStart( 2, '0' ) : '00';
@@ -232,6 +242,9 @@ export default {
         if ( this.getDay( i, 1 ) != null )
           return i;
       }
+    },
+    hoursRows() {
+      return this.isTimeMode12 ? 3 : 6;
     }
   },
 
@@ -322,8 +335,11 @@ export default {
 
     /* displaying date */
 
+    getWeekDay( col ) {
+      return this.weekdays[ ( col - 1 + this.settings.firstDayOfWeek ) % 7 ];
+    },
     getDay( row, col ) {
-      const day = ( row - 1 ) * 7 + col - this.firstWeekDay;
+      const day = ( row - 1 ) * 7 + col - ( this.currentDate.getDay() - this.settings.firstDayOfWeek + 7 ) % 7;
       if ( day >= 1 && this.createDate( this.currentYear, this.currentMonth, day ) < this.createDate( this.currentYear, this.currentMonth + 1, 1 ) )
         return day;
       else
@@ -413,7 +429,10 @@ export default {
     /* displaying time */
 
     getHours( row, col ) {
-      return ( row - 1 ) * 4 + col;
+      if ( this.isTimeMode12 )
+        return ( row - 1 ) * 4 + col;
+      else
+        return ( row - 1 ) * 4 + col - 1;
     },
     getHoursCell( row, col ) {
       return this.getHours( row, col );
@@ -427,18 +446,20 @@ export default {
 
     /* change the value of the input control based on selected date */
     updateValue() {
-      let value = '' + ( this.selectedMonth + 1 ) + '/' + this.selectedDay + '/' + this.selectedYear.toString().padStart( 4, '0' );
-      if ( this.withTime )
-        value += ' ' + this.hours + ':' + this.minutes + ' ' + this.amPm;
-      this.setValue( value );
+      if ( this.selectedDate != null ) {
+        const value = this.$parser.formatDate( this.selectedDate, { withTime: this.withTime } );
+        this.setValue( value );
+      }
     },
 
     /* update selected date based on user input */
     updateDate() {
-      const date = this.parseDate( this.currentValue );
-      if ( date ) {
-        this.selectedDate = date;
-        this.currentDate = this.createDate( date.getFullYear(), date.getMonth(), 1 );
+      if ( this.currentValue != null ) {
+        const date = this.$parser.parseDate( this.currentValue, { withTime: this.withTime } );
+        if ( date != null ) {
+          this.selectedDate = date;
+          this.currentDate = this.createDate( date.getFullYear(), date.getMonth(), 1 );
+        }
       }
     },
 
@@ -466,40 +487,6 @@ export default {
       }
     },
 
-    /* create Date based on user input */
-    parseDate( value ) {
-      if ( value != null ) {
-        let parts;
-        if ( this.withTime )
-          parts = /^\s*(\d\d?)\/(\d\d?)\/(\d\d\d\d)(?:\s+(\d\d?):(\d\d?)\s*([ap]m))?\s*$/i.exec( value );
-        else
-          parts = /^\s*(\d\d?)\/(\d\d?)\/(\d\d\d\d)\s*$/.exec( value );
-        if ( parts ) {
-          const month = Number( parts[ 1 ] );
-          const day = Number( parts[ 2 ] );
-          const year = Number( parts[ 3 ] );
-          const date = this.createDate( year, month - 1, day );
-          if ( year != 0 && date.getFullYear() == year && date.getMonth() == month - 1 && date.getDate( day ) == day ) {
-            if ( this.withTime && parts[ 4 ] != null ) {
-              let hours = Number( parts[ 4 ] );
-              const minutes = Number( parts[ 5 ] );
-              if ( hours >= 1 && hours <= 12 && minutes <= 60 ) {
-                if ( hours == 12 )
-                  hours = 0;
-                if ( parts[ 6 ].toLowerCase() == 'pm' )
-                  hours += 12;
-                date.setHours( hours, minutes, 0, 0 );
-                return date;
-              }
-            } else {
-              return date;
-            }
-          }
-        }
-      }
-      return null;
-    },
-
     /* create Date object correctly handling years 1 - 99 */
     createDate( year, month, day, hours = 0, minutes = 0 ) {
       const date = new Date();
@@ -510,9 +497,11 @@ export default {
   },
 
   mounted() {
-    const date = this.parseDate( this.value );
-    if ( date )
-      this.selectedDate = date;
+    if ( this.value != null ) {
+      const date = this.$parser.parseDate( this.value, { withTime: this.withTime } );
+      if ( date != null )
+        this.selectedDate = date;
+    }
   }
 }
 </script>
@@ -560,12 +549,22 @@ export default {
   }
 }
 
-.datepicker-timepicker {
+.datepicker-timepicker12 {
   td {
     width: 30%;
 
     &.datepicker-separator {
       width: 10%;
+    }
+  }
+}
+
+.datepicker-timepicker24 {
+  td {
+    width: 40%;
+
+    &.datepicker-separator {
+      width: 20%;
     }
   }
 }

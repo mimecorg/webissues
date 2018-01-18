@@ -80,7 +80,7 @@ export default function makeIssueRoutes( ajax, parser, store ) {
         const attributes = type.attributes.map( attribute => ( {
           id: attribute.id,
           name: attribute.name,
-          value: parser.convertInitialValue( attribute.default, attribute, store.state.global.userName )
+          value: parser.convertInitialValue( attribute.default, attribute )
         } ) );
         return Promise.resolve( {
           component: EditIssue,
