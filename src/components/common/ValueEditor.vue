@@ -29,6 +29,8 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 import { MaxLength } from '@/constants'
 
 export default {
@@ -36,10 +38,10 @@ export default {
     id: String,
     value: String,
     attribute: Object,
-    project: Object,
-    users: { type: Array, default() { return []; } }
+    project: Object
   },
   computed: {
+    ...mapState( 'global', [ 'users' ] ),
     isAutocomplete() {
       return this.attribute != null && ( this.attribute.type == 'ENUM' || this.attribute.type == 'USER' );
     },

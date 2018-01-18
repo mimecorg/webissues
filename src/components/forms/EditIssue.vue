@@ -27,14 +27,13 @@
       <input ref="name" id="name" type="text" class="form-control" v-bind:maxlength="maxLength" v-model="nameValue">
     </FormGroup>
     <FormGroup v-if="mode == 'add' || mode == 'clone'" v-bind:label="$t( 'EditIssue.Location' )" v-bind:required="true" v-bind:error="locationError">
-      <LocationFilters ref="location" v-bind:projects="projects" v-bind:project="project" v-bind:folders="folders" v-bind:folder="folder"
-                       v-on:select-project="selectProject" v-on:select-folder="selectFolder"/>
+      <LocationFilters ref="location" v-bind:typeId="typeId" v-bind:project="project" v-bind:folder="folder" v-on:select-project="selectProject" v-on:select-folder="selectFolder"/>
     </FormGroup>
     <Panel v-if="attributes.length > 0" v-bind:title="$t( 'EditIssue.Attributes' )">
       <FormGroup v-for="( attribute, index ) in attributes" v-bind:key="attribute.id" v-bind:id="'attribute' + attribute.id" v-bind:label="$t( 'EditIssue.AttributeLabel', [ attribute.name ] )"
                  v-bind:required="isAttributeRequired( attribute.id )" v-bind:error="attributeErrors[ index ]">
         <ValueEditor ref="attribute" v-bind:id="'attribute' + attribute.id" v-bind:attribute="getAttribute( attribute.id )"
-                     v-bind:project="project" v-bind:users="users" v-model="attributeValues[ index ]"/>
+                     v-bind:project="project" v-model="attributeValues[ index ]"/>
       </FormGroup>
     </Panel>
     <FormGroup v-if="mode == 'add' || mode == 'clone'" id="description" v-bind:label="$t( 'EditIssue.Description' )" v-bind:error="descriptionError">
@@ -97,12 +96,6 @@ export default {
         return this.project.folders.find( f => f.id == this.selectedFolderId );
       else
         return null;
-    },
-    folders() {
-      if ( this.project != null )
-        return this.project.folders.filter( f => f.typeId == this.typeId );
-      else
-        return [];
     }
   },
 
@@ -184,7 +177,7 @@ export default {
           const multiLine = attribute != null && attribute.type == 'TEXT' && attribute[ 'multi-line' ] == 1;
           this.attributeValues[ i ] = this.$parser.normalizeString( this.attributeValues[ i ], MaxLength.Value, { allowEmpty: true, multiLine } );
           if ( attribute != null )
-            this.attributeValues[ i ] = this.$parser.normalizeAttributeValue( this.attributeValues[ i ], attribute, this.project, this.users );
+            this.attributeValues[ i ] = this.$parser.normalizeAttributeValue( this.attributeValues[ i ], attribute, this.project );
           if ( this.attributeValues[ i ] != this.attributes[ i ].value ) {
             data.values.push( { id: this.attributes[ i ].id, value: this.attributeValues[ i ] } );
             modified = true;

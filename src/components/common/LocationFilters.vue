@@ -49,14 +49,22 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
   props: {
-    projects: Array,
+    typeId: Number,
     project: Object,
-    folders: Array,
     folder: Object
   },
   computed: {
+    ...mapState( 'global', [ 'projects' ] ),
+    folders() {
+      if ( this.project != null )
+        return this.project.folders.filter( f => f.typeId == this.typeId );
+      else
+        return [];
+    },
     projectName() {
       if ( this.project != null )
         return this.project.name;
