@@ -23,14 +23,14 @@
     <FormHeader v-bind:title="details.name" v-on:close="close">
       <button v-if="isAuthenticated" type="button" class="btn btn-primary" v-on:click="editIssue"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'IssueDetails.Edit' ) }}</button>
       <DropdownButton v-if="isAuthenticated" fa-class="fa-ellipsis-v" menu-class="dropdown-menu-right" v-bind:title="$t( 'IssueDetails.More' )">
-        <li><Link v-on:click="cloneIssue"><span class="fa fa-clone" aria-hidden="true"></span> {{ $t( 'IssueDetails.CloneIssue' ) }}</Link></li>
-        <li v-if="canMoveDelete"><Link><span class="fa fa-exchange" aria-hidden="true"></span> {{ $t( 'IssueDetails.MoveIssue' ) }}</Link></li>
-        <li v-if="canMoveDelete"><Link><span class="fa fa-trash" aria-hidden="true"></span> {{ $t( 'IssueDetails.DeleteIssue' ) }}</Link></li>
+        <li><HyperLink v-on:click="cloneIssue"><span class="fa fa-clone" aria-hidden="true"></span> {{ $t( 'IssueDetails.CloneIssue' ) }}</HyperLink></li>
+        <li v-if="canMoveDelete"><HyperLink><span class="fa fa-exchange" aria-hidden="true"></span> {{ $t( 'IssueDetails.MoveIssue' ) }}</HyperLink></li>
+        <li v-if="canMoveDelete"><HyperLink><span class="fa fa-trash" aria-hidden="true"></span> {{ $t( 'IssueDetails.DeleteIssue' ) }}</HyperLink></li>
         <li role="separator" class="divider"></li>
-        <li v-if="unread"><Link v-on:click="setUnread( false )"><span class="fa fa-check-circle-o" aria-hidden="true"></span> {{ $t( 'IssueDetails.MarkAsRead' ) }}</Link></li>
-        <li v-if="!unread"><Link v-on:click="setUnread( true )"><span class="fa fa-check-circle" aria-hidden="true"></span> {{ $t( 'IssueDetails.MarkAsUnread' ) }}</Link></li>
+        <li v-if="unread"><HyperLink v-on:click="setUnread( false )"><span class="fa fa-check-circle-o" aria-hidden="true"></span> {{ $t( 'IssueDetails.MarkAsRead' ) }}</HyperLink></li>
+        <li v-if="!unread"><HyperLink v-on:click="setUnread( true )"><span class="fa fa-check-circle" aria-hidden="true"></span> {{ $t( 'IssueDetails.MarkAsUnread' ) }}</HyperLink></li>
         <li role="separator" class="divider"></li>
-        <li><Link><span class="fa fa-envelope" aria-hidden="true"></span> {{ $t( 'IssueDetails.Subscribe' ) }}</Link></li>
+        <li><HyperLink><span class="fa fa-envelope" aria-hidden="true"></span> {{ $t( 'IssueDetails.Subscribe' ) }}</HyperLink></li>
       </DropdownButton>
     </FormHeader>
 
@@ -68,9 +68,9 @@
           </div>
           <div class="issue-element">
             <DropdownButton v-if="isAuthenticated && description != null" fa-class="fa-ellipsis-v" menu-class="dropdown-menu-right" v-bind:title="$t( 'IssueDetails.Menu' )">
-              <li><Link><span class="fa fa-reply" aria-hidden="true"></span> {{ $t( 'IssueDetails.Reply' ) }}</Link></li>
-              <li v-if="canEditDescription"><Link><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'IssueDetails.Edit' ) }}</Link></li>
-              <li v-if="canEditDescription"><Link><span class="fa fa-trash" aria-hidden="true"></span> {{ $t( 'IssueDetails.Delete' ) }}</Link></li>
+              <li><HyperLink><span class="fa fa-reply" aria-hidden="true"></span> {{ $t( 'IssueDetails.Reply' ) }}</HyperLink></li>
+              <li v-if="canEditDescription"><HyperLink><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'IssueDetails.Edit' ) }}</HyperLink></li>
+              <li v-if="canEditDescription"><HyperLink><span class="fa fa-trash" aria-hidden="true"></span> {{ $t( 'IssueDetails.Delete' ) }}</HyperLink></li>
             </DropdownButton>
             <button v-else-if="canEditDescription" type="button" class="btn btn-default"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'IssueDetails.Add' ) }}</button>
           </div>
@@ -94,7 +94,7 @@
             <button v-if="isAuthenticated" type="button" class="btn btn-success"><span class="fa fa-comment" aria-hidden="true"></span> {{ $t( 'IssueDetails.Add' ) }}</button>
             <button v-if="isAuthenticated" type="button" class="btn btn-default"><span class="fa fa-paperclip" aria-hidden="true"></span> <span class="hidden-xs auto-tooltip">{{ $t( 'IssueDetails.Attach' ) }}</span></button>
             <DropdownButton fa-class="fa-cog" menu-class="dropdown-menu-right" v-bind:title="$t( 'IssueDetails.Filter' )">
-              <li v-for="item in allFilters" v-bind:class="{ active: filter == item }"><Link v-on:click="setFilter( item )">{{ getFilterText( item ) }}</Link></li>
+              <li v-for="item in allFilters" v-bind:class="{ active: filter == item }"><HyperLink v-on:click="setFilter( item )">{{ getFilterText( item ) }}</HyperLink></li>
             </DropdownButton>
           </div>
         </div>
@@ -109,9 +109,9 @@
               <div class="issue-element">
                 <a class="issue-history-id" v-bind:href="'#/item/' + item.id">#{{ item.id }}</a>
                 <DropdownButton v-if="canReply( item ) || canEditItem( item )" fa-class="fa-ellipsis-v" menu-class="dropdown-menu-right" v-bind:title="$t( 'IssueDetails.Menu' )">
-                  <li v-if="canReply( item )"><Link><span class="fa fa-reply" aria-hidden="true"></span> {{ $t( 'IssueDetails.Reply' ) }}</Link></li>
-                  <li v-if="canEditItem( item )"><Link><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'IssueDetails.Edit' ) }}</Link></li>
-                  <li v-if="canEditItem( item )"><Link><span class="fa fa-trash" aria-hidden="true"></span> {{ $t( 'IssueDetails.Delete' ) }}</Link></li>
+                  <li v-if="canReply( item )"><HyperLink><span class="fa fa-reply" aria-hidden="true"></span> {{ $t( 'IssueDetails.Reply' ) }}</HyperLink></li>
+                  <li v-if="canEditItem( item )"><HyperLink><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'IssueDetails.Edit' ) }}</HyperLink></li>
+                  <li v-if="canEditItem( item )"><HyperLink><span class="fa fa-trash" aria-hidden="true"></span> {{ $t( 'IssueDetails.Delete' ) }}</HyperLink></li>
                 </DropdownButton>
               </div>
             </div>
@@ -124,7 +124,7 @@
               </div>
             </div>
             <div v-else-if="isFileAdded( item )" class="issue-attachment">
-              <span class="fa fa-paperclip" aria-hidden="true"></span> <Link>{{ item.name }}</Link> ({{ item.size }})
+              <span class="fa fa-paperclip" aria-hidden="true"></span> <HyperLink>{{ item.name }}</HyperLink> ({{ item.size }})
               <span v-if="item.description" v-html="'&mdash; ' + item.description"></span>
               <div v-if="item.modifiedDate" class="issue-last-edited">
                 <span class="fa fa-pencil" aria-hidden="true"></span> {{ item.modifiedDate }} &mdash; {{ item.modifiedBy }}

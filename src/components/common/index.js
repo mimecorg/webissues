@@ -25,7 +25,7 @@ import FormButtons from '@/components/common/FormButtons'
 import FormGroup from '@/components/common/FormGroup'
 import FormHeader from '@/components/common/FormHeader'
 import Grid from '@/components/common/Grid'
-import Link from '@/components/common/Link'
+import HyperLink from '@/components/common/HyperLink'
 import LocationFilters from '@/components/common/LocationFilters'
 import Panel from '@/components/common/Panel'
 import Prompt from '@/components/common/Prompt'
@@ -40,7 +40,7 @@ export default {
   FormGroup,
   FormHeader,
   Grid,
-  Link,
+  HyperLink,
   LocationFilters,
   Panel,
   Prompt,

@@ -22,12 +22,12 @@
     <DropdownButton ref="project" fa-class="fa-object-group" v-bind:text="projectName" v-bind:title="projectTitle">
       <div class="dropdown-menu-scroll">
         <li v-bind:class="{ active: project == null }">
-          <Link v-on:click="selectProject( null )">{{ $t( 'LocationFilters.SelectProject' ) }}</Link>
+          <HyperLink v-on:click="selectProject( null )">{{ $t( 'LocationFilters.SelectProject' ) }}</HyperLink>
         </li>
         <template v-if="projects.length > 0">
           <li role="separator" class="divider"></li>
           <li v-for="p in projects" v-bind:key="p.id" v-bind:class="{ active: project != null && p.id == project.id }">
-            <Link v-on:click="selectProject( p )">{{ p.name }}</Link>
+            <HyperLink v-on:click="selectProject( p )">{{ p.name }}</HyperLink>
           </li>
         </template>
       </div>
@@ -35,12 +35,12 @@
     <DropdownButton ref="folder" fa-class="fa-folder-open-o" v-bind:text="folderName" v-bind:title="folderTitle">
       <div class="dropdown-menu-scroll">
         <li v-bind:class="{ active: folder == null }">
-          <Link v-on:click="selectFolder( null )">{{ $t( 'LocationFilters.SelectFolder' ) }}</Link>
+          <HyperLink v-on:click="selectFolder( null )">{{ $t( 'LocationFilters.SelectFolder' ) }}</HyperLink>
         </li>
         <template v-if="folders.length > 0">
           <li role="separator" class="divider"></li>
           <li v-for="f in folders" v-bind:key="f.id" v-bind:class="{ active: folder != null && f.id == folder.id }">
-            <Link v-on:click="selectFolder( f )">{{ f.name }}</Link>
+            <HyperLink v-on:click="selectFolder( f )">{{ f.name }}</HyperLink>
           </li>
         </template>
       </div>

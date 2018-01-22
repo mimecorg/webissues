@@ -41,34 +41,34 @@
             <span class="fa fa-arrow-right" aria-hidden="true"></span> <span class="hidden-sm hidden-md">{{ $t( 'Navbar.GoTo' ) }}</span>
           </button>
           <DropdownButton v-if="isAdministrator || canManageProjects" fa-class="fa-cog" v-bind:text="$t( 'Navbar.Administration' )"
-                           text-class="hidden-sm hidden-md" v-bind:title="$t( 'Navbar.AdministrationMenu' )">
-            <li><Link><span class="fa fa-object-group" aria-hidden="true"></span> {{ $t( 'Navbar.Projects' ) }}</Link></li>
+                          text-class="hidden-sm hidden-md" v-bind:title="$t( 'Navbar.AdministrationMenu' )">
+            <li><HyperLink><span class="fa fa-object-group" aria-hidden="true"></span> {{ $t( 'Navbar.Projects' ) }}</HyperLink></li>
             <template v-if="isAdministrator">
-              <li><Link><span class="fa fa-users" aria-hidden="true"></span> {{ $t( 'Navbar.UserAccounts' ) }}</Link></li>
-              <li><Link><span class="fa fa-user-circle-o" aria-hidden="true"></span> {{ $t( 'Navbar.RegistrationRequests' ) }}</Link></li>
-              <li><Link><span class="fa fa-list" aria-hidden="true"></span> {{ $t( 'Navbar.IssueTypes' ) }}</Link></li>
+              <li><HyperLink><span class="fa fa-users" aria-hidden="true"></span> {{ $t( 'Navbar.UserAccounts' ) }}</HyperLink></li>
+              <li><HyperLink><span class="fa fa-user-circle-o" aria-hidden="true"></span> {{ $t( 'Navbar.RegistrationRequests' ) }}</HyperLink></li>
+              <li><HyperLink><span class="fa fa-list" aria-hidden="true"></span> {{ $t( 'Navbar.IssueTypes' ) }}</HyperLink></li>
             </template>
-            <li><Link><span class="fa fa-bell-o" aria-hidden="true"></span> {{ $t( 'Navbar.PublicAlerts' ) }}</Link></li>
+            <li><HyperLink><span class="fa fa-bell-o" aria-hidden="true"></span> {{ $t( 'Navbar.PublicAlerts' ) }}</HyperLink></li>
             <template v-if="isAdministrator">
-              <li><Link><span class="fa fa-clock-o" aria-hidden="true"></span> {{ $t( 'Navbar.ArchivedProjects' ) }}</Link></li>
+              <li><HyperLink><span class="fa fa-clock-o" aria-hidden="true"></span> {{ $t( 'Navbar.ArchivedProjects' ) }}</HyperLink></li>
               <li role="separator" class="divider"></li>
-              <li><Link><span class="fa fa-wrench" aria-hidden="true"></span> {{ $t( 'Navbar.GeneralSettings' ) }}</Link></li>
-              <li><Link><span class="fa fa-lock" aria-hidden="true"></span> {{ $t( 'Navbar.AccessSettings' ) }}</Link></li>
-              <li><Link><span class="fa fa-envelope-o" aria-hidden="true"></span> {{ $t( 'Navbar.EmailSettings' ) }}</Link></li>
-              <li><Link><span class="fa fa-inbox" aria-hidden="true"></span> {{ $t( 'Navbar.InboxSettings' ) }}</Link></li>
-              <li><Link><span class="fa fa-cogs" aria-hidden="true"></span> {{ $t( 'Navbar.AdvancedSettings' ) }}</Link></li>
+              <li><HyperLink><span class="fa fa-wrench" aria-hidden="true"></span> {{ $t( 'Navbar.GeneralSettings' ) }}</HyperLink></li>
+              <li><HyperLink><span class="fa fa-lock" aria-hidden="true"></span> {{ $t( 'Navbar.AccessSettings' ) }}</HyperLink></li>
+              <li><HyperLink><span class="fa fa-envelope-o" aria-hidden="true"></span> {{ $t( 'Navbar.EmailSettings' ) }}</HyperLink></li>
+              <li><HyperLink><span class="fa fa-inbox" aria-hidden="true"></span> {{ $t( 'Navbar.InboxSettings' ) }}</HyperLink></li>
+              <li><HyperLink><span class="fa fa-cogs" aria-hidden="true"></span> {{ $t( 'Navbar.AdvancedSettings' ) }}</HyperLink></li>
               <li role="separator" class="divider"></li>
-              <li><Link><span class="fa fa-info" aria-hidden="true"></span> {{ $t( 'Navbar.StatusReport' ) }}</Link></li>
-              <li><Link><span class="fa fa-book" aria-hidden="true"></span> {{ $t( 'Navbar.EventLog' ) }}</Link></li>
+              <li><HyperLink><span class="fa fa-info" aria-hidden="true"></span> {{ $t( 'Navbar.StatusReport' ) }}</HyperLink></li>
+              <li><HyperLink><span class="fa fa-book" aria-hidden="true"></span> {{ $t( 'Navbar.EventLog' ) }}</HyperLink></li>
             </template>
           </DropdownButton>
           <DropdownButton fa-class="fa-user" v-bind:text="userName" text-class="hidden-sm hidden-md" v-bind:title="userTitle">
             <template v-if="isAuthenticated">
-              <li><Link><span class="fa fa-filter" aria-hidden="true"></span> {{ $t( 'Navbar.PersonalViews' ) }}</Link></li>
-              <li><Link><span class="fa fa-bell-o" aria-hidden="true"></span> {{ $t( 'Navbar.PersonalAlerts' ) }}</Link></li>
+              <li><HyperLink><span class="fa fa-filter" aria-hidden="true"></span> {{ $t( 'Navbar.PersonalViews' ) }}</HyperLink></li>
+              <li><HyperLink><span class="fa fa-bell-o" aria-hidden="true"></span> {{ $t( 'Navbar.PersonalAlerts' ) }}</HyperLink></li>
               <li role="separator" class="divider"></li>
-              <li><Link><span class="fa fa-sliders" aria-hidden="true"></span> {{ $t( 'Navbar.UserPreferences' ) }}</Link></li>
-              <li><Link><span class="fa fa-unlock-alt" aria-hidden="true"></span> {{ $t( 'Navbar.ChangePassword' ) }}</Link></li>
+              <li><HyperLink><span class="fa fa-sliders" aria-hidden="true"></span> {{ $t( 'Navbar.UserPreferences' ) }}</HyperLink></li>
+              <li><HyperLink><span class="fa fa-unlock-alt" aria-hidden="true"></span> {{ $t( 'Navbar.ChangePassword' ) }}</HyperLink></li>
               <li role="separator" class="divider"></li>
               <li><a v-bind:href="baseURL + '/index.php'"><span class="fa fa-sign-out" aria-hidden="true"></span> {{ $t( 'Navbar.LogOut' ) }}</a></li>
             </template>
