@@ -32,6 +32,7 @@ class Server_Api_Issue_Edit
         $folderId = isset( $arguments[ 'folderId' ] ) ? (int)$arguments[ 'folderId' ] : null;
         $name = isset( $arguments[ 'name' ] ) ? $arguments[ 'name' ] : null;
         $description = isset( $arguments[ 'description' ] ) ? $arguments[ 'description' ] : null;
+        $descriptionFormat = isset( $arguments[ 'descriptionFormat' ] ) ? (int)$arguments[ 'descriptionFormat' ] : null;
 
         switch ( $mode ) {
             case 'add':
@@ -95,6 +96,7 @@ class Server_Api_Issue_Edit
         if ( $description != null ) {
             $serverManager = new System_Api_ServerManager();
             $description = $parser->normalizeString( $description, $serverManager->getSetting( 'comment_max_length' ), System_Api_Parser::AllowEmpty | System_Api_Parser::MultiLine );
+            $parser->checkTextFormat( $descriptionFormat );
         }
 
         $typeManager = new System_Api_TypeManager();
@@ -175,7 +177,7 @@ class Server_Api_Issue_Edit
             $issue = $issueManager->getIssue( $issueId );
 
             if ( $description != '' )
-                $lastStampId = $issueManager->addDescription( $issue, $description, System_Const::PlainText );
+                $lastStampId = $issueManager->addDescription( $issue, $description, $descriptionFormat );
         } else {
             if ( $name != null ) {
                 $stampId = $issueManager->renameIssue( $issue, $name );

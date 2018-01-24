@@ -77,7 +77,7 @@
         </div>
 
         <div v-if="description" class="issue-description">
-          <div class="issue-description-text" v-html="description.text"></div>
+          <div class="formatted-text" v-html="description.text"></div>
           <div v-if="description.modifiedDate" class="issue-last-edited">
             <span class="fa fa-pencil" aria-hidden="true"></span> {{ description.modifiedDate }} &mdash; {{ description.modifiedBy }}
           </div>
@@ -118,7 +118,7 @@
             <div v-else class="issue-history-title">{{ item.createdDate }} &mdash; {{ item.createdBy }}</div>
 
             <div v-if="isCommentAdded( item )" class="issue-comment">
-              <div class="issue-comment-text" v-html="item.text"></div>
+              <div class="formatted-text" v-html="item.text"></div>
               <div v-if="item.modifiedDate" class="issue-last-edited">
                 <span class="fa fa-pencil" aria-hidden="true"></span> {{ item.modifiedDate }} &mdash; {{ item.modifiedBy }}
               </div>
@@ -405,30 +405,6 @@ function escape( text ) {
   color: @issue-attachment-text;
   border-radius: @border-radius-base;
   word-wrap: break-word;
-}
-
-.issue-description-text, .issue-comment-text {
-  white-space: pre-wrap;
-  word-wrap: break-word;
-
-  ul {
-    margin-bottom: 0;
-  }
-
-  .quote {
-    margin-bottom: 5px;
-    padding: 5px 10px;
-    border-left: 2px solid #777;
-  }
-
-  .quote-title {
-    margin-bottom: 5px;
-    font-weight: bold;
-  }
-
-  .rtl {
-    direction: rtl;
-  }
 }
 
 .issue-last-edited {

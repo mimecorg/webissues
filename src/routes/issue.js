@@ -88,7 +88,8 @@ export default function makeIssueRoutes( ajax, parser, store ) {
           typeId,
           projectId,
           folderId,
-          attributes
+          attributes,
+          descriptionFormat: store.state.global.settings.defaultFormat
         } );
       } else {
         return Promise.reject( makeError( ErrorCode.UnknownType ) );
@@ -106,7 +107,8 @@ export default function makeIssueRoutes( ajax, parser, store ) {
           folderId: details.folderId,
           name: details.name,
           attributes,
-          description: description.text
+          description: description != null ? description.text : null,
+          descriptionFormat: description != null ? description.format : store.state.global.settings.defaultFormat
         };
       } );
     } );

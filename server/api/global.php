@@ -155,6 +155,7 @@ class Server_Api_Global
 
         $preferencesManager = new System_Api_PreferencesManager();
         $settings[ 'historyOrder' ] = $preferencesManager->getPreferenceOrSetting( 'history_order' );
+        $settings[ 'defaultFormat' ] = (int)$preferencesManager->getPreferenceOrSetting( 'default_format' );
 
         $locale = new System_Api_Locale();
 

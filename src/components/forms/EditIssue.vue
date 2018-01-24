@@ -36,9 +36,8 @@
                      v-bind:project="project" v-model="attributeValues[ index ]"/>
       </FormGroup>
     </Panel>
-    <FormGroup v-if="mode == 'add' || mode == 'clone'" id="description" v-bind:label="$t( 'EditIssue.Description' )" v-bind:error="descriptionError">
-      <textarea ref="description" id="description" class="form-control" rows="10" v-bind:maxlength="settings.commentMaxLength" v-model="descriptionValue"></textarea>
-    </FormGroup>
+    <MarkupEditor v-if="mode == 'add' || mode == 'clone'" ref="description" id="description" v-bind:label="$t( 'EditIssue.Description' )" v-bind:error="descriptionError"
+                  v-bind:format="selectedFormat" v-model="descriptionValue" v-on:select-format="selectFormat" v-on:error="error"/>
     <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
   </div>
 </template>
@@ -57,7 +56,8 @@ export default {
     folderId: Number,
     name: String,
     attributes: Array,
-    description: String
+    description: String,
+    descriptionFormat: Number
   },
 
   data() {
@@ -71,6 +71,7 @@ export default {
       attributeValues: this.attributes.map( a => a.value ),
       attributeErrors: this.attributes.map( a => null ),
       descriptionValue: this.description,
+      selectedFormat: this.descriptionFormat,
       descriptionError: null
     };
   },
@@ -127,6 +128,9 @@ export default {
         this.selectedFolderId = folder.id;
       else
         this.selectedFolderId = null;
+    },
+    selectFormat( format ) {
+      this.selectedFormat = format;
     },
 
     submit() {
@@ -197,8 +201,10 @@ export default {
       if ( this.mode == 'add' || this.mode == 'clone' ) {
         try {
           this.descriptionValue = this.$parser.normalizeString( this.descriptionValue, this.settings.commentMaxLength, { allowEmpty: true, multiLine: true } );
-          if ( this.descriptionValue != '' )
+          if ( this.descriptionValue != '' ) {
             data.description = this.descriptionValue;
+            data.descriptionFormat = this.selectedFormat;
+          }
         } catch ( error ) {
           if ( error.reason == 'APIError' ) {
             this.descriptionError = this.$t( 'ErrorCode.' + error.errorCode );
@@ -243,6 +249,9 @@ export default {
 
     close() {
       this.$emit( 'close' );
+    },
+    error( error ) {
+      this.$emit( 'error', error );
     }
   },
 

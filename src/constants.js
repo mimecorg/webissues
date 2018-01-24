@@ -50,6 +50,11 @@ export const History = {
   CommentsAndFiles: 4
 };
 
+export const TextFormat = {
+  PlainText: 0,
+  TextWithMarkup: 1
+};
+
 export const MaxLength = {
   Name: 40,
   Value: 255,

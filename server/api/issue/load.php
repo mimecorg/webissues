@@ -75,6 +75,7 @@ class Server_Api_Issue_Load
                 }
 
                 $resultDescription[ 'text' ] = $this->convertText( $descr[ 'descr_text' ], $html, $descr[ 'descr_format' ] );
+                $resultDescription[ 'format' ] = $descr[ 'descr_format' ];
 
                 $result[ 'description' ] = $resultDescription;
             } else {

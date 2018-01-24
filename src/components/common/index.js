@@ -27,6 +27,7 @@ import FormHeader from '@/components/common/FormHeader'
 import Grid from '@/components/common/Grid'
 import HyperLink from '@/components/common/HyperLink'
 import LocationFilters from '@/components/common/LocationFilters'
+import MarkupEditor from '@/components/common/MarkupEditor'
 import Panel from '@/components/common/Panel'
 import Prompt from '@/components/common/Prompt'
 import ValueEditor from '@/components/common/ValueEditor'
@@ -42,6 +43,7 @@ export default {
   Grid,
   HyperLink,
   LocationFilters,
+  MarkupEditor,
   Panel,
   Prompt,
   ValueEditor

@@ -36,6 +36,22 @@
     "ProjectTitle": "Project: {0}",
     "FolderTitle": "Folder: {0}"
   },
+  "MarkupEditor": {
+    "TextFormat": "Text format:",
+    "PlainText": "Plain Text",
+    "TextWithMarkup": "Text with Markup",
+    "Bold": "Bold",
+    "Italic": "Italic",
+    "Monospace": "Monospace",
+    "Hyperlink": "Hyperlink",
+    "BulletList": "Bullet List",
+    "QuoteBlock": "Quote Block",
+    "CodeBlock": "Code Block",
+    "RightToLeftText": "Right-To-Left Text",
+    "Preview": "Preview",
+    "EnterLinkURL": "Enter link URL:",
+    "LinkText": "Link text"
+  },
   "Navbar": {
     "Add": "Add",
     "AddIssue": "Add Issue",
