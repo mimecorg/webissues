@@ -19,7 +19,7 @@
 
 <template>
   <div class="markup-editor">
-    <FormGroup v-bind:id="id" v-bind:label="label" v-bind:error="error">
+    <FormGroup v-bind:id="id" v-bind:label="label" v-bind:required="required" v-bind:error="error">
       <div v-if="isMarkup" class="btn-toolbar">
         <div class="btn-group btn-group-sm">
           <button type="button" class="btn btn-default" v-bind:title="$t( 'MarkupEditor.Bold' ) + ' (Ctrl+B)'" v-on:click="markupBold"><span class="fa fa-bold"></span></button>
@@ -67,6 +67,7 @@ export default {
     value: String,
     format: Number,
     label: String,
+    required: Boolean,
     error: String
   },
 

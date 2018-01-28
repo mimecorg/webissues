@@ -19,6 +19,8 @@
 
 import { ErrorCode } from '@/constants'
 
+import DeleteDescription from '@/components/forms/DeleteDescription'
+import EditDescription from '@/components/forms/EditDescription'
 import EditIssue from '@/components/forms/EditIssue'
 import GoToItem from '@/components/forms/GoToItem'
 import IssueDetails from '@/components/forms/IssueDetails'
@@ -109,6 +111,48 @@ export default function makeIssueRoutes( ajax, parser, store ) {
           attributes,
           description: description != null ? description.text : null,
           descriptionFormat: description != null ? description.format : store.state.global.settings.defaultFormat
+        };
+      } );
+    } );
+
+    route( 'AddDescription', 'issue/:issueId/description/add', ( { issueId } ) => {
+      return ajax.post( '/server/api/issue/load.php', { issueId, description: true, access: 'adminOrOwner' } ).then( ( { details, description } ) => {
+        if ( description != null )
+          return Promise.reject( makeError( ErrorCode.DescriptionAlreadyExists ) );
+        return {
+          component: EditDescription,
+          mode: 'add',
+          issueId,
+          name: details.name,
+          descriptionFormat: store.state.global.settings.defaultFormat
+        };
+      } );
+    } );
+
+    route( 'EditDescription', 'issue/:issueId/description/edit', ( { issueId } ) => {
+      return ajax.post( '/server/api/issue/load.php', { issueId, description: true, access: 'adminOrOwner' } ).then( ( { details, description } ) => {
+        if ( description == null )
+          return Promise.reject( makeError( ErrorCode.UnknownDescription ) );
+        return {
+          component: EditDescription,
+          mode: 'edit',
+          issueId,
+          name: details.name,
+          description: description.text,
+          descriptionFormat: description.format
+        };
+      } );
+    } );
+
+    route( 'DeleteDescription', 'issue/:issueId/description/delete', ( { issueId } ) => {
+      return ajax.post( '/server/api/issue/load.php', { issueId, description: true, access: 'adminOrOwner' } ).then( ( { details, description } ) => {
+        if ( description == null )
+          return Promise.reject( makeError( ErrorCode.UnknownDescription ) );
+        return {
+          component: DeleteDescription,
+          size: 'small',
+          issueId,
+          name: details.name
         };
       } );
     } );

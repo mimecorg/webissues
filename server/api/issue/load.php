@@ -32,14 +32,23 @@ class Server_Api_Issue_Load
         $filter = isset( $arguments[ 'filter' ] ) ? (int)$arguments[ 'filter' ] : System_Api_HistoryProvider::AllHistory;
         $html = isset( $arguments[ 'html' ] ) ? (bool)$arguments[ 'html' ] : false;
         $unread = isset( $arguments[ 'unread' ] ) ? (bool)$arguments[ 'unread' ] : false;
+        $access = isset( $arguments[ 'access' ] ) ? $arguments[ 'access' ] : null;
 
         if ( $issueId == null )
             throw new Server_Error( Server_Error::InvalidArguments );
         if ( $filter < System_Api_HistoryProvider::AllHistory || $filter > System_Api_HistoryProvider::CommentsAndFiles )
             throw new Server_Error( Server_Error::InvalidArguments );
 
+        $flags = 0;
+        if ( $access == 'admin' )
+            $flags = System_Api_IssueManager::RequireAdministrator;
+        else if ( $access == 'adminOrOwner' )
+            $flags = System_Api_IssueManager::RequireAdministratorOrOwner;
+        else if ( $access != null )
+            throw new Server_Error( Server_Error::InvalidArguments );
+
         $issueManager = new System_Api_IssueManager();
-        $issue = $issueManager->getIssue( $issueId );
+        $issue = $issueManager->getIssue( $issueId, $flags );
 
         $formatter = new System_Api_Formatter();
         $principal = System_Api_Principal::getCurrent();

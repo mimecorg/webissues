@@ -114,6 +114,17 @@
     "IssuesCount": "{0} issues",
     "IssuesCountOf": "{0}-{1} of {2} issues"
   },
+  "DeleteDescription": {
+    "DeleteDescription": "Delete Description",
+    "DeleteDescriptionPrompt": "Are you sure you want to delete description for issue {0}?"
+  },
+  "EditDescription": {
+    "EditDescription": "Edit Description",
+    "AddDescription": "Add Description",
+    "EditDescriptionPrompt": "Edit description of issue {0}.",
+    "AddDescriptionPrompt": "Add description to issue {0}.",
+    "Description": "Description:"
+  },
   "EditIssue": {
     "EditAttributes": "Edit Attributes",
     "AddIssue": "Add Issue",

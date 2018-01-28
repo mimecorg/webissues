@@ -69,10 +69,12 @@
           <div class="issue-element">
             <DropdownButton v-if="isAuthenticated && description != null" fa-class="fa-ellipsis-v" menu-class="dropdown-menu-right" v-bind:title="$t( 'IssueDetails.Menu' )">
               <li><HyperLink><span class="fa fa-reply" aria-hidden="true"></span> {{ $t( 'IssueDetails.Reply' ) }}</HyperLink></li>
-              <li v-if="canEditDescription"><HyperLink><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'IssueDetails.Edit' ) }}</HyperLink></li>
-              <li v-if="canEditDescription"><HyperLink><span class="fa fa-trash" aria-hidden="true"></span> {{ $t( 'IssueDetails.Delete' ) }}</HyperLink></li>
+              <li v-if="canEditDescription"><HyperLink v-on:click="editDescription"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'IssueDetails.Edit' ) }}</HyperLink></li>
+              <li v-if="canEditDescription"><HyperLink v-on:click="deleteDescription"><span class="fa fa-trash" aria-hidden="true"></span> {{ $t( 'IssueDetails.Delete' ) }}</HyperLink></li>
             </DropdownButton>
-            <button v-else-if="canEditDescription" type="button" class="btn btn-default"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'IssueDetails.Add' ) }}</button>
+            <button v-else-if="canEditDescription" type="button" class="btn btn-default" v-on:click="addDescription">
+              <span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'IssueDetails.Add' ) }}
+            </button>
           </div>
         </div>
 
@@ -243,6 +245,16 @@ export default {
     },
     cloneIssue() {
       this.$router.push( 'CloneIssue', { issueId: this.issueId } );
+    },
+
+    addDescription() {
+      this.$router.push( 'AddDescription', { issueId: this.issueId } );
+    },
+    editDescription() {
+      this.$router.push( 'EditDescription', { issueId: this.issueId } );
+    },
+    deleteDescription() {
+      this.$router.push( 'DeleteDescription', { issueId: this.issueId } );
     },
 
     setUnread( unread ) {
