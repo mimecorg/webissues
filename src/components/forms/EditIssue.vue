@@ -139,7 +139,7 @@ export default {
       this.locationError = null;
       this.descriptionError = null;
 
-      const data = { mode: this.mode };
+      const data = {};
       let modified = false;
       let valid = true;
 
@@ -227,7 +227,7 @@ export default {
 
       this.$emit( 'block' );
 
-      this.$ajax.post( '/server/api/issue/edit.php', data ).then( ( { issueId, stampId } ) => {
+      this.$ajax.post( '/server/api/issue/' + this.mode + '.php', data ).then( ( { issueId, stampId } ) => {
         if ( stampId != false )
           this.$store.commit( 'list/setDirty' );
         this.returnToDetails( issueId );

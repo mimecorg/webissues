@@ -28,9 +28,12 @@ class Server_Api_Issue_Edit
         $principal->checkAuthenticated();
 
         $issueId = isset( $arguments[ 'issueId' ] ) ? (int)$arguments[ 'issueId' ] : null;
+        $folderId = isset( $arguments[ 'folderId' ] ) ? (int)$arguments[ 'folderId' ] : null;
         $name = isset( $arguments[ 'name' ] ) ? $arguments[ 'name' ] : null;
+        $description = isset( $arguments[ 'description' ] ) ? $arguments[ 'description' ] : null;
+        $descriptionFormat = isset( $arguments[ 'descriptionFormat' ] ) ? (int)$arguments[ 'descriptionFormat' ] : null;
 
-        if ( $issueId == null )
+        if ( $issueId == null || $folderId == null || $name == null )
             throw new Server_Error( Server_Error::InvalidArguments );
 
         $helper = new Server_Api_Issue_Helper();
@@ -39,11 +42,21 @@ class Server_Api_Issue_Edit
         $issueManager = new System_Api_IssueManager();
         $issue = $issueManager->getIssue( $issueId );
 
-        $parser = new System_Api_Parser();
-        $parser->setProjectId( $issue[ 'project_id' ] );
+        $projectManager = new System_Api_ProjectManager();
+        $folder = $projectManager->getFolder( $folderId );
+        if ( $issue[ 'type_id' ] != $folder[ 'type_id' ] )
+            throw new System_Api_Error( System_Api_Error::UnknownFolder );
 
-        if ( $name != null )
-            $name = $parser->normalizeString( $name, System_Const::ValueMaxLength );
+        $parser = new System_Api_Parser();
+        $parser->setProjectId( $folder[ 'project_id' ] );
+
+        $name = $parser->normalizeString( $name, System_Const::ValueMaxLength );
+
+        if ( $description != null ) {
+            $serverManager = new System_Api_ServerManager();
+            $description = $parser->normalizeString( $description, $serverManager->getSetting( 'comment_max_length' ), System_Api_Parser::AllowEmpty | System_Api_Parser::MultiLine );
+            $parser->checkTextFormat( $descriptionFormat );
+        }
 
         $typeManager = new System_Api_TypeManager();
         $type = $typeManager->getIssueTypeForIssue( $issue );
@@ -52,6 +65,8 @@ class Server_Api_Issue_Edit
         $attributes = array();
         foreach ( $rows as $row )
             $attributes[ $row[ 'attr_id' ] ] = $row;
+
+        $initialValues = $helper->getInitialValues( $attributes, $typeManager );
 
         $oldValues = array();
         foreach ( $rows as $row )
@@ -63,18 +78,21 @@ class Server_Api_Issue_Edit
             if ( !isset( $values[ $id ] ) ) {
                 $attribute = $attributes[ $id ];
                 $parser->checkAttributeValue( $attribute[ 'attr_def' ], $oldValue );
+
+                if ( $oldValue != $initialValues[ $id ] )
+                    $values[ $id ] = $oldValue;
             }
         }
 
         $orderedValues = $helper->getOrderedValues( $values, $type );
 
-        $lastStampId = null;
+        $issueId = $issueManager->addIssue( $folder, $name, $initialValues );
+        $lastStampId = $issueId;
 
-        if ( $name != null ) {
-            $stampId = $issueManager->renameIssue( $issue, $name );
-            if ( $stampId != false )
-                $lastStampId = $stampId;
-        }
+        $issue = $issueManager->getIssue( $issueId );
+
+        if ( $description != null )
+            $lastStampId = $issueManager->addDescription( $issue, $description, $descriptionFormat );
 
         foreach ( $orderedValues as $row ) {
             $stampId = $issueManager->setValue( $issue, $attributes[ $row[ 'attr_id' ] ], $row[ 'attr_value' ] );
