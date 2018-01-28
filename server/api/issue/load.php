@@ -175,7 +175,7 @@ class Server_Api_Issue_Load
                     $resultItem[ 'uid' ] = $item[ 'created_user' ];
                 }
 
-                if ( $item[ 'change_type' ] == System_Const::CommentAdded || $row[ 'change_type' ] == System_Const::FileAdded )
+                if ( $item[ 'change_type' ] == System_Const::CommentAdded || $item[ 'change_type' ] == System_Const::FileAdded )
                     $resultItem[ 'own' ] = $item[ 'created_user' ] == $principal->getUserId();
 
                 $result[ 'history' ][] = $resultItem;
