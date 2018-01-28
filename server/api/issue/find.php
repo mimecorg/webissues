@@ -20,7 +20,7 @@
 
 require_once( '../../../system/bootstrap.inc.php' );
 
-class Server_Api_Issue_FindItem
+class Server_Api_Issue_Find
 {
     public function run( $arguments )
     {
@@ -36,4 +36,4 @@ class Server_Api_Issue_FindItem
     }
 }
 
-System_Bootstrap::run( 'Server_Api_Application', 'Server_Api_Issue_FindItem' );
+System_Bootstrap::run( 'Server_Api_Application', 'Server_Api_Issue_Find' );

@@ -48,7 +48,7 @@ export default function makeIssueRoutes( ajax, parser, store ) {
     } );
 
     route( 'Item', '/item/:itemId', ( { itemId } ) => {
-      return ajax.post( '/server/api/issue/finditem.php', { itemId } ).then( issueId => {
+      return ajax.post( '/server/api/issue/find.php', { itemId } ).then( issueId => {
         if ( itemId == issueId )
           return { replace: 'IssueDetails', issueId };
         else
