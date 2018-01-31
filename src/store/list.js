@@ -48,7 +48,7 @@ function makeState() {
     columns: [],
     issues: [],
     totalCount: 0,
-    cancellation: null,
+    lastPromise: null,
     lastUpdate: null,
     dirty: false
   };
@@ -148,18 +148,12 @@ function makeMutations() {
       state.columns = [];
       state.issues = [];
       state.totalCount = 0;
-      if ( state.cancellation != null ) {
-        state.cancellation();
-        state.cancellation = null;
-      }
+      state.lastPromise = null;
       state.lastUpdate = null;
       state.dirty = false;
     },
     cancel( state ) {
-      if ( state.cancellation != null ) {
-        state.cancellation();
-        state.cancellation = null;
-      }
+      state.lastPromise = null;
     },
     setFilters( state, { typeId, viewId, projectId, folderId } ) {
       state.typeId = typeId;
@@ -205,8 +199,8 @@ function makeMutations() {
       state.issues = issues;
       state.totalCount = totalCount;
     },
-    setCancellation( state, cancellation ) {
-      state.cancellation = cancellation;
+    setLastPromise( state, value ) {
+      state.lastPromise = value;
     },
     beginUpdate( state ) {
       state.lastUpdate = Date.now();
@@ -218,10 +212,6 @@ function makeMutations() {
 function makeActions( ajax ) {
   return {
     load( { state, commit } ) {
-      let cancelled = false;
-      commit( 'setCancellation', () => {
-        cancelled = true;
-      } );
       commit( 'beginUpdate' );
       const query = {
         typeId: state.typeId,
@@ -235,16 +225,18 @@ function makeActions( ajax ) {
         offset: state.offset,
         limit: PageSize
       };
+      const promise = ajax.post( '/server/api/issue/list.php', query );
+      commit( 'setLastPromise', promise );
       return new Promise( ( resolve, reject ) => {
-        ajax.post( '/server/api/issue/list.php', query ).then( data => {
-          if ( !cancelled ) {
+        promise.then( data => {
+          if ( promise == state.lastPromise ) {
             commit( 'setData', data );
-            commit( 'setCancellation', null );
+            commit( 'setLastPromise', null );
             resolve();
           }
         } ).catch( error => {
-          if ( !cancelled ) {
-            commit( 'setCancellation', null );
+          if ( promise == state.lastPromise ) {
+            commit( 'setLastPromise', null );
             reject( error );
           }
         } );

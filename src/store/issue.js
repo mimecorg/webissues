@@ -39,7 +39,7 @@ function makeState() {
     description: null,
     attributes: [],
     history: [],
-    cancellation: null
+    lastPromise: null
   };
 }
 
@@ -94,10 +94,7 @@ function makeMutations() {
       state.description = null;
       state.attributes = [];
       state.history = [];
-      if ( state.cancellation != null ) {
-        state.cancellation();
-        state.cancellation = null;
-      }
+      state.lastPromise = null;
     },
     setIssueId( state, value ) {
       state.issueId = value;
@@ -128,8 +125,8 @@ function makeMutations() {
       }
       state.modifiedSince = details.stamp;
     },
-    setCancellation( state, cancellation ) {
-      state.cancellation = cancellation;
+    setLastPromise( state, value ) {
+      state.lastPromise = value;
     }
   };
 }
@@ -137,10 +134,6 @@ function makeMutations() {
 function makeActions( ajax ) {
   return {
     load( { state, commit } ) {
-      let cancelled = false;
-      commit( 'setCancellation', () => {
-        cancelled = true;
-      } );
       const query = {
         issueId: state.issueId,
         description: true,
@@ -151,17 +144,19 @@ function makeActions( ajax ) {
         html: true,
         unread: state.unread
       };
+      const promise = ajax.post( '/server/api/issue/load.php', query );
+      commit( 'setLastPromise', promise );
       return new Promise( ( resolve, reject ) => {
-        ajax.post( '/server/api/issue/load.php', query ).then( data => {
-          if ( !cancelled ) {
+        promise.then( data => {
+          if ( promise == state.lastPromise ) {
             commit( 'setData', data );
             commit( 'list/setIssueRead', { issueId: state.issueId, stamp: state.unread ? 0 : data.details.stamp }, { root: true } );
-            commit( 'setCancellation', null );
+            commit( 'setLastPromise', null );
             resolve();
           }
         } ).catch( error => {
-          if ( !cancelled ) {
-            commit( 'setCancellation', null );
+          if ( promise == state.lastPromise ) {
+            commit( 'setLastPromise', null );
             reject( error );
           }
         } );

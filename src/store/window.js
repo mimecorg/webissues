@@ -38,7 +38,7 @@ function makeState() {
     childProps: null,
     size: 'small',
     busy: true,
-    cancellation: null
+    lastPromise: null
   };
 }
 
@@ -61,10 +61,7 @@ function makeMutations() {
       state.childProps = null;
       state.size = 'small';
       state.busy = true;
-      if ( state.cancellation != null ) {
-        state.cancellation();
-        state.cancellation = null;
-      }
+      state.lastPromise = null;
     },
     setBusy( state, value ) {
       state.busy = value;
@@ -77,35 +74,33 @@ function makeMutations() {
       state.childProps = props;
       state.size = size;
     },
-    setCancellation( state, cancellation ) {
-      state.cancellation = cancellation;
+    setLastPromise( state, value ) {
+      state.lastPromise = value;
     },
   };
 }
 
 function makeActions( router ) {
   return {
-    handleRoute( { commit, dispatch }, route ) {
+    handleRoute( { state, commit, dispatch }, route ) {
       commit( 'setRoute', route );
       if ( route.name != 'error' ) {
-        let cancelled = false;
-        commit( 'setCancellation', () => {
-          cancelled = true;
-        } );
-        route.handler( route.params ).then( ( { component, size = 'normal', replace, ...props } ) => {
-          if ( !cancelled ) {
+        const promise = route.handler( route.params );
+        commit( 'setLastPromise', promise );
+        promise.then( ( { component, size = 'normal', replace, ...props } ) => {
+          if ( promise == state.lastPromise ) {
             if ( replace != null ) {
               router.replace( replace, props );
             } else {
               commit( 'setComponent', { component: () => component, props, size } );
               commit( 'setBusy', false );
             }
-            commit( 'setCancellation', null );
+            commit( 'setLastPromise', null );
           }
         } ).catch( error => {
-          if ( !cancelled ) {
+          if ( promise == state.lastPromise ) {
             dispatch( 'showError', error, { root: true } );
-            commit( 'setCancellation', null );
+            commit( 'setLastPromise', null );
           }
         } );
       } else {
