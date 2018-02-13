@@ -114,9 +114,20 @@
     "IssuesCount": "{0} issues",
     "IssuesCountOf": "{0}-{1} of {2} issues"
   },
+  "DeleteComment": {
+    "DeleteComment": "Delete Comment",
+    "DeleteCommentPrompt": "Are you sure you want to delete comment {0}?"
+  },
   "DeleteDescription": {
     "DeleteDescription": "Delete Description",
     "DeleteDescriptionPrompt": "Are you sure you want to delete description for issue {0}?"
+  },
+  "EditComment": {
+    "EditComment": "Edit Comment",
+    "AddComment": "Add Comment",
+    "EditCommentPrompt": "Edit comment {0}.",
+    "AddCommentPrompt": "Add comment to issue {0}.",
+    "Comment": "Comment:"
   },
   "EditDescription": {
     "EditDescription": "Edit Description",

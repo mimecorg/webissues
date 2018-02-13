@@ -19,7 +19,9 @@
 
 import { ErrorCode } from '@/constants'
 
+import DeleteComment from '@/components/forms/DeleteComment'
 import DeleteDescription from '@/components/forms/DeleteDescription'
+import EditComment from '@/components/forms/EditComment'
 import EditDescription from '@/components/forms/EditDescription'
 import EditIssue from '@/components/forms/EditIssue'
 import GoToItem from '@/components/forms/GoToItem'
@@ -153,6 +155,41 @@ export default function makeIssueRoutes( ajax, parser, store ) {
           size: 'small',
           issueId,
           name: details.name
+        };
+      } );
+    } );
+
+    route( 'AddComment', 'issue/:issueId/comment/add', ( { issueId } ) => {
+      return ajax.post( '/server/api/issue/load.php', { issueId } ).then( ( { details } ) => {
+        return {
+          component: EditComment,
+          mode: 'add',
+          issueId,
+          name: details.name,
+          commentFormat: store.state.global.settings.defaultFormat
+        };
+      } );
+    } );
+
+    route( 'EditComment', 'issue/:issueId/comment/:commentId/edit', ( { issueId, commentId } ) => {
+      return ajax.post( '/server/api/issue/comment/load.php', { issueId, commentId, access: 'adminOrOwner' } ).then( ( { text, format } ) => {
+        return {
+          component: EditComment,
+          mode: 'edit',
+          issueId,
+          commentId,
+          comment: text,
+          commentFormat: format
+        };
+      } );
+    } );
+
+    route( 'DeleteComment', 'issue/:issueId/comment/:commentId/delete', ( { issueId, commentId } ) => {
+      return ajax.post( '/server/api/issue/comment/load.php', { issueId, commentId, access: 'adminOrOwner' } ).then( () => {
+        return {
+          component: DeleteComment,
+          issueId,
+          commentId
         };
       } );
     } );

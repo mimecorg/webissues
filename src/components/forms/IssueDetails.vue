@@ -93,7 +93,9 @@
             <div class="issue-header">{{ getFilterText( filter ) }}</span></div>
           </div>
           <div class="issue-element">
-            <button v-if="isAuthenticated" type="button" class="btn btn-success"><span class="fa fa-comment" aria-hidden="true"></span> {{ $t( 'IssueDetails.Add' ) }}</button>
+            <button v-if="isAuthenticated" type="button" class="btn btn-success" v-on:click="addComment">
+              <span class="fa fa-comment" aria-hidden="true"></span> {{ $t( 'IssueDetails.Add' ) }}
+            </button>
             <button v-if="isAuthenticated" type="button" class="btn btn-default"><span class="fa fa-paperclip" aria-hidden="true"></span> <span class="hidden-xs auto-tooltip">{{ $t( 'IssueDetails.Attach' ) }}</span></button>
             <DropdownButton fa-class="fa-cog" menu-class="dropdown-menu-right" v-bind:title="$t( 'IssueDetails.Filter' )">
               <li v-for="item in allFilters" v-bind:class="{ active: filter == item }"><HyperLink v-on:click="setFilter( item )">{{ getFilterText( item ) }}</HyperLink></li>
@@ -112,8 +114,8 @@
                 <a class="issue-history-id" v-bind:href="'#/item/' + item.id">#{{ item.id }}</a>
                 <DropdownButton v-if="canReply( item ) || canEditItem( item )" fa-class="fa-ellipsis-v" menu-class="dropdown-menu-right" v-bind:title="$t( 'IssueDetails.Menu' )">
                   <li v-if="canReply( item )"><HyperLink><span class="fa fa-reply" aria-hidden="true"></span> {{ $t( 'IssueDetails.Reply' ) }}</HyperLink></li>
-                  <li v-if="canEditItem( item )"><HyperLink><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'IssueDetails.Edit' ) }}</HyperLink></li>
-                  <li v-if="canEditItem( item )"><HyperLink><span class="fa fa-trash" aria-hidden="true"></span> {{ $t( 'IssueDetails.Delete' ) }}</HyperLink></li>
+                  <li v-if="canEditItem( item )"><HyperLink v-on:click="editComment( item.id )"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'IssueDetails.Edit' ) }}</HyperLink></li>
+                  <li v-if="canEditItem( item )"><HyperLink v-on:click="deleteComment( item.id )"><span class="fa fa-trash" aria-hidden="true"></span> {{ $t( 'IssueDetails.Delete' ) }}</HyperLink></li>
                 </DropdownButton>
               </div>
             </div>
@@ -255,6 +257,16 @@ export default {
     },
     deleteDescription() {
       this.$router.push( 'DeleteDescription', { issueId: this.issueId } );
+    },
+
+    addComment() {
+      this.$router.push( 'AddComment', { issueId: this.issueId } );
+    },
+    editComment( commentId ) {
+      this.$router.push( 'EditComment', { issueId: this.issueId, commentId } );
+    },
+    deleteComment( commentId ) {
+      this.$router.push( 'DeleteComment', { issueId: this.issueId, commentId } );
     },
 
     setUnread( unread ) {
