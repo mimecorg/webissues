@@ -39,6 +39,12 @@ class Server_Api_Issue_Description_Edit
 
         $description = $issueManager->getDescription( $issue );
 
+        $parser = new System_Api_Parser();
+        $serverManager = new System_Api_ServerManager();
+
+        $descriptionText = $parser->normalizeString( $descriptionText, $serverManager->getSetting( 'comment_max_length' ), System_Api_Parser::MultiLine );
+        $parser->checkTextFormat( $descriptionFormat );
+
         $stampId = $issueManager->editDescription( $description, $descriptionText, $descriptionFormat );
 
         $result[ 'stampId' ] = $stampId;
