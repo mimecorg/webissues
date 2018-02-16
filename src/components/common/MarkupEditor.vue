@@ -42,7 +42,7 @@
       <textarea ref="textarea" v-bind:id="id" class="form-control" rows="10" v-bind:value="value" v-bind:maxlength="settings.commentMaxLength"
                 v-on:input="valueChanged( $event.target.value )" v-on:keydown="keyDown"></textarea>
       <div v-if="isMarkup && previewHtml != null" class="markup-preview">
-        <div class="formatted-text" v-html="previewHtml"></div>
+        <div class="formatted-text" v-hljs="previewHtml"></div>
       </div>
     </FormGroup>
     <FormGroup v-bind:label="$t( 'MarkupEditor.TextFormat' )" v-bind:required="true">

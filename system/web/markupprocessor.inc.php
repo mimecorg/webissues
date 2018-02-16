@@ -158,7 +158,7 @@ class System_Web_MarkupProcessor
                     $langs = array( 'bash', 'c', 'c++', 'c#', 'css', 'html', 'java', 'javascript', 'js', 'perl', 'php', 'python', 'ruby', 'sh', 'sql', 'vb', 'xml' );
                     if ( array_search( $lang, $langs ) !== false ) {
                         $lang = str_replace( array( '+', '#' ), array( 'p', 's' ), $lang );
-                        $classes = ' prettyprint lang-' . $lang;
+                        $classes = ' hljs lang-' . $lang;
                         $this->prettyPrint = true;
                     }
                 }

@@ -79,7 +79,7 @@
         </div>
 
         <div v-if="description" class="issue-description">
-          <div class="formatted-text" v-html="description.text"></div>
+          <div class="formatted-text" v-hljs="description.text"></div>
           <div v-if="description.modifiedDate" class="issue-last-edited">
             <span class="fa fa-pencil" aria-hidden="true"></span> {{ description.modifiedDate }} &mdash; {{ description.modifiedBy }}
           </div>
@@ -122,7 +122,7 @@
             <div v-else class="issue-history-title">{{ item.createdDate }} &mdash; {{ item.createdBy }}</div>
 
             <div v-if="isCommentAdded( item )" class="issue-comment">
-              <div class="formatted-text" v-html="item.text"></div>
+              <div class="formatted-text" v-hljs="item.text"></div>
               <div v-if="item.modifiedDate" class="issue-last-edited">
                 <span class="fa fa-pencil" aria-hidden="true"></span> {{ item.modifiedDate }} &mdash; {{ item.modifiedBy }}
               </div>

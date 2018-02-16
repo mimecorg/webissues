@@ -48,6 +48,8 @@
 @import "~font-awesome/less/stacked.less";
 @import "~font-awesome/less/icons.less";
 
+@import "~highlight.js/styles/github.css";
+
 .btn .fa {
   .fa-fw();
 }
@@ -223,7 +225,17 @@
     font-weight: bold;
   }
 
+  pre, pre.hljs {
+    margin-bottom: 5px;
+    padding: 5px 10px;
+  }
+
   .rtl {
     direction: rtl;
   }
+}
+
+.hljs {
+  color: @pre-color;
+  background: @pre-bg;
 }
