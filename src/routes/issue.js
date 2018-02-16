@@ -21,8 +21,10 @@ import { TextFormat, ErrorCode } from '@/constants'
 
 import DeleteComment from '@/components/forms/DeleteComment'
 import DeleteDescription from '@/components/forms/DeleteDescription'
+import DeleteFile from '@/components/forms/DeleteFile'
 import EditComment from '@/components/forms/EditComment'
 import EditDescription from '@/components/forms/EditDescription'
+import EditFile from '@/components/forms/EditFile'
 import EditIssue from '@/components/forms/EditIssue'
 import GoToItem from '@/components/forms/GoToItem'
 import IssueDetails from '@/components/forms/IssueDetails'
@@ -125,7 +127,7 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
           component: EditDescription,
           mode: 'add',
           issueId,
-          name: details.name,
+          issueName: details.name,
           descriptionFormat: store.state.global.settings.defaultFormat
         };
       } );
@@ -139,7 +141,7 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
           component: EditComment,
           mode: 'add',
           issueId,
-          name: details.name,
+          issueName: details.name,
           comment: '[quote ' + i18n.t( 'EditComment.DescriptionQuote' ) + ']\n' + description.text + '\n[/quote]\n\n',
           commentFormat: TextFormat.TextWithMarkup
         };
@@ -154,7 +156,7 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
           component: EditDescription,
           mode: 'edit',
           issueId,
-          name: details.name,
+          issueName: details.name,
           description: description.text,
           descriptionFormat: description.format
         };
@@ -169,7 +171,7 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
           component: DeleteDescription,
           size: 'small',
           issueId,
-          name: details.name
+          issueName: details.name
         };
       } );
     } );
@@ -180,7 +182,7 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
           component: EditComment,
           mode: 'add',
           issueId,
-          name: details.name,
+          issueName: details.name,
           commentFormat: store.state.global.settings.defaultFormat
         };
       } );
@@ -193,7 +195,7 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
             component: EditComment,
             mode: 'add',
             issueId,
-            name: details.name,
+            issueName: details.name,
             comment: '[quote ' + i18n.t( 'EditComment.CommentQuote', [ '#' + commentId ] ) + ']\n' + text + '\n[/quote]\n\n',
             commentFormat: TextFormat.TextWithMarkup
           };
@@ -218,8 +220,45 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
       return ajax.post( '/server/api/issue/comment/load.php', { issueId, commentId, access: 'adminOrOwner' } ).then( () => {
         return {
           component: DeleteComment,
+          size: 'small',
           issueId,
           commentId
+        };
+      } );
+    } );
+
+    route( 'AddFile', '/issue/:issueId/file/add', ( { issueId } ) => {
+      return ajax.post( '/server/api/issue/load.php', { issueId } ).then( ( { details } ) => {
+        return {
+          component: EditFile,
+          mode: 'add',
+          issueId,
+          issueName: details.name
+        };
+      } );
+    } );
+
+    route( 'EditFile', '/issue/:issueId/file/:fileId/edit', ( { issueId, fileId } ) => {
+      return ajax.post( '/server/api/issue/file/load.php', { issueId, fileId, access: 'adminOrOwner' } ).then( ( { name, description } ) => {
+        return {
+          component: EditFile,
+          mode: 'edit',
+          issueId,
+          fileId,
+          name,
+          description
+        };
+      } );
+    } );
+
+    route( 'DeleteFile', 'issue/:issueId/file/:fileId/delete', ( { issueId, fileId } ) => {
+      return ajax.post( '/server/api/issue/file/load.php', { issueId, fileId, access: 'adminOrOwner' } ).then( ( { name } ) => {
+        return {
+          component: DeleteFile,
+          size: 'small',
+          issueId,
+          fileId,
+          name
         };
       } );
     } );

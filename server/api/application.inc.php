@@ -36,9 +36,6 @@ class Server_Api_Application extends System_Core_Application
         if ( $this->request->getRequestMethod() != 'POST' )
             throw new Server_Error( Server_Error::SyntaxError );
 
-        if ( $this->request->getContentType() != 'application/json' )
-            throw new Server_Error( Server_Error::SyntaxError );
-
         $principal = System_Api_Principal::getCurrent();
         $serverManager = new System_Api_ServerManager();
 
@@ -52,20 +49,30 @@ class Server_Api_Application extends System_Core_Application
                 throw new System_Api_Error( System_Api_Error::LoginRequired );
         }
 
-        $body = $this->request->getPostBody();
+        if ( $this->request->getContentType() == 'application/json' ) {
+            $data = $this->request->getPostBody();
+            $attachment = null;
+        } else if ( $this->request->getContentType() == 'multipart/form-data' ) {
+            $data = $this->request->getFormField( 'data' );
+            $attachment = $this->request->getUploadedFile( 'file' );
+            if ( $attachment === false )
+                throw new Server_Error( Server_Error::UploadError );
+        } else {
+            throw new Server_Error( Server_Error::SyntaxError );
+        }
 
-        if ( !mb_check_encoding( $body ) )
+        if ( !mb_check_encoding( $data ) )
             throw new System_Api_Error( System_Api_Error::InvalidString );
 
-        if ( preg_match( '/[\x00-\x1f\x7f]/', $body ) )
+        if ( preg_match( '/[\x00-\x1f\x7f]/', $data ) )
             throw new System_Api_Error( System_Api_Error::InvalidString );
 
-        $arguments = json_decode( $body, true );
+        $arguments = json_decode( $data, true );
 
         if ( !is_array( $arguments ) )
             throw new Server_Error( Server_Error::SyntaxError );
 
-        $result = $this->command->run( $arguments );
+        $result = $this->command->run( $arguments, $attachment );
 
         $response[ 'result' ] = $result;
 

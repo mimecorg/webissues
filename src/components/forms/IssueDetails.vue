@@ -96,7 +96,9 @@
             <button v-if="isAuthenticated" type="button" class="btn btn-success" v-on:click="addComment">
               <span class="fa fa-comment" aria-hidden="true"></span> {{ $t( 'IssueDetails.Add' ) }}
             </button>
-            <button v-if="isAuthenticated" type="button" class="btn btn-default"><span class="fa fa-paperclip" aria-hidden="true"></span> <span class="hidden-xs auto-tooltip">{{ $t( 'IssueDetails.Attach' ) }}</span></button>
+            <button v-if="isAuthenticated" type="button" class="btn btn-default" v-on:click="addFile">
+              <span class="fa fa-paperclip" aria-hidden="true"></span> <span class="hidden-xs auto-tooltip">{{ $t( 'IssueDetails.Attach' ) }}</span>
+            </button>
             <DropdownButton fa-class="fa-cog" menu-class="dropdown-menu-right" v-bind:title="$t( 'IssueDetails.Filter' )">
               <li v-for="item in allFilters" v-bind:class="{ active: filter == item }"><HyperLink v-on:click="setFilter( item )">{{ getFilterText( item ) }}</HyperLink></li>
             </DropdownButton>
@@ -113,9 +115,9 @@
               <div class="issue-element">
                 <a class="issue-history-id" v-bind:href="'#/item/' + item.id">#{{ item.id }}</a>
                 <DropdownButton v-if="canReply( item ) || canEditItem( item )" fa-class="fa-ellipsis-v" menu-class="dropdown-menu-right" v-bind:title="$t( 'IssueDetails.Menu' )">
-                  <li v-if="canReply( item )"><HyperLink v-on:click="replyComment( item.id )"><span class="fa fa-reply" aria-hidden="true"></span> {{ $t( 'IssueDetails.Reply' ) }}</HyperLink></li>
-                  <li v-if="canEditItem( item )"><HyperLink v-on:click="editComment( item.id )"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'IssueDetails.Edit' ) }}</HyperLink></li>
-                  <li v-if="canEditItem( item )"><HyperLink v-on:click="deleteComment( item.id )"><span class="fa fa-trash" aria-hidden="true"></span> {{ $t( 'IssueDetails.Delete' ) }}</HyperLink></li>
+                  <li v-if="canReply( item )"><HyperLink v-on:click="replyComment( item )"><span class="fa fa-reply" aria-hidden="true"></span> {{ $t( 'IssueDetails.Reply' ) }}</HyperLink></li>
+                  <li v-if="canEditItem( item )"><HyperLink v-on:click="editItem( item )"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'IssueDetails.Edit' ) }}</HyperLink></li>
+                  <li v-if="canEditItem( item )"><HyperLink v-on:click="deleteItem( item )"><span class="fa fa-trash" aria-hidden="true"></span> {{ $t( 'IssueDetails.Delete' ) }}</HyperLink></li>
                 </DropdownButton>
               </div>
             </div>
@@ -128,7 +130,7 @@
               </div>
             </div>
             <div v-else-if="isFileAdded( item )" class="issue-attachment">
-              <span class="fa fa-paperclip" aria-hidden="true"></span> <HyperLink>{{ item.name }}</HyperLink> ({{ item.size }})
+              <span class="fa fa-paperclip" aria-hidden="true"></span> <a v-bind:href="getFileURL( item.id )">{{ item.name }}</a> ({{ item.size }})
               <span v-if="item.description" v-html="'&mdash; ' + item.description"></span>
               <div v-if="item.modifiedDate" class="issue-last-edited">
                 <span class="fa fa-pencil" aria-hidden="true"></span> {{ item.modifiedDate }} &mdash; {{ item.modifiedBy }}
@@ -158,6 +160,7 @@ import { Access, Change, History, KeyCode } from '@/constants'
 
 export default {
   computed: {
+    ...mapState( 'global', [ 'baseURL' ] ),
     ...mapGetters( 'global', [ 'isAuthenticated' ] ),
     ...mapState( 'issue', [ 'issueId', 'filter', 'unread', 'details', 'description' ] ),
     ...mapGetters( 'issue', [ 'filteredAttributes', 'isItemInHistory', 'processedHistory' ] ),
@@ -242,6 +245,10 @@ export default {
         return this.$t( 'IssueDetails.UnknownFolder' );
     },
 
+    getFileURL( id ) {
+      return this.baseURL + '/client/file.php?id=' + id;
+    },
+
     editIssue() {
       this.$router.push( 'EditIssue', { issueId: this.issueId } );
     },
@@ -265,14 +272,23 @@ export default {
     addComment() {
       this.$router.push( 'AddComment', { issueId: this.issueId } );
     },
-    replyComment( commentId ) {
-      this.$router.push( 'ReplyComment', { issueId: this.issueId, commentId } );
+    addFile() {
+      this.$router.push( 'AddFile', { issueId: this.issueId } );
     },
-    editComment( commentId ) {
-      this.$router.push( 'EditComment', { issueId: this.issueId, commentId } );
+    replyComment( item ) {
+      this.$router.push( 'ReplyComment', { issueId: this.issueId, commentId: item.id } );
     },
-    deleteComment( commentId ) {
-      this.$router.push( 'DeleteComment', { issueId: this.issueId, commentId } );
+    editItem( item ) {
+      if ( item.type == Change.CommentAdded )
+        this.$router.push( 'EditComment', { issueId: this.issueId, commentId: item.id } );
+      else if ( item.type == Change.FileAdded )
+        this.$router.push( 'EditFile', { issueId: this.issueId, fileId: item.id } );
+    },
+    deleteItem( item ) {
+      if ( item.type == Change.CommentAdded )
+        this.$router.push( 'DeleteComment', { issueId: this.issueId, commentId: item.id } );
+      else if ( item.type == Change.FileAdded )
+        this.$router.push( 'DeleteFile', { issueId: this.issueId, fileId: item.id } );
     },
 
     setUnread( unread ) {

@@ -31,12 +31,24 @@ Vue.mixin( {
 
 export default function makeAjax( baseURL, csrfToken ) {
   return {
-    post( url, data = {} ) {
+    post( url, data = {}, file = null ) {
       return new Promise( ( resolve, reject ) => {
+        let body;
+        const headers = {};
+        if ( file != null ) {
+          body = new FormData();
+          body.append( 'data', JSON.stringify( data ) );
+          body.append( 'file', file, file.name );
+        } else {
+          body = JSON.stringify( data );
+          headers[ 'Content-Type' ] = 'application/json';
+        }
+        if ( csrfToken != null )
+          headers[ 'X-CSRF-Token' ] = csrfToken;
         fetch( baseURL + url, {
           method: 'POST',
-          body: JSON.stringify( data ),
-          headers: makeHeaders( csrfToken ),
+          body,
+          headers,
           credentials: 'same-origin'
         } ).then( response => {
           response.json().then( ( { result, errorCode, errorMessage } ) => {
@@ -62,15 +74,6 @@ export default function makeAjax( baseURL, csrfToken ) {
       } );
     }
   };
-}
-
-function makeHeaders( csrfToken ) {
-  const headers = {
-    'Content-Type': 'application/json',
-  };
-  if ( csrfToken != null )
-    headers[ 'X-CSRF-Token' ] = csrfToken;
-  return headers;
 }
 
 function makeError( errorCode, errorMessage, response ) {

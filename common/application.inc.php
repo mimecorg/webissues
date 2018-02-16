@@ -34,6 +34,19 @@ class Common_Application extends System_Web_Application
         $this->page->getView()->setDecoratorClass( 'Common_PageLayout' );
     }
 
+    protected function redirectToLoginPage()
+    {
+        $url = $this->request->getRelativePath();
+        $args = array();
+        foreach ( $this->request->getQueryStrings() as $key => $value ) {
+            if ( isset( $value ) )
+                $args[] = $key . '=' . $value;
+        }
+        if ( !empty( $args ) )
+            $url .= '?' . join( '&', $args );
+        $this->response->redirect( '/index.php?url=' . urlencode( $url ) );
+    }
+
     protected function handleSetupException( $exception )
     {
         if ( $this->request->isRelativePathUnder( '/common/errors' ) )

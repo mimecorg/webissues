@@ -20,37 +20,34 @@
 
 require_once( '../../../../system/bootstrap.inc.php' );
 
-class Server_Api_Issue_Comment_Load
+class Server_Api_Issue_File_Edit
 {
     public function run( $arguments )
     {
         $principal = System_Api_Principal::getCurrent();
         $principal->checkAuthenticated();
 
-        $issueId = isset( $arguments[ 'issueId' ] ) ? (int)$arguments[ 'issueId' ] : null;
-        $commentId = isset( $arguments[ 'commentId' ] ) ? (int)$arguments[ 'commentId' ] : null;
-        $access = isset( $arguments[ 'access' ] ) ? $arguments[ 'access' ] : null;
+        $fileId = isset( $arguments[ 'fileId' ] ) ? (int)$arguments[ 'fileId' ] : null;
+        $name = isset( $arguments[ 'name' ] ) ? $arguments[ 'name' ] : null;
+        $description = isset( $arguments[ 'description' ] ) ? $arguments[ 'description' ] : null;
 
-        if ( $issueId == null || $commentId == null )
-            throw new Server_Error( Server_Error::InvalidArguments );
-
-        $flags = 0;
-        if ( $access == 'adminOrOwner' )
-            $flags = System_Api_IssueManager::RequireAdministratorOrOwner;
-        else if ( $access != null )
+        if ( $fileId == null || $name == null )
             throw new Server_Error( Server_Error::InvalidArguments );
 
         $issueManager = new System_Api_IssueManager();
-        $comment = $issueManager->getComment( $commentId, $flags );
+        $file = $issueManager->getFile( $fileId, System_Api_IssueManager::RequireAdministratorOrOwner );
 
-        if ( $comment[ 'issue_id' ] != $issueId )
-            throw new System_Api_Error( System_Api_Error::UnknownComment );
+        $parser = new System_Api_Parser();
 
-        $result[ 'text' ] = $comment[ 'comment_text' ];
-        $result[ 'format' ] = $comment[ 'comment_format' ];
+        $name = $parser->normalizeString( $name, System_Const::FileNameMaxLength );
+        $description = $parser->normalizeString( $description, System_Const::DescriptionMaxLength, System_Api_Parser::AllowEmpty );
+
+        $stampId = $issueManager->editFile( $file, $name, $description );
+
+        $result[ 'stampId' ] = $stampId;
 
         return $result;
     }
 }
 
-System_Bootstrap::run( 'Server_Api_Application', 'Server_Api_Issue_Comment_Load' );
+System_Bootstrap::run( 'Server_Api_Application', 'Server_Api_Issue_File_Edit' );

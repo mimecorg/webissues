@@ -20,7 +20,7 @@
 
 require_once( '../../../../system/bootstrap.inc.php' );
 
-class Server_Api_Issue_Comment_Load
+class Server_Api_Issue_File_Load
 {
     public function run( $arguments )
     {
@@ -28,10 +28,10 @@ class Server_Api_Issue_Comment_Load
         $principal->checkAuthenticated();
 
         $issueId = isset( $arguments[ 'issueId' ] ) ? (int)$arguments[ 'issueId' ] : null;
-        $commentId = isset( $arguments[ 'commentId' ] ) ? (int)$arguments[ 'commentId' ] : null;
+        $fileId = isset( $arguments[ 'fileId' ] ) ? (int)$arguments[ 'fileId' ] : null;
         $access = isset( $arguments[ 'access' ] ) ? $arguments[ 'access' ] : null;
 
-        if ( $issueId == null || $commentId == null )
+        if ( $issueId == null || $fileId == null )
             throw new Server_Error( Server_Error::InvalidArguments );
 
         $flags = 0;
@@ -41,16 +41,16 @@ class Server_Api_Issue_Comment_Load
             throw new Server_Error( Server_Error::InvalidArguments );
 
         $issueManager = new System_Api_IssueManager();
-        $comment = $issueManager->getComment( $commentId, $flags );
+        $file = $issueManager->getFile( $fileId, $flags );
 
-        if ( $comment[ 'issue_id' ] != $issueId )
-            throw new System_Api_Error( System_Api_Error::UnknownComment );
+        if ( $file[ 'issue_id' ] != $issueId )
+            throw new System_Api_Error( System_Api_Error::UnknownFile );
 
-        $result[ 'text' ] = $comment[ 'comment_text' ];
-        $result[ 'format' ] = $comment[ 'comment_format' ];
+        $result[ 'name' ] = $file[ 'file_name' ];
+        $result[ 'description' ] = $file[ 'file_descr' ];
 
         return $result;
     }
 }
 
-System_Bootstrap::run( 'Server_Api_Application', 'Server_Api_Issue_Comment_Load' );
+System_Bootstrap::run( 'Server_Api_Application', 'Server_Api_Issue_File_Load' );

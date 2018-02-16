@@ -19,8 +19,8 @@
 
 <template>
   <div class="container-fluid">
-    <FormHeader v-bind:title="$t( 'DeleteDescription.DeleteDescription' )" v-on:close="close"/>
-    <Prompt path="DeleteDescription.DeleteDescriptionPrompt"><strong>{{ issueName }}</strong></Prompt>
+    <FormHeader v-bind:title="$t( 'DeleteFile.DeleteFile' )" v-on:close="close"/>
+    <Prompt path="DeleteFile.DeleteFilePrompt"><strong>{{ name }}</strong></Prompt>
     <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
   </div>
 </template>
@@ -29,14 +29,15 @@
 export default {
   props: {
     issueId: Number,
-    issueName: String
+    fileId: Number,
+    name: String
   },
 
   methods: {
     submit() {
       this.$emit( 'block' );
 
-      this.$ajax.post( '/server/api/issue/description/delete.php', { issueId: this.issueId } ).then( () => {
+      this.$ajax.post( '/server/api/issue/file/delete.php', { fileId: this.fileId } ).then( () => {
         this.$store.commit( 'list/setDirty' );
         this.returnToDetails();
       } ).catch( error => {

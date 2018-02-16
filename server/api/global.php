@@ -151,6 +151,7 @@ class Server_Api_Global
 
         $serverManager = new System_Api_ServerManager();
         $settings[ 'commentMaxLength' ] = (int)$serverManager->getSetting( 'comment_max_length' );
+        $settings[ 'fileMaxSize' ] = (int)$serverManager->getSetting( 'file_max_size' );
         $settings[ 'hideEmptyValues' ] = $serverManager->getSetting( 'hide_empty_values' ) == '1';
 
         $preferencesManager = new System_Api_PreferencesManager();

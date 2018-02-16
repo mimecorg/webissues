@@ -114,6 +114,18 @@
     "IssuesCount": "{0} issues",
     "IssuesCountOf": "{0}-{1} of {2} issues"
   },
+  "EditFile": {
+    "AddFile": "Attach File",
+    "EditFile": "Edit File",
+    "AddFilePrompt": "Attach a file to issue {0}.",
+    "EditFilePrompt": "Edit file {0}.",
+    "FileName": "File Name:",
+    "Description": "Description:",
+    "FilePrompt": "Drag your file here or click to browse.",
+    "NoFileSelected": "No file selected.",
+    "FileTooLarge": "Selected file is too large.",
+    "InvalidFileName": "Invalid file name."
+  },
   "DeleteComment": {
     "DeleteComment": "Delete Comment",
     "DeleteCommentPrompt": "Are you sure you want to delete comment {0}?"
@@ -121,6 +133,10 @@
   "DeleteDescription": {
     "DeleteDescription": "Delete Description",
     "DeleteDescriptionPrompt": "Are you sure you want to delete description for issue {0}?"
+  },
+  "DeleteFile": {
+    "DeleteFile": "Delete File",
+    "DeleteFilePrompt": "Are you sure you want to delete file {0}?"
   },
   "EditComment": {
     "EditComment": "Edit Comment",
