@@ -106,7 +106,7 @@ function makeMutations() {
     setUnread( state, value ) {
       state.unread = value;
     },
-    setData( state, { details, description, attributes, history } ) {
+    setData( state, { details, description, attributes, history, stubs } ) {
       state.details = details;
       state.description = description;
       state.attributes = attributes;
@@ -120,6 +120,13 @@ function makeMutations() {
             state.history.push( item );
           }
         } );
+        if ( stubs != null ) {
+          stubs.forEach( id => {
+            const index = state.history.findIndex( i => i.id == id );
+            if ( index >= 0 )
+              state.history.splice( index, 1 );
+          } );
+        }
       } else {
         state.history = history;
       }

@@ -189,6 +189,17 @@ class Server_Api_Issue_Load
 
                 $result[ 'history' ][] = $resultItem;
             }
+
+            if ( $modifiedSince > 0 ) {
+                $stubs = $issueManager->getChangeStubs( $issue, $modifiedSince );
+
+                if ( !empty( $stubs ) ) {
+                    $result[ 'stubs' ] = array();
+
+                    foreach( $stubs as $stub )
+                        $result[ 'stubs' ][] = $stub[ 'change_id' ];
+                }
+            }
         }
 
         return $result;
