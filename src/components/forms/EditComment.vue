@@ -78,7 +78,7 @@ export default {
         return;
 
       if ( this.mode == 'edit' && !modified ) {
-        this.returnToDetails();
+        this.returnToDetails( this.commentId );
         return;
       }
 
@@ -87,7 +87,7 @@ export default {
       this.$ajax.post( '/server/api/issue/comment/' + this.mode + '.php', data ).then( ( { stampId } ) => {
         if ( stampId != false )
           this.$store.commit( 'list/setDirty' );
-        this.returnToDetails();
+        this.returnToDetails( this.mode == 'add' ? stampId : this.commentId );
       } ).catch( error => {
         this.$emit( 'error', error );
       } );
@@ -97,8 +97,11 @@ export default {
       this.returnToDetails();
     },
 
-    returnToDetails() {
-      this.$router.push( 'IssueDetails', { issueId: this.issueId } );
+    returnToDetails( itemId = null ) {
+      if ( itemId != null )
+        this.$router.push( 'IssueItem', { issueId: this.issueId, itemId } );
+      else
+        this.$router.push( 'IssueDetails', { issueId: this.issueId } );
     },
 
     close() {
