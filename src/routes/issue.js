@@ -17,7 +17,7 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-import { ErrorCode } from '@/constants'
+import { TextFormat, ErrorCode } from '@/constants'
 
 import DeleteComment from '@/components/forms/DeleteComment'
 import DeleteDescription from '@/components/forms/DeleteDescription'
@@ -27,7 +27,7 @@ import EditIssue from '@/components/forms/EditIssue'
 import GoToItem from '@/components/forms/GoToItem'
 import IssueDetails from '@/components/forms/IssueDetails'
 
-export default function makeIssueRoutes( ajax, parser, store ) {
+export default function makeIssueRoutes( i18n, ajax, store, parser ) {
   return function issueRoutes( route ) {
     function loadIssueDetails( issueId ) {
       if ( store.state.issue.issueId != issueId ) {
@@ -131,6 +131,21 @@ export default function makeIssueRoutes( ajax, parser, store ) {
       } );
     } );
 
+    route( 'ReplyDescription', 'issue/:issueId/description/reply', ( { issueId } ) => {
+      return ajax.post( '/server/api/issue/load.php', { issueId, description: true } ).then( ( { details, description } ) => {
+        if ( description == null )
+          return Promise.reject( makeError( ErrorCode.UnknownDescription ) );
+        return {
+          component: EditComment,
+          mode: 'add',
+          issueId,
+          name: details.name,
+          comment: '[quote ' + i18n.t( 'EditComment.DescriptionQuote' ) + ']\n' + description.text + '\n[/quote]\n\n',
+          commentFormat: TextFormat.TextWithMarkup
+        };
+      } );
+    } );
+
     route( 'EditDescription', 'issue/:issueId/description/edit', ( { issueId } ) => {
       return ajax.post( '/server/api/issue/load.php', { issueId, description: true, access: 'adminOrOwner' } ).then( ( { details, description } ) => {
         if ( description == null )
@@ -168,6 +183,21 @@ export default function makeIssueRoutes( ajax, parser, store ) {
           name: details.name,
           commentFormat: store.state.global.settings.defaultFormat
         };
+      } );
+    } );
+
+    route( 'ReplyComment', 'issue/:issueId/comment/:commentId/reply', ( { issueId, commentId } ) => {
+      return ajax.post( '/server/api/issue/load.php', { issueId } ).then( ( { details } ) => {
+        return ajax.post( '/server/api/issue/comment/load.php', { issueId, commentId } ).then( ( { text } ) => {
+          return {
+            component: EditComment,
+            mode: 'add',
+            issueId,
+            name: details.name,
+            comment: '[quote ' + i18n.t( 'EditComment.CommentQuote', [ '#' + commentId ] ) + ']\n' + text + '\n[/quote]\n\n',
+            commentFormat: TextFormat.TextWithMarkup
+          };
+        } );
       } );
     } );
 

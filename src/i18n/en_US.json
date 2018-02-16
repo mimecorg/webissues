@@ -127,7 +127,9 @@
     "AddComment": "Add Comment",
     "EditCommentPrompt": "Edit comment {0}.",
     "AddCommentPrompt": "Add comment to issue {0}.",
-    "Comment": "Comment:"
+    "Comment": "Comment:",
+    "DescriptionQuote": "Description",
+    "CommentQuote": "Comment {0}"
   },
   "EditDescription": {
     "EditDescription": "Edit Description",

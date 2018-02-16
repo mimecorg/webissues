@@ -20,11 +20,11 @@
 import staticRoutes from '@/routes/static'
 import makeIssueRoutes from '@/routes/issue'
 
-export default function registerRoutes( router, ajax, parser, store ) {
+export default function registerRoutes( router, i18n, ajax, store, parser ) {
   function makeRoutes() {
     return [
       staticRoutes,
-      makeIssueRoutes( ajax, parser, store )
+      makeIssueRoutes( i18n, ajax, store, parser )
     ];
   }
 

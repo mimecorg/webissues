@@ -68,7 +68,7 @@
           </div>
           <div class="issue-element">
             <DropdownButton v-if="isAuthenticated && description != null" fa-class="fa-ellipsis-v" menu-class="dropdown-menu-right" v-bind:title="$t( 'IssueDetails.Menu' )">
-              <li><HyperLink><span class="fa fa-reply" aria-hidden="true"></span> {{ $t( 'IssueDetails.Reply' ) }}</HyperLink></li>
+              <li><HyperLink v-on:click="replyDescription"><span class="fa fa-reply" aria-hidden="true"></span> {{ $t( 'IssueDetails.Reply' ) }}</HyperLink></li>
               <li v-if="canEditDescription"><HyperLink v-on:click="editDescription"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'IssueDetails.Edit' ) }}</HyperLink></li>
               <li v-if="canEditDescription"><HyperLink v-on:click="deleteDescription"><span class="fa fa-trash" aria-hidden="true"></span> {{ $t( 'IssueDetails.Delete' ) }}</HyperLink></li>
             </DropdownButton>
@@ -113,7 +113,7 @@
               <div class="issue-element">
                 <a class="issue-history-id" v-bind:href="'#/item/' + item.id">#{{ item.id }}</a>
                 <DropdownButton v-if="canReply( item ) || canEditItem( item )" fa-class="fa-ellipsis-v" menu-class="dropdown-menu-right" v-bind:title="$t( 'IssueDetails.Menu' )">
-                  <li v-if="canReply( item )"><HyperLink><span class="fa fa-reply" aria-hidden="true"></span> {{ $t( 'IssueDetails.Reply' ) }}</HyperLink></li>
+                  <li v-if="canReply( item )"><HyperLink v-on:click="replyComment( item.id )"><span class="fa fa-reply" aria-hidden="true"></span> {{ $t( 'IssueDetails.Reply' ) }}</HyperLink></li>
                   <li v-if="canEditItem( item )"><HyperLink v-on:click="editComment( item.id )"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'IssueDetails.Edit' ) }}</HyperLink></li>
                   <li v-if="canEditItem( item )"><HyperLink v-on:click="deleteComment( item.id )"><span class="fa fa-trash" aria-hidden="true"></span> {{ $t( 'IssueDetails.Delete' ) }}</HyperLink></li>
                 </DropdownButton>
@@ -252,6 +252,9 @@ export default {
     addDescription() {
       this.$router.push( 'AddDescription', { issueId: this.issueId } );
     },
+    replyDescription() {
+      this.$router.push( 'ReplyDescription', { issueId: this.issueId } );
+    },
     editDescription() {
       this.$router.push( 'EditDescription', { issueId: this.issueId } );
     },
@@ -261,6 +264,9 @@ export default {
 
     addComment() {
       this.$router.push( 'AddComment', { issueId: this.issueId } );
+    },
+    replyComment( commentId ) {
+      this.$router.push( 'ReplyComment', { issueId: this.issueId, commentId } );
     },
     editComment( commentId ) {
       this.$router.push( 'EditComment', { issueId: this.issueId, commentId } );
