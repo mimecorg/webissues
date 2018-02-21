@@ -19,18 +19,6 @@
 
 import { TextFormat, ErrorCode } from '@/constants'
 
-import DeleteComment from '@/components/forms/DeleteComment'
-import DeleteDescription from '@/components/forms/DeleteDescription'
-import DeleteFile from '@/components/forms/DeleteFile'
-import DeleteIssue from '@/components/forms/DeleteIssue'
-import EditComment from '@/components/forms/EditComment'
-import EditDescription from '@/components/forms/EditDescription'
-import EditFile from '@/components/forms/EditFile'
-import EditIssue from '@/components/forms/EditIssue'
-import GoToItem from '@/components/forms/GoToItem'
-import IssueDetails from '@/components/forms/IssueDetails'
-import MoveIssue from '@/components/forms/MoveIssue'
-
 export default function makeIssueRoutes( i18n, ajax, store, parser ) {
   return function issueRoutes( route ) {
     function loadIssueDetails( issueId ) {
@@ -39,7 +27,7 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
         store.commit( 'issue/setIssueId', issueId );
       }
       return store.dispatch( 'issue/load' ).then( () => {
-        return { component: IssueDetails, size: 'large' };
+        return { component: 'IssueDetails', size: 'large' };
       } );
     }
 
@@ -52,7 +40,7 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
     } );
 
     route( 'GoToItem', '/item/goto', () => {
-      return Promise.resolve( { component: GoToItem } );
+      return Promise.resolve( { component: 'GoToItem' } );
     } );
 
     route( 'Item', '/item/:itemId', ( { itemId } ) => {
@@ -67,7 +55,7 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
     route( 'EditIssue', '/issue/:issueId/edit', ( { issueId } ) => {
       return ajax.post( '/server/api/issue/load.php', { issueId, attributes: true } ).then( ( { details, attributes } ) => {
         return {
-          component: EditIssue,
+          component: 'EditIssue',
           mode: 'edit',
           issueId,
           typeId: details.typeId,
@@ -91,7 +79,7 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
           value: parser.convertInitialValue( attribute.default, attribute )
         } ) );
         return Promise.resolve( {
-          component: EditIssue,
+          component: 'EditIssue',
           mode: 'add',
           typeId,
           projectId,
@@ -107,7 +95,7 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
     route( 'CloneIssue', '/issue/:issueId/clone', ( { issueId } ) => {
       return ajax.post( '/server/api/issue/load.php', { issueId, description: true, attributes: true } ).then( ( { details, description, attributes } ) => {
         return {
-          component: EditIssue,
+          component: 'EditIssue',
           mode: 'clone',
           issueId,
           typeId: details.typeId,
@@ -124,7 +112,7 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
     route( 'MoveIssue', '/issue/:issueId/move', ( { issueId } ) => {
       return ajax.post( '/server/api/issue/load.php', { issueId, access: 'admin' } ).then( ( { details } ) => {
         return {
-          component: MoveIssue,
+          component: 'MoveIssue',
           issueId,
           typeId: details.typeId,
           projectId: details.projectId,
@@ -137,7 +125,7 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
     route( 'DeleteIssue', '/issue/:issueId/delete', ( { issueId } ) => {
       return ajax.post( '/server/api/issue/load.php', { issueId, access: 'admin' } ).then( ( { details } ) => {
         return {
-          component: DeleteIssue,
+          component: 'DeleteIssue',
           issueId,
           name: details.name
         };
@@ -149,7 +137,7 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
         if ( description != null )
           return Promise.reject( makeError( ErrorCode.DescriptionAlreadyExists ) );
         return {
-          component: EditDescription,
+          component: 'EditDescription',
           mode: 'add',
           issueId,
           issueName: details.name,
@@ -163,7 +151,7 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
         if ( description == null )
           return Promise.reject( makeError( ErrorCode.UnknownDescription ) );
         return {
-          component: EditComment,
+          component: 'EditComment',
           mode: 'add',
           issueId,
           issueName: details.name,
@@ -178,7 +166,7 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
         if ( description == null )
           return Promise.reject( makeError( ErrorCode.UnknownDescription ) );
         return {
-          component: EditDescription,
+          component: 'EditDescription',
           mode: 'edit',
           issueId,
           issueName: details.name,
@@ -193,7 +181,7 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
         if ( description == null )
           return Promise.reject( makeError( ErrorCode.UnknownDescription ) );
         return {
-          component: DeleteDescription,
+          component: 'DeleteDescription',
           size: 'small',
           issueId,
           issueName: details.name
@@ -204,7 +192,7 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
     route( 'AddComment', 'issue/:issueId/comment/add', ( { issueId } ) => {
       return ajax.post( '/server/api/issue/load.php', { issueId } ).then( ( { details } ) => {
         return {
-          component: EditComment,
+          component: 'EditComment',
           mode: 'add',
           issueId,
           issueName: details.name,
@@ -217,7 +205,7 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
       return ajax.post( '/server/api/issue/load.php', { issueId } ).then( ( { details } ) => {
         return ajax.post( '/server/api/issue/comment/load.php', { issueId, commentId } ).then( ( { text } ) => {
           return {
-            component: EditComment,
+            component: 'EditComment',
             mode: 'add',
             issueId,
             issueName: details.name,
@@ -231,7 +219,7 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
     route( 'EditComment', 'issue/:issueId/comment/:commentId/edit', ( { issueId, commentId } ) => {
       return ajax.post( '/server/api/issue/comment/load.php', { issueId, commentId, access: 'adminOrOwner' } ).then( ( { text, format } ) => {
         return {
-          component: EditComment,
+          component: 'EditComment',
           mode: 'edit',
           issueId,
           commentId,
@@ -244,7 +232,7 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
     route( 'DeleteComment', 'issue/:issueId/comment/:commentId/delete', ( { issueId, commentId } ) => {
       return ajax.post( '/server/api/issue/comment/load.php', { issueId, commentId, access: 'adminOrOwner' } ).then( () => {
         return {
-          component: DeleteComment,
+          component: 'DeleteComment',
           size: 'small',
           issueId,
           commentId
@@ -255,7 +243,7 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
     route( 'AddFile', '/issue/:issueId/file/add', ( { issueId } ) => {
       return ajax.post( '/server/api/issue/load.php', { issueId } ).then( ( { details } ) => {
         return {
-          component: EditFile,
+          component: 'EditFile',
           mode: 'add',
           issueId,
           issueName: details.name
@@ -266,7 +254,7 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
     route( 'EditFile', '/issue/:issueId/file/:fileId/edit', ( { issueId, fileId } ) => {
       return ajax.post( '/server/api/issue/file/load.php', { issueId, fileId, access: 'adminOrOwner' } ).then( ( { name, description } ) => {
         return {
-          component: EditFile,
+          component: 'EditFile',
           mode: 'edit',
           issueId,
           fileId,
@@ -279,7 +267,7 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
     route( 'DeleteFile', 'issue/:issueId/file/:fileId/delete', ( { issueId, fileId } ) => {
       return ajax.post( '/server/api/issue/file/load.php', { issueId, fileId, access: 'adminOrOwner' } ).then( ( { name } ) => {
         return {
-          component: DeleteFile,
+          component: 'DeleteFile',
           size: 'small',
           issueId,
           fileId,
