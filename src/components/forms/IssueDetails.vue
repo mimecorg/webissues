@@ -24,8 +24,8 @@
       <button v-if="isAuthenticated" type="button" class="btn btn-primary" v-on:click="editIssue"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'IssueDetails.Edit' ) }}</button>
       <DropdownButton v-if="isAuthenticated" fa-class="fa-ellipsis-v" menu-class="dropdown-menu-right" v-bind:title="$t( 'IssueDetails.More' )">
         <li><HyperLink v-on:click="cloneIssue"><span class="fa fa-clone" aria-hidden="true"></span> {{ $t( 'IssueDetails.CloneIssue' ) }}</HyperLink></li>
-        <li v-if="canMoveDelete"><HyperLink><span class="fa fa-exchange" aria-hidden="true"></span> {{ $t( 'IssueDetails.MoveIssue' ) }}</HyperLink></li>
-        <li v-if="canMoveDelete"><HyperLink><span class="fa fa-trash" aria-hidden="true"></span> {{ $t( 'IssueDetails.DeleteIssue' ) }}</HyperLink></li>
+        <li v-if="canMoveDelete"><HyperLink v-on:click="moveIssue"><span class="fa fa-exchange" aria-hidden="true"></span> {{ $t( 'IssueDetails.MoveIssue' ) }}</HyperLink></li>
+        <li v-if="canMoveDelete"><HyperLink v-on:click="deleteIssue"><span class="fa fa-trash" aria-hidden="true"></span> {{ $t( 'IssueDetails.DeleteIssue' ) }}</HyperLink></li>
         <li role="separator" class="divider"></li>
         <li v-if="unread"><HyperLink v-on:click="setUnread( false )"><span class="fa fa-check-circle-o" aria-hidden="true"></span> {{ $t( 'IssueDetails.MarkAsRead' ) }}</HyperLink></li>
         <li v-if="!unread"><HyperLink v-on:click="setUnread( true )"><span class="fa fa-check-circle" aria-hidden="true"></span> {{ $t( 'IssueDetails.MarkAsUnread' ) }}</HyperLink></li>
@@ -254,6 +254,12 @@ export default {
     },
     cloneIssue() {
       this.$router.push( 'CloneIssue', { issueId: this.issueId } );
+    },
+    moveIssue() {
+      this.$router.push( 'MoveIssue', { issueId: this.issueId } );
+    },
+    deleteIssue() {
+      this.$router.push( 'DeleteIssue', { issueId: this.issueId } );
     },
 
     addDescription() {

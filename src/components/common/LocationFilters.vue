@@ -24,9 +24,9 @@
         <li v-bind:class="{ active: project == null }">
           <HyperLink v-on:click="selectProject( null )">{{ $t( 'LocationFilters.SelectProject' ) }}</HyperLink>
         </li>
-        <template v-if="projects.length > 0">
+        <template v-if="availableProjects.length > 0">
           <li role="separator" class="divider"></li>
-          <li v-for="p in projects" v-bind:key="p.id" v-bind:class="{ active: project != null && p.id == project.id }">
+          <li v-for="p in availableProjects" v-bind:key="p.id" v-bind:class="{ active: project != null && p.id == project.id }">
             <HyperLink v-on:click="selectProject( p )">{{ p.name }}</HyperLink>
           </li>
         </template>
@@ -51,14 +51,23 @@
 <script>
 import { mapState } from 'vuex'
 
+import { Access } from '@/constants'
+
 export default {
   props: {
     typeId: Number,
     project: Object,
-    folder: Object
+    folder: Object,
+    requireAdmin: Boolean
   },
   computed: {
-    ...mapState( 'global', [ 'projects' ] ),
+    ...mapState( 'global', [ 'userAccess', 'projects' ] ),
+    availableProjects() {
+      if ( this.requireAdmin && this.userAccess != Access.AdministratorAccess )
+        return this.projects.filter( p => p.access == Access.AdministratorAccess );
+      else
+        return this.projects;
+    },
     folders() {
       if ( this.project != null )
         return this.project.folders.filter( f => f.typeId == this.typeId );

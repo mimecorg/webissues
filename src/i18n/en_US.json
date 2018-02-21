@@ -134,6 +134,12 @@
     "DeleteDescription": "Delete Description",
     "DeleteDescriptionPrompt": "Are you sure you want to delete description for issue {0}?"
   },
+  "DeleteIssue": {
+    "DeleteIssue": "Delete Issue",
+    "DeleteIssuePrompt": "Are you sure you want to delete issue {0}?",
+    "DeleteIssueWarning": "{0} The entire issue history will be permanently deleted.",
+    "Warning": "Warning:"
+  },
   "DeleteFile": {
     "DeleteFile": "Delete File",
     "DeleteFilePrompt": "Are you sure you want to delete file {0}?"
@@ -210,6 +216,12 @@
     "Empty": "empty",
     "IssueMoved": "Issue moved from {0} to {1}",
     "UnknownFolder": "Unknown Folder"
+  },
+  "MoveIssue": {
+    "MoveIssue": "Move Issue",
+    "MoveIssuePrompt": "Move issue {0} to another folder of the same type.",
+    "Location": "Location:",
+    "NoFolderSelected": "No folder selected."
   },
   "Error": {
     "PageNotFound": "Page Not Found",

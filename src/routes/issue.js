@@ -22,12 +22,14 @@ import { TextFormat, ErrorCode } from '@/constants'
 import DeleteComment from '@/components/forms/DeleteComment'
 import DeleteDescription from '@/components/forms/DeleteDescription'
 import DeleteFile from '@/components/forms/DeleteFile'
+import DeleteIssue from '@/components/forms/DeleteIssue'
 import EditComment from '@/components/forms/EditComment'
 import EditDescription from '@/components/forms/EditDescription'
 import EditFile from '@/components/forms/EditFile'
 import EditIssue from '@/components/forms/EditIssue'
 import GoToItem from '@/components/forms/GoToItem'
 import IssueDetails from '@/components/forms/IssueDetails'
+import MoveIssue from '@/components/forms/MoveIssue'
 
 export default function makeIssueRoutes( i18n, ajax, store, parser ) {
   return function issueRoutes( route ) {
@@ -115,6 +117,29 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
           attributes,
           description: description != null ? description.text : null,
           descriptionFormat: description != null ? description.format : store.state.global.settings.defaultFormat
+        };
+      } );
+    } );
+
+    route( 'MoveIssue', '/issue/:issueId/move', ( { issueId } ) => {
+      return ajax.post( '/server/api/issue/load.php', { issueId, access: 'admin' } ).then( ( { details } ) => {
+        return {
+          component: MoveIssue,
+          issueId,
+          typeId: details.typeId,
+          projectId: details.projectId,
+          folderId: details.folderId,
+          name: details.name
+        };
+      } );
+    } );
+
+    route( 'DeleteIssue', '/issue/:issueId/delete', ( { issueId } ) => {
+      return ajax.post( '/server/api/issue/load.php', { issueId, access: 'admin' } ).then( ( { details } ) => {
+        return {
+          component: DeleteIssue,
+          issueId,
+          name: details.name
         };
       } );
     } );
