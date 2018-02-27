@@ -25,6 +25,7 @@ import EditComment from '@/components/forms/EditComment'
 import EditDescription from '@/components/forms/EditDescription'
 import EditFile from '@/components/forms/EditFile'
 import EditIssue from '@/components/forms/EditIssue'
+import ErrorMessage from '@/components/forms/ErrorMessage'
 import GoToItem from '@/components/forms/GoToItem'
 import IssueDetails from '@/components/forms/IssueDetails'
 import MoveIssue from '@/components/forms/MoveIssue'
@@ -38,6 +39,7 @@ export default {
   EditDescription,
   EditFile,
   EditIssue,
+  ErrorMessage,
   GoToItem,
   IssueDetails,
   MoveIssue

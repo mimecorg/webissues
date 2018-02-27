@@ -19,8 +19,6 @@
 
 import { ErrorCode } from '@/constants'
 
-import ErrorMessage from '@/components/forms/ErrorMessage'
-
 export default function makeWindowModule( router ) {
   return {
     namespaced: true,
@@ -104,7 +102,7 @@ function makeActions( router ) {
           }
         } );
       } else {
-        commit( 'setComponent', { component: () => ErrorMessage, props: { error: route.error }, size: 'small' } );
+        commit( 'setComponent', { component: 'ErrorMessage', props: { error: route.error }, size: 'small' } );
         commit( 'setBusy', false );
       }
     },
