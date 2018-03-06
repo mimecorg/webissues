@@ -24,6 +24,7 @@ import DropdownButton from '@/components/common/DropdownButton'
 import FormButtons from '@/components/common/FormButtons'
 import FormGroup from '@/components/common/FormGroup'
 import FormHeader from '@/components/common/FormHeader'
+import FormSection from '@/components/common/FormSection'
 import Grid from '@/components/common/Grid'
 import HyperLink from '@/components/common/HyperLink'
 import LocationFilters from '@/components/common/LocationFilters'
@@ -40,6 +41,7 @@ export default {
   FormButtons,
   FormGroup,
   FormHeader,
+  FormSection,
   Grid,
   HyperLink,
   LocationFilters,

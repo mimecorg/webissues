@@ -19,8 +19,10 @@
 
 <template>
   <Grid id="main-grid" v-bind:items="issues" v-bind:column-names="columnNames" v-bind:column-classes="columnClasses"
-        v-bind:sort-column="sortColumnIndex" v-bind:sort-ascending="sortAscending" v-bind:previous-enabled="previousEnabled" v-bind:next-enabled="nextEnabled"
-        v-bind:status-text="statusText" v-bind:busy="busy" v-on:sort="sort" v-on:previous="previous" v-on:next="next" v-on:row-click="rowClick">
+        v-bind:sort-enabled="true" v-bind:sort-column="sortColumnIndex" v-bind:sort-ascending="sortAscending"
+        v-bind:footer-visible="true" v-bind:previous-enabled="previousEnabled" v-bind:next-enabled="nextEnabled"
+        v-bind:status-text="statusText" v-bind:busy="busy" v-on:sort="sort" v-on:previous="previous" v-on:next="next"
+        v-on:row-click="rowClick">
     <template slot-scope="{ item, columnIndex, columnClass }">
       <td v-if="isNameColumn( columnIndex )" v-bind:class="columnClass">
         <span v-if="item.read < item.stamp" v-bind:class="getUnreadClass( item )" aria-hidden="true"></span> {{ item.name }}
@@ -135,6 +137,7 @@ export default {
   position: absolute;
   left: 0; right: 0;
   top: @navbar-height + @main-toolbar-height; bottom: 0;
+  margin: 0;
 
   .type-selected & {
     top: @navbar-height + @main-toolbar-3x-height;
@@ -146,6 +149,25 @@ export default {
     @media ( min-width: @screen-lg-min ) {
       top: @navbar-height + @main-toolbar-height;
     }
+  }
+
+  .grid-body {
+    position: absolute;
+    left: 0; right: 0;
+    top: @grid-header-height; bottom: @grid-footer-height;
+  }
+
+  .grid-body-scroll {
+    position: absolute;
+    left: 0; right: 0;
+    top: 0; bottom: 0;
+    .touch-scroll();
+  }
+
+  .grid-footer {
+    position: absolute;
+    left: 0; right: 0;
+    bottom: 0;
   }
 
   .grid-header-table th, .grid-body-table td {

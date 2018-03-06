@@ -217,11 +217,51 @@
     "IssueMoved": "Issue moved from {0} to {1}",
     "UnknownFolder": "Unknown Folder"
   },
+  "ManageProjects": {
+    "Projects": "Projects",
+    "Add": "Add",
+    "Name": "Name",
+    "Access": "Access",
+    "PublicProject": "Public project",
+    "RegularProject": "Regular project"
+  },
   "MoveIssue": {
     "MoveIssue": "Move Issue",
     "MoveIssuePrompt": "Move issue {0} to another folder of the same type.",
     "Location": "Location:",
     "NoFolderSelected": "No folder selected."
+  },
+  "ProjectDetails": {
+    "Return": "Return",
+    "More": "More",
+    "RenameProject": "Rename Project",
+    "ArchiveProject": "Archive Project",
+    "DeleteProject": "Delete Project",
+    "Permissions": "Permissions",
+    "Description": "Description",
+    "Menu": "Menu",
+    "Edit": "Edit",
+    "Delete": "Delete",
+    "Add": "Add",
+    "NoDescription": "This project has no description.",
+    "Folders": "Folders",
+    "Name": "Name",
+    "Type": "Type"
+  },
+  "ProjectPermissions": {
+    "ProjectPermissions": "Project Permissions",
+    "ProjectPermissionsPrompt": "Edit permissions of project {0}.",
+    "Return": "Return",
+    "GlobalAccess": "Global Access",
+    "Edit": "Edit",
+    "RegularProject": "Regular project",
+    "PublicProject": "Public project",
+    "Members": "Members",
+    "Add": "Add",
+    "Name": "Name",
+    "Access": "Access",
+    "RegularMember": "Regular member",
+    "ProjectAdministrator": "Project administrator"
   },
   "Error": {
     "PageNotFound": "Page Not Found",

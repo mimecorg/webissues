@@ -40,16 +40,14 @@
           <button type="button" class="btn btn-default" v-bind:title="$t( 'Navbar.GoToItem' )" v-on:click="goToItem">
             <span class="fa fa-arrow-right" aria-hidden="true"></span> <span class="hidden-sm hidden-md">{{ $t( 'Navbar.GoTo' ) }}</span>
           </button>
-          <DropdownButton v-if="isAdministrator || canManageProjects" fa-class="fa-cog" v-bind:text="$t( 'Navbar.Administration' )"
+          <DropdownButton v-if="canManageProjects" fa-class="fa-cog" v-bind:text="$t( 'Navbar.Administration' )"
                           text-class="hidden-sm hidden-md" v-bind:title="$t( 'Navbar.AdministrationMenu' )">
-            <li><HyperLink><span class="fa fa-object-group" aria-hidden="true"></span> {{ $t( 'Navbar.Projects' ) }}</HyperLink></li>
+            <li><HyperLink v-on:click="manageProjects"><span class="fa fa-object-group" aria-hidden="true"></span> {{ $t( 'Navbar.Projects' ) }}</HyperLink></li>
+            <li><HyperLink><span class="fa fa-bell-o" aria-hidden="true"></span> {{ $t( 'Navbar.PublicAlerts' ) }}</HyperLink></li>
             <template v-if="isAdministrator">
               <li><HyperLink><span class="fa fa-users" aria-hidden="true"></span> {{ $t( 'Navbar.UserAccounts' ) }}</HyperLink></li>
               <li><HyperLink><span class="fa fa-user-circle-o" aria-hidden="true"></span> {{ $t( 'Navbar.RegistrationRequests' ) }}</HyperLink></li>
               <li><HyperLink><span class="fa fa-list" aria-hidden="true"></span> {{ $t( 'Navbar.IssueTypes' ) }}</HyperLink></li>
-            </template>
-            <li><HyperLink><span class="fa fa-bell-o" aria-hidden="true"></span> {{ $t( 'Navbar.PublicAlerts' ) }}</HyperLink></li>
-            <template v-if="isAdministrator">
               <li><HyperLink><span class="fa fa-clock-o" aria-hidden="true"></span> {{ $t( 'Navbar.ArchivedProjects' ) }}</HyperLink></li>
               <li role="separator" class="divider"></li>
               <li><HyperLink><span class="fa fa-wrench" aria-hidden="true"></span> {{ $t( 'Navbar.GeneralSettings' ) }}</HyperLink></li>
@@ -62,6 +60,9 @@
               <li><HyperLink><span class="fa fa-book" aria-hidden="true"></span> {{ $t( 'Navbar.EventLog' ) }}</HyperLink></li>
             </template>
           </DropdownButton>
+          <button v-else class="btn btn-default" v-on:click="manageProjects">
+            <span class="fa fa-object-group" aria-hidden="true"></span> <span class="hidden-sm hidden-md">{{ $t( 'Navbar.Projects' ) }}</span>
+          </button>
           <DropdownButton fa-class="fa-user" v-bind:text="userName" text-class="hidden-sm hidden-md" v-bind:title="userTitle">
             <template v-if="isAuthenticated">
               <li><HyperLink><span class="fa fa-filter" aria-hidden="true"></span> {{ $t( 'Navbar.PersonalViews' ) }}</HyperLink></li>
@@ -128,6 +129,9 @@ export default {
     },
     goToItem() {
       this.$router.push( 'GoToItem' );
+    },
+    manageProjects() {
+      this.$router.push( 'ManageProjects' );
     },
     toggle() {
       this.expanded = !this.expanded;

@@ -764,7 +764,7 @@ class System_Api_ProjectManager extends System_Api_Base
     {
         $projectId = $project[ 'project_id' ];
 
-        $query = 'SELECT f.folder_id, f.folder_name, t.type_name FROM {folders} AS f'
+        $query = 'SELECT f.folder_id, f.folder_name, f.type_id, t.type_name FROM {folders} AS f'
             . ' JOIN {issue_types} AS t ON t.type_id = f.type_id'
             . ' WHERE f.project_id = %d'
             . ' ORDER BY f.folder_name COLLATE LOCALE';

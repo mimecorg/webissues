@@ -28,7 +28,10 @@ import EditIssue from '@/components/forms/EditIssue'
 import ErrorMessage from '@/components/forms/ErrorMessage'
 import GoToItem from '@/components/forms/GoToItem'
 import IssueDetails from '@/components/forms/IssueDetails'
+import ManageProjects from '@/components/forms/ManageProjects'
 import MoveIssue from '@/components/forms/MoveIssue'
+import ProjectDetails from '@/components/forms/ProjectDetails'
+import ProjectPermissions from '@/components/forms/ProjectPermissions'
 
 export default {
   DeleteComment,
@@ -42,5 +45,8 @@ export default {
   ErrorMessage,
   GoToItem,
   IssueDetails,
-  MoveIssue
+  ManageProjects,
+  MoveIssue,
+  ProjectDetails,
+  ProjectPermissions
 }

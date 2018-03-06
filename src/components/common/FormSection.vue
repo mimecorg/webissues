@@ -18,13 +18,12 @@
 -->
 
 <template>
-  <div class="form-header">
-    <div class="form-header-title">
-      <h1>{{ title }}</h1>
+  <div class="form-section">
+    <div class="form-section-title">
+      <div class="form-section-header">{{ title }}</div>
     </div>
-    <div class="form-header-buttons">
+    <div class="form-section-buttons">
       <slot/>
-      <button type="button" class="btn btn-default" v-bind:title="$t( 'Common.Close' )" v-on:click="close"><span class="fa fa-remove" aria-hidden="true"></span></button>
     </div>
   </div>
 </template>
@@ -33,11 +32,6 @@
 export default {
   props: {
     title: String
-  },
-  methods: {
-    close() {
-      this.$emit( 'close' );
-    }
   }
 }
 </script>
@@ -46,26 +40,26 @@ export default {
 @import "~@/styles/variables.less";
 @import "~@/styles/mixins.less";
 
-.form-header {
+.form-section {
   .group();
-  margin-top: 15px;
-  margin-bottom: 15px;
+  margin-top: 3px;
+  margin-bottom: 3px;
 }
 
-.form-header-title {
+.form-section-title {
   .element();
   .element-wide();
-
-  > h1 {
-    margin: 6px 0;
-    font-weight: bold;
-    font-size: @form-header-font-size;
-    line-height: @line-height-base;
-    white-space: normal;
-  }
+  vertical-align: bottom;
 }
 
-.form-header-buttons {
+.form-section-header {
+  font-weight: bold;
+  margin: 7px 0 6px 0;
+  font-size: @form-section-font-size;
+}
+
+.form-section-buttons {
   .element();
+  vertical-align: bottom;
 }
 </style>

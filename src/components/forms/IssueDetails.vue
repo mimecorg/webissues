@@ -62,25 +62,20 @@
       </div>
       <div class="col-sm-8 col-sm-pull-4">
 
-        <div class="issue-group">
-          <div class="issue-element issue-element-wide">
-            <div class="issue-header">{{ $t( 'IssueDetails.Description' ) }}</div>
-          </div>
-          <div class="issue-element">
-            <DropdownButton v-if="isAuthenticated && description != null" fa-class="fa-ellipsis-v" menu-class="dropdown-menu-right" v-bind:title="$t( 'IssueDetails.Menu' )">
-              <li><HyperLink v-on:click="replyDescription"><span class="fa fa-reply" aria-hidden="true"></span> {{ $t( 'IssueDetails.Reply' ) }}</HyperLink></li>
-              <li v-if="canEditDescription"><HyperLink v-on:click="editDescription"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'IssueDetails.Edit' ) }}</HyperLink></li>
-              <li v-if="canEditDescription"><HyperLink v-on:click="deleteDescription"><span class="fa fa-trash" aria-hidden="true"></span> {{ $t( 'IssueDetails.Delete' ) }}</HyperLink></li>
-            </DropdownButton>
-            <button v-else-if="canEditDescription" type="button" class="btn btn-default" v-on:click="addDescription">
-              <span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'IssueDetails.Add' ) }}
-            </button>
-          </div>
-        </div>
+        <FormSection v-bind:title="$t( 'IssueDetails.Description' )">
+          <DropdownButton v-if="isAuthenticated && description != null" fa-class="fa-ellipsis-v" menu-class="dropdown-menu-right" v-bind:title="$t( 'IssueDetails.Menu' )">
+            <li><HyperLink v-on:click="replyDescription"><span class="fa fa-reply" aria-hidden="true"></span> {{ $t( 'IssueDetails.Reply' ) }}</HyperLink></li>
+            <li v-if="canEditDescription"><HyperLink v-on:click="editDescription"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'IssueDetails.Edit' ) }}</HyperLink></li>
+            <li v-if="canEditDescription"><HyperLink v-on:click="deleteDescription"><span class="fa fa-trash" aria-hidden="true"></span> {{ $t( 'IssueDetails.Delete' ) }}</HyperLink></li>
+          </DropdownButton>
+          <button v-else-if="canEditDescription" type="button" class="btn btn-default" v-on:click="addDescription">
+            <span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'IssueDetails.Add' ) }}
+          </button>
+        </FormSection>
 
-        <div v-if="description" class="issue-description">
+        <div v-if="description" class="description-panel">
           <div class="formatted-text" v-hljs="description.text"></div>
-          <div v-if="description.modifiedDate" class="issue-last-edited">
+          <div v-if="description.modifiedDate" class="last-edited">
             <span class="fa fa-pencil" aria-hidden="true"></span> {{ description.modifiedDate }} &mdash; {{ description.modifiedBy }}
           </div>
         </div>
@@ -88,22 +83,17 @@
           {{ $t( 'IssueDetails.NoDescription' ) }}
         </div>
 
-        <div class="issue-group">
-          <div class="issue-element issue-element-wide">
-            <div class="issue-header">{{ getFilterText( filter ) }}</span></div>
-          </div>
-          <div class="issue-element">
-            <button v-if="isAuthenticated" type="button" class="btn btn-success" v-on:click="addComment">
-              <span class="fa fa-comment" aria-hidden="true"></span> {{ $t( 'IssueDetails.Add' ) }}
-            </button>
-            <button v-if="isAuthenticated" type="button" class="btn btn-default" v-on:click="addFile">
-              <span class="fa fa-paperclip" aria-hidden="true"></span> <span class="hidden-xs auto-tooltip">{{ $t( 'IssueDetails.Attach' ) }}</span>
-            </button>
-            <DropdownButton fa-class="fa-cog" menu-class="dropdown-menu-right" v-bind:title="$t( 'IssueDetails.Filter' )">
-              <li v-for="item in allFilters" v-bind:class="{ active: filter == item }"><HyperLink v-on:click="setFilter( item )">{{ getFilterText( item ) }}</HyperLink></li>
-            </DropdownButton>
-          </div>
-        </div>
+        <FormSection v-bind:title="getFilterText( filter )">
+          <button v-if="isAuthenticated" type="button" class="btn btn-success" v-on:click="addComment">
+            <span class="fa fa-comment" aria-hidden="true"></span> {{ $t( 'IssueDetails.Add' ) }}
+          </button>
+          <button v-if="isAuthenticated" type="button" class="btn btn-default" v-on:click="addFile">
+            <span class="fa fa-paperclip" aria-hidden="true"></span> <span class="hidden-xs auto-tooltip">{{ $t( 'IssueDetails.Attach' ) }}</span>
+          </button>
+          <DropdownButton fa-class="fa-cog" menu-class="dropdown-menu-right" v-bind:title="$t( 'IssueDetails.Filter' )">
+            <li v-for="item in allFilters" v-bind:class="{ active: filter == item }"><HyperLink v-on:click="setFilter( item )">{{ getFilterText( item ) }}</HyperLink></li>
+          </DropdownButton>
+        </FormSection>
 
         <div class="issue-history">
           <div v-for="item in processedHistory" v-bind:key="item.id" class="issue-history-item" v-bind:id="'item' + item.id">
@@ -125,14 +115,14 @@
 
             <div v-if="isCommentAdded( item )" class="issue-comment">
               <div class="formatted-text" v-hljs="item.text"></div>
-              <div v-if="item.modifiedDate" class="issue-last-edited">
+              <div v-if="item.modifiedDate" class="last-edited">
                 <span class="fa fa-pencil" aria-hidden="true"></span> {{ item.modifiedDate }} &mdash; {{ item.modifiedBy }}
               </div>
             </div>
             <div v-else-if="isFileAdded( item )" class="issue-attachment">
               <span class="fa fa-paperclip" aria-hidden="true"></span> <a v-bind:href="getFileURL( item.id )">{{ item.name }}</a> ({{ item.size }})
               <span v-if="item.description" v-html="'&mdash; ' + item.description"></span>
-              <div v-if="item.modifiedDate" class="issue-last-edited">
+              <div v-if="item.modifiedDate" class="last-edited">
                 <span class="fa fa-pencil" aria-hidden="true"></span> {{ item.modifiedDate }} &mdash; {{ item.modifiedBy }}
               </div>
             </div>
@@ -437,16 +427,9 @@ function escape( text ) {
   }
 }
 
-.issue-description {
-  padding: 10px;
-  margin-bottom: 20px;
-  border: 1px solid @issue-border-color;
-  border-radius: @border-radius-base;
-}
-
 .issue-comment {
   padding: 10px;
-  border: 1px solid @issue-border-color;
+  border: 1px solid @issue-comment-border;
   border-radius: @border-radius-base;
 }
 
@@ -457,18 +440,8 @@ function escape( text ) {
   color: @issue-attachment-text;
   border-radius: @border-radius-base;
   word-wrap: break-word;
-}
 
-.issue-last-edited {
-  color: @issue-last-edited-color;
-  text-align: right;
-  margin-top: 5px;
-
-  .fa {
-    margin-right: 3px;
-  }
-
-  .issue-attachment & {
+  .last-edited {
     color: lighten( @issue-attachment-text, 10% );
   }
 }
