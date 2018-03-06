@@ -1,0 +1,7 @@
+.vscode
+assets
+data/log
+data/sites
+data/site.ini
+node_modules
+web.config
