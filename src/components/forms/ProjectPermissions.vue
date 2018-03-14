@@ -20,7 +20,7 @@
 <template>
   <div class="container-fluid">
     <FormHeader v-bind:title="$t( 'ProjectPermissions.ProjectPermissions' )" v-on:close="close">
-      <button type="button" class="btn btn-default" v-on:click="returnToDetails"><span class="fa fa-arrow-left" aria-hidden="true"></span> {{ $t( 'ProjectPermissions.Return' ) }}</button>
+      <button type="button" class="btn btn-default" v-bind:title="$t( 'ProjectDetails.Return' )" v-on:click="returnToDetails"><span class="fa fa-arrow-left" aria-hidden="true"></span></button>
     </FormHeader>
     <Prompt path="ProjectPermissions.ProjectPermissionsPrompt"><strong>{{ name }}</strong></Prompt>
     <FormSection v-bind:title="$t( 'ProjectPermissions.GlobalAccess' )">

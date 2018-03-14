@@ -20,7 +20,7 @@
 <template>
   <div class="container-fluid">
     <FormHeader v-bind:title="name" v-on:close="close">
-      <button type="button" class="btn btn-default" v-on:click="returnToList"><span class="fa fa-arrow-left" aria-hidden="true"></span> {{ $t( 'ProjectDetails.Return' ) }}</button>
+      <button type="button" class="btn btn-default" v-bind:title="$t( 'ProjectDetails.Return' )" v-on:click="returnToList"><span class="fa fa-arrow-left" aria-hidden="true"></span></button>
       <DropdownButton v-if="isAdministrator" fa-class="fa-ellipsis-v" menu-class="dropdown-menu-right" v-bind:title="$t( 'ProjectDetails.More' )">
         <li><HyperLink><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'ProjectDetails.RenameProject' ) }}</HyperLink></li>
         <li><HyperLink><span class="fa fa-clock-o" aria-hidden="true"></span> {{ $t( 'ProjectDetails.ArchiveProject' ) }}</HyperLink></li>
