@@ -21,6 +21,7 @@ import DeleteComment from '@/components/forms/DeleteComment'
 import DeleteDescription from '@/components/forms/DeleteDescription'
 import DeleteFile from '@/components/forms/DeleteFile'
 import DeleteIssue from '@/components/forms/DeleteIssue'
+import DeleteProject from '@/components/forms/DeleteProject'
 import EditComment from '@/components/forms/EditComment'
 import EditDescription from '@/components/forms/EditDescription'
 import EditFile from '@/components/forms/EditFile'
@@ -39,6 +40,7 @@ export default {
   DeleteDescription,
   DeleteFile,
   DeleteIssue,
+  DeleteProject,
   EditComment,
   EditDescription,
   EditFile,

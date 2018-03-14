@@ -64,6 +64,31 @@ export default function makeAdminRoutes( ajax, store ) {
       } ) );
     } );
 
+    route( 'ArchiveProject', '/admin/projects/:projectId/archive', ( { projectId } ) => {
+      if ( store.state.global.userAccess != Access.AdministratorAccess )
+        return Promise.reject( makeError( ErrorCode.AccessDenied ) );
+      return ajax.post( '/server/api/project/load.php', { projectId } ).then( ( { details } ) => ( {
+        component: 'DeleteProject',
+        size: 'small',
+        mode: 'archive',
+        projectId,
+        name: details.name
+      } ) );
+    } );
+
+    route( 'DeleteProject', '/admin/projects/:projectId/delete', ( { projectId } ) => {
+      if ( store.state.global.userAccess != Access.AdministratorAccess )
+        return Promise.reject( makeError( ErrorCode.AccessDenied ) );
+      return ajax.post( '/server/api/project/load.php', { projectId, folders: true } ).then( ( { details, folders } ) => ( {
+        component: 'DeleteProject',
+        size: 'small',
+        mode: 'delete',
+        projectId,
+        name: details.name,
+        folders
+      } ) );
+    } );
+
     route( 'ProjectPermissions', '/admin/projects/:projectId/permissions', ( { projectId } ) => {
       return ajax.post( '/server/api/project/load.php', { projectId, members: true, access: 'admin' } ).then( ( { details, members } ) => {
         return {

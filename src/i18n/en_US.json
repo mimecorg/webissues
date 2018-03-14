@@ -152,6 +152,16 @@
     "DeleteFile": "Delete File",
     "DeleteFilePrompt": "Are you sure you want to delete file {0}?"
   },
+  "DeleteProject": {
+    "ArchiveProject": "Archive Project",
+    "DeleteProject": "Delete Project",
+    "ArchiveProjectPrompt": "Are you sure you want to move project {0} to the archive?",
+    "DeleteProjectPrompt": "Are you sure you want to delete project {0}?",
+    "DeleteProjectArchiveNote": "{0} You can unarchive the project later by selecting Archived Projects in the Administration menu.",
+    "Note": "Note:",
+    "DeleteProjectWarning": "{0} All folders and issues in this project will be permanently deleted.",
+    "Warning": "Warning:"
+  },
   "EditComment": {
     "EditComment": "Edit Comment",
     "AddComment": "Add Comment",
