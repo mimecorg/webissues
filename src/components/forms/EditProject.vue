@@ -129,6 +129,7 @@ export default {
       this.$emit( 'block' );
 
       this.$ajax.post( '/server/api/project/' + this.mode + '.php', data ).then( ( { projectId } ) => {
+        this.$store.commit( 'global/setDirty' );
         this.returnToDetails( projectId );
       } ).catch( error => {
         this.$emit( 'error', error );
