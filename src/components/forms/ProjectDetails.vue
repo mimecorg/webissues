@@ -22,7 +22,7 @@
     <FormHeader v-bind:title="name" v-on:close="close">
       <button type="button" class="btn btn-default" v-bind:title="$t( 'ProjectDetails.Return' )" v-on:click="returnToList"><span class="fa fa-arrow-left" aria-hidden="true"></span></button>
       <DropdownButton v-if="isAdministrator" fa-class="fa-ellipsis-v" menu-class="dropdown-menu-right" v-bind:title="$t( 'ProjectDetails.More' )">
-        <li><HyperLink><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'ProjectDetails.RenameProject' ) }}</HyperLink></li>
+        <li><HyperLink v-on:click="renameProject"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'ProjectDetails.RenameProject' ) }}</HyperLink></li>
         <li><HyperLink><span class="fa fa-clock-o" aria-hidden="true"></span> {{ $t( 'ProjectDetails.ArchiveProject' ) }}</HyperLink></li>
         <li><HyperLink><span class="fa fa-trash" aria-hidden="true"></span> {{ $t( 'ProjectDetails.DeleteProject' ) }}</HyperLink></li>
         <li role="separator" class="divider"></li>
@@ -98,6 +98,9 @@ export default {
             return type.name;
           break;
       }
+    },
+    renameProject() {
+      this.$router.push( 'RenameProject', { projectId: this.projectId } );
     },
     projectPermissions() {
       this.$router.push( 'ProjectPermissions', { projectId: this.projectId } );

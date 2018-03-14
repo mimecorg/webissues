@@ -126,6 +126,14 @@
     "FileTooLarge": "Selected file is too large.",
     "InvalidFileName": "Invalid file name."
   },
+  "EditProject": {
+    "RenameProject": "Rename Project",
+    "AddProject": "Add Project",
+    "RenameProjectPrompt": "Enter the new name of project {0}.",
+    "AddProjectPrompt": "Create a new project.",
+    "Name": "Name:",
+    "Description": "Description:"
+  },
   "DeleteComment": {
     "DeleteComment": "Delete Comment",
     "DeleteCommentPrompt": "Are you sure you want to delete comment {0}?"

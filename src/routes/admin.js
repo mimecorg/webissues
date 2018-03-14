@@ -17,6 +17,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
+import { Access, ErrorCode } from '@/constants'
+
 export default function makeAdminRoutes( ajax, store ) {
   return function adminRoutes( route ) {
     route( 'ManageProjects', '/admin/projects', () => {
@@ -25,6 +27,16 @@ export default function makeAdminRoutes( ajax, store ) {
           component: 'ManageProjects',
           projects
         };
+      } );
+    } );
+
+    route( 'AddProject', '/admin/projects/add', () => {
+      if ( store.state.global.userAccess != Access.AdministratorAccess )
+        return Promise.reject( makeError( ErrorCode.AccessDenied ) );
+      return Promise.resolve( {
+        component: 'EditProject',
+        mode: 'add',
+        descriptionFormat: store.state.global.settings.defaultFormat
       } );
     } );
 
@@ -41,6 +53,17 @@ export default function makeAdminRoutes( ajax, store ) {
       } );
     } );
 
+    route( 'RenameProject', '/admin/projects/:projectId/rename', ( { projectId } ) => {
+      if ( store.state.global.userAccess != Access.AdministratorAccess )
+        return Promise.reject( makeError( ErrorCode.AccessDenied ) );
+      return ajax.post( '/server/api/project/load.php', { projectId } ).then( ( { details } ) => ( {
+        component: 'EditProject',
+        mode: 'rename',
+        projectId,
+        name: details.name
+      } ) );
+    } );
+
     route( 'ProjectPermissions', '/admin/projects/:projectId/permissions', ( { projectId } ) => {
       return ajax.post( '/server/api/project/load.php', { projectId, members: true, access: 'admin' } ).then( ( { details, members } ) => {
         return {
@@ -53,4 +76,11 @@ export default function makeAdminRoutes( ajax, store ) {
       } );
     } );
   }
+}
+
+function makeError( errorCode ) {
+  const error = new Error( 'Route error: ' + errorCode );
+  error.reason = 'APIError';
+  error.errorCode = errorCode;
+  return error;
 }

@@ -20,7 +20,7 @@
 <template>
   <div class="container-fluid">
     <FormHeader v-bind:title="$t( 'ManageProjects.Projects' )" v-on:close="close">
-      <button v-if="isAdministrator" type="button" class="btn btn-success"><span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'ManageProjects.Add' ) }}</button>
+      <button v-if="isAdministrator" type="button" class="btn btn-success" v-on:click="addProject"><span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'ManageProjects.Add' ) }}</button>
     </FormHeader>
     <Grid v-bind:items="projects" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-wide', null ]" v-on:row-click="rowClick">
       <template slot-scope="{ item, columnIndex, columnClass }">
@@ -54,6 +54,9 @@ export default {
         case 1:
           return project.public ? this.$t( 'ManageProjects.PublicProject' ) : this.$t( 'ManageProjects.RegularProject' );
       }
+    },
+    addProject() {
+      this.$router.push( 'AddProject' );
     },
     rowClick( rowIndex ) {
       this.$router.push( 'ProjectDetails', { projectId: this.projects[ rowIndex ].id } );
