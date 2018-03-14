@@ -28,13 +28,14 @@
         <li role="separator" class="divider"></li>
         <li><HyperLink v-on:click="projectPermissions"><span class="fa fa-unlock-alt" aria-hidden="true"></span> {{ $t( 'ProjectDetails.Permissions' ) }}</HyperLink></li>
       </DropdownButton>
+      <button v-else-if="isProjectAdministrator" type="button" class="btn btn-default" v-on:click="projectPermissions"><span class="fa fa-unlock-alt" aria-hidden="true"></span> {{ $t( 'ProjectDetails.Permissions' ) }}</button>
     </FormHeader>
     <FormSection v-bind:title="$t( 'ProjectDetails.Description' )">
-      <DropdownButton v-if="isAdministrator && description != null" fa-class="fa-ellipsis-v" menu-class="dropdown-menu-right" v-bind:title="$t( 'ProjectDetails.Menu' )">
+      <DropdownButton v-if="isProjectAdministrator && description != null" fa-class="fa-ellipsis-v" menu-class="dropdown-menu-right" v-bind:title="$t( 'ProjectDetails.Menu' )">
         <li><HyperLink><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'ProjectDetails.Edit' ) }}</HyperLink></li>
         <li><HyperLink><span class="fa fa-trash" aria-hidden="true"></span> {{ $t( 'ProjectDetails.Delete' ) }}</HyperLink></li>
       </DropdownButton>
-      <button v-else-if="isAdministrator" type="button" class="btn btn-default">
+      <button v-else-if="isProjectAdministrator" type="button" class="btn btn-default">
         <span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'ProjectDetails.Add' ) }}
       </button>
     </FormSection>
@@ -48,7 +49,7 @@
       {{ $t( 'ProjectDetails.NoDescription' ) }}
     </div>
     <FormSection v-bind:title="$t( 'ProjectDetails.Folders' )">
-      <button v-if="isAdministrator" type="button" class="btn btn-success">
+      <button v-if="isProjectAdministrator" type="button" class="btn btn-success">
         <span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'ProjectDetails.Add' ) }}
       </button>
     </FormSection>
@@ -75,7 +76,8 @@ export default {
   },
   computed: {
     ...mapState( 'global', [ 'types' ] ),
-    isAdministrator() {
+    ...mapGetters( 'global', [ 'isAdministrator' ] ),
+    isProjectAdministrator() {
       return this.access == Access.AdministratorAccess;
     },
     columnNames() {
