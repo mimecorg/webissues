@@ -32,10 +32,10 @@
     </FormHeader>
     <FormSection v-bind:title="$t( 'ProjectDetails.Description' )">
       <DropdownButton v-if="isProjectAdministrator && description != null" fa-class="fa-ellipsis-v" menu-class="dropdown-menu-right" v-bind:title="$t( 'ProjectDetails.Menu' )">
-        <li><HyperLink><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'ProjectDetails.Edit' ) }}</HyperLink></li>
-        <li><HyperLink><span class="fa fa-trash" aria-hidden="true"></span> {{ $t( 'ProjectDetails.Delete' ) }}</HyperLink></li>
+        <li><HyperLink v-on:click="editDescription"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'ProjectDetails.Edit' ) }}</HyperLink></li>
+        <li><HyperLink v-on:click="deleteDescription"><span class="fa fa-trash" aria-hidden="true"></span> {{ $t( 'ProjectDetails.Delete' ) }}</HyperLink></li>
       </DropdownButton>
-      <button v-else-if="isProjectAdministrator" type="button" class="btn btn-default">
+      <button v-else-if="isProjectAdministrator" type="button" class="btn btn-default" v-on:click="addDescription">
         <span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'ProjectDetails.Add' ) }}
       </button>
     </FormSection>
@@ -113,6 +113,15 @@ export default {
     },
     projectPermissions() {
       this.$router.push( 'ProjectPermissions', { projectId: this.projectId } );
+    },
+    addDescription() {
+      this.$router.push( 'AddProjectDescription', { projectId: this.projectId } );
+    },
+    editDescription() {
+      this.$router.push( 'EditProjectDescription', { projectId: this.projectId } );
+    },
+    deleteDescription() {
+      this.$router.push( 'DeleteProjectDescription', { projectId: this.projectId } );
     },
     returnToList() {
       this.$router.push( 'ManageProjects' );

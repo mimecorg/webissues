@@ -22,11 +22,13 @@ import DeleteDescription from '@/components/forms/DeleteDescription'
 import DeleteFile from '@/components/forms/DeleteFile'
 import DeleteIssue from '@/components/forms/DeleteIssue'
 import DeleteProject from '@/components/forms/DeleteProject'
+import DeleteProjectDescription from '@/components/forms/DeleteProjectDescription'
 import EditComment from '@/components/forms/EditComment'
 import EditDescription from '@/components/forms/EditDescription'
 import EditFile from '@/components/forms/EditFile'
 import EditIssue from '@/components/forms/EditIssue'
 import EditProject from '@/components/forms/EditProject'
+import EditProjectDescription from '@/components/forms/EditProjectDescription'
 import ErrorMessage from '@/components/forms/ErrorMessage'
 import GoToItem from '@/components/forms/GoToItem'
 import IssueDetails from '@/components/forms/IssueDetails'
@@ -41,11 +43,13 @@ export default {
   DeleteFile,
   DeleteIssue,
   DeleteProject,
+  DeleteProjectDescription,
   EditComment,
   EditDescription,
   EditFile,
   EditIssue,
   EditProject,
+  EditProjectDescription,
   ErrorMessage,
   GoToItem,
   IssueDetails,

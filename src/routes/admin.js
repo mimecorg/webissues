@@ -89,6 +89,48 @@ export default function makeAdminRoutes( ajax, store ) {
       } ) );
     } );
 
+    route( 'AddProjectDescription', '/admin/projects/:projectId/description/add', ( { projectId } ) => {
+      return ajax.post( '/server/api/project/load.php', { projectId, description: true, access: 'admin' } ).then( ( { details, description } ) => {
+        if ( description != null )
+          return Promise.reject( makeError( ErrorCode.DescriptionAlreadyExists ) );
+        return {
+          component: 'EditProjectDescription',
+          mode: 'add',
+          projectId,
+          projectName: details.name,
+          descriptionFormat: store.state.global.settings.defaultFormat
+        };
+      } );
+    } );
+
+    route( 'EditProjectDescription', '/admin/projects/:projectId/description/edit', ( { projectId } ) => {
+      return ajax.post( '/server/api/project/load.php', { projectId, description: true, access: 'admin' } ).then( ( { details, description } ) => {
+        if ( description == null )
+          return Promise.reject( makeError( ErrorCode.UnknownDescription ) );
+        return {
+          component: 'EditProjectDescription',
+          mode: 'edit',
+          projectId,
+          projectName: details.name,
+          description: description.text,
+          descriptionFormat: description.format
+        };
+      } );
+    } );
+
+    route( 'DeleteProjectDescription', '/admin/projects/:projectId/description/delete', ( { projectId } ) => {
+      return ajax.post( '/server/api/project/load.php', { projectId, description: true, access: 'admin' } ).then( ( { details, description } ) => {
+        if ( description == null )
+          return Promise.reject( makeError( ErrorCode.UnknownDescription ) );
+        return {
+          component: 'DeleteProjectDescription',
+          size: 'small',
+          projectId,
+          projectName: details.name
+        };
+      } );
+    } );
+
     route( 'ProjectPermissions', '/admin/projects/:projectId/permissions', ( { projectId } ) => {
       return ajax.post( '/server/api/project/load.php', { projectId, members: true, access: 'admin' } ).then( ( { details, members } ) => {
         return {

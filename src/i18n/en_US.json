@@ -134,6 +134,13 @@
     "Name": "Name:",
     "Description": "Description:"
   },
+  "EditProjectDescription": {
+    "EditDescription": "Edit Description",
+    "AddDescription": "Add Description",
+    "EditDescriptionPrompt": "Edit description of project {0}.",
+    "AddDescriptionPrompt": "Add description to project {0}.",
+    "Description": "Description:"
+  },
   "DeleteComment": {
     "DeleteComment": "Delete Comment",
     "DeleteCommentPrompt": "Are you sure you want to delete comment {0}?"
@@ -161,6 +168,10 @@
     "Note": "Note:",
     "DeleteProjectWarning": "{0} All folders and issues in this project will be permanently deleted.",
     "Warning": "Warning:"
+  },
+  "DeleteProjectDescription": {
+    "DeleteDescription": "Delete Description",
+    "DeleteDescriptionPrompt": "Are you sure you want to delete description for project {0}?"
   },
   "EditComment": {
     "EditComment": "Edit Comment",
