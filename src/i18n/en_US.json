@@ -264,7 +264,8 @@
     "NoDescription": "This project has no description.",
     "Folders": "Folders",
     "Name": "Name",
-    "Type": "Type"
+    "Type": "Type",
+    "NoFolders": "This project has no folders."
   },
   "ProjectPermissions": {
     "ProjectPermissions": "Project Permissions",
@@ -279,7 +280,8 @@
     "Name": "Name",
     "Access": "Access",
     "RegularMember": "Regular member",
-    "ProjectAdministrator": "Project administrator"
+    "ProjectAdministrator": "Project administrator",
+    "NoMembers": "This project has no members."
   },
   "Error": {
     "PageNotFound": "Page Not Found",

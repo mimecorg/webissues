@@ -32,11 +32,14 @@
     <FormSection v-bind:title="$t( 'ProjectPermissions.Members' )">
       <button type="button" class="btn btn-success"><span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'ProjectPermissions.Add' ) }}</button>
     </FormSection>
-    <Grid v-bind:items="members" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-wide', null ]">
+    <Grid v-if="members.length > 0" v-bind:items="members" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-wide', null ]">
       <template slot-scope="{ item, columnIndex, columnClass }">
         <td v-bind:class="columnClass">{{ getCellValue( columnIndex, item ) }}</td>
       </template>
     </Grid>
+    <div v-else class="alert alert-info">
+      {{ $t( 'ProjectPermissions.NoMembers' ) }}
+    </div>
   </div>
 </template>
 
