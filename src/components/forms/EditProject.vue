@@ -34,7 +34,7 @@
 <script>
 import { mapState } from 'vuex'
 
-import { MaxLength } from '@/constants'
+import { MaxLength, ErrorCode } from '@/constants'
 
 export default {
   props: {
@@ -132,7 +132,15 @@ export default {
         this.$store.commit( 'global/setDirty' );
         this.returnToDetails( projectId );
       } ).catch( error => {
-        this.$emit( 'error', error );
+        if ( error.reason == 'APIError' && error.errorCode == ErrorCode.ProjectAlreadyExists ) {
+          this.$emit( 'unblock' );
+          this.nameError = this.$t( 'ErrorCode.' + error.errorCode );
+          this.$nextTick( () => {
+            this.$refs.name.focus();
+          } );
+        } else {
+          this.$emit( 'error', error );
+        }
       } );
     },
 
