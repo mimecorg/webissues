@@ -41,9 +41,10 @@ class Server_Api_Project_Rename
 
         $project = $projectManager->getProject( $projectId );
 
-        $projectManager->renameProject( $project, $name );
+        $changed = $projectManager->renameProject( $project, $name );
 
         $result[ 'projectId' ] = $projectId;
+        $result[ 'changed' ] = $changed;
 
         return $result;
     }

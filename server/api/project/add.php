@@ -54,6 +54,7 @@ class Server_Api_Project_Add
         }
 
         $result[ 'projectId' ] = $projectId;
+        $result[ 'changed' ] = true;
 
         return $result;
     }
