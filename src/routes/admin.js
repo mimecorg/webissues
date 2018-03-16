@@ -56,37 +56,43 @@ export default function makeAdminRoutes( ajax, store ) {
     route( 'RenameProject', '/admin/projects/:projectId/rename', ( { projectId } ) => {
       if ( store.state.global.userAccess != Access.AdministratorAccess )
         return Promise.reject( makeError( ErrorCode.AccessDenied ) );
-      return ajax.post( '/server/api/project/load.php', { projectId } ).then( ( { details } ) => ( {
-        component: 'EditProject',
-        mode: 'rename',
-        projectId,
-        name: details.name
-      } ) );
+      return ajax.post( '/server/api/project/load.php', { projectId } ).then( ( { details } ) => {
+        return {
+          component: 'EditProject',
+          mode: 'rename',
+          projectId,
+          name: details.name
+        };
+      } );
     } );
 
     route( 'ArchiveProject', '/admin/projects/:projectId/archive', ( { projectId } ) => {
       if ( store.state.global.userAccess != Access.AdministratorAccess )
         return Promise.reject( makeError( ErrorCode.AccessDenied ) );
-      return ajax.post( '/server/api/project/load.php', { projectId } ).then( ( { details } ) => ( {
-        component: 'DeleteProject',
-        size: 'small',
-        mode: 'archive',
-        projectId,
-        name: details.name
-      } ) );
+      return ajax.post( '/server/api/project/load.php', { projectId } ).then( ( { details } ) => {
+        return {
+          component: 'DeleteProject',
+          size: 'small',
+          mode: 'archive',
+          projectId,
+          name: details.name
+        };
+      } );
     } );
 
     route( 'DeleteProject', '/admin/projects/:projectId/delete', ( { projectId } ) => {
       if ( store.state.global.userAccess != Access.AdministratorAccess )
         return Promise.reject( makeError( ErrorCode.AccessDenied ) );
-      return ajax.post( '/server/api/project/load.php', { projectId, folders: true } ).then( ( { details, folders } ) => ( {
-        component: 'DeleteProject',
-        size: 'small',
-        mode: 'delete',
-        projectId,
-        name: details.name,
-        folders
-      } ) );
+      return ajax.post( '/server/api/project/load.php', { projectId, folders: true } ).then( ( { details, folders } ) => {
+        return {
+          component: 'DeleteProject',
+          size: 'small',
+          mode: 'delete',
+          projectId,
+          name: details.name,
+          folders
+        };
+      } );
     } );
 
     route( 'AddProjectDescription', '/admin/projects/:projectId/description/add', ( { projectId } ) => {
