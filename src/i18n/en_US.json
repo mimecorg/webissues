@@ -274,6 +274,12 @@
     "Location": "Location:",
     "NoFolderSelected": "No folder selected."
   },
+  "MoveFolder": {
+    "MoveFolder": "Move Folder",
+    "MoveFolderPrompt": "Move folder {0} to another project.",
+    "Project": "Project:",
+    "NoProjectSelected": "No project selected."
+  },
   "ProjectDetails": {
     "Return": "Return",
     "More": "More",

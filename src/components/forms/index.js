@@ -35,6 +35,7 @@ import GoToItem from '@/components/forms/GoToItem'
 import IssueDetails from '@/components/forms/IssueDetails'
 import ManageProjects from '@/components/forms/ManageProjects'
 import MoveIssue from '@/components/forms/MoveIssue'
+import MoveFolder from '@/components/forms/MoveFolder'
 import ProjectDetails from '@/components/forms/ProjectDetails'
 import ProjectPermissions from '@/components/forms/ProjectPermissions'
 
@@ -57,6 +58,7 @@ export default {
   IssueDetails,
   ManageProjects,
   MoveIssue,
+  MoveFolder,
   ProjectDetails,
   ProjectPermissions
 }

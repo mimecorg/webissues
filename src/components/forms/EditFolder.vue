@@ -21,7 +21,7 @@
   <div class="container-fluid">
     <FormHeader v-bind:title="title" v-on:close="close">
       <DropdownButton v-if="mode == 'rename'" fa-class="fa-ellipsis-v" menu-class="dropdown-menu-right" v-bind:title="$t( 'EditFolder.More' )">
-        <li><HyperLink><span class="fa fa-exchange" aria-hidden="true"></span> {{ $t( 'EditFolder.MoveFolder' ) }}</HyperLink></li>
+        <li><HyperLink v-on:click="moveFolder"><span class="fa fa-exchange" aria-hidden="true"></span> {{ $t( 'EditFolder.MoveFolder' ) }}</HyperLink></li>
         <li><HyperLink><span class="fa fa-trash" aria-hidden="true"></span> {{ $t( 'EditFolder.DeleteFolder' ) }}</HyperLink></li>
       </DropdownButton>
     </FormHeader>
@@ -98,6 +98,10 @@ export default {
   },
 
   methods: {
+    moveFolder() {
+      this.$router.push( 'MoveFolder', { projectId: this.projectId, folderId: this.folderId } );
+    },
+
     selectType( type ) {
       this.type = type;
     },
