@@ -203,6 +203,20 @@
     "Description": "Description:",
     "NoFolderSelected": "No folder selected."
   },
+  "EditFolder": {
+    "RenameFolder": "Rename Folder",
+    "AddFolder": "Add Folder",
+    "RenameFolderPrompt": "Enter the new name of folder {0}.",
+    "AddFolderPrompt": "Create a new folder in project {0}.",
+    "More": "More",
+    "MoveFolder": "Move Folder",
+    "DeleteFolder": "Delete Folder",
+    "Name": "Name:",
+    "Type": "Type:",
+    "SelectType": "Select Type",
+    "TypeTitle": "Type: {0}",
+    "NoTypeSelected": "No type selected."
+  },
   "GoToItem": {
     "Title": "Go To Item",
     "Prompt": "Enter the identifier of an issue, comment or attachment.",

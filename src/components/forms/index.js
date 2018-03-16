@@ -26,6 +26,7 @@ import DeleteProjectDescription from '@/components/forms/DeleteProjectDescriptio
 import EditComment from '@/components/forms/EditComment'
 import EditDescription from '@/components/forms/EditDescription'
 import EditFile from '@/components/forms/EditFile'
+import EditFolder from '@/components/forms/EditFolder'
 import EditIssue from '@/components/forms/EditIssue'
 import EditProject from '@/components/forms/EditProject'
 import EditProjectDescription from '@/components/forms/EditProjectDescription'
@@ -47,6 +48,7 @@ export default {
   EditComment,
   EditDescription,
   EditFile,
+  EditFolder,
   EditIssue,
   EditProject,
   EditProjectDescription,

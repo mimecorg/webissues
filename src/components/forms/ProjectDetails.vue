@@ -49,11 +49,12 @@
       {{ $t( 'ProjectDetails.NoDescription' ) }}
     </div>
     <FormSection v-bind:title="$t( 'ProjectDetails.Folders' )">
-      <button v-if="isProjectAdministrator" type="button" class="btn btn-success">
+      <button v-if="isProjectAdministrator" type="button" class="btn btn-success" v-on:click="addFolder">
         <span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'ProjectDetails.Add' ) }}
       </button>
     </FormSection>
-    <Grid v-if="folders.length > 0" v-bind:items="folders" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-wide', null ]">
+    <Grid v-if="folders.length > 0" v-bind:items="folders" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-wide', null ]"
+          v-bind:row-click-enabled="isProjectAdministrator" v-on:row-click="rowClick">
       <template slot-scope="{ item, columnIndex, columnClass }">
         <td v-bind:class="columnClass">{{ getCellValue( columnIndex, item ) }}</td>
       </template>
@@ -122,6 +123,12 @@ export default {
     },
     deleteDescription() {
       this.$router.push( 'DeleteProjectDescription', { projectId: this.projectId } );
+    },
+    addFolder() {
+      this.$router.push( 'AddFolder', { projectId: this.projectId } );
+    },
+    rowClick( rowIndex ) {
+      this.$router.push( 'RenameFolder', { projectId: this.projectId, folderId: this.folders[ rowIndex ].id } );
     },
     returnToList() {
       this.$router.push( 'ManageProjects' );

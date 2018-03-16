@@ -35,7 +35,7 @@
     </div>
     <div class="grid-body">
       <div ref="bodyScroll" class="grid-body-scroll" v-on:scroll="updateHeaderScroll">
-        <table class="grid-body-table">
+        <table v-bind:class="[ 'grid-body-table', { 'grid-body-hover': rowClickEnabled } ]">
           <tbody>
             <tr v-for="( item, rowIndex ) in items" v-on:click="rowClick( rowIndex )">
               <slot v-for="( columnName, columnIndex ) in columnNames" v-bind:item="item" v-bind:column-index="columnIndex"
@@ -75,6 +75,7 @@ export default {
     sortEnabled: Boolean,
     sortColumn: Number,
     sortAscending: Boolean,
+    rowClickEnabled: { type: Boolean, default: true },
     footerVisible: Boolean,
     previousEnabled: Boolean,
     nextEnabled: Boolean,
@@ -114,7 +115,8 @@ export default {
       this.$emit( 'sort', columnIndex );
     },
     rowClick( rowIndex ) {
-      this.$emit( 'row-click', rowIndex );
+      if ( this.rowClickEnabled )
+        this.$emit( 'row-click', rowIndex );
     },
     previous() {
       this.$emit( 'previous' );
@@ -187,17 +189,20 @@ export default {
 .grid-body-table {
   tr {
     border-bottom: 1px solid @grid-body-border-color;
-    cursor: pointer;
-
-    &:hover {
-      background-color: @grid-body-hover-color;
-    }
   }
 
   td {
     padding: 10px;
     color: @grid-body-color;
     .ellipsis();
+  }
+}
+
+.grid-body-hover tr {
+  cursor: pointer;
+
+  &:hover {
+    background-color: @grid-body-hover-color;
   }
 }
 

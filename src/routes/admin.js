@@ -137,6 +137,29 @@ export default function makeAdminRoutes( ajax, store ) {
       } );
     } );
 
+    route( 'AddFolder', '/admin/projects/:projectId/folder/add', ( { projectId } ) => {
+      return ajax.post( '/server/api/project/load.php', { projectId, access: 'admin' } ).then( ( { details } ) => {
+        return {
+          component: 'EditFolder',
+          mode: 'add',
+          projectId,
+          projectName: details.name
+        };
+      } );
+    } );
+
+    route( 'RenameFolder', '/admin/projects/:projectId/folder/:folderId/rename', ( { projectId, folderId } ) => {
+      return ajax.post( '/server/api/project/folder/load.php', { projectId, folderId, access: 'admin' } ).then( ( { name } ) => {
+        return {
+          component: 'EditFolder',
+          mode: 'rename',
+          projectId,
+          folderId,
+          name
+        };
+      } );
+    } );
+
     route( 'ProjectPermissions', '/admin/projects/:projectId/permissions', ( { projectId } ) => {
       return ajax.post( '/server/api/project/load.php', { projectId, members: true, access: 'admin' } ).then( ( { details, members } ) => {
         return {
