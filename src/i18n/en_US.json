@@ -159,6 +159,12 @@
     "DeleteFile": "Delete File",
     "DeleteFilePrompt": "Are you sure you want to delete file {0}?"
   },
+  "DeleteFolder": {
+    "DeleteFolder": "Delete Folder",
+    "DeleteFolderPrompt": "Are you sure you want to delete folder {0}?",
+    "DeleteFolderWarning": "{0} All issues in this folder will be permanently deleted.",
+    "Warning": "Warning:"
+  },
   "DeleteProject": {
     "ArchiveProject": "Archive Project",
     "DeleteProject": "Delete Project",

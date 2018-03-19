@@ -20,38 +20,24 @@
 
 require_once( '../../../../system/bootstrap.inc.php' );
 
-class Server_Api_Project_Folder_Load
+class Server_Api_Project_Folder_Delete
 {
     public function run( $arguments )
     {
         $principal = System_Api_Principal::getCurrent();
         $principal->checkAuthenticated();
 
-        $projectId = isset( $arguments[ 'projectId' ] ) ? (int)$arguments[ 'projectId' ] : null;
         $folderId = isset( $arguments[ 'folderId' ] ) ? (int)$arguments[ 'folderId' ] : null;
-        $access = isset( $arguments[ 'access' ] ) ? $arguments[ 'access' ] : null;
+        $force = isset( $arguments[ 'force' ] ) ? (bool)$arguments[ 'force' ] : false;
 
-        if ( $projectId == null || $folderId == null )
-            throw new Server_Error( Server_Error::InvalidArguments );
-
-        $flags = 0;
-        if ( $access == 'admin' )
-            $flags = System_Api_ProjectManager::RequireAdministrator;
-        else if ( $access != null )
+        if ( $folderId == null )
             throw new Server_Error( Server_Error::InvalidArguments );
 
         $projectManager = new System_Api_ProjectManager();
-        $folder = $projectManager->getFolder( $folderId, $flags );
+        $folder = $projectManager->getFolder( $folderId, System_Api_ProjectManager::RequireAdministrator );
 
-        if ( $folder[ 'project_id' ] != $projectId )
-            throw new System_Api_Error( System_Api_Error::UnknownFolder );
-
-        $result[ 'name' ] = $folder[ 'folder_name' ];
-
-        $result[ 'empty' ] = !$projectManager->checkFolderNotEmpty( $folder );
-
-        return $result;
+        $projectManager->deleteFolder( $folder, $force ? System_Api_ProjectManager::ForceDelete : 0 );
     }
 }
 
-System_Bootstrap::run( 'Server_Api_Application', 'Server_Api_Project_Folder_Load' );
+System_Bootstrap::run( 'Server_Api_Application', 'Server_Api_Project_Folder_Delete' );

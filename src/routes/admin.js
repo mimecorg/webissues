@@ -171,6 +171,18 @@ export default function makeAdminRoutes( ajax, store ) {
       } );
     } );
 
+    route( 'DeleteFolder', '/admin/projects/:projectId/folder/:folderId/delete', ( { projectId, folderId } ) => {
+      return ajax.post( '/server/api/project/folder/load.php', { projectId, folderId, access: 'admin' } ).then( ( { name, empty } ) => {
+        return {
+          component: 'DeleteFolder',
+          projectId,
+          folderId,
+          name,
+          empty
+        };
+      } );
+    } );
+
     route( 'ProjectPermissions', '/admin/projects/:projectId/permissions', ( { projectId } ) => {
       return ajax.post( '/server/api/project/load.php', { projectId, members: true, access: 'admin' } ).then( ( { details, members } ) => {
         return {
