@@ -24,7 +24,7 @@
     </FormHeader>
     <Prompt path="ProjectPermissions.ProjectPermissionsPrompt"><strong>{{ name }}</strong></Prompt>
     <FormSection v-bind:title="$t( 'ProjectPermissions.GlobalAccess' )">
-      <button type="button" class="btn btn-default"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'ProjectPermissions.Edit' ) }}</button>
+      <button type="button" class="btn btn-default" v-on:click="editAccess"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'ProjectPermissions.Edit' ) }}</button>
     </FormSection>
     <div class="description-panel">
       {{ globalAccess }}
@@ -68,6 +68,9 @@ export default {
     }
   },
   methods: {
+    editAccess() {
+      this.$router.push( 'EditProjectAccess', { projectId: this.projectId } );
+    },
     getCellValue( columnIndex, member ) {
       switch ( columnIndex ) {
         case 0:

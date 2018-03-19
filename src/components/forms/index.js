@@ -30,6 +30,7 @@ import EditFile from '@/components/forms/EditFile'
 import EditFolder from '@/components/forms/EditFolder'
 import EditIssue from '@/components/forms/EditIssue'
 import EditProject from '@/components/forms/EditProject'
+import EditProjectAccess from '@/components/forms/EditProjectAccess'
 import EditProjectDescription from '@/components/forms/EditProjectDescription'
 import ErrorMessage from '@/components/forms/ErrorMessage'
 import GoToItem from '@/components/forms/GoToItem'
@@ -54,6 +55,7 @@ export default {
   EditFolder,
   EditIssue,
   EditProject,
+  EditProjectAccess,
   EditProjectDescription,
   ErrorMessage,
   GoToItem,

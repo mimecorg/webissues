@@ -223,6 +223,12 @@
     "TypeTitle": "Type: {0}",
     "NoTypeSelected": "No type selected."
   },
+  "EditProjectAccess": {
+    "EditProjectAccess": "Global Access",
+    "EditProjectAccessPrompt": "Change global access for project {0}.",
+    "RegularProject": "Regular project",
+    "PublicProject": "Public project"
+  },
   "GoToItem": {
     "Title": "Go To Item",
     "Prompt": "Enter the identifier of an issue, comment or attachment.",

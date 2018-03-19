@@ -194,6 +194,17 @@ export default function makeAdminRoutes( ajax, store ) {
         };
       } );
     } );
+
+    route( 'EditProjectAccess', '/admin/projects/:projectId/permissions/edit', ( { projectId } ) => {
+      return ajax.post( '/server/api/project/load.php', { projectId, access: 'admin' } ).then( ( { details } ) => {
+        return {
+          component: 'EditProjectAccess',
+          projectId,
+          name: details.name,
+          public: details.public
+        };
+      } );
+    } );
   }
 }
 
