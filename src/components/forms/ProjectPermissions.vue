@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex'
+import { mapState } from 'vuex'
 
 import { Access } from '@/constants'
 
@@ -55,6 +55,7 @@ export default {
     public: Boolean,
     members: Array
   },
+
   computed: {
     ...mapState( 'global', [ 'users' ] ),
     globalAccess() {
@@ -70,10 +71,8 @@ export default {
       ];
     }
   },
+
   methods: {
-    editAccess() {
-      this.$router.push( 'EditProjectAccess', { projectId: this.projectId } );
-    },
     getCellValue( columnIndex, member ) {
       switch ( columnIndex ) {
         case 0:
@@ -88,15 +87,23 @@ export default {
           break;
       }
     },
+
+    editAccess() {
+      this.$router.push( 'EditProjectAccess', { projectId: this.projectId } );
+    },
+
     addMembers() {
       this.$router.push( 'AddMembers', { projectId: this.projectId } );
     },
+
     rowClick( rowIndex ) {
       this.$router.push( 'EditMember', { projectId: this.projectId, userId: this.sortedMembers[ rowIndex ].id } );
     },
+
     returnToDetails() {
       this.$router.push( 'ProjectDetails', { projectId: this.projectId } );
     },
+
     close() {
       this.$emit( 'close' );
     }

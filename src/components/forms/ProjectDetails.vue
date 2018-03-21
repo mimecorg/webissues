@@ -76,6 +76,7 @@ export default {
     description: Object,
     folders: Array
   },
+
   computed: {
     ...mapState( 'global', [ 'types' ] ),
     ...mapGetters( 'global', [ 'isAdministrator' ] ),
@@ -89,6 +90,7 @@ export default {
       ];
     }
   },
+
   methods: {
     getCellValue( columnIndex, folder ) {
       switch ( columnIndex ) {
@@ -101,6 +103,7 @@ export default {
           break;
       }
     },
+
     renameProject() {
       this.$router.push( 'RenameProject', { projectId: this.projectId } );
     },
@@ -113,6 +116,7 @@ export default {
     projectPermissions() {
       this.$router.push( 'ProjectPermissions', { projectId: this.projectId } );
     },
+
     addDescription() {
       this.$router.push( 'AddProjectDescription', { projectId: this.projectId } );
     },
@@ -122,15 +126,19 @@ export default {
     deleteDescription() {
       this.$router.push( 'DeleteProjectDescription', { projectId: this.projectId } );
     },
+
     addFolder() {
       this.$router.push( 'AddFolder', { projectId: this.projectId } );
     },
+
     rowClick( rowIndex ) {
       this.$router.push( 'RenameFolder', { projectId: this.projectId, folderId: this.folders[ rowIndex ].id } );
     },
+
     returnToList() {
       this.$router.push( 'ManageProjects' );
     },
+
     close() {
       this.$emit( 'close' );
     }

@@ -32,12 +32,13 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex'
+import { mapGetters } from 'vuex'
 
 export default {
   props: {
     projects: Array
   },
+
   computed: {
     ...mapGetters( 'global', [ 'isAdministrator' ] ),
     columnNames() {
@@ -47,6 +48,7 @@ export default {
       ];
     }
   },
+
   methods: {
     getCellValue( columnIndex, project ) {
       switch ( columnIndex ) {
@@ -56,12 +58,15 @@ export default {
           return project.public ? this.$t( 'ManageProjects.PublicProject' ) : this.$t( 'ManageProjects.RegularProject' );
       }
     },
+
     addProject() {
       this.$router.push( 'AddProject' );
     },
+
     rowClick( rowIndex ) {
       this.$router.push( 'ProjectDetails', { projectId: this.projects[ rowIndex ].id } );
     },
+
     close() {
       this.$emit( 'close' );
     }
