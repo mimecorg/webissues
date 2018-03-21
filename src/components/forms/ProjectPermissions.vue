@@ -32,7 +32,7 @@
     <FormSection v-bind:title="$t( 'ProjectPermissions.Members' )">
       <button type="button" class="btn btn-success" v-on:click="addMembers"><span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'ProjectPermissions.Add' ) }}</button>
     </FormSection>
-    <Grid v-if="members.length > 0" v-bind:items="members" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-wide', null ]" v-on:row-click="rowClick">
+    <Grid v-if="sortedMembers.length > 0" v-bind:items="sortedMembers" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-wide', null ]" v-on:row-click="rowClick">
       <template slot-scope="{ item, columnIndex, columnClass }">
         <td v-bind:class="columnClass">{{ getCellValue( columnIndex, item ) }}</td>
       </template>
@@ -59,6 +59,9 @@ export default {
     ...mapState( 'global', [ 'users' ] ),
     globalAccess() {
       return this.public ? this.$t( 'ProjectPermissions.PublicProject' ) : this.$t( 'ProjectPermissions.RegularProject' );
+    },
+    sortedMembers() {
+      return this.users.map( u => this.members.find( m => m.id == u.id ) ).filter( m => m != null );
     },
     columnNames() {
       return [
@@ -89,7 +92,7 @@ export default {
       this.$router.push( 'AddMembers', { projectId: this.projectId } );
     },
     rowClick( rowIndex ) {
-      this.$router.push( 'EditMember', { projectId: this.projectId, userId: this.members[ rowIndex ].id } );
+      this.$router.push( 'EditMember', { projectId: this.projectId, userId: this.sortedMembers[ rowIndex ].id } );
     },
     returnToDetails() {
       this.$router.push( 'ProjectDetails', { projectId: this.projectId } );
