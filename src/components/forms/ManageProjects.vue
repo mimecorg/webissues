@@ -22,11 +22,12 @@
     <FormHeader v-bind:title="$t( 'ManageProjects.Projects' )" v-on:close="close">
       <button v-if="isAdministrator" type="button" class="btn btn-success" v-on:click="addProject"><span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'ManageProjects.Add' ) }}</button>
     </FormHeader>
-    <Grid v-bind:items="projects" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-wide', null ]" v-on:row-click="rowClick">
+    <Grid v-if="projects.length > 0" v-bind:items="projects" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-wide', null ]" v-on:row-click="rowClick">
       <template slot-scope="{ item, columnIndex, columnClass }">
         <td v-bind:class="columnClass">{{ getCellValue( columnIndex, item ) }}</td>
       </template>
     </Grid>
+    <Prompt v-else v-bind:path="isAdministrator ? 'ManageProjects.NoProjects' : 'ManageProjects.NoAvailableProjects'"/>
   </div>
 </template>
 

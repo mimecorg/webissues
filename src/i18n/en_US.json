@@ -294,7 +294,9 @@
     "Name": "Name",
     "Access": "Access",
     "PublicProject": "Public project",
-    "RegularProject": "Regular project"
+    "RegularProject": "Regular project",
+    "NoAvailableProjects": "There are no available projects.",
+    "NoProjects": "There are no projects."
   },
   "MoveIssue": {
     "MoveIssue": "Move Issue",
