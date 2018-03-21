@@ -205,6 +205,46 @@ export default function makeAdminRoutes( ajax, store ) {
         };
       } );
     } );
+
+    route( 'AddMembers', '/admin/projects/:projectId/members/add', ( { projectId } ) => {
+      return ajax.post( '/server/api/project/load.php', { projectId, members: true, access: 'admin' } ).then( ( { details, members } ) => {
+        return {
+          component: 'EditMember',
+          mode: 'add',
+          projectId,
+          projectName: details.name,
+          access: Access.NormalAccess,
+          members
+        };
+      } );
+    } );
+
+    route( 'EditMember', '/admin/projects/:projectId/members/:userId/edit', ( { projectId, userId } ) => {
+      return ajax.post( '/server/api/project/member/load.php', { projectId, userId } ).then( ( { projectName, userName, access } ) => {
+        return {
+          component: 'EditMember',
+          mode: 'edit',
+          projectId,
+          userId,
+          projectName,
+          userName,
+          access
+        };
+      } );
+    } );
+
+    route( 'RemoveMember', '/admin/projects/:projectId/members/:userId/remove', ( { projectId, userId } ) => {
+      return ajax.post( '/server/api/project/member/load.php', { projectId, userId } ).then( ( { projectName, userName } ) => {
+        return {
+          component: 'RemoveMember',
+          size: 'small',
+          projectId,
+          userId,
+          projectName,
+          userName
+        };
+      } );
+    } );
   }
 }
 

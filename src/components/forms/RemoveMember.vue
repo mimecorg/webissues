@@ -19,48 +19,28 @@
 
 <template>
   <div class="container-fluid">
-    <FormHeader v-bind:title="$t( 'EditProjectAccess.EditProjectAccess' )" v-on:close="close"/>
-    <Prompt path="EditProjectAccess.EditProjectAccessPrompt"><strong>{{ name }}</strong></Prompt>
-    <FormGroup v-bind:label="$t( 'EditProjectAccess.Access' )" v-bind:required="true">
-      <div class="radio">
-        <label><input type="radio" v-model="publicValue" v-bind:value="false"> {{ $t( 'EditProjectAccess.RegularProject' ) }}</label>
-      </div>
-      <div class="radio">
-        <label><input type="radio" v-model="publicValue" v-bind:value="true"> {{ $t( 'EditProjectAccess.PublicProject' ) }}</label>
-      </div>
-    </FormGroup>
+    <FormHeader v-bind:title="$t( 'RemoveMember.RemoveMember' )" v-on:close="close"/>
+    <Prompt path="RemoveMember.RemoveMemberPrompt"><strong>{{ userName }}</strong><strong>{{ projectName }}</strong></Prompt>
     <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
   </div>
 </template>
 
 <script>
-import { ErrorCode } from '@/constants'
+import { Access } from '@/constants'
 
 export default {
   props: {
     projectId: Number,
-    name: String,
-    public: Boolean
-  },
-
-  data() {
-    return {
-      publicValue: this.public
-    };
+    userId: Number,
+    projectName: String,
+    userName: String
   },
 
   methods: {
     submit() {
       this.$emit( 'block' );
 
-      if ( this.publicValue == this.public ) {
-        this.returnToDetails();
-        return;
-      }
-
-      const data = { projectId: this.projectId, public: this.publicValue };
-
-      this.$ajax.post( '/server/api/project/access.php', data ).then( () => {
+      this.$ajax.post( '/server/api/project/member/edit.php', { projectId: this.projectId, users: [ this.userId ], access: Access.NoAccess } ).then( () => {
         this.returnToDetails();
       } ).catch( error => {
         this.$emit( 'error', error );

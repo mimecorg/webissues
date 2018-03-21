@@ -29,6 +29,7 @@ import EditDescription from '@/components/forms/EditDescription'
 import EditFile from '@/components/forms/EditFile'
 import EditFolder from '@/components/forms/EditFolder'
 import EditIssue from '@/components/forms/EditIssue'
+import EditMember from '@/components/forms/EditMember'
 import EditProject from '@/components/forms/EditProject'
 import EditProjectAccess from '@/components/forms/EditProjectAccess'
 import EditProjectDescription from '@/components/forms/EditProjectDescription'
@@ -40,6 +41,7 @@ import MoveIssue from '@/components/forms/MoveIssue'
 import MoveFolder from '@/components/forms/MoveFolder'
 import ProjectDetails from '@/components/forms/ProjectDetails'
 import ProjectPermissions from '@/components/forms/ProjectPermissions'
+import RemoveMember from '@/components/forms/RemoveMember'
 
 export default {
   DeleteComment,
@@ -54,6 +56,7 @@ export default {
   EditFile,
   EditFolder,
   EditIssue,
+  EditMember,
   EditProject,
   EditProjectAccess,
   EditProjectDescription,
@@ -64,5 +67,6 @@ export default {
   MoveIssue,
   MoveFolder,
   ProjectDetails,
-  ProjectPermissions
+  ProjectPermissions,
+  RemoveMember
 }

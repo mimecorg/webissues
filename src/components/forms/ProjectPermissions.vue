@@ -30,9 +30,9 @@
       {{ globalAccess }}
     </div>
     <FormSection v-bind:title="$t( 'ProjectPermissions.Members' )">
-      <button type="button" class="btn btn-success"><span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'ProjectPermissions.Add' ) }}</button>
+      <button type="button" class="btn btn-success" v-on:click="addMembers"><span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'ProjectPermissions.Add' ) }}</button>
     </FormSection>
-    <Grid v-if="members.length > 0" v-bind:items="members" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-wide', null ]">
+    <Grid v-if="members.length > 0" v-bind:items="members" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-wide', null ]" v-on:row-click="rowClick">
       <template slot-scope="{ item, columnIndex, columnClass }">
         <td v-bind:class="columnClass">{{ getCellValue( columnIndex, item ) }}</td>
       </template>
@@ -84,6 +84,12 @@ export default {
             return this.$t( 'ProjectPermissions.ProjectAdministrator' );
           break;
       }
+    },
+    addMembers() {
+      this.$router.push( 'AddMembers', { projectId: this.projectId } );
+    },
+    rowClick( rowIndex ) {
+      this.$router.push( 'EditMember', { projectId: this.projectId, userId: this.members[ rowIndex ].id } );
     },
     returnToDetails() {
       this.$router.push( 'ProjectDetails', { projectId: this.projectId } );

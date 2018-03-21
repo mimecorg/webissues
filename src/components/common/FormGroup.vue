@@ -35,3 +35,19 @@ export default {
   }
 }
 </script>
+
+<style lang="less">
+@import "~@/styles/variables.less";
+@import "~@/styles/mixins.less";
+
+.form-group {
+  .radio {
+    margin-left: 15px;
+    margin-top: 0;
+  }
+
+  .radio + .radio {
+    margin-top: -5px;
+  }
+}
+</style>
