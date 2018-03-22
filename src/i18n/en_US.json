@@ -114,33 +114,6 @@
     "IssuesCount": "{0} issues",
     "IssuesCountOf": "{0}-{1} of {2} issues"
   },
-  "EditFile": {
-    "AddFile": "Attach File",
-    "EditFile": "Edit File",
-    "AddFilePrompt": "Attach a file to issue {0}.",
-    "EditFilePrompt": "Edit file {0}.",
-    "FileName": "File Name:",
-    "Description": "Description:",
-    "FilePrompt": "Drag your file here or click to browse.",
-    "NoFileSelected": "No file selected.",
-    "FileTooLarge": "Selected file is too large.",
-    "InvalidFileName": "Invalid file name."
-  },
-  "EditProject": {
-    "RenameProject": "Rename Project",
-    "AddProject": "Add Project",
-    "RenameProjectPrompt": "Enter the new name of project {0}.",
-    "AddProjectPrompt": "Create a new project.",
-    "Name": "Name:",
-    "Description": "Description:"
-  },
-  "EditProjectDescription": {
-    "EditDescription": "Edit Description",
-    "AddDescription": "Add Description",
-    "EditDescriptionPrompt": "Edit description of project {0}.",
-    "AddDescriptionPrompt": "Add description to project {0}.",
-    "Description": "Description:"
-  },
   "DeleteComment": {
     "DeleteComment": "Delete Comment",
     "DeleteCommentPrompt": "Are you sure you want to delete comment {0}?"
@@ -195,6 +168,18 @@
     "AddDescriptionPrompt": "Add description to issue {0}.",
     "Description": "Description:"
   },
+  "EditFile": {
+    "AddFile": "Attach File",
+    "EditFile": "Edit File",
+    "AddFilePrompt": "Attach a file to issue {0}.",
+    "EditFilePrompt": "Edit file {0}.",
+    "FileName": "File Name:",
+    "Description": "Description:",
+    "FilePrompt": "Drag your file here or click to browse.",
+    "NoFileSelected": "No file selected.",
+    "FileTooLarge": "Selected file is too large.",
+    "InvalidFileName": "Invalid file name."
+  },
   "EditIssue": {
     "EditAttributes": "Edit Attributes",
     "AddIssue": "Add Issue",
@@ -238,12 +223,27 @@
     "ProjectAdministrator": "Project administrator",
     "CannotEditOwnAcess": "You cannot change your own access to this project."
   },
+  "EditProject": {
+    "RenameProject": "Rename Project",
+    "AddProject": "Add Project",
+    "RenameProjectPrompt": "Enter the new name of project {0}.",
+    "AddProjectPrompt": "Create a new project.",
+    "Name": "Name:",
+    "Description": "Description:"
+  },
   "EditProjectAccess": {
     "EditProjectAccess": "Global Access",
     "EditProjectAccessPrompt": "Change global access for project {0}.",
     "Access": "Access:",
     "RegularProject": "Regular project",
     "PublicProject": "Public project"
+  },
+  "EditProjectDescription": {
+    "EditDescription": "Edit Description",
+    "AddDescription": "Add Description",
+    "EditDescriptionPrompt": "Edit description of project {0}.",
+    "AddDescriptionPrompt": "Add description to project {0}.",
+    "Description": "Description:"
   },
   "GoToItem": {
     "Title": "Go To Item",
