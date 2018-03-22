@@ -176,7 +176,7 @@ class System_Api_UserManager extends System_Api_Base
         $projectId = $project[ 'project_id' ];
 
         $query = 'SELECT COUNT(*) FROM {rights} WHERE project_id = %d';
- 
+
         return $this->connection->queryScalar( $query, $projectId );
     }
 
@@ -237,7 +237,7 @@ class System_Api_UserManager extends System_Api_Base
         $query = 'SELECT COUNT(*) FROM {rights} AS r'
             . ' JOIN {projects} AS p ON p.project_id = r.project_id'
             . ' WHERE user_id = %d AND p.is_archived = 0';
- 
+
         return $this->connection->queryScalar( $query, $userId );
     }
 
@@ -282,17 +282,27 @@ class System_Api_UserManager extends System_Api_Base
         return $this->connection->queryTable( $query, $principal->getUserId() );
     }
 
+    /**
+    * Get list of users visible to the current user.
+    * @return An array of associative arrays representing users.
+    */
     public function getVisibleUsers()
     {
         $principal = System_Api_Principal::getCurrent();
 
         $query = 'SELECT u.user_id, u.user_login, u.user_name, u.user_access'
-            . ' FROM {users} AS u'
-            . ' WHERE u.user_id IN ('
-            . ' SELECT r1.user_id FROM {rights} AS r1'
-            . ' INNER JOIN {effective_rights} AS r2 ON r2.project_id = r1.project_id'
-            . ' WHERE r2.user_id = %d )'
-            . ' ORDER BY u.user_name COLLATE LOCALE';
+            . ' FROM {users} AS u';
+        if ( !$principal->isAuthenticated() ) {
+            $query .= ' WHERE u.user_id IN ( SELECT r1.user_id FROM {rights} AS r1'
+                . ' INNER JOIN {projects} AS p ON p.project_id = r1.project_id'
+                . ' WHERE p.is_archived = 0 AND p.is_public = 1 )';
+        } else if ( !$principal->isAdministrator() ) {
+            $query .= ' WHERE u.user_id IN ( SELECT r1.user_id FROM {rights} AS r1'
+                . ' INNER JOIN {projects} AS p ON p.project_id = r1.project_id'
+                . ' INNER JOIN {effective_rights} AS r2 ON r2.project_id = p.project_id AND r2.user_id = %d'
+                . ' WHERE p.is_archived = 0 )';
+        }
+        $query .= ' ORDER BY u.user_name COLLATE LOCALE';
 
         return $this->connection->queryTable( $query, $principal->getUserId() );
     }
