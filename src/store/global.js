@@ -43,7 +43,8 @@ function makeState( baseURL, { serverName, serverVersion, userId, userName, user
     types: [],
     users: [],
     settings: {},
-    lastUpdate: null
+    lastUpdate: null,
+    dirty: false
   };
 }
 
@@ -60,7 +61,7 @@ function makeGetters() {
     },
     checkUpdate( state ) {
       return () => {
-        return state.lastUpdate == null || ( Date.now() - state.lastUpdate ) >= UpdateInterval;
+        return state.dirty || state.lastUpdate == null || ( Date.now() - state.lastUpdate ) >= UpdateInterval;
       };
     }
   };
@@ -68,6 +69,9 @@ function makeGetters() {
 
 function makeMutations() {
   return {
+    setDirty( state ) {
+      state.dirty = true;
+    },
     setData( state, { serverName, serverVersion, userId, userName, userAccess, projects, types, users, settings } ) {
       state.serverName = serverName;
       state.serverVersion = serverVersion;
@@ -81,6 +85,7 @@ function makeMutations() {
     },
     beginUpdate( state ) {
       state.lastUpdate = Date.now();
+      state.dirty = false;
     }
   };
 }

@@ -32,7 +32,7 @@
         </template>
       </div>
     </DropdownButton>
-    <DropdownButton ref="folder" fa-class="fa-folder-open-o" v-bind:text="folderName" v-bind:title="folderTitle">
+    <DropdownButton v-if="folderVisible" ref="folder" fa-class="fa-folder-open-o" v-bind:text="folderName" v-bind:title="folderTitle">
       <div class="dropdown-menu-scroll">
         <li v-bind:class="{ active: folder == null }">
           <HyperLink v-on:click="selectFolder( null )">{{ $t( 'LocationFilters.SelectFolder' ) }}</HyperLink>
@@ -58,7 +58,8 @@ export default {
     typeId: Number,
     project: Object,
     folder: Object,
-    requireAdmin: Boolean
+    requireAdmin: Boolean,
+    folderVisible: { type: Boolean, default: true }
   },
   computed: {
     ...mapState( 'global', [ 'userAccess', 'projects' ] ),
@@ -101,7 +102,7 @@ export default {
   },
   methods: {
     focus() {
-      if ( this.project == null )
+      if ( this.project == null || !this.showFolder )
         this.$refs.project.focus();
       else
         this.$refs.folder.focus();

@@ -126,6 +126,21 @@
     "FileTooLarge": "Selected file is too large.",
     "InvalidFileName": "Invalid file name."
   },
+  "EditProject": {
+    "RenameProject": "Rename Project",
+    "AddProject": "Add Project",
+    "RenameProjectPrompt": "Enter the new name of project {0}.",
+    "AddProjectPrompt": "Create a new project.",
+    "Name": "Name:",
+    "Description": "Description:"
+  },
+  "EditProjectDescription": {
+    "EditDescription": "Edit Description",
+    "AddDescription": "Add Description",
+    "EditDescriptionPrompt": "Edit description of project {0}.",
+    "AddDescriptionPrompt": "Add description to project {0}.",
+    "Description": "Description:"
+  },
   "DeleteComment": {
     "DeleteComment": "Delete Comment",
     "DeleteCommentPrompt": "Are you sure you want to delete comment {0}?"
@@ -143,6 +158,26 @@
   "DeleteFile": {
     "DeleteFile": "Delete File",
     "DeleteFilePrompt": "Are you sure you want to delete file {0}?"
+  },
+  "DeleteFolder": {
+    "DeleteFolder": "Delete Folder",
+    "DeleteFolderPrompt": "Are you sure you want to delete folder {0}?",
+    "DeleteFolderWarning": "{0} All issues in this folder will be permanently deleted.",
+    "Warning": "Warning:"
+  },
+  "DeleteProject": {
+    "ArchiveProject": "Archive Project",
+    "DeleteProject": "Delete Project",
+    "ArchiveProjectPrompt": "Are you sure you want to move project {0} to the archive?",
+    "DeleteProjectPrompt": "Are you sure you want to delete project {0}?",
+    "DeleteProjectArchiveNote": "{0} You can unarchive the project later by selecting Archived Projects in the Administration menu.",
+    "Note": "Note:",
+    "DeleteProjectWarning": "{0} All folders and issues in this project will be permanently deleted.",
+    "Warning": "Warning:"
+  },
+  "DeleteProjectDescription": {
+    "DeleteDescription": "Delete Description",
+    "DeleteDescriptionPrompt": "Are you sure you want to delete description for project {0}?"
   },
   "EditComment": {
     "EditComment": "Edit Comment",
@@ -173,6 +208,42 @@
     "AttributeLabel": "{0}:",
     "Description": "Description:",
     "NoFolderSelected": "No folder selected."
+  },
+  "EditFolder": {
+    "RenameFolder": "Rename Folder",
+    "AddFolder": "Add Folder",
+    "RenameFolderPrompt": "Enter the new name of folder {0}.",
+    "AddFolderPrompt": "Create a new folder in project {0}.",
+    "More": "More",
+    "MoveFolder": "Move Folder",
+    "DeleteFolder": "Delete Folder",
+    "Name": "Name:",
+    "Type": "Type:",
+    "SelectType": "Select Type",
+    "TypeTitle": "Type: {0}",
+    "NoTypeSelected": "No type selected."
+  },
+  "EditMember": {
+    "EditMember": "Edit Member",
+    "EditMemberPrompt": "Change access to project {0} for user {1}.",
+    "AddMembers": "Add Members",
+    "AddMembersPrompt": "Add new members to project {0}.",
+    "Remove": "Remove",
+    "Users": "Users",
+    "SelectAll": "Select All",
+    "UnselectAll": "Unselect All",
+    "NoAvailableUsers": "There are no more available users to add.",
+    "Access": "Access:",
+    "RegularMember": "Regular member",
+    "ProjectAdministrator": "Project administrator",
+    "CannotEditOwnAcess": "You cannot change your own access to this project."
+  },
+  "EditProjectAccess": {
+    "EditProjectAccess": "Global Access",
+    "EditProjectAccessPrompt": "Change global access for project {0}.",
+    "Access": "Access:",
+    "RegularProject": "Regular project",
+    "PublicProject": "Public project"
   },
   "GoToItem": {
     "Title": "Go To Item",
@@ -217,11 +288,65 @@
     "IssueMoved": "Issue moved from {0} to {1}",
     "UnknownFolder": "Unknown Folder"
   },
+  "ManageProjects": {
+    "Projects": "Projects",
+    "Add": "Add",
+    "Name": "Name",
+    "Access": "Access",
+    "PublicProject": "Public project",
+    "RegularProject": "Regular project",
+    "NoAvailableProjects": "There are no available projects.",
+    "NoProjects": "There are no projects."
+  },
   "MoveIssue": {
     "MoveIssue": "Move Issue",
     "MoveIssuePrompt": "Move issue {0} to another folder of the same type.",
     "Location": "Location:",
     "NoFolderSelected": "No folder selected."
+  },
+  "MoveFolder": {
+    "MoveFolder": "Move Folder",
+    "MoveFolderPrompt": "Move folder {0} to another project.",
+    "Project": "Project:",
+    "NoProjectSelected": "No project selected."
+  },
+  "ProjectDetails": {
+    "Return": "Return",
+    "More": "More",
+    "RenameProject": "Rename Project",
+    "ArchiveProject": "Archive Project",
+    "DeleteProject": "Delete Project",
+    "Permissions": "Permissions",
+    "Description": "Description",
+    "Menu": "Menu",
+    "Edit": "Edit",
+    "Delete": "Delete",
+    "Add": "Add",
+    "NoDescription": "This project has no description.",
+    "Folders": "Folders",
+    "Name": "Name",
+    "Type": "Type",
+    "NoFolders": "This project has no folders."
+  },
+  "ProjectPermissions": {
+    "ProjectPermissions": "Project Permissions",
+    "ProjectPermissionsPrompt": "Edit permissions of project {0}.",
+    "Return": "Return",
+    "GlobalAccess": "Global Access",
+    "Edit": "Edit",
+    "RegularProject": "Regular project",
+    "PublicProject": "Public project",
+    "Members": "Members",
+    "Add": "Add",
+    "Name": "Name",
+    "Access": "Access",
+    "RegularMember": "Regular member",
+    "ProjectAdministrator": "Project administrator",
+    "NoMembers": "This project has no members."
+  },
+  "RemoveMember": {
+    "RemoveMember": "Remove Member",
+    "RemoveMemberPrompt": "Do you want to remove user {0} from project {1}?"
   },
   "Error": {
     "PageNotFound": "Page Not Found",

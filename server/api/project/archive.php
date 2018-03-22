@@ -1,3 +1,4 @@
+<?php
 /**************************************************************************
 * This file is part of the WebIssues Server program
 * Copyright (C) 2006 Michał Męciński
@@ -17,24 +18,26 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-import staticRoutes from '@/routes/static'
-import makeIssueRoutes from '@/routes/issue'
-import makeAdminRoutes from '@/routes/admin'
+require_once( '../../../system/bootstrap.inc.php' );
 
-export default function registerRoutes( router, i18n, ajax, store, parser ) {
-  function makeRoutes() {
-    return [
-      staticRoutes,
-      makeIssueRoutes( i18n, ajax, store, parser ),
-      makeAdminRoutes( ajax, store )
-    ];
-  }
+class Server_Api_Project_Archive
+{
+    public function run( $arguments )
+    {
+        $principal = System_Api_Principal::getCurrent();
+        $principal->checkAdministrator();
 
-  router.register( makeRoutes() );
+        $projectId = isset( $arguments[ 'projectId' ] ) ? (int)$arguments[ 'projectId' ] : null;
 
-  if ( process.env.NODE_ENV != 'production' && module.hot != null ) {
-    module.hot.accept( [ '@/routes/static', '@/routes/issue', '@/routes/admin' ], () => {
-      router.hotUpdate( makeRoutes() );
-    } );
-  }
+        if ( $projectId == null )
+            throw new Server_Error( Server_Error::InvalidArguments );
+
+        $projectManager = new System_Api_ProjectManager();
+
+        $project = $projectManager->getProject( $projectId );
+
+        $projectManager->archiveProject( $project );
+    }
 }
+
+System_Bootstrap::run( 'Server_Api_Application', 'Server_Api_Project_Archive' );

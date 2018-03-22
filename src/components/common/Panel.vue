@@ -20,6 +20,7 @@
 <template>
   <div v-bind:class="[ 'panel', panelClass ]">
     <div class="panel-heading">
+      <slot name="heading"/>
       <h2 class="panel-title">{{ title }}</h2>
     </div>
     <div class="panel-body">
@@ -36,3 +37,17 @@ export default {
   }
 }
 </script>
+
+<style lang="less">
+@import "~@/styles/variables.less";
+@import "~@/styles/mixins.less";
+
+.panel-links {
+  float: right;
+  line-height: 1.2;
+
+  a {
+    margin-left: 10px;
+  }
+}
+</style>

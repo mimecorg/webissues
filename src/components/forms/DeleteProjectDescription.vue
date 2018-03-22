@@ -18,42 +18,42 @@
 -->
 
 <template>
-  <div class="form-buttons">
-    <button v-if="hasOK" class="btn btn-primary" v-on:click="ok">{{ $t( 'Common.OK' ) }}</button>
-    <button v-if="hasCancel" class="btn btn-default" v-on:click="cancel">{{ $t( 'Common.Cancel' ) }}</button>
+  <div class="container-fluid">
+    <FormHeader v-bind:title="$t( 'DeleteProjectDescription.DeleteDescription' )" v-on:close="close"/>
+    <Prompt path="DeleteProjectDescription.DeleteDescriptionPrompt"><strong>{{ projectName }}</strong></Prompt>
+    <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
   </div>
 </template>
 
 <script>
 export default {
   props: {
-    hasOK: { type: Boolean, default: true },
-    hasCancel: { type: Boolean, default: true }
+    projectId: Number,
+    projectName: String
   },
+
   methods: {
-    ok() {
-      this.$emit( 'ok' );
+    submit() {
+      this.$emit( 'block' );
+
+      this.$ajax.post( '/server/api/project/description/delete.php', { projectId: this.projectId } ).then( () => {
+        this.returnToDetails();
+      } ).catch( error => {
+        this.$emit( 'error', error );
+      } );
     },
+
     cancel() {
-      this.$emit( 'cancel' );
+      this.returnToDetails();
+    },
+
+    returnToDetails() {
+      this.$router.push( 'ProjectDetails', { projectId: this.projectId } );
+    },
+
+    close() {
+      this.$emit( 'close' );
     }
   }
 }
 </script>
-
-<style lang="less">
-@import "~@/styles/variables.less";
-@import "~@/styles/mixins.less";
-
-.form-buttons {
-  text-align: right;
-  margin: 15px -15px 0 -15px;
-  padding: 15px;
-  border-top: 1px solid @window-separator-color;
-
-  > .btn {
-    min-width: 120px;
-    margin-left: 10px;
-  }
-}
-</style>

@@ -296,7 +296,7 @@ export default {
 .markup-preview {
   padding: 10px;
   margin-top: 5px;
-  border: 1px solid @issue-border-color;
+  border: 1px solid @description-panel-border;
   border-radius: @border-radius-base;
 }
 </style>

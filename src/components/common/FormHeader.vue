@@ -19,12 +19,14 @@
 
 <template>
   <div class="form-header">
-    <div class="form-title">
-      <h1>{{ title }}</h1>
-    </div>
-    <div class="form-header-buttons">
-      <slot/>
-      <button type="button" class="btn btn-default" v-bind:title="$t( 'Common.Close' )" v-on:click="close"><span class="fa fa-remove" aria-hidden="true"></span></button>
+    <div class="form-header-group">
+      <div class="form-header-title">
+        <h1>{{ title }}</h1>
+      </div>
+      <div class="form-header-buttons">
+        <slot/>
+        <button type="button" class="btn btn-default" v-bind:title="$t( 'Common.Close' )" v-on:click="close"><span class="fa fa-remove" aria-hidden="true"></span></button>
+      </div>
     </div>
   </div>
 </template>
@@ -47,12 +49,18 @@ export default {
 @import "~@/styles/mixins.less";
 
 .form-header {
+  margin: 0 -15px 15px -15px;
+  padding: 0 15px;
+  border-bottom: 1px solid @window-separator-color;
+}
+
+.form-header-group {
   .group();
   margin-top: 15px;
   margin-bottom: 15px;
 }
 
-.form-title {
+.form-header-title {
   .element();
   .element-wide();
 

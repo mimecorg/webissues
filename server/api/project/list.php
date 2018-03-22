@@ -1,3 +1,4 @@
+<?php
 /**************************************************************************
 * This file is part of the WebIssues Server program
 * Copyright (C) 2006 Michał Męciński
@@ -17,24 +18,30 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-import staticRoutes from '@/routes/static'
-import makeIssueRoutes from '@/routes/issue'
-import makeAdminRoutes from '@/routes/admin'
+require_once( '../../../system/bootstrap.inc.php' );
 
-export default function registerRoutes( router, i18n, ajax, store, parser ) {
-  function makeRoutes() {
-    return [
-      staticRoutes,
-      makeIssueRoutes( i18n, ajax, store, parser ),
-      makeAdminRoutes( ajax, store )
-    ];
-  }
+class Server_Api_Project_List
+{
+    public function run( $arguments )
+    {
+        $projectManager = new System_Api_ProjectManager();
+        $projects = $projectManager->getProjects();
 
-  router.register( makeRoutes() );
+        $result[ 'projects' ] = array();
 
-  if ( process.env.NODE_ENV != 'production' && module.hot != null ) {
-    module.hot.accept( [ '@/routes/static', '@/routes/issue', '@/routes/admin' ], () => {
-      router.hotUpdate( makeRoutes() );
-    } );
-  }
+        foreach ( $projects as $project ) {
+            $resultProject = array();
+
+            $resultProject[ 'id' ] = (int)$project[ 'project_id' ];
+            $resultProject[ 'name' ] = $project[ 'project_name' ];
+            $resultProject[ 'access' ] = (int)$project[ 'project_access' ];
+            $resultProject[ 'public' ] = $project[ 'is_public' ] != 0;
+
+            $result[ 'projects' ][] = $resultProject;
+        }
+
+        return $result;
+    }
 }
+
+System_Bootstrap::run( 'Server_Api_Application', 'Server_Api_Project_List' );

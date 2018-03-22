@@ -21,18 +21,21 @@
   <div class="grid">
     <div class="grid-header" v-bind:style="{ paddingRight: headerPadding + 'px' }">
       <div ref="headerScroll" class="grid-header-scroll">
-        <table class="grid-header-table">
-          <thead>
+        <table v-bind:class="[ 'grid-header-table', { 'grid-header-sort': sortEnabled } ]">
+          <thead v-if="sortEnabled">
             <th v-for="( columnName, columnIndex ) in columnNames" v-bind:class="getColumnClass( columnIndex )" v-on:click="sort( columnIndex )">
               {{ columnName }} <span v-if="columnIndex == sortColumn" v-bind:class="sortClass" aria-hidden="true"></span>
             </th>
+          </thead>
+          <thead v-else>
+            <th v-for="( columnName, columnIndex ) in columnNames" v-bind:class="getColumnClass( columnIndex )">{{ columnName }}</th>
           </thead>
         </table>
       </div>
     </div>
     <div class="grid-body">
       <div ref="bodyScroll" class="grid-body-scroll" v-on:scroll="updateHeaderScroll">
-        <table class="grid-body-table">
+        <table v-bind:class="[ 'grid-body-table', { 'grid-body-hover': rowClickEnabled } ]">
           <tbody>
             <tr v-for="( item, rowIndex ) in items" v-on:click="rowClick( rowIndex )">
               <slot v-for="( columnName, columnIndex ) in columnNames" v-bind:item="item" v-bind:column-index="columnIndex"
@@ -43,7 +46,7 @@
       </div>
       <BusyOverlay v-if="busy"/>
     </div>
-    <div class="grid-footer">
+    <div v-if="footerVisible" class="grid-footer">
       <div class="container-fluid">
         <div class="grid-footer-group">
           <div class="grid-footer-element">
@@ -69,8 +72,11 @@ export default {
     items: Array,
     columnNames: Array,
     columnClasses: Array,
+    sortEnabled: Boolean,
     sortColumn: Number,
     sortAscending: Boolean,
+    rowClickEnabled: { type: Boolean, default: true },
+    footerVisible: Boolean,
     previousEnabled: Boolean,
     nextEnabled: Boolean,
     statusText: String,
@@ -109,7 +115,8 @@ export default {
       this.$emit( 'sort', columnIndex );
     },
     rowClick( rowIndex ) {
-      this.$emit( 'row-click', rowIndex );
+      if ( this.rowClickEnabled )
+        this.$emit( 'row-click', rowIndex );
     },
     previous() {
       this.$emit( 'previous' );
@@ -135,11 +142,11 @@ export default {
 @import "~@/styles/mixins.less";
 
 .grid {
-  position: relative;
+  margin-bottom: 15px;
 }
 
 .grid-header {
-  height: 26px;
+  height: @grid-header-height;
   background: @grid-header-bg;
   border-bottom: 1px solid @grid-header-border-color;
 }
@@ -156,12 +163,7 @@ export default {
     text-transform: uppercase;
     font-weight: normal;
     font-size: @grid-header-font-size;
-    cursor: pointer;
     .ellipsis();
-
-    &:hover {
-      color: @grid-header-hover-color;
-    }
 
     .fa {
       position: relative;
@@ -172,27 +174,21 @@ export default {
   }
 }
 
-.grid-body {
-  position: absolute;
-  left: 0; right: 0;
-  top: 26px; bottom: 42px;
+.grid-header-sort th {
+  cursor: pointer;
+
+  &:hover {
+    color: @grid-header-hover-color;
+  }
 }
 
 .grid-body-scroll {
-  position: absolute;
-  left: 0; right: 0;
-  top: 0; bottom: 0;
   .touch-scroll();
 }
 
 .grid-body-table {
   tr {
     border-bottom: 1px solid @grid-body-border-color;
-    cursor: pointer;
-
-    &:hover {
-      background-color: @grid-body-hover-color;
-    }
   }
 
   td {
@@ -202,15 +198,26 @@ export default {
   }
 }
 
+.grid-body-hover tr {
+  cursor: pointer;
+
+  &:hover {
+    background-color: @grid-body-hover-color;
+  }
+}
+
 .grid-header-table th, .grid-body-table td {
   min-width: @grid-column-width;
   max-width: @grid-column-width;
+
+  &.column-wide {
+  min-width: 2 * @grid-column-width;
+  max-width: 2 * @grid-column-width;
+  }
 }
 
 .grid-footer {
-  position: absolute;
-  left: 0; right: 0;
-  height: 42px; bottom: 0;
+  height: @grid-footer-height;
   background: @grid-header-bg;
   border-top: 1px solid @grid-header-border-color;
 }

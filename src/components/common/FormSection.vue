@@ -18,25 +18,20 @@
 -->
 
 <template>
-  <div class="form-buttons">
-    <button v-if="hasOK" class="btn btn-primary" v-on:click="ok">{{ $t( 'Common.OK' ) }}</button>
-    <button v-if="hasCancel" class="btn btn-default" v-on:click="cancel">{{ $t( 'Common.Cancel' ) }}</button>
+  <div class="form-section">
+    <div class="form-section-title">
+      <div class="form-section-header">{{ title }}</div>
+    </div>
+    <div class="form-section-buttons">
+      <slot/>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
   props: {
-    hasOK: { type: Boolean, default: true },
-    hasCancel: { type: Boolean, default: true }
-  },
-  methods: {
-    ok() {
-      this.$emit( 'ok' );
-    },
-    cancel() {
-      this.$emit( 'cancel' );
-    }
+    title: String
   }
 }
 </script>
@@ -45,15 +40,26 @@ export default {
 @import "~@/styles/variables.less";
 @import "~@/styles/mixins.less";
 
-.form-buttons {
-  text-align: right;
-  margin: 15px -15px 0 -15px;
-  padding: 15px;
-  border-top: 1px solid @window-separator-color;
+.form-section {
+  .group();
+  margin-top: 3px;
+  margin-bottom: 3px;
+}
 
-  > .btn {
-    min-width: 120px;
-    margin-left: 10px;
-  }
+.form-section-title {
+  .element();
+  .element-wide();
+  vertical-align: bottom;
+}
+
+.form-section-header {
+  font-weight: bold;
+  margin: 7px 0 6px 0;
+  font-size: @form-section-font-size;
+}
+
+.form-section-buttons {
+  .element();
+  vertical-align: bottom;
 }
 </style>
