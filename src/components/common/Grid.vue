@@ -82,16 +82,19 @@ export default {
     statusText: String,
     busy: Boolean
   },
+
   data() {
     return {
       headerPadding: 0
     }
   },
+
   computed: {
     sortClass() {
       return [ 'fa', this.sortAscending ? 'fa-chevron-down' : 'fa-chevron-up' ];
     }
   },
+
   watch: {
     items() {
       this.$nextTick( () => {
@@ -101,6 +104,7 @@ export default {
       } );
     }
   },
+
   methods: {
     updateHeaderPadding() {
       this.headerPadding = this.$refs.bodyScroll.offsetWidth - this.$refs.bodyScroll.clientWidth;
@@ -108,9 +112,11 @@ export default {
     updateHeaderScroll() {
       this.$refs.headerScroll.scrollLeft = this.$refs.bodyScroll.scrollLeft;
     },
+
     getColumnClass( columnIndex ) {
       return this.columnClasses != null ? this.columnClasses[ columnIndex ] : null
     },
+
     sort( columnIndex ) {
       this.$emit( 'sort', columnIndex );
     },
@@ -125,6 +131,7 @@ export default {
       this.$emit( 'next' );
     }
   },
+
   mounted() {
     window.addEventListener( 'resize', this.updateHeaderPadding );
     this.$nextTick( () => {

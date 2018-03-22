@@ -112,6 +112,7 @@ export default {
       expanded: false
     }
   },
+
   computed: {
     ...mapState( 'global', [ 'baseURL', 'serverName', 'serverVersion', 'userName' ] ),
     ...mapGetters( 'global', [ 'isAuthenticated', 'isAdministrator', 'canManageProjects' ] ),
@@ -123,6 +124,7 @@ export default {
         return this.$t( 'Navbar.AnonymousUser' );
     }
   },
+
   methods: {
     addIssue() {
       this.$router.push( 'AddIssue', { typeId: this.type.id } );
@@ -133,17 +135,21 @@ export default {
     manageProjects() {
       this.$router.push( 'ManageProjects' );
     },
+
     toggle() {
       this.expanded = !this.expanded;
     },
+
     handleWindowResize() {
       if ( window.innerWidth >= 768 && this.expanded )
         this.expanded = false;
     },
+
     handleHashChange() {
       this.expanded = false;
     }
   },
+
   mounted() {
     window.addEventListener( 'resize', this.handleWindowResize );
     window.addEventListener( 'hashchange', this.handleHashChange );

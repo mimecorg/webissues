@@ -40,6 +40,7 @@ export default {
     attribute: Object,
     project: Object
   },
+
   computed: {
     ...mapState( 'global', [ 'users' ] ),
     isAutocomplete() {
@@ -87,10 +88,12 @@ export default {
         return null;
     }
   },
+
   methods: {
     focus() {
       this.$refs.child.focus();
     },
+
     valueChanged( value ) {
       this.$emit( 'input', value );
     }

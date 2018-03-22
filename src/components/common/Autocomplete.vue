@@ -45,6 +45,7 @@ export default {
     items: Array,
     multiSelect: Boolean
   },
+
   data() {
     return {
       currentValue: this.value,
@@ -52,6 +53,7 @@ export default {
       open: false
     }
   },
+
   computed: {
     matchingItems() {
       return this.items.filter( item => this.matchPrefix == null || item.substr( 0, this.matchPrefix.length ).toLowerCase() == this.matchPrefix );
@@ -66,15 +68,18 @@ export default {
       return this.matchingItems.findIndex( item => item == this.currentItem );
     }
   },
+
   watch: {
     value( value ) {
       this.currentValue = value;
     }
   },
+
   methods: {
     focus() {
       this.$refs.input.focus();
     },
+
     toggle( mode ) {
       if ( this.open ) {
         this.close();
@@ -84,6 +89,7 @@ export default {
         this.$refs.input.focus();
       }
     },
+
     dropdown() {
       if ( this.currentItem != '' )
         this.matchPrefix = this.currentItem.toLowerCase();
@@ -94,6 +100,7 @@ export default {
     close() {
       this.open = false;
     },
+
     select( item ) {
       this.setItem( item );
       this.close();
@@ -108,15 +115,18 @@ export default {
         this.setValue( item );
       }
     },
+
     setValue( value ) {
       this.currentValue = value;
       this.$refs.input.value = value;
       this.$emit( 'input', value );
     },
+
     valueChanged( e ) {
       this.setValue( e.target.value );
       this.dropdown();
     },
+
     keyDown( e ) {
       if ( e.keyCode == KeyCode.Up || e.keyCode == KeyCode.Down ) {
         if ( !this.open ) {

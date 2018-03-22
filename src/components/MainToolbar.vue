@@ -132,6 +132,7 @@ export default {
       searchLength: MaxLength.Value
     };
   },
+
   computed: {
     ...mapState( 'global', [ 'types', 'projects' ] ),
     ...mapState( 'list', [ 'searchColumn', 'searchText', 'searchError' ] ),
@@ -215,6 +216,7 @@ export default {
         return null;
     }
   },
+
   methods: {
     selectType( type ) {
       this.updateFilters( { type, project: this.project } );
@@ -228,6 +230,7 @@ export default {
     selectFolder( folder ) {
       this.updateFilters( { type: this.type, view: this.view, project: this.project, folder } );
     },
+
     updateFilters( { type, view, project, folder } ) {
       if ( view != null ) {
         if ( folder != null )
@@ -245,6 +248,7 @@ export default {
           this.$router.push( 'List', { typeId: type.id } );
       }
     },
+
     isSearchColumn( column ) {
       return column.id == this.searchColumn;
     },
@@ -254,6 +258,7 @@ export default {
       else
         return false;
     },
+
     setSearchColumn( column ) {
       this.$store.commit( 'list/setSearchColumn', { searchColumn: column.id } );
       this.$refs.search.focus();
@@ -262,10 +267,12 @@ export default {
       this.$store.commit( 'list/setSearchColumn', { searchColumn: Column.UserDefined + attribute.id } );
       this.$refs.search.focus();
     },
+
     search() {
       this.$store.commit( 'list/setSearchText', { searchText: this.$refs.search.value } );
       this.$store.dispatch( 'updateList' );
     },
+
     reload() {
       this.$store.dispatch( 'reload' );
     }

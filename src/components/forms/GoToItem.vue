@@ -38,6 +38,7 @@ export default {
       error: null
     };
   },
+
   methods: {
     submit() {
       this.error = null;
@@ -73,10 +74,12 @@ export default {
         }
       } );
     },
+
     close() {
       this.$emit( 'close' );
     }
   },
+
   mounted() {
     this.$refs.item.focus();
   }

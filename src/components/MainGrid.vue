@@ -75,6 +75,7 @@ export default {
         return this.$t( 'Main.IssuesCountOf', [ this.firstIndex, this.lastIndex, this.totalCount ] );
     }
   },
+
   methods: {
     isNameColumn( columnIndex ) {
       return this.columns[ columnIndex ].id == Column.Name;
@@ -85,9 +86,11 @@ export default {
     isUserColumn( columnIndex ) {
       return this.columns[ columnIndex ].id > Column.UserDefined;
     },
+
     getUnreadClass( issue ) {
       return [ 'fa', 'fa-circle', issue.read > 0 ? 'issue-modified' : 'issue-unread' ];
     },
+
     getCellValue( columnIndex, issue ) {
       const column = this.columns[ columnIndex ].id;
       switch ( column ) {
@@ -107,6 +110,7 @@ export default {
       const column = this.columns[ columnIndex ].id;
       return issue[ 'a' + ( column - Column.UserDefined ) ];
     },
+
     sort( columnIndex ) {
       this.$store.commit( 'list/setSortOrder', {
         sortColumn: this.columns[ columnIndex ].id,
@@ -114,6 +118,7 @@ export default {
       } );
       this.$store.dispatch( 'updateList' );
     },
+
     previous() {
       this.$store.commit( 'list/setPreviousPage' );
       this.$store.dispatch( 'updateList' );
@@ -122,6 +127,7 @@ export default {
       this.$store.commit( 'list/setNextPage' );
       this.$store.dispatch( 'updateList' );
     },
+
     rowClick( rowIndex ) {
       this.$router.push( 'IssueDetails', { issueId: this.issues[ rowIndex ].id } );
     }

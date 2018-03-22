@@ -61,6 +61,7 @@ export default {
     requireAdmin: Boolean,
     folderVisible: { type: Boolean, default: true }
   },
+
   computed: {
     ...mapState( 'global', [ 'userAccess', 'projects' ] ),
     availableProjects() {
@@ -100,6 +101,7 @@ export default {
         return this.$t( 'LocationFilters.SelectFolder' );
     }
   },
+
   methods: {
     focus() {
       if ( this.project == null || !this.showFolder )
@@ -107,6 +109,7 @@ export default {
       else
         this.$refs.folder.focus();
     },
+
     selectProject( project ) {
       this.$emit( 'select-project', project );
     },

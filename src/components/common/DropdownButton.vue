@@ -46,15 +46,18 @@ export default {
     menuClass: String,
     title: String
   },
+
   data() {
     return {
       open: false
     }
   },
+
   methods: {
     focus() {
       this.$refs.button.focus();
     },
+
     toggle() {
       if ( this.open ) {
         this.close();
@@ -66,6 +69,7 @@ export default {
     close() {
       this.open = false;
     },
+
     keyDown( e ) {
       if ( e.keyCode == KeyCode.Up || e.keyCode == KeyCode.Down ) {
         if ( !this.open ) {

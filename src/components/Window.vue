@@ -36,14 +36,17 @@ export default {
   components: {
     ...forms
   },
+
   data() {
     return {
       top: 0
     };
   },
+
   computed: {
     ...mapState( 'window', [ 'childComponent', 'childProps', 'size', 'busy' ] )
   },
+
   watch: {
     busy( value ) {
       if ( value ) {
@@ -58,16 +61,19 @@ export default {
       }
     }
   },
+
   methods: {
     close() {
       this.$store.dispatch( 'window/close' );
     },
+
     block() {
       this.$store.commit( 'window/setBusy', true );
     },
     unblock() {
       this.$store.commit( 'window/setBusy', false );
     },
+
     scrollToAnchor( anchor ) {
       let element = document.getElementById( anchor );
       let top = 0;
@@ -79,18 +85,22 @@ export default {
         this.$refs.overlay.scrollTop = top;
       }
     },
+
     error( error ) {
       this.$store.dispatch( 'showError', error );
     },
+
     handleFocusIn( e ) {
       if ( e.target != document && e.target != this.$refs.overlay && !isChildElement( e.target, this.$refs.overlay ) )
         this.$refs.overlay.focus();
     },
+
     restoreScroll() {
       this.$refs.overlay.removeEventListener( 'scroll', this.restoreScroll );
       this.$refs.overlay.scrollTop = this.top;
     }
   },
+
   mounted() {
     this.$refs.overlay.focus();
     document.addEventListener( 'focusin', this.handleFocusIn );

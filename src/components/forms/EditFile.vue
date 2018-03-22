@@ -187,9 +187,6 @@ export default {
     close() {
       this.$emit( 'close' );
     },
-    error( error ) {
-      this.$emit( 'error', error );
-    },
 
     handleDragDrop( e ) {
       if ( e.type == 'dragover' )
