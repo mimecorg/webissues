@@ -53,6 +53,8 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
     } );
 
     route( 'EditIssue', '/issue/:issueId/edit', ( { issueId } ) => {
+      if ( !store.getters[ 'global/isAuthenticated' ] )
+        return Promise.reject( makeError( ErrorCode.LoginRequired ) );
       return ajax.post( '/server/api/issue/load.php', { issueId, attributes: true } ).then( ( { details, attributes } ) => {
         return {
           component: 'EditIssue',
@@ -67,32 +69,34 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
     } );
 
     route( 'AddIssue', '/issue/add/:typeId', ( { typeId } ) => {
+      if ( !store.getters[ 'global/isAuthenticated' ] )
+        return Promise.reject( makeError( ErrorCode.LoginRequired ) );
       const type = store.state.global.types.find( t => t.id == typeId );
-      if ( type != null ) {
-        const project = store.getters[ 'list/project' ];
-        const projectId = project != null ? project.id : null;
-        const folder = store.getters[ 'list/folder' ];
-        const folderId = folder != null ? folder.id : null;
-        const attributes = type.attributes.map( attribute => ( {
-          id: attribute.id,
-          name: attribute.name,
-          value: parser.convertInitialValue( attribute.default, attribute )
-        } ) );
-        return Promise.resolve( {
-          component: 'EditIssue',
-          mode: 'add',
-          typeId,
-          projectId,
-          folderId,
-          attributes,
-          descriptionFormat: store.state.global.settings.defaultFormat
-        } );
-      } else {
+      if ( type == null )
         return Promise.reject( makeError( ErrorCode.UnknownType ) );
-      }
+      const project = store.getters[ 'list/project' ];
+      const projectId = project != null ? project.id : null;
+      const folder = store.getters[ 'list/folder' ];
+      const folderId = folder != null ? folder.id : null;
+      const attributes = type.attributes.map( attribute => ( {
+        id: attribute.id,
+        name: attribute.name,
+        value: parser.convertInitialValue( attribute.default, attribute )
+      } ) );
+      return Promise.resolve( {
+        component: 'EditIssue',
+        mode: 'add',
+        typeId,
+        projectId,
+        folderId,
+        attributes,
+        descriptionFormat: store.state.global.settings.defaultFormat
+      } );
     } );
 
     route( 'CloneIssue', '/issue/:issueId/clone', ( { issueId } ) => {
+      if ( !store.getters[ 'global/isAuthenticated' ] )
+        return Promise.reject( makeError( ErrorCode.LoginRequired ) );
       return ajax.post( '/server/api/issue/load.php', { issueId, description: true, attributes: true } ).then( ( { details, description, attributes } ) => {
         return {
           component: 'EditIssue',
@@ -147,6 +151,8 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
     } );
 
     route( 'ReplyDescription', 'issue/:issueId/description/reply', ( { issueId } ) => {
+      if ( !store.getters[ 'global/isAuthenticated' ] )
+        return Promise.reject( makeError( ErrorCode.LoginRequired ) );
       return ajax.post( '/server/api/issue/load.php', { issueId, description: true } ).then( ( { details, description } ) => {
         if ( description == null )
           return Promise.reject( makeError( ErrorCode.UnknownDescription ) );
@@ -190,6 +196,8 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
     } );
 
     route( 'AddComment', 'issue/:issueId/comment/add', ( { issueId } ) => {
+      if ( !store.getters[ 'global/isAuthenticated' ] )
+        return Promise.reject( makeError( ErrorCode.LoginRequired ) );
       return ajax.post( '/server/api/issue/load.php', { issueId } ).then( ( { details } ) => {
         return {
           component: 'EditComment',
@@ -202,6 +210,8 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
     } );
 
     route( 'ReplyComment', 'issue/:issueId/comment/:commentId/reply', ( { issueId, commentId } ) => {
+      if ( !store.getters[ 'global/isAuthenticated' ] )
+        return Promise.reject( makeError( ErrorCode.LoginRequired ) );
       return ajax.post( '/server/api/issue/load.php', { issueId } ).then( ( { details } ) => {
         return ajax.post( '/server/api/issue/comment/load.php', { issueId, commentId } ).then( ( { text } ) => {
           return {
@@ -241,6 +251,8 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
     } );
 
     route( 'AddFile', '/issue/:issueId/file/add', ( { issueId } ) => {
+      if ( !store.getters[ 'global/isAuthenticated' ] )
+        return Promise.reject( makeError( ErrorCode.LoginRequired ) );
       return ajax.post( '/server/api/issue/load.php', { issueId } ).then( ( { details } ) => {
         return {
           component: 'EditFile',
