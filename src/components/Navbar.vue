@@ -34,7 +34,7 @@
           </div>
         </div>
         <div id="navbar-element-collapse" v-bind:class="[ 'navbar-element', 'collapse', { 'in' : expanded } ]" v-bind:aria-expanded="expanded ? 'true' : 'false'">
-          <button v-if="type != null" type="button" class="btn btn-success hidden-xs" v-bind:title="$t( 'Navbar.AddIssue' )" v-on:click="addIssue">
+          <button v-if="type != null && isAuthenticated" type="button" class="btn btn-success hidden-xs" v-bind:title="$t( 'Navbar.AddIssue' )" v-on:click="addIssue">
             <span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'Navbar.Add' ) }}
           </button>
           <button type="button" class="btn btn-default" v-bind:title="$t( 'Navbar.GoToItem' )" v-on:click="goToItem">
