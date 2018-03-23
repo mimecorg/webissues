@@ -98,7 +98,7 @@ export default {
 
       this.$emit( 'block' );
 
-      this.$ajax.post( '/server/api/project/description/' + this.mode + '.php', data ).then( () => {
+      this.$ajax.post( '/server/api/projects/description/' + this.mode + '.php', data ).then( () => {
         this.returnToDetails();
       } ).catch( error => {
         this.$emit( 'error', error );

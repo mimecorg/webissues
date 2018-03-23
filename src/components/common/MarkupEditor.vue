@@ -252,7 +252,7 @@ export default {
 
     preview() {
       this.$refs.textarea.focus();
-      this.$ajax.post( '/server/api/issue/preview.php', { text: this.$refs.textarea.value } ).then( html => {
+      this.$ajax.post( '/server/api/issues/preview.php', { text: this.$refs.textarea.value } ).then( html => {
         this.previewHtml = html;
       } ).catch ( error => {
         this.$emit( 'error', error );

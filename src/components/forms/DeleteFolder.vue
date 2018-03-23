@@ -49,7 +49,7 @@ export default {
 
       const data = { folderId: this.folderId, force: this.force };
 
-      this.$ajax.post( '/server/api/project/folder/delete.php', data ).then( () => {
+      this.$ajax.post( '/server/api/projects/folders/delete.php', data ).then( () => {
         this.$store.commit( 'global/setDirty' );
         this.returnToDetails();
       } ).catch( error => {

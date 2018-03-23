@@ -93,7 +93,7 @@ export default {
 
       this.$emit( 'block' );
 
-      this.$ajax.post( '/server/api/project/folder/move.php', data ).then( ( { changed } ) => {
+      this.$ajax.post( '/server/api/projects/folders/move.php', data ).then( ( { changed } ) => {
         if ( changed )
           this.$store.commit( 'global/setDirty' );
         this.returnToDetails();

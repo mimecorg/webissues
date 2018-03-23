@@ -98,7 +98,7 @@ export default {
 
       this.$emit( 'block' );
 
-      this.$ajax.post( '/server/api/issue/description/' + this.mode + '.php', data ).then( ( { stampId } ) => {
+      this.$ajax.post( '/server/api/issues/description/' + this.mode + '.php', data ).then( ( { stampId } ) => {
         if ( stampId != false )
           this.$store.commit( 'list/setDirty' );
         this.returnToDetails();

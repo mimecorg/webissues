@@ -44,7 +44,7 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
     } );
 
     route( 'Item', '/items/:itemId', ( { itemId } ) => {
-      return ajax.post( '/server/api/issue/find.php', { itemId } ).then( issueId => {
+      return ajax.post( '/server/api/issues/find.php', { itemId } ).then( issueId => {
         if ( itemId == issueId )
           return { replace: 'IssueDetails', issueId };
         else
@@ -55,7 +55,7 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
     route( 'EditIssue', '/issues/:issueId/edit', ( { issueId } ) => {
       if ( !store.getters[ 'global/isAuthenticated' ] )
         return Promise.reject( makeError( ErrorCode.LoginRequired ) );
-      return ajax.post( '/server/api/issue/load.php', { issueId, attributes: true } ).then( ( { details, attributes } ) => {
+      return ajax.post( '/server/api/issues/load.php', { issueId, attributes: true } ).then( ( { details, attributes } ) => {
         return {
           component: 'EditIssue',
           mode: 'edit',
@@ -97,7 +97,7 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
     route( 'CloneIssue', '/issues/:issueId/clone', ( { issueId } ) => {
       if ( !store.getters[ 'global/isAuthenticated' ] )
         return Promise.reject( makeError( ErrorCode.LoginRequired ) );
-      return ajax.post( '/server/api/issue/load.php', { issueId, description: true, attributes: true } ).then( ( { details, description, attributes } ) => {
+      return ajax.post( '/server/api/issues/load.php', { issueId, description: true, attributes: true } ).then( ( { details, description, attributes } ) => {
         return {
           component: 'EditIssue',
           mode: 'clone',
@@ -114,7 +114,7 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
     } );
 
     route( 'MoveIssue', '/issues/:issueId/move', ( { issueId } ) => {
-      return ajax.post( '/server/api/issue/load.php', { issueId, access: 'admin' } ).then( ( { details } ) => {
+      return ajax.post( '/server/api/issues/load.php', { issueId, access: 'admin' } ).then( ( { details } ) => {
         return {
           component: 'MoveIssue',
           issueId,
@@ -127,7 +127,7 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
     } );
 
     route( 'DeleteIssue', '/issues/:issueId/delete', ( { issueId } ) => {
-      return ajax.post( '/server/api/issue/load.php', { issueId, access: 'admin' } ).then( ( { details } ) => {
+      return ajax.post( '/server/api/issues/load.php', { issueId, access: 'admin' } ).then( ( { details } ) => {
         return {
           component: 'DeleteIssue',
           issueId,
@@ -137,7 +137,7 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
     } );
 
     route( 'AddDescription', '/issues/:issueId/description/add', ( { issueId } ) => {
-      return ajax.post( '/server/api/issue/load.php', { issueId, description: true, access: 'adminOrOwner' } ).then( ( { details, description } ) => {
+      return ajax.post( '/server/api/issues/load.php', { issueId, description: true, access: 'adminOrOwner' } ).then( ( { details, description } ) => {
         if ( description != null )
           return Promise.reject( makeError( ErrorCode.DescriptionAlreadyExists ) );
         return {
@@ -153,7 +153,7 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
     route( 'ReplyDescription', '/issues/:issueId/description/reply', ( { issueId } ) => {
       if ( !store.getters[ 'global/isAuthenticated' ] )
         return Promise.reject( makeError( ErrorCode.LoginRequired ) );
-      return ajax.post( '/server/api/issue/load.php', { issueId, description: true } ).then( ( { details, description } ) => {
+      return ajax.post( '/server/api/issues/load.php', { issueId, description: true } ).then( ( { details, description } ) => {
         if ( description == null )
           return Promise.reject( makeError( ErrorCode.UnknownDescription ) );
         return {
@@ -168,7 +168,7 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
     } );
 
     route( 'EditDescription', '/issues/:issueId/description/edit', ( { issueId } ) => {
-      return ajax.post( '/server/api/issue/load.php', { issueId, description: true, access: 'adminOrOwner' } ).then( ( { details, description } ) => {
+      return ajax.post( '/server/api/issues/load.php', { issueId, description: true, access: 'adminOrOwner' } ).then( ( { details, description } ) => {
         if ( description == null )
           return Promise.reject( makeError( ErrorCode.UnknownDescription ) );
         return {
@@ -183,7 +183,7 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
     } );
 
     route( 'DeleteDescription', '/issues/:issueId/description/delete', ( { issueId } ) => {
-      return ajax.post( '/server/api/issue/load.php', { issueId, description: true, access: 'adminOrOwner' } ).then( ( { details, description } ) => {
+      return ajax.post( '/server/api/issues/load.php', { issueId, description: true, access: 'adminOrOwner' } ).then( ( { details, description } ) => {
         if ( description == null )
           return Promise.reject( makeError( ErrorCode.UnknownDescription ) );
         return {
@@ -198,7 +198,7 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
     route( 'AddComment', '/issues/:issueId/comments/add', ( { issueId } ) => {
       if ( !store.getters[ 'global/isAuthenticated' ] )
         return Promise.reject( makeError( ErrorCode.LoginRequired ) );
-      return ajax.post( '/server/api/issue/load.php', { issueId } ).then( ( { details } ) => {
+      return ajax.post( '/server/api/issues/load.php', { issueId } ).then( ( { details } ) => {
         return {
           component: 'EditComment',
           mode: 'add',
@@ -212,8 +212,8 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
     route( 'ReplyComment', '/issues/:issueId/comments/:commentId/reply', ( { issueId, commentId } ) => {
       if ( !store.getters[ 'global/isAuthenticated' ] )
         return Promise.reject( makeError( ErrorCode.LoginRequired ) );
-      return ajax.post( '/server/api/issue/load.php', { issueId } ).then( ( { details } ) => {
-        return ajax.post( '/server/api/issue/comment/load.php', { issueId, commentId } ).then( ( { text } ) => {
+      return ajax.post( '/server/api/issues/load.php', { issueId } ).then( ( { details } ) => {
+        return ajax.post( '/server/api/issues/comments/load.php', { issueId, commentId } ).then( ( { text } ) => {
           return {
             component: 'EditComment',
             mode: 'add',
@@ -227,7 +227,7 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
     } );
 
     route( 'EditComment', '/issues/:issueId/comments/:commentId/edit', ( { issueId, commentId } ) => {
-      return ajax.post( '/server/api/issue/comment/load.php', { issueId, commentId, access: 'adminOrOwner' } ).then( ( { text, format } ) => {
+      return ajax.post( '/server/api/issues/comments/load.php', { issueId, commentId, access: 'adminOrOwner' } ).then( ( { text, format } ) => {
         return {
           component: 'EditComment',
           mode: 'edit',
@@ -240,7 +240,7 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
     } );
 
     route( 'DeleteComment', '/issues/:issueId/comments/:commentId/delete', ( { issueId, commentId } ) => {
-      return ajax.post( '/server/api/issue/comment/load.php', { issueId, commentId, access: 'adminOrOwner' } ).then( () => {
+      return ajax.post( '/server/api/issues/comments/load.php', { issueId, commentId, access: 'adminOrOwner' } ).then( () => {
         return {
           component: 'DeleteComment',
           size: 'small',
@@ -253,7 +253,7 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
     route( 'AddFile', '/issues/:issueId/files/add', ( { issueId } ) => {
       if ( !store.getters[ 'global/isAuthenticated' ] )
         return Promise.reject( makeError( ErrorCode.LoginRequired ) );
-      return ajax.post( '/server/api/issue/load.php', { issueId } ).then( ( { details } ) => {
+      return ajax.post( '/server/api/issues/load.php', { issueId } ).then( ( { details } ) => {
         return {
           component: 'EditFile',
           mode: 'add',
@@ -264,7 +264,7 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
     } );
 
     route( 'EditFile', '/issues/:issueId/files/:fileId/edit', ( { issueId, fileId } ) => {
-      return ajax.post( '/server/api/issue/file/load.php', { issueId, fileId, access: 'adminOrOwner' } ).then( ( { name, description } ) => {
+      return ajax.post( '/server/api/issues/files/load.php', { issueId, fileId, access: 'adminOrOwner' } ).then( ( { name, description } ) => {
         return {
           component: 'EditFile',
           mode: 'edit',
@@ -277,7 +277,7 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
     } );
 
     route( 'DeleteFile', '/issues/:issueId/files/:fileId/delete', ( { issueId, fileId } ) => {
-      return ajax.post( '/server/api/issue/file/load.php', { issueId, fileId, access: 'adminOrOwner' } ).then( ( { name } ) => {
+      return ajax.post( '/server/api/issues/files/load.php', { issueId, fileId, access: 'adminOrOwner' } ).then( ( { name } ) => {
         return {
           component: 'DeleteFile',
           size: 'small',

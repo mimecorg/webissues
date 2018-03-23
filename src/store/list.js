@@ -225,7 +225,7 @@ function makeActions( ajax ) {
         offset: state.offset,
         limit: PageSize
       };
-      const promise = ajax.post( '/server/api/issue/list.php', query );
+      const promise = ajax.post( '/server/api/issues/list.php', query );
       commit( 'setLastPromise', promise );
       return new Promise( ( resolve, reject ) => {
         promise.then( data => {

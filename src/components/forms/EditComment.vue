@@ -103,7 +103,7 @@ export default {
 
       this.$emit( 'block' );
 
-      this.$ajax.post( '/server/api/issue/comment/' + this.mode + '.php', data ).then( ( { stampId } ) => {
+      this.$ajax.post( '/server/api/issues/comments/' + this.mode + '.php', data ).then( ( { stampId } ) => {
         if ( stampId != false )
           this.$store.commit( 'list/setDirty' );
         this.returnToDetails( this.mode == 'add' ? stampId : this.commentId );

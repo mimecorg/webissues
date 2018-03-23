@@ -151,7 +151,7 @@ function makeActions( ajax ) {
         html: true,
         unread: state.unread
       };
-      const promise = ajax.post( '/server/api/issue/load.php', query );
+      const promise = ajax.post( '/server/api/issues/load.php', query );
       commit( 'setLastPromise', promise );
       return new Promise( ( resolve, reject ) => {
         promise.then( data => {

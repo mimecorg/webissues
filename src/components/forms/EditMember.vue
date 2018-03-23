@@ -125,7 +125,7 @@ export default {
         return;
       }
 
-      this.$ajax.post( '/server/api/project/member/edit.php', data ).then( () => {
+      this.$ajax.post( '/server/api/projects/members/edit.php', data ).then( () => {
         this.returnToDetails();
       } ).catch( error => {
         this.$emit( 'error', error );
