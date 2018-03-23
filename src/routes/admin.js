@@ -137,7 +137,7 @@ export default function makeAdminRoutes( ajax, store ) {
       } );
     } );
 
-    route( 'AddFolder', '/admin/projects/:projectId/folder/add', ( { projectId } ) => {
+    route( 'AddFolder', '/admin/projects/:projectId/folders/add', ( { projectId } ) => {
       return ajax.post( '/server/api/project/load.php', { projectId, access: 'admin' } ).then( ( { details } ) => {
         return {
           component: 'EditFolder',
@@ -148,7 +148,7 @@ export default function makeAdminRoutes( ajax, store ) {
       } );
     } );
 
-    route( 'RenameFolder', '/admin/projects/:projectId/folder/:folderId/rename', ( { projectId, folderId } ) => {
+    route( 'RenameFolder', '/admin/projects/:projectId/folders/:folderId/rename', ( { projectId, folderId } ) => {
       return ajax.post( '/server/api/project/folder/load.php', { projectId, folderId, access: 'admin' } ).then( ( { name } ) => {
         return {
           component: 'EditFolder',
@@ -160,7 +160,7 @@ export default function makeAdminRoutes( ajax, store ) {
       } );
     } );
 
-    route( 'MoveFolder', '/admin/projects/:projectId/folder/:folderId/move', ( { projectId, folderId } ) => {
+    route( 'MoveFolder', '/admin/projects/:projectId/folders/:folderId/move', ( { projectId, folderId } ) => {
       return ajax.post( '/server/api/project/folder/load.php', { projectId, folderId, access: 'admin' } ).then( ( { name } ) => {
         return {
           component: 'MoveFolder',
@@ -171,7 +171,7 @@ export default function makeAdminRoutes( ajax, store ) {
       } );
     } );
 
-    route( 'DeleteFolder', '/admin/projects/:projectId/folder/:folderId/delete', ( { projectId, folderId } ) => {
+    route( 'DeleteFolder', '/admin/projects/:projectId/folders/:folderId/delete', ( { projectId, folderId } ) => {
       return ajax.post( '/server/api/project/folder/load.php', { projectId, folderId, access: 'admin' } ).then( ( { name, empty } ) => {
         return {
           component: 'DeleteFolder',

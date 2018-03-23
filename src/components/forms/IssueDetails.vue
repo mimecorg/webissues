@@ -103,7 +103,7 @@
                 <div class="issue-history-title">{{ item.createdDate }} &mdash; {{ item.createdBy }}</div>
               </div>
               <div class="issue-element">
-                <a class="issue-history-id" v-bind:href="'#/item/' + item.id">#{{ item.id }}</a>
+                <a class="issue-history-id" v-bind:href="'#/items/' + item.id">#{{ item.id }}</a>
                 <DropdownButton v-if="canReply( item ) || canEditItem( item )" fa-class="fa-ellipsis-v" menu-class="dropdown-menu-right" v-bind:title="$t( 'IssueDetails.Menu' )">
                   <li v-if="canReply( item )"><HyperLink v-on:click="replyComment( item )"><span class="fa fa-reply" aria-hidden="true"></span> {{ $t( 'IssueDetails.Reply' ) }}</HyperLink></li>
                   <li v-if="canEditItem( item )"><HyperLink v-on:click="editItem( item )"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'IssueDetails.Edit' ) }}</HyperLink></li>

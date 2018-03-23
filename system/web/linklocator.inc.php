@@ -123,7 +123,7 @@ class System_Web_LinkLocator extends System_Web_Base
                 if ( $baseUrl != '' && System_Core_Application::getInstance()->getRequest()->isRelativePathUnder( '/mobile' ) )
                     $baseUrl .= '/mobile';
             } else if ( $mode == self::RouteLinks ) {
-                return '#/item/' . substr( $url, 1 );
+                return '#/items/' . substr( $url, 1 );
             } else {
                 $baseUrl = self::getBaseUrl();
             }

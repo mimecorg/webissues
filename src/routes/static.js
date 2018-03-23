@@ -19,10 +19,10 @@
 
 export default function staticRoutes( route ) {
   route( 'Home', '' );
-  route( 'List', '/type/:typeId' );
-  route( 'ListView', '/view/:viewId' );
-  route( 'ListProject', '/type/:typeId/project/:projectId' );
-  route( 'ListViewProject', '/view/:viewId/project/:projectId' );
-  route( 'ListFolder', '/folder/:folderId' );
-  route( 'ListViewFolder', '/view/:viewId/folder/:folderId' );
+  route( 'List', '/types/:typeId' );
+  route( 'ListView', '/views/:viewId' );
+  route( 'ListProject', '/types/:typeId/projects/:projectId' );
+  route( 'ListViewProject', '/views/:viewId/projects/:projectId' );
+  route( 'ListFolder', '/folders/:folderId' );
+  route( 'ListViewFolder', '/views/:viewId/folders/:folderId' );
 }

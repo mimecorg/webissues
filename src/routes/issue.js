@@ -31,19 +31,19 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
       } );
     }
 
-    route( 'IssueDetails', '/issue/:issueId', ( { issueId } ) => {
+    route( 'IssueDetails', '/issues/:issueId', ( { issueId } ) => {
       return loadIssueDetails( issueId );
     } );
 
-    route( 'IssueItem', '/issue/:issueId/item/:itemId', ( { issueId, itemId } ) => {
+    route( 'IssueItem', '/issues/:issueId/items/:itemId', ( { issueId, itemId } ) => {
       return loadIssueDetails( issueId );
     } );
 
-    route( 'GoToItem', '/item/goto', () => {
+    route( 'GoToItem', '/items/goto', () => {
       return Promise.resolve( { component: 'GoToItem' } );
     } );
 
-    route( 'Item', '/item/:itemId', ( { itemId } ) => {
+    route( 'Item', '/items/:itemId', ( { itemId } ) => {
       return ajax.post( '/server/api/issue/find.php', { itemId } ).then( issueId => {
         if ( itemId == issueId )
           return { replace: 'IssueDetails', issueId };
@@ -52,7 +52,7 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
       } );
     } );
 
-    route( 'EditIssue', '/issue/:issueId/edit', ( { issueId } ) => {
+    route( 'EditIssue', '/issues/:issueId/edit', ( { issueId } ) => {
       if ( !store.getters[ 'global/isAuthenticated' ] )
         return Promise.reject( makeError( ErrorCode.LoginRequired ) );
       return ajax.post( '/server/api/issue/load.php', { issueId, attributes: true } ).then( ( { details, attributes } ) => {
@@ -68,7 +68,7 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
       } );
     } );
 
-    route( 'AddIssue', '/issue/add/:typeId', ( { typeId } ) => {
+    route( 'AddIssue', '/types/:typeId/issues/add', ( { typeId } ) => {
       if ( !store.getters[ 'global/isAuthenticated' ] )
         return Promise.reject( makeError( ErrorCode.LoginRequired ) );
       const type = store.state.global.types.find( t => t.id == typeId );
@@ -94,7 +94,7 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
       } );
     } );
 
-    route( 'CloneIssue', '/issue/:issueId/clone', ( { issueId } ) => {
+    route( 'CloneIssue', '/issues/:issueId/clone', ( { issueId } ) => {
       if ( !store.getters[ 'global/isAuthenticated' ] )
         return Promise.reject( makeError( ErrorCode.LoginRequired ) );
       return ajax.post( '/server/api/issue/load.php', { issueId, description: true, attributes: true } ).then( ( { details, description, attributes } ) => {
@@ -113,7 +113,7 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
       } );
     } );
 
-    route( 'MoveIssue', '/issue/:issueId/move', ( { issueId } ) => {
+    route( 'MoveIssue', '/issues/:issueId/move', ( { issueId } ) => {
       return ajax.post( '/server/api/issue/load.php', { issueId, access: 'admin' } ).then( ( { details } ) => {
         return {
           component: 'MoveIssue',
@@ -126,7 +126,7 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
       } );
     } );
 
-    route( 'DeleteIssue', '/issue/:issueId/delete', ( { issueId } ) => {
+    route( 'DeleteIssue', '/issues/:issueId/delete', ( { issueId } ) => {
       return ajax.post( '/server/api/issue/load.php', { issueId, access: 'admin' } ).then( ( { details } ) => {
         return {
           component: 'DeleteIssue',
@@ -136,7 +136,7 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
       } );
     } );
 
-    route( 'AddDescription', 'issue/:issueId/description/add', ( { issueId } ) => {
+    route( 'AddDescription', '/issues/:issueId/description/add', ( { issueId } ) => {
       return ajax.post( '/server/api/issue/load.php', { issueId, description: true, access: 'adminOrOwner' } ).then( ( { details, description } ) => {
         if ( description != null )
           return Promise.reject( makeError( ErrorCode.DescriptionAlreadyExists ) );
@@ -150,7 +150,7 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
       } );
     } );
 
-    route( 'ReplyDescription', 'issue/:issueId/description/reply', ( { issueId } ) => {
+    route( 'ReplyDescription', '/issues/:issueId/description/reply', ( { issueId } ) => {
       if ( !store.getters[ 'global/isAuthenticated' ] )
         return Promise.reject( makeError( ErrorCode.LoginRequired ) );
       return ajax.post( '/server/api/issue/load.php', { issueId, description: true } ).then( ( { details, description } ) => {
@@ -167,7 +167,7 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
       } );
     } );
 
-    route( 'EditDescription', 'issue/:issueId/description/edit', ( { issueId } ) => {
+    route( 'EditDescription', '/issues/:issueId/description/edit', ( { issueId } ) => {
       return ajax.post( '/server/api/issue/load.php', { issueId, description: true, access: 'adminOrOwner' } ).then( ( { details, description } ) => {
         if ( description == null )
           return Promise.reject( makeError( ErrorCode.UnknownDescription ) );
@@ -182,7 +182,7 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
       } );
     } );
 
-    route( 'DeleteDescription', 'issue/:issueId/description/delete', ( { issueId } ) => {
+    route( 'DeleteDescription', '/issues/:issueId/description/delete', ( { issueId } ) => {
       return ajax.post( '/server/api/issue/load.php', { issueId, description: true, access: 'adminOrOwner' } ).then( ( { details, description } ) => {
         if ( description == null )
           return Promise.reject( makeError( ErrorCode.UnknownDescription ) );
@@ -195,7 +195,7 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
       } );
     } );
 
-    route( 'AddComment', 'issue/:issueId/comment/add', ( { issueId } ) => {
+    route( 'AddComment', '/issues/:issueId/comments/add', ( { issueId } ) => {
       if ( !store.getters[ 'global/isAuthenticated' ] )
         return Promise.reject( makeError( ErrorCode.LoginRequired ) );
       return ajax.post( '/server/api/issue/load.php', { issueId } ).then( ( { details } ) => {
@@ -209,7 +209,7 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
       } );
     } );
 
-    route( 'ReplyComment', 'issue/:issueId/comment/:commentId/reply', ( { issueId, commentId } ) => {
+    route( 'ReplyComment', '/issues/:issueId/comments/:commentId/reply', ( { issueId, commentId } ) => {
       if ( !store.getters[ 'global/isAuthenticated' ] )
         return Promise.reject( makeError( ErrorCode.LoginRequired ) );
       return ajax.post( '/server/api/issue/load.php', { issueId } ).then( ( { details } ) => {
@@ -226,7 +226,7 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
       } );
     } );
 
-    route( 'EditComment', 'issue/:issueId/comment/:commentId/edit', ( { issueId, commentId } ) => {
+    route( 'EditComment', '/issues/:issueId/comments/:commentId/edit', ( { issueId, commentId } ) => {
       return ajax.post( '/server/api/issue/comment/load.php', { issueId, commentId, access: 'adminOrOwner' } ).then( ( { text, format } ) => {
         return {
           component: 'EditComment',
@@ -239,7 +239,7 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
       } );
     } );
 
-    route( 'DeleteComment', 'issue/:issueId/comment/:commentId/delete', ( { issueId, commentId } ) => {
+    route( 'DeleteComment', '/issues/:issueId/comments/:commentId/delete', ( { issueId, commentId } ) => {
       return ajax.post( '/server/api/issue/comment/load.php', { issueId, commentId, access: 'adminOrOwner' } ).then( () => {
         return {
           component: 'DeleteComment',
@@ -250,7 +250,7 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
       } );
     } );
 
-    route( 'AddFile', '/issue/:issueId/file/add', ( { issueId } ) => {
+    route( 'AddFile', '/issues/:issueId/files/add', ( { issueId } ) => {
       if ( !store.getters[ 'global/isAuthenticated' ] )
         return Promise.reject( makeError( ErrorCode.LoginRequired ) );
       return ajax.post( '/server/api/issue/load.php', { issueId } ).then( ( { details } ) => {
@@ -263,7 +263,7 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
       } );
     } );
 
-    route( 'EditFile', '/issue/:issueId/file/:fileId/edit', ( { issueId, fileId } ) => {
+    route( 'EditFile', '/issues/:issueId/files/:fileId/edit', ( { issueId, fileId } ) => {
       return ajax.post( '/server/api/issue/file/load.php', { issueId, fileId, access: 'adminOrOwner' } ).then( ( { name, description } ) => {
         return {
           component: 'EditFile',
@@ -276,7 +276,7 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
       } );
     } );
 
-    route( 'DeleteFile', 'issue/:issueId/file/:fileId/delete', ( { issueId, fileId } ) => {
+    route( 'DeleteFile', '/issues/:issueId/files/:fileId/delete', ( { issueId, fileId } ) => {
       return ajax.post( '/server/api/issue/file/load.php', { issueId, fileId, access: 'adminOrOwner' } ).then( ( { name } ) => {
         return {
           component: 'DeleteFile',
