@@ -17,56 +17,13 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-import DeleteComment from '@/components/forms/DeleteComment'
-import DeleteDescription from '@/components/forms/DeleteDescription'
-import DeleteFile from '@/components/forms/DeleteFile'
-import DeleteFolder from '@/components/forms/DeleteFolder'
-import DeleteIssue from '@/components/forms/DeleteIssue'
-import DeleteProject from '@/components/forms/DeleteProject'
-import DeleteProjectDescription from '@/components/forms/DeleteProjectDescription'
-import EditComment from '@/components/forms/EditComment'
-import EditDescription from '@/components/forms/EditDescription'
-import EditFile from '@/components/forms/EditFile'
-import EditFolder from '@/components/forms/EditFolder'
-import EditIssue from '@/components/forms/EditIssue'
-import EditMember from '@/components/forms/EditMember'
-import EditProject from '@/components/forms/EditProject'
-import EditProjectAccess from '@/components/forms/EditProjectAccess'
-import EditProjectDescription from '@/components/forms/EditProjectDescription'
-import ErrorMessage from '@/components/forms/ErrorMessage'
-import GoToItem from '@/components/forms/GoToItem'
-import IssueDetails from '@/components/forms/IssueDetails'
-import ManageProjects from '@/components/forms/ManageProjects'
-import MoveIssue from '@/components/forms/MoveIssue'
-import MoveFolder from '@/components/forms/MoveFolder'
-import ProjectDetails from '@/components/forms/ProjectDetails'
-import ProjectPermissions from '@/components/forms/ProjectPermissions'
-import RemoveMember from '@/components/forms/RemoveMember'
+const context = require.context( '.', false, /\.vue$/ );
 
-export default {
-  DeleteComment,
-  DeleteDescription,
-  DeleteFile,
-  DeleteFolder,
-  DeleteIssue,
-  DeleteProject,
-  DeleteProjectDescription,
-  EditComment,
-  EditDescription,
-  EditFile,
-  EditFolder,
-  EditIssue,
-  EditMember,
-  EditProject,
-  EditProjectAccess,
-  EditProjectDescription,
-  ErrorMessage,
-  GoToItem,
-  IssueDetails,
-  ManageProjects,
-  MoveIssue,
-  MoveFolder,
-  ProjectDetails,
-  ProjectPermissions,
-  RemoveMember
-}
+const index = {};
+
+context.keys().forEach( key => {
+  const name = key.replace( /^\.\//, '' ).replace( /\.vue$/, '' );
+  index[ name ] = context( key ).default;
+} );
+
+export default index;

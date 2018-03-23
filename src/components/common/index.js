@@ -17,36 +17,13 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-import Autocomplete from '@/components/common/Autocomplete'
-import BusyOverlay from '@/components/common/BusyOverlay'
-import DatePicker from '@/components/common/DatePicker'
-import DropdownButton from '@/components/common/DropdownButton'
-import FormButtons from '@/components/common/FormButtons'
-import FormGroup from '@/components/common/FormGroup'
-import FormHeader from '@/components/common/FormHeader'
-import FormSection from '@/components/common/FormSection'
-import Grid from '@/components/common/Grid'
-import HyperLink from '@/components/common/HyperLink'
-import LocationFilters from '@/components/common/LocationFilters'
-import MarkupEditor from '@/components/common/MarkupEditor'
-import Panel from '@/components/common/Panel'
-import Prompt from '@/components/common/Prompt'
-import ValueEditor from '@/components/common/ValueEditor'
+const context = require.context( '.', false, /\.vue$/ );
 
-export default {
-  Autocomplete,
-  BusyOverlay,
-  DatePicker,
-  DropdownButton,
-  FormButtons,
-  FormGroup,
-  FormHeader,
-  FormSection,
-  Grid,
-  HyperLink,
-  LocationFilters,
-  MarkupEditor,
-  Panel,
-  Prompt,
-  ValueEditor
-}
+const index = {};
+
+context.keys().forEach( key => {
+  const name = key.replace( /^\.\//, '' ).replace( /\.vue$/, '' );
+  index[ name ] = context( key ).default;
+} );
+
+export default index;
