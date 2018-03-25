@@ -32,6 +32,7 @@ import makeAjax from '@/services/ajax'
 import makeParser from '@/services/parser'
 import makeRouter from '@/services/router'
 
+import '@/services/fields'
 import '@/services/hljs'
 
 import makeI18n from '@/i18n';

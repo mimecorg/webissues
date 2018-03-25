@@ -36,7 +36,7 @@ export default function makeAdminRoutes( ajax, store ) {
       return Promise.resolve( {
         component: 'EditProject',
         mode: 'add',
-        descriptionFormat: store.state.global.settings.defaultFormat
+        initialFormat: store.state.global.settings.defaultFormat
       } );
     } );
 
@@ -61,7 +61,7 @@ export default function makeAdminRoutes( ajax, store ) {
           component: 'EditProject',
           mode: 'rename',
           projectId,
-          name: details.name
+          initialName: details.name
         };
       } );
     } );
