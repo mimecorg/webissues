@@ -104,7 +104,7 @@ export default {
 
   methods: {
     focus() {
-      if ( this.project == null || !this.showFolder )
+      if ( this.project == null || !this.folderVisible )
         this.$refs.project.focus();
       else
         this.$refs.folder.focus();
