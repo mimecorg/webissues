@@ -65,9 +65,11 @@ function validate() {
     this[ name ].error = null;
 
     if ( field.type == String ) {
-      const { required = false, multiLine = false, maxLength } = field;
+      const { required = false, multiLine = false, maxLength, parse } = field;
       try {
         this[ name ].value = this.$parser.normalizeString( this[ name ].value, maxLength, { allowEmpty: !required, multiLine } );
+        if ( parse != null )
+          this[ name ].value = parse( this[ name ].value );
       } catch ( error ) {
         if ( error.reason == 'APIError' )
           this[ name ].error = this.$t( 'ErrorCode.' + error.errorCode );

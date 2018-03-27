@@ -21,8 +21,8 @@
   <div class="container-fluid">
     <FormHeader v-bind:title="$t( 'GoToItem.Title' )" v-on:close="close"/>
     <Prompt path="GoToItem.Prompt"/>
-    <FormGroup id="item" v-bind:label="$t( 'GoToItem.ID' )" v-bind:error="error">
-      <input ref="item" id="item" type="text" class="form-control" maxlength="11" v-model="value" v-on:keydown.enter="submit">
+    <FormGroup id="item" v-bind:label="$t( 'GoToItem.ID' )" v-bind:required="item.required" v-bind:error="item.error">
+      <input ref="item" id="item" type="text" class="form-control" v-bind:maxlength="item.maxLength" v-model="item.value" v-on:keydown.enter="submit">
     </FormGroup>
     <FormButtons v-on:ok="submit" v-on:cancel="close"/>
   </div>
@@ -32,40 +32,39 @@
 import { ErrorCode } from '@/constants'
 
 export default {
+  fields() {
+    return {
+      item: {
+        type: String,
+        required: true,
+        maxLength: 11,
+        parse: this.parse
+      }
+    };
+  },
+
   data() {
     return {
-      value: '',
-      error: null
+      itemId: null
     };
   },
 
   methods: {
     submit() {
-      this.error = null;
-      let itemId;
-      try {
-        this.value = this.$parser.normalizeString( this.value, 11 );
-        itemId = this.$parser.parseInteger( this.value.replace( /^#/, '' ), 1 );
-        this.value = itemId.toString();
-      } catch ( error ) {
-        if ( error.reason == 'APIError' ) {
-          this.error = this.$t( 'ErrorCode.' + error.errorCode );
-          this.$refs.item.focus();
-          return;
-        } else {
-          throw error;
-        }
-      }
+      if ( !this.$fields.validate() )
+        return;
+
       this.$emit( 'block' );
-      this.$ajax.post( '/server/api/issues/find.php', { itemId } ).then( issueId => {
-        if ( itemId == issueId )
+
+      this.$ajax.post( '/server/api/issues/find.php', { itemId: this.itemId } ).then( issueId => {
+        if ( this.itemId == issueId )
           this.$router.push( 'IssueDetails', { issueId } );
         else
-          this.$router.push( 'IssueItem', { issueId, itemId } );
+          this.$router.push( 'IssueItem', { issueId, itemId: this.itemId } );
       } ).catch( error => {
         if ( error.reason == 'APIError' && error.errorCode == ErrorCode.ItemNotFound ) {
           this.$emit( 'unblock' );
-          this.error = this.$t( 'ErrorCode.' + error.errorCode );
+          this.item.error = this.$t( 'ErrorCode.' + error.errorCode );
           this.$nextTick( () => {
             this.$refs.item.focus();
           } );
@@ -73,6 +72,11 @@ export default {
           this.$emit( 'error', error );
         }
       } );
+    },
+
+    parse( value ) {
+      this.itemId = this.$parser.parseInteger( value.replace( /^#/, '' ), 1 );
+      return this.itemId.toString();
     },
 
     close() {
