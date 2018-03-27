@@ -19,6 +19,8 @@
 
 import Vue from 'vue'
 
+import { ErrorCode } from '@/constants'
+
 Vue.mixin( {
   data() {
     const result = {};
@@ -76,6 +78,10 @@ function validate() {
         else
           throw error;
       }
+    } else if ( field.type == Number ) {
+      const { required = false, requiredError } = field;
+      if ( required && this[ name ].value == null )
+        this[ name ].error = requiredError || this.$t( 'ErrorCode.' + ErrorCode.EmptyValue );
     } else {
       throw new Error( 'Invalid field type: ' + name );
     }

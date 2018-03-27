@@ -164,7 +164,7 @@ export default function makeAdminRoutes( ajax, store ) {
       return ajax.post( '/server/api/projects/folders/load.php', { projectId, folderId, access: 'admin' } ).then( ( { name } ) => {
         return {
           component: 'MoveFolder',
-          projectId,
+          initialProjectId: projectId,
           folderId,
           name
         };

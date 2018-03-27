@@ -119,8 +119,8 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
           component: 'MoveIssue',
           issueId,
           typeId: details.typeId,
-          projectId: details.projectId,
-          folderId: details.folderId,
+          initialProjectId: details.projectId,
+          initialFolderId: details.folderId,
           name: details.name
         };
       } );
