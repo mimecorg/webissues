@@ -32,12 +32,9 @@ Vue.mixin( {
 
       for ( const name in fields ) {
         const field = fields[ name ];
-        const { condition = true, value, required = false, maxLength } = field;
+        const { condition = true, value } = field;
         if ( condition ) {
           result[ name ] = value;
-          result[ name + 'Required' ] = required;
-          if ( maxLength != null )
-            result[ name + 'MaxLength' ] = maxLength;
           result[ name + 'Error' ] = null;
           this.$fieldsData[ name ] = field;
         }
@@ -49,6 +46,7 @@ Vue.mixin( {
 
   created() {
     if ( this.$fieldsData != null ) {
+      this.$field = field.bind( this );
       this.$fields = {
         validate: validate.bind( this ),
         modified: modified.bind( this )
@@ -56,6 +54,17 @@ Vue.mixin( {
     }
   }
 } );
+
+function field( name ) {
+  const { required = false, maxLength } = this.$fieldsData[ name ];
+
+  const result = { required };
+  if ( maxLength != null )
+    result.maxlength = maxLength;
+  result.error = this[ name + 'Error' ];
+
+  return result;
+}
 
 function validate() {
   let valid = true;

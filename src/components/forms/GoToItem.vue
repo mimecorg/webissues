@@ -21,9 +21,7 @@
   <div class="container-fluid">
     <FormHeader v-bind:title="$t( 'GoToItem.Title' )" v-on:close="close"/>
     <Prompt path="GoToItem.Prompt"/>
-    <FormGroup id="item" v-bind:label="$t( 'GoToItem.ID' )" v-bind:required="itemRequired" v-bind:error="itemError">
-      <input ref="item" id="item" type="text" class="form-control" v-bind:maxlength="itemMaxLength" v-model="item" v-on:keydown.enter="submit">
-    </FormGroup>
+    <FormInput ref="item" id="item" v-bind:label="$t( 'GoToItem.ID' )" v-bind="$field( 'item' )" v-model="item" v-on:keydown.enter="submit"/>
     <FormButtons v-on:ok="submit" v-on:cancel="close"/>
   </div>
 </template>

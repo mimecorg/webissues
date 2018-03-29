@@ -21,7 +21,7 @@
   <div class="container-fluid">
     <FormHeader v-bind:title="$t( 'MoveFolder.MoveFolder' )" v-on:close="close"/>
     <Prompt path="MoveFolder.MoveFolderPrompt"><strong>{{ name }}</strong></Prompt>
-    <FormGroup v-bind:label="$t( 'MoveFolder.Project' )" v-bind:required="projectIdRequired" v-bind:error="projectIdError">
+    <FormGroup v-bind:label="$t( 'MoveFolder.Project' )" v-bind="$field( 'projectId' )">
       <LocationFilters ref="projectId" v-bind:project="project" v-bind:require-admin="true" v-bind:folder-visible="false" v-on:select-project="selectProject"/>
     </FormGroup>
     <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>

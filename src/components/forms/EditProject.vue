@@ -22,11 +22,9 @@
     <FormHeader v-bind:title="title" v-on:close="close"/>
     <Prompt v-if="mode == 'rename'" path="EditProject.RenameProjectPrompt"><strong>{{ initialName }}</strong></Prompt>
     <Prompt v-else-if="mode == 'add'" path="EditProject.AddProjectPrompt"></Prompt>
-    <FormGroup id="name" v-bind:label="$t( 'EditProject.Name' )" v-bind:required="nameRequired" v-bind:error="nameError">
-      <input ref="name" id="name" type="text" class="form-control" v-bind:maxlength="nameMaxLength" v-model="name">
-    </FormGroup>
-    <MarkupEditor v-if="mode == 'add'" ref="description" id="description" v-bind:label="$t( 'EditProject.Description' )" v-bind:required="descriptionRequired"
-                  v-bind:error="descriptionError" v-bind:format="descriptionFormat" v-model="description" v-on:select-format="selectFormat" v-on:error="error"/>
+    <FormInput ref="name" id="name" v-bind:label="$t( 'EditProject.Name' )" v-bind="$field( 'name' )" v-model="name"/>
+    <MarkupEditor v-if="mode == 'add'" ref="description" id="description" v-bind:label="$t( 'EditProject.Description' )" v-bind="$field( 'description' )"
+                  v-bind:format="descriptionFormat" v-model="description" v-on:select-format="selectFormat" v-on:error="error"/>
     <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
   </div>
 </template>
