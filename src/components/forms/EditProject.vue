@@ -22,11 +22,11 @@
     <FormHeader v-bind:title="title" v-on:close="close"/>
     <Prompt v-if="mode == 'rename'" path="EditProject.RenameProjectPrompt"><strong>{{ initialName }}</strong></Prompt>
     <Prompt v-else-if="mode == 'add'" path="EditProject.AddProjectPrompt"></Prompt>
-    <FormGroup id="name" v-bind:label="$t( 'EditProject.Name' )" v-bind:required="name.required" v-bind:error="name.error">
-      <input ref="name" id="name" type="text" class="form-control" v-bind:maxlength="name.maxLength" v-model="name.value">
+    <FormGroup id="name" v-bind:label="$t( 'EditProject.Name' )" v-bind:required="nameRequired" v-bind:error="nameError">
+      <input ref="name" id="name" type="text" class="form-control" v-bind:maxlength="nameMaxLength" v-model="name">
     </FormGroup>
-    <MarkupEditor v-if="mode == 'add'" ref="description" id="description" v-bind:label="$t( 'EditProject.Description' )" v-bind:required="description.required"
-                  v-bind:error="description.error" v-bind:format="descriptionFormat" v-model="description.value" v-on:select-format="selectFormat" v-on:error="error"/>
+    <MarkupEditor v-if="mode == 'add'" ref="description" id="description" v-bind:label="$t( 'EditProject.Description' )" v-bind:required="descriptionRequired"
+                  v-bind:error="descriptionError" v-bind:format="descriptionFormat" v-model="description" v-on:select-format="selectFormat" v-on:error="error"/>
     <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
   </div>
 </template>
@@ -92,9 +92,9 @@ export default {
       const data = {};
       if ( this.mode == 'rename' )
         data.projectId = this.projectId;
-      data.name = this.name.value;
+      data.name = this.name;
       if ( this.mode == 'add' ) {
-        data.description = this.description.value;
+        data.description = this.description;
         data.descriptionFormat = this.descriptionFormat;
       }
 
@@ -107,7 +107,7 @@ export default {
       } ).catch( error => {
         if ( error.reason == 'APIError' && error.errorCode == ErrorCode.ProjectAlreadyExists ) {
           this.$emit( 'unblock' );
-          this.name.error = this.$t( 'ErrorCode.' + error.errorCode );
+          this.nameError = this.$t( 'ErrorCode.' + error.errorCode );
           this.$nextTick( () => {
             this.$refs.name.focus();
           } );

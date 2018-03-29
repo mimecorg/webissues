@@ -21,7 +21,7 @@
   <div class="container-fluid">
     <FormHeader v-bind:title="$t( 'MoveFolder.MoveFolder' )" v-on:close="close"/>
     <Prompt path="MoveFolder.MoveFolderPrompt"><strong>{{ name }}</strong></Prompt>
-    <FormGroup v-bind:label="$t( 'MoveFolder.Project' )" v-bind:required="projectId.required" v-bind:error="projectId.error">
+    <FormGroup v-bind:label="$t( 'MoveFolder.Project' )" v-bind:required="projectIdRequired" v-bind:error="projectIdError">
       <LocationFilters ref="projectId" v-bind:project="project" v-bind:require-admin="true" v-bind:folder-visible="false" v-on:select-project="selectProject"/>
     </FormGroup>
     <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
@@ -54,8 +54,8 @@ export default {
   computed: {
     ...mapState( 'global', [ 'projects' ] ),
     project() {
-      if ( this.projectId.value != null )
-        return this.projects.find( p => p.id == this.projectId.value );
+      if ( this.projectId != null )
+        return this.projects.find( p => p.id == this.projectId );
       else
         return null;
     }
@@ -64,9 +64,9 @@ export default {
   methods: {
     selectProject( project ) {
       if ( project != null )
-        this.projectId.value = project.id;
+        this.projectId = project.id;
       else
-        this.projectId.value = null;
+        this.projectId = null;
     },
 
     submit() {
@@ -78,7 +78,7 @@ export default {
         return;
       }
 
-      const data = { folderId: this.folderId, projectId: this.projectId.value };
+      const data = { folderId: this.folderId, projectId: this.projectId };
 
       this.$emit( 'block' );
 
@@ -89,7 +89,7 @@ export default {
       } ).catch( error => {
         if ( error.reason == 'APIError' && error.errorCode == ErrorCode.FolderAlreadyExists ) {
           this.$emit( 'unblock' );
-          this.projectId.error = this.$t( 'ErrorCode.' + error.errorCode );
+          this.projectIdError = this.$t( 'ErrorCode.' + error.errorCode );
           this.$nextTick( () => {
             this.$refs.projectId.focus();
           } );

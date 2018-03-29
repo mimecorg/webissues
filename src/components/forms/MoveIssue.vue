@@ -21,7 +21,7 @@
   <div class="container-fluid">
     <FormHeader v-bind:title="$t( 'MoveIssue.MoveIssue' )" v-on:close="close"/>
     <Prompt path="MoveIssue.MoveIssuePrompt"><strong>{{ name }}</strong></Prompt>
-    <FormGroup v-bind:label="$t( 'MoveIssue.Location' )" v-bind:required="folderId.required" v-bind:error="folderId.error">
+    <FormGroup v-bind:label="$t( 'MoveIssue.Location' )" v-bind:required="folderIdRequired" v-bind:error="folderIdError">
       <LocationFilters ref="folderId" v-bind:typeId="typeId" v-bind:project="project" v-bind:folder="folder" v-bind:require-admin="true"
                        v-on:select-project="selectProject" v-on:select-folder="selectFolder"/>
     </FormGroup>
@@ -67,8 +67,8 @@ export default {
         return null;
     },
     folder() {
-      if ( this.folderId.value != null && this.project != null )
-        return this.project.folders.find( f => f.id == this.folderId.value );
+      if ( this.folderId != null && this.project != null )
+        return this.project.folders.find( f => f.id == this.folderId );
       else
         return null;
     }
@@ -80,13 +80,13 @@ export default {
         this.projectId = project.id;
       else
         this.projectId = null;
-      this.folderId.value = null;
+      this.folderId = null;
     },
     selectFolder( folder ) {
       if ( folder != null )
-        this.folderId.value = folder.id;
+        this.folderId = folder.id;
       else
-        this.folderId.value = null;
+        this.folderId = null;
     },
 
     submit() {
@@ -98,7 +98,7 @@ export default {
         return;
       }
 
-      const data = { issueId: this.issueId, folderId: this.folderId.value };
+      const data = { issueId: this.issueId, folderId: this.folderId };
 
       this.$emit( 'block' );
 

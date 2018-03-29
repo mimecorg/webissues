@@ -34,12 +34,11 @@ Vue.mixin( {
         const field = fields[ name ];
         const { condition = true, value, required = false, maxLength } = field;
         if ( condition ) {
-          result[ name ] = {
-            value,
-            required,
-            maxLength,
-            error: null
-          };
+          result[ name ] = value;
+          result[ name + 'Required' ] = required;
+          if ( maxLength != null )
+            result[ name + 'MaxLength' ] = maxLength;
+          result[ name + 'Error' ] = null;
           this.$fieldsData[ name ] = field;
         }
       }
@@ -64,29 +63,29 @@ function validate() {
   for ( const name in this.$fieldsData ) {
     const field = this.$fieldsData[ name ];
 
-    this[ name ].error = null;
+    this[ name + 'Error' ] = null;
 
     if ( field.type == String ) {
       const { required = false, multiLine = false, maxLength, parse } = field;
       try {
-        this[ name ].value = this.$parser.normalizeString( this[ name ].value, maxLength, { allowEmpty: !required, multiLine } );
+        this[ name ] = this.$parser.normalizeString( this[ name ], maxLength, { allowEmpty: !required, multiLine } );
         if ( parse != null )
-          this[ name ].value = parse( this[ name ].value );
+          this[ name ] = parse( this[ name ] );
       } catch ( error ) {
         if ( error.reason == 'APIError' )
-          this[ name ].error = this.$t( 'ErrorCode.' + error.errorCode );
+          this[ name + 'Error' ] = this.$t( 'ErrorCode.' + error.errorCode );
         else
           throw error;
       }
     } else if ( field.type == Number ) {
       const { required = false, requiredError } = field;
-      if ( required && this[ name ].value == null )
-        this[ name ].error = requiredError || this.$t( 'ErrorCode.' + ErrorCode.EmptyValue );
+      if ( required && this[ name ] == null )
+        this[ name + 'Error' ] = requiredError || this.$t( 'ErrorCode.' + ErrorCode.EmptyValue );
     } else {
       throw new Error( 'Invalid field type: ' + name );
     }
 
-    if ( this[ name ].error != null ) {
+    if ( this[ name + 'Error' ] != null ) {
       if ( valid && this.$refs[ name ] != null && this.$refs[ name ].focus != null )
         this.$refs[ name ].focus();
       valid = false;
@@ -98,7 +97,7 @@ function validate() {
 
 function modified() {
   for ( const name in this.$fieldsData ) {
-    if ( this[ name ].value != this.$fieldsData[ name ].value )
+    if ( this[ name ] != this.$fieldsData[ name ].value )
       return true;
   }
   return false;

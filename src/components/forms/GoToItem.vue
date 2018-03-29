@@ -21,8 +21,8 @@
   <div class="container-fluid">
     <FormHeader v-bind:title="$t( 'GoToItem.Title' )" v-on:close="close"/>
     <Prompt path="GoToItem.Prompt"/>
-    <FormGroup id="item" v-bind:label="$t( 'GoToItem.ID' )" v-bind:required="item.required" v-bind:error="item.error">
-      <input ref="item" id="item" type="text" class="form-control" v-bind:maxlength="item.maxLength" v-model="item.value" v-on:keydown.enter="submit">
+    <FormGroup id="item" v-bind:label="$t( 'GoToItem.ID' )" v-bind:required="itemRequired" v-bind:error="itemError">
+      <input ref="item" id="item" type="text" class="form-control" v-bind:maxlength="itemMaxLength" v-model="item" v-on:keydown.enter="submit">
     </FormGroup>
     <FormButtons v-on:ok="submit" v-on:cancel="close"/>
   </div>
@@ -64,7 +64,7 @@ export default {
       } ).catch( error => {
         if ( error.reason == 'APIError' && error.errorCode == ErrorCode.ItemNotFound ) {
           this.$emit( 'unblock' );
-          this.item.error = this.$t( 'ErrorCode.' + error.errorCode );
+          this.itemError = this.$t( 'ErrorCode.' + error.errorCode );
           this.$nextTick( () => {
             this.$refs.item.focus();
           } );
