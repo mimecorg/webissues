@@ -215,8 +215,8 @@ class System_Core_Request
     */
     public function getContentType()
     {
-        if ( isset( $_SERVER[ 'HTTP_CONTENT_TYPE' ] ) ) {
-            $header = $_SERVER[ 'HTTP_CONTENT_TYPE' ];
+        if ( isset( $_SERVER[ 'CONTENT_TYPE' ] ) ) {
+            $header = $_SERVER[ 'CONTENT_TYPE' ];
             $parts = explode( ';', $header );
             return strtolower( trim( $parts[ 0 ] ) );
         }
