@@ -98,8 +98,12 @@ function validate() {
     }
 
     if ( this[ name + 'Error' ] != null ) {
-      if ( valid && this.$refs[ name ] != null && this.$refs[ name ].focus != null )
-        this.$refs[ name ].focus();
+      if ( valid ) {
+        if ( field.focus != null )
+          field.focus();
+        else if ( this.$refs[ name ] != null && this.$refs[ name ].focus != null )
+          this.$refs[ name ].focus();
+      }
       valid = false;
     }
   }

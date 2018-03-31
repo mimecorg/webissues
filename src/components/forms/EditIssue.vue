@@ -23,21 +23,19 @@
     <Prompt v-if="mode == 'edit'" path="EditIssue.EditAttributesPrompt"><strong>{{ name }}</strong></Prompt>
     <Prompt v-else-if="mode == 'add'" path="EditIssue.AddIssuePrompt"/>
     <Prompt v-else-if="mode == 'clone'" path="EditIssue.CloneIssuePrompt"><strong>{{ name }}</strong></Prompt>
-    <FormGroup id="name" v-bind:label="$t( 'EditIssue.Name' )" v-bind:required="true" v-bind:error="nameError">
-      <input ref="name" id="name" type="text" class="form-control" v-bind:maxlength="maxLength" v-model="nameValue">
-    </FormGroup>
-    <FormGroup v-if="mode == 'add' || mode == 'clone'" v-bind:label="$t( 'EditIssue.Location' )" v-bind:required="true" v-bind:error="locationError">
-      <LocationFilters ref="location" v-bind:typeId="typeId" v-bind:project="project" v-bind:folder="folder" v-on:select-project="selectProject" v-on:select-folder="selectFolder"/>
+    <FormInput ref="name" id="name" v-bind:label="$t( 'EditIssue.Name' )" v-bind="$field( 'name' )" v-model="name"/>
+    <FormGroup v-if="mode == 'add' || mode == 'clone'" v-bind:label="$t( 'EditIssue.Location' )" v-bind="$field( 'folderId' )">
+      <LocationFilters ref="folderId" v-bind:typeId="typeId" v-bind:project="project" v-bind:folder="folder" v-on:select-project="selectProject" v-on:select-folder="selectFolder"/>
     </FormGroup>
     <Panel v-if="attributes.length > 0" v-bind:title="$t( 'EditIssue.Attributes' )">
       <FormGroup v-for="( attribute, index ) in attributes" v-bind:key="attribute.id" v-bind:id="'attribute' + attribute.id" v-bind:label="$t( 'EditIssue.AttributeLabel', [ attribute.name ] )"
-                 v-bind:required="isAttributeRequired( attribute.id )" v-bind:error="attributeErrors[ index ]">
+                 v-bind:required="isAttributeRequired( attribute.id )" v-bind:error="$data[ 'attribute' + attribute.id + 'Error' ]">
         <ValueEditor ref="attribute" v-bind:id="'attribute' + attribute.id" v-bind:attribute="getAttribute( attribute.id )"
-                     v-bind:project="project" v-model="attributeValues[ index ]"/>
+                     v-bind:project="project" v-model="$data[ 'attribute' + attribute.id ]"/>
       </FormGroup>
     </Panel>
-    <MarkupEditor v-if="mode == 'add' || mode == 'clone'" ref="description" id="description" v-bind:label="$t( 'EditIssue.Description' )" v-bind:error="descriptionError"
-                  v-bind:format="selectedFormat" v-model="descriptionValue" v-on:select-format="selectFormat" v-on:error="error"/>
+    <MarkupEditor v-if="mode == 'add' || mode == 'clone'" ref="description" id="description" v-bind:label="$t( 'EditIssue.Description' )" v-bind="$field( 'description' )"
+                  v-bind:format="descriptionFormat" v-model="description" v-on:select-format="selectFormat" v-on:error="error"/>
     <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
   </div>
 </template>
@@ -52,32 +50,68 @@ export default {
     mode: String,
     issueId: Number,
     typeId: Number,
-    projectId: Number,
-    folderId: Number,
-    name: String,
+    initialProjectId: Number,
+    initialFolderId: Number,
+    initialName: String,
     attributes: Array,
-    description: String,
-    descriptionFormat: Number
+    initialDescription: String,
+    initialFormat: Number
+  },
+
+  fields() {
+    const result = {
+      name: {
+        value: this.initialName,
+        type: String,
+        required: true,
+        maxLength: MaxLength.Value
+      },
+      folderId: {
+        condition: this.mode == 'add' || this.mode == 'clone',
+        value: this.initialFolderId,
+        type: Number,
+        required: true,
+        requiredError: this.$t( 'EditIssue.NoFolderSelected' )
+      },
+      description: {
+        condition: this.mode == 'add' || this.mode == 'clone',
+        value: this.initialDescription,
+        type: String,
+        required: false,
+        maxLength: this.$store.state.global.settings.commentMaxLength,
+        multiLine: true
+      }
+    };
+
+    for ( let i = 0; i < this.attributes.length; i++ ) {
+      const field = {
+        value: this.attributes[ i ].value,
+        type: String,
+        required: false,
+        maxLength: MaxLength.Value
+      };
+      const id = this.attributes[ i ].id;
+      const attribute = this.getAttribute( id );
+      if ( attribute != null ) {
+        field.multiLine = attribute.type == 'TEXT' && attribute[ 'multi-line' ] == 1;
+        field.parse = value => this.$parser.normalizeAttributeValue( value, attribute, this.project );
+      }
+      field.focus = () => this.$refs.attribute[ i ].focus();
+      result[ 'attribute' + id ] = field;
+    }
+
+    return result;
   },
 
   data() {
     return {
-      nameValue: this.name,
-      nameError: null,
-      maxLength: MaxLength.Value,
-      selectedProjectId: this.projectId,
-      selectedFolderId: this.folderId,
-      locationError: null,
-      attributeValues: this.attributes.map( a => a.value ),
-      attributeErrors: this.attributes.map( a => null ),
-      descriptionValue: this.description,
-      selectedFormat: this.descriptionFormat,
-      descriptionError: null
+      projectId: this.initialProjectId,
+      descriptionFormat: this.initialFormat
     };
   },
 
   computed: {
-    ...mapState( 'global', [ 'projects', 'types', 'users', 'settings' ] ),
+    ...mapState( 'global', [ 'projects' ] ),
     title() {
       if ( this.mode == 'edit' )
         return this.$t( 'EditIssue.EditAttributes' );
@@ -87,14 +121,14 @@ export default {
         return this.$t( 'EditIssue.CloneIssue' );
     },
     project() {
-      if ( this.selectedProjectId != null )
-        return this.projects.find( p => p.id == this.selectedProjectId );
+      if ( this.projectId != null )
+        return this.projects.find( p => p.id == this.projectId );
       else
         return null;
     },
     folder() {
-      if ( this.selectedFolderId != null && this.project != null )
-        return this.project.folders.find( f => f.id == this.selectedFolderId );
+      if ( this.folderId != null && this.project != null )
+        return this.project.folders.find( f => f.id == this.folderId );
       else
         return null;
     }
@@ -102,7 +136,7 @@ export default {
 
   methods: {
     getAttribute( id ) {
-      const type = this.types.find( t => t.id == this.typeId );
+      const type = this.$store.state.global.types.find( t => t.id == this.typeId );
       if ( type != null )
         return type.attributes.find( a => a.id == id );
       else
@@ -118,111 +152,49 @@ export default {
 
     selectProject( project ) {
       if ( project != null )
-        this.selectedProjectId = project.id;
+        this.projectId = project.id;
       else
-        this.selectedProjectId = null;
-      this.selectedFolderId = null;
+        this.projectId = null;
+      this.folderId = null;
     },
     selectFolder( folder ) {
       if ( folder != null )
-        this.selectedFolderId = folder.id;
+        this.folderId = folder.id;
       else
-        this.selectedFolderId = null;
+        this.folderId = null;
     },
     selectFormat( format ) {
-      this.selectedFormat = format;
+      this.descriptionFormat = format;
     },
 
     submit() {
-      this.nameError = null;
-      this.attributeErrors = this.attributes.map( a => null );
-      this.locationError = null;
-      this.descriptionError = null;
+      if ( !this.$fields.validate() )
+        return;
+
+      if ( this.mode == 'edit' && !this.$fields.modified() ) {
+        this.returnToDetails( this.issueId );
+        return;
+      }
 
       const data = {};
-      let modified = false;
-      let valid = true;
-
       if ( this.mode == 'edit' || this.mode == 'clone' )
         data.issueId = this.issueId;
-
-      try {
-        this.nameValue = this.$parser.normalizeString( this.nameValue, MaxLength.Value );
-        if ( this.mode == 'add' || this.mode == 'clone' || this.nameValue != this.name ) {
-          data.name = this.nameValue;
-          modified = true;
-        }
-      } catch ( error ) {
-        if ( error.reason == 'APIError' ) {
-          this.nameError = this.$t( 'ErrorCode.' + error.errorCode );
-          if ( valid )
-            this.$refs.name.focus();
-          valid = false;
-        } else {
-          throw error;
-        }
-      }
-
-      if ( this.mode == 'add' || this.mode == 'clone' ) {
-        if ( this.selectedFolderId != null ) {
-          data.folderId = this.selectedFolderId;
-        } else {
-          this.locationError = this.$t( 'EditIssue.NoFolderSelected' );
-          if ( valid )
-            this.$refs.location.focus();
-          valid = false;
-        }
-      }
+      if ( this.mode == 'add' || this.mode == 'clone' || this.name != this.initialName )
+          data.name = this.name;
+      if ( this.mode == 'add' || this.mode == 'clone' )
+        data.folderId = this.folderId;
 
       data.values = [];
       for ( let i = 0; i < this.attributes.length; i++ ) {
-        try {
-          const attribute = this.getAttribute( this.attributes[ i ].id );
-          const multiLine = attribute != null && attribute.type == 'TEXT' && attribute[ 'multi-line' ] == 1;
-          this.attributeValues[ i ] = this.$parser.normalizeString( this.attributeValues[ i ], MaxLength.Value, { allowEmpty: true, multiLine } );
-          if ( attribute != null )
-            this.attributeValues[ i ] = this.$parser.normalizeAttributeValue( this.attributeValues[ i ], attribute, this.project );
-          if ( this.attributeValues[ i ] != this.attributes[ i ].value ) {
-            data.values.push( { id: this.attributes[ i ].id, value: this.attributeValues[ i ] } );
-            modified = true;
-          }
-        } catch ( error ) {
-          if ( error.reason == 'APIError' ) {
-            this.attributeErrors[ i ] = this.$t( 'ErrorCode.' + error.errorCode );
-            if ( valid )
-              this.$refs.attribute[ i ].focus();
-            valid = false;
-          } else {
-            throw error;
-          }
-        }
+        const id = this.attributes[ i ].id;
+        const value = this[ 'attribute' + id ];
+        if ( value != this.attributes[ i ].value )
+          data.values.push( { id, value } );
       }
 
-      if ( this.mode == 'add' || this.mode == 'clone' ) {
-        try {
-          this.descriptionValue = this.$parser.normalizeString( this.descriptionValue, this.settings.commentMaxLength, { allowEmpty: true, multiLine: true } );
-          if ( this.descriptionValue != '' ) {
-            data.description = this.descriptionValue;
-            data.descriptionFormat = this.selectedFormat;
-          }
-        } catch ( error ) {
-          if ( error.reason == 'APIError' ) {
-            this.descriptionError = this.$t( 'ErrorCode.' + error.errorCode );
-            if ( valid )
-              this.$refs.description.focus();
-            valid = false;
-          } else {
-            throw error;
-          }
-        }
-      }
-
-      if ( !valid )
-        return;
-
-      if ( this.mode == 'edit' && !modified ) {
-        this.returnToDetails( this.issueId );
-        return;
+      if ( ( this.mode == 'add' || this.mode == 'clone' ) && this.description != '' ) {
+        data.description = this.description;
+        data.descriptionFormat = this.descriptionFormat;
       }
 
       this.$emit( 'block' );

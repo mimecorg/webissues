@@ -61,8 +61,8 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
           mode: 'edit',
           issueId,
           typeId: details.typeId,
-          projectId: details.projectId,
-          name: details.name,
+          initialProjectId: details.projectId,
+          initialName: details.name,
           attributes
         };
       } );
@@ -87,10 +87,10 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
         component: 'EditIssue',
         mode: 'add',
         typeId,
-        projectId,
-        folderId,
+        initialProjectId: projectId,
+        initialFolderId: folderId,
         attributes,
-        descriptionFormat: store.state.global.settings.defaultFormat
+        initialFormat: store.state.global.settings.defaultFormat
       } );
     } );
 
@@ -103,12 +103,12 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
           mode: 'clone',
           issueId,
           typeId: details.typeId,
-          projectId: details.projectId,
-          folderId: details.folderId,
-          name: details.name,
+          initialProjectId: details.projectId,
+          initialFolderId: details.folderId,
+          initialName: details.name,
           attributes,
-          description: description != null ? description.text : null,
-          descriptionFormat: description != null ? description.format : store.state.global.settings.defaultFormat
+          initialDescription: description != null ? description.text : null,
+          initialFormat: description != null ? description.format : store.state.global.settings.defaultFormat
         };
       } );
     } );
