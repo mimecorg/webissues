@@ -39,7 +39,7 @@
           <button type="button" class="btn btn-default" v-bind:title="$t( 'MarkupEditor.Preview' )" v-on:click="preview"><span class="fa fa-search"></span></button>
         </div>
       </div>
-      <textarea ref="textarea" v-bind:id="id" class="form-control" rows="10" v-bind:value="value" v-bind:maxlength="settings.commentMaxLength"
+      <textarea ref="textarea" v-bind:id="id" class="form-control" rows="10" v-bind:value="value" v-bind:maxlength="maxlength"
                 v-on:input="valueChanged( $event.target.value )" v-on:keydown="keyDown"></textarea>
       <div v-if="isMarkup && previewHtml != null" class="markup-preview">
         <div class="formatted-text" v-hljs="previewHtml"></div>
@@ -57,8 +57,6 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
-
 import { TextFormat, KeyCode } from '@/constants'
 
 export default {
@@ -68,7 +66,8 @@ export default {
     format: Number,
     label: String,
     required: Boolean,
-    error: String
+    error: String,
+    maxlength: Number
   },
 
   data() {
@@ -78,7 +77,6 @@ export default {
   },
 
   computed: {
-    ...mapState( 'global', [ 'settings' ] ),
     isMarkup() {
       return this.format == TextFormat.TextWithMarkup;
     },
