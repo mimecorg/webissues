@@ -104,7 +104,7 @@ export default function makeAdminRoutes( ajax, store ) {
           mode: 'add',
           projectId,
           projectName: details.name,
-          descriptionFormat: store.state.global.settings.defaultFormat
+          initialFormat: store.state.global.settings.defaultFormat
         };
       } );
     } );
@@ -118,8 +118,8 @@ export default function makeAdminRoutes( ajax, store ) {
           mode: 'edit',
           projectId,
           projectName: details.name,
-          description: description.text,
-          descriptionFormat: description.format
+          initialDescription: description.text,
+          initialFormat: description.format
         };
       } );
     } );
@@ -155,7 +155,7 @@ export default function makeAdminRoutes( ajax, store ) {
           mode: 'rename',
           projectId,
           folderId,
-          name
+          initialName: name
         };
       } );
     } );

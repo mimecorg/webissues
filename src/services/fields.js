@@ -49,7 +49,8 @@ Vue.mixin( {
       this.$field = field.bind( this );
       this.$fields = {
         validate: validate.bind( this ),
-        modified: modified.bind( this )
+        modified: modified.bind( this ),
+        makeError
       };
     }
   }
@@ -83,6 +84,8 @@ function validate() {
       } catch ( error ) {
         if ( error.reason == 'APIError' )
           this[ name + 'Error' ] = this.$t( 'ErrorCode.' + error.errorCode );
+        else if ( error.reason == 'ParseError' )
+          this[ name + 'Error' ] = error.message;
         else
           throw error;
       }
@@ -110,4 +113,10 @@ function modified() {
       return true;
   }
   return false;
+}
+
+function makeError( message ) {
+  const error = new Error( message );
+  error.reason = 'ParseError';
+  return error;
 }

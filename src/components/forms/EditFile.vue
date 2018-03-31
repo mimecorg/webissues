@@ -20,7 +20,7 @@
 <template>
   <div class="container-fluid">
     <FormHeader v-bind:title="title" v-on:close="close"/>
-    <Prompt v-if="mode == 'edit'" path="EditFile.EditFilePrompt"><strong>{{ name }}</strong></Prompt>
+    <Prompt v-if="mode == 'edit'" path="EditFile.EditFilePrompt"><strong>{{ initialName }}</strong></Prompt>
     <Prompt v-else-if="mode == 'add'" path="EditFile.AddFilePrompt"><strong>{{ issueName }}</strong></Prompt>
     <FormGroup v-if="mode == 'add'" v-bind:error="fileError">
       <div v-bind:class="[ 'form-upload', { 'drag-over': dragOver } ]">
@@ -28,12 +28,8 @@
         <p>{{ filePrompt }}</p>
       </div>
     </FormGroup>
-    <FormGroup id="name" v-bind:label="$t( 'EditFile.FileName' )" v-bind:required="true" v-bind:error="nameError">
-      <input ref="name" id="name" type="text" class="form-control" v-bind:maxlength="nameMaxLength" v-model="nameValue">
-    </FormGroup>
-    <FormGroup id="description" v-bind:label="$t( 'EditFile.Description' )" v-bind:error="descriptionError">
-      <input ref="description" id="description" type="text" class="form-control" v-bind:maxlength="descriptionMaxLength" v-model="descriptionValue">
-    </FormGroup>
+    <FormInput ref="name" id="name" v-bind:label="$t( 'EditFile.FileName' )" v-bind="$field( 'name' )" v-model="name"/>
+    <FormInput ref="description" id="description" v-bind:label="$t( 'EditFile.Description' )" v-bind="$field( 'description' )" v-model="description"/>
     <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
   </div>
 </template>
@@ -49,20 +45,32 @@ export default {
     issueId: Number,
     issueName: String,
     fileId: Number,
-    name: String,
-    description: String
+    initialName: String,
+    initialDescription: String
+  },
+
+  fields() {
+    return {
+      name: {
+        value: this.initialName,
+        type: String,
+        required: true,
+        maxLength: MaxLength.FileName,
+        parse: this.parseName
+      },
+      description: {
+        value: this.initialDescription,
+        type: String,
+        required: false,
+        maxLength: MaxLength.FileDescription
+      }
+    };
   },
 
   data() {
     return {
       filePrompt: this.$t( 'EditFile.FilePrompt' ),
       fileError: null,
-      nameValue: this.name,
-      nameMaxLength: MaxLength.FileName,
-      nameError: null,
-      descriptionValue: this.description,
-      descriptionMaxLength: MaxLength.FileDescription,
-      descriptionError: null,
       dragOver: false
     };
   },
@@ -80,77 +88,34 @@ export default {
   methods: {
     submit() {
       this.fileError = null;
-      this.nameError = null;
-      this.descriptionError = null;
+
+      let file = null;
+
+      if ( this.mode == 'add' ) {
+        if ( this.$refs.file.files.length == 0 ) {
+          this.fileError = this.$t( 'EditFile.NoFileSelected' );
+        } else {
+          file = this.$refs.file.files[ 0 ];
+          if ( file.size > this.settings.fileMaxSize )
+            this.fileError = this.$t( 'EditFile.FileTooLarge' );
+        }
+      }
+
+      if ( !this.$fields.validate() || this.fileError != null )
+        return;
+
+      if ( this.mode == 'edit' && !this.$fields.modified() ) {
+        this.returnToDetails( this.fileId );
+        return;
+      }
 
       const data = {};
       if ( this.mode == 'add' )
         data.issueId = this.issueId;
       else
         data.fileId = this.fileId;
-      let file = null;
-      let modified = false;
-      let valid = true;
-
-      if ( this.mode == 'add' ) {
-        if ( this.$refs.file.files.length == 0 ) {
-          this.fileError = this.$t( 'EditFile.NoFileSelected' );
-          valid = false;
-        } else {
-          file = this.$refs.file.files[ 0 ];
-          if ( file.size > this.settings.fileMaxSize ) {
-            this.fileError = this.$t( 'EditFile.FileTooLarge' );
-            valid = false;
-          }
-        }
-      }
-
-      try {
-        this.nameValue = this.$parser.normalizeString( this.nameValue, MaxLength.FileName, { allowEmpty: false } );
-        if ( this.mode == 'add' || this.nameValue != this.name )
-          modified = true;
-        data.name = this.nameValue;
-      } catch ( error ) {
-        if ( error.reason == 'APIError' ) {
-          this.nameError = this.$t( 'ErrorCode.' + error.errorCode );
-          if ( valid )
-            this.$refs.name.focus();
-          valid = false;
-        } else {
-          throw error;
-        }
-      }
-
-      if ( this.nameError == null && ( this.nameValue.charAt( 0 ) == '.' || /[\\/:*?"<>|]/.test( this.nameValue ) ) ) {
-        this.nameError = this.$t( 'EditFile.InvalidFileName' );
-        if ( valid )
-          this.$refs.name.focus();
-        valid = false;
-      }
-
-      try {
-        this.descriptionValue = this.$parser.normalizeString( this.descriptionValue, MaxLength.FileDescription, { allowEmpty: true } );
-        if ( this.mode == 'add' || this.descriptionValue != this.description )
-          modified = true;
-        data.description = this.descriptionValue;
-      } catch ( error ) {
-        if ( error.reason == 'APIError' ) {
-          this.descriptionError = this.$t( 'ErrorCode.' + error.errorCode );
-          if ( valid )
-            this.$refs.description.focus();
-          valid = false;
-        } else {
-          throw error;
-        }
-      }
-
-      if ( !valid )
-        return;
-
-      if ( this.mode == 'edit' && !modified ) {
-        this.returnToDetails( this.fileId );
-        return;
-      }
+      data.name = this.name;
+      data.description = this.description;
 
       this.$emit( 'block' );
 
@@ -168,9 +133,15 @@ export default {
       if ( files.length > 0 ) {
         this.fileError = null;
         this.filePrompt = files[ 0 ].name;
-        this.nameValue = files[ 0 ].name;
+        this.name = files[ 0 ].name;
         this.$refs.name.focus();
       }
+    },
+
+    parseName( value ) {
+      if ( value.charAt( 0 ) == '.' || /[\\/:*?"<>|]/.test( value ) )
+        throw this.$fields.makeError( this.$t( 'EditFile.InvalidFileName' ) );
+      return value;
     },
 
     cancel() {

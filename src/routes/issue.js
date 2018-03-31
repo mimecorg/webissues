@@ -145,7 +145,7 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
           mode: 'add',
           issueId,
           issueName: details.name,
-          descriptionFormat: store.state.global.settings.defaultFormat
+          initialFormat: store.state.global.settings.defaultFormat
         };
       } );
     } );
@@ -161,8 +161,8 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
           mode: 'add',
           issueId,
           issueName: details.name,
-          comment: '[quote ' + i18n.t( 'EditComment.DescriptionQuote' ) + ']\n' + description.text + '\n[/quote]\n\n',
-          commentFormat: TextFormat.TextWithMarkup
+          initialComment: '[quote ' + i18n.t( 'EditComment.DescriptionQuote' ) + ']\n' + description.text + '\n[/quote]\n\n',
+          initialFormat: TextFormat.TextWithMarkup
         };
       } );
     } );
@@ -176,8 +176,8 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
           mode: 'edit',
           issueId,
           issueName: details.name,
-          description: description.text,
-          descriptionFormat: description.format
+          initialDescription: description.text,
+          initialFormat: description.format
         };
       } );
     } );
@@ -204,7 +204,7 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
           mode: 'add',
           issueId,
           issueName: details.name,
-          commentFormat: store.state.global.settings.defaultFormat
+          initialFormat: store.state.global.settings.defaultFormat
         };
       } );
     } );
@@ -219,8 +219,8 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
             mode: 'add',
             issueId,
             issueName: details.name,
-            comment: '[quote ' + i18n.t( 'EditComment.CommentQuote', [ '#' + commentId ] ) + ']\n' + text + '\n[/quote]\n\n',
-            commentFormat: TextFormat.TextWithMarkup
+            initialComment: '[quote ' + i18n.t( 'EditComment.CommentQuote', [ '#' + commentId ] ) + ']\n' + text + '\n[/quote]\n\n',
+            initialFormat: TextFormat.TextWithMarkup
           };
         } );
       } );
@@ -233,8 +233,8 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
           mode: 'edit',
           issueId,
           commentId,
-          comment: text,
-          commentFormat: format
+          initialComment: text,
+          initialFormat: format
         };
       } );
     } );
@@ -270,8 +270,8 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
           mode: 'edit',
           issueId,
           fileId,
-          name,
-          description
+          initialName: name,
+          initialDescription: description
         };
       } );
     } );
