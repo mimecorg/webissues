@@ -201,7 +201,7 @@ export default function makeAdminRoutes( ajax, store ) {
           component: 'EditProjectAccess',
           projectId,
           name: details.name,
-          public: details.public
+          initialPublic: details.public
         };
       } );
     } );
@@ -213,7 +213,7 @@ export default function makeAdminRoutes( ajax, store ) {
           mode: 'add',
           projectId,
           projectName: details.name,
-          access: Access.NormalAccess,
+          initialAccess: Access.NormalAccess,
           members
         };
       } );
@@ -228,7 +228,7 @@ export default function makeAdminRoutes( ajax, store ) {
           userId,
           projectName,
           userName,
-          access
+          initialAccess: access
         };
       } );
     } );

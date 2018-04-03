@@ -34,7 +34,7 @@
       <div class="row checkbox-group">
         <div v-for="( u, index ) in availableUsers" v-bind:key="u.id" class="col-xs-12 col-md-4">
           <div class="checkbox">
-            <label><input type="checkbox" v-model="userSelected[ index ]"> {{ u.name }}</label>
+            <label><input type="checkbox" v-model="selectedUsers[ index ]"> {{ u.name }}</label>
           </div>
         </div>
       </div>
@@ -42,10 +42,10 @@
     <Prompt v-else-if="mode == 'add'" path="EditMember.NoAvailableUsers" alert-class="alert-warning"/>
     <FormGroup v-if="canEdit" v-bind:label="$t( 'EditMember.Access' )" v-bind:required="true">
       <div class="radio">
-        <label><input type="radio" v-model="accessValue" v-bind:value="normalAccess"> {{ $t( 'EditMember.RegularMember' ) }}</label>
+        <label><input type="radio" v-model="access" v-bind:value="normalAccess"> {{ $t( 'EditMember.RegularMember' ) }}</label>
       </div>
       <div class="radio">
-        <label><input type="radio" v-model="accessValue" v-bind:value="administratorAccess"> {{ $t( 'EditMember.ProjectAdministrator' ) }}</label>
+        <label><input type="radio" v-model="access" v-bind:value="administratorAccess"> {{ $t( 'EditMember.ProjectAdministrator' ) }}</label>
       </div>
     </FormGroup>
     <Prompt v-else path="EditMember.CannotEditOwnAcess" alert-class="alert-warning"/>
@@ -65,7 +65,7 @@ export default {
     userId: Number,
     projectName: String,
     userName: String,
-    access: Number,
+    initialAccess: Number,
     members: Array
   },
 
@@ -73,8 +73,8 @@ export default {
     return {
       normalAccess: Access.NormalAccess,
       administratorAccess: Access.AdministratorAccess,
-      accessValue: this.access,
-      userSelected: []
+      access: this.initialAccess,
+      selectedUsers: []
     };
   },
 
@@ -100,7 +100,7 @@ export default {
     },
 
     selectAll( state ) {
-      this.userSelected = this.availableUsers.map( u => state );
+      this.selectedUsers = this.availableUsers.map( u => state );
     },
 
     submit() {
@@ -112,15 +112,15 @@ export default {
         data.users = [ this.userId ];
       } else {
         data.users = [];
-        for ( const i in this.userSelected ) {
-          if ( this.userSelected[ i ] )
+        for ( const i in this.selectedUsers ) {
+          if ( this.selectedUsers[ i ] )
             data.users.push( this.availableUsers[ i ].id );
         }
       }
 
-      data.access = this.accessValue;
+      data.access = this.access;
 
-      if ( this.mode == 'edit' && this.accessValue == this.access || data.users.length == 0 ) {
+      if ( this.mode == 'edit' && this.access == this.initialAccess || data.users.length == 0 ) {
         this.returnToDetails();
         return;
       }

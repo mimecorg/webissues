@@ -23,10 +23,10 @@
     <Prompt path="EditProjectAccess.EditProjectAccessPrompt"><strong>{{ name }}</strong></Prompt>
     <FormGroup v-bind:label="$t( 'EditProjectAccess.Access' )" v-bind:required="true">
       <div class="radio">
-        <label><input type="radio" v-model="publicValue" v-bind:value="false"> {{ $t( 'EditProjectAccess.RegularProject' ) }}</label>
+        <label><input type="radio" v-model="public" v-bind:value="false"> {{ $t( 'EditProjectAccess.RegularProject' ) }}</label>
       </div>
       <div class="radio">
-        <label><input type="radio" v-model="publicValue" v-bind:value="true"> {{ $t( 'EditProjectAccess.PublicProject' ) }}</label>
+        <label><input type="radio" v-model="public" v-bind:value="true"> {{ $t( 'EditProjectAccess.PublicProject' ) }}</label>
       </div>
     </FormGroup>
     <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
@@ -40,12 +40,12 @@ export default {
   props: {
     projectId: Number,
     name: String,
-    public: Boolean
+    initialPublic: Boolean
   },
 
   data() {
     return {
-      publicValue: this.public
+      public: this.initialPublic
     };
   },
 
@@ -53,12 +53,12 @@ export default {
     submit() {
       this.$emit( 'block' );
 
-      if ( this.publicValue == this.public ) {
+      if ( this.public == this.initialPublic ) {
         this.returnToDetails();
         return;
       }
 
-      const data = { projectId: this.projectId, public: this.publicValue };
+      const data = { projectId: this.projectId, public: this.public };
 
       this.$ajax.post( '/server/api/projects/access.php', data ).then( () => {
         this.returnToDetails();
