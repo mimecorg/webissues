@@ -22,18 +22,16 @@ require_once( '../../../../system/bootstrap.inc.php' );
 
 class Server_Api_Projects_Members_Edit
 {
-    public function run( $arguments )
+    public $access = '*';
+
+    public $params = array(
+        'projectId' => array( 'type' => 'int', 'required' => true ),
+        'users' => array( 'type' => 'array', 'required' => true ),
+        'access' => array( 'type' => 'int', 'required' => true )
+    );
+
+    public function run( $projectId, $users, $access )
     {
-        $principal = System_Api_Principal::getCurrent();
-        $principal->checkAuthenticated();
-
-        $projectId = isset( $arguments[ 'projectId' ] ) ? (int)$arguments[ 'projectId' ] : null;
-        $users = isset( $arguments[ 'users' ] ) ? $arguments[ 'users' ] : null;
-        $access = isset( $arguments[ 'access' ] ) ? (int)$arguments[ 'access' ] : null;
-
-        if ( $projectId == null || !is_array( $users ) )
-            throw new Server_Error( Server_Error::InvalidArguments );
-
         $validator = new System_Api_Validator();
         $validator->checkAccessLevel( $access );
 
@@ -43,8 +41,11 @@ class Server_Api_Projects_Members_Edit
         $userManager = new System_Api_UserManager();
 
         $userRows = array();
-        foreach ( $users as $userId )
-            $userRows[] = $userManager->getUser( (int)$userId );
+        foreach ( $users as $userId ) {
+            if ( !is_int( $userId ) )
+                throw new Server_Error( Server_Error::InvalidArguments );
+            $userRows[] = $userManager->getUser( $userId );
+        }
 
         $changed = false;
 

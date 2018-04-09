@@ -22,20 +22,22 @@ require_once( '../../../system/bootstrap.inc.php' );
 
 class Server_Api_Issues_Load
 {
-    public function run( $arguments )
-    {
-        $issueId = isset( $arguments[ 'issueId' ] ) ? (int)$arguments[ 'issueId' ] : null;
-        $description = isset( $arguments[ 'description' ] ) ? (bool)$arguments[ 'description' ] : false;
-        $attributes = isset( $arguments[ 'attributes' ] ) ? (bool)$arguments[ 'attributes' ] : false;
-        $history = isset( $arguments[ 'history' ] ) ? (bool)$arguments[ 'history' ] : false;
-        $modifiedSince = isset( $arguments[ 'modifiedSince' ] ) ? (int)$arguments[ 'modifiedSince' ] : 0;
-        $filter = isset( $arguments[ 'filter' ] ) ? (int)$arguments[ 'filter' ] : System_Api_HistoryProvider::AllHistory;
-        $html = isset( $arguments[ 'html' ] ) ? (bool)$arguments[ 'html' ] : false;
-        $unread = isset( $arguments[ 'unread' ] ) ? (bool)$arguments[ 'unread' ] : false;
-        $access = isset( $arguments[ 'access' ] ) ? $arguments[ 'access' ] : null;
+    public $access = 'anonymous';
 
-        if ( $issueId == null )
-            throw new Server_Error( Server_Error::InvalidArguments );
+    public $params = array(
+        'issueId' => array( 'type' => 'int', 'required' => true ),
+        'description' => array( 'type' => 'bool', 'default' => false ),
+        'attributes' => array( 'type' => 'bool', 'default' => false ),
+        'history' => array( 'type' => 'bool', 'default' => false ),
+        'modifiedSince' => array( 'type' => 'int', 'default' => 0 ),
+        'filter' => array( 'type' => 'int', 'default' => System_Api_HistoryProvider::AllHistory ),
+        'html' => array( 'type' => 'bool', 'default' => false ),
+        'unread' => array( 'type' => 'bool', 'default' => false ),
+        'access' => 'string'
+    );
+
+    public function run( $issueId, $description, $attributes, $history, $modifiedSince, $filter, $html, $unread, $access )
+    {
         if ( $filter < System_Api_HistoryProvider::AllHistory || $filter > System_Api_HistoryProvider::CommentsAndFiles )
             throw new Server_Error( Server_Error::InvalidArguments );
 

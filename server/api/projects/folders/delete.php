@@ -22,17 +22,15 @@ require_once( '../../../../system/bootstrap.inc.php' );
 
 class Server_Api_Projects_Folders_Delete
 {
-    public function run( $arguments )
+    public $access = '*';
+
+    public $params = array(
+        'folderId' => array( 'type' => 'int', 'required' => true ),
+        'force' => array( 'type' => 'bool', 'default' => false )
+    );
+
+    public function run( $folderId, $force )
     {
-        $principal = System_Api_Principal::getCurrent();
-        $principal->checkAuthenticated();
-
-        $folderId = isset( $arguments[ 'folderId' ] ) ? (int)$arguments[ 'folderId' ] : null;
-        $force = isset( $arguments[ 'force' ] ) ? (bool)$arguments[ 'force' ] : false;
-
-        if ( $folderId == null )
-            throw new Server_Error( Server_Error::InvalidArguments );
-
         $projectManager = new System_Api_ProjectManager();
         $folder = $projectManager->getFolder( $folderId, System_Api_ProjectManager::RequireAdministrator );
 

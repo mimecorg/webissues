@@ -22,18 +22,16 @@ require_once( '../../../../system/bootstrap.inc.php' );
 
 class Server_Api_Issues_Description_Edit
 {
-    public function run( $arguments )
+    public $access = '*';
+
+    public $params = array(
+        'issueId' => array( 'type' => 'int', 'required' => true ),
+        'description' => array( 'type' => 'string', 'required' => true ),
+        'descriptionFormat' => array( 'type' => 'int', 'default' => System_Const::PlainText )
+    );
+
+    public function run( $issueId, $descriptionText, $descriptionFormat )
     {
-        $principal = System_Api_Principal::getCurrent();
-        $principal->checkAuthenticated();
-
-        $issueId = isset( $arguments[ 'issueId' ] ) ? (int)$arguments[ 'issueId' ] : null;
-        $descriptionText = isset( $arguments[ 'description' ] ) ? $arguments[ 'description' ] : null;
-        $descriptionFormat = isset( $arguments[ 'descriptionFormat' ] ) ? (int)$arguments[ 'descriptionFormat' ] : null;
-
-        if ( $issueId == null || $descriptionText == null )
-            throw new Server_Error( Server_Error::InvalidArguments );
-
         $issueManager = new System_Api_IssueManager();
         $issue = $issueManager->getIssue( $issueId, System_Api_IssueManager::RequireAdministratorOrOwner );
 

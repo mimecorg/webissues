@@ -22,16 +22,14 @@ require_once( '../../../../system/bootstrap.inc.php' );
 
 class Server_Api_Issues_Comments_Delete
 {
-    public function run( $arguments )
+    public $access = '*';
+
+    public $params = array(
+        'commentId' => array( 'type' => 'int', 'required' => true )
+    );
+
+    public function run( $commentId )
     {
-        $principal = System_Api_Principal::getCurrent();
-        $principal->checkAuthenticated();
-
-        $commentId = isset( $arguments[ 'commentId' ] ) ? (int)$arguments[ 'commentId' ] : null;
-
-        if ( $commentId == null )
-            throw new Server_Error( Server_Error::InvalidArguments );
-
         $issueManager = new System_Api_IssueManager();
         $comment = $issueManager->getComment( $commentId, System_Api_IssueManager::RequireAdministratorOrOwner );
 

@@ -22,17 +22,15 @@ require_once( '../../../system/bootstrap.inc.php' );
 
 class Server_Api_Issues_Move
 {
-    public function run( $arguments )
+    public $access = '*';
+
+    public $params = array(
+        'issueId' => array( 'type' => 'int', 'required' => true ),
+        'folderId' => array( 'type' => 'int', 'required' => true )
+    );
+
+    public function run( $issueId, $folderId )
     {
-        $principal = System_Api_Principal::getCurrent();
-        $principal->checkAuthenticated();
-
-        $issueId = isset( $arguments[ 'issueId' ] ) ? (int)$arguments[ 'issueId' ] : null;
-        $folderId = isset( $arguments[ 'folderId' ] ) ? (int)$arguments[ 'folderId' ] : null;
-
-        if ( $issueId == null || $folderId == null )
-            throw new Server_Error( Server_Error::InvalidArguments );
-
         $issueManager = new System_Api_IssueManager();
         $issue = $issueManager->getIssue( $issueId, System_Api_IssueManager::RequireAdministrator );
 

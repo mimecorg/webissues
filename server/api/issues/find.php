@@ -22,13 +22,14 @@ require_once( '../../../system/bootstrap.inc.php' );
 
 class Server_Api_Issues_Find
 {
-    public function run( $arguments )
+    public $access = 'anonymous';
+
+    public $params = array(
+        'itemId' => array( 'type' => 'int', 'required' => true )
+    );
+
+    public function run( $itemId )
     {
-        $itemId = isset( $arguments[ 'itemId' ] ) ? (int)$arguments[ 'itemId' ] : null;
-
-        if ( $itemId == null )
-            throw new Server_Error( Server_Error::InvalidArguments );
-
         $issueManager = new System_Api_IssueManager();
         $issueId = $issueManager->findItem( $itemId );
 

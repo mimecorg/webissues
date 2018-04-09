@@ -49,30 +49,76 @@ class Server_Api_Application extends System_Core_Application
                 throw new System_Api_Error( System_Api_Error::LoginRequired );
         }
 
-        if ( $this->request->getContentType() == 'application/json' ) {
-            $data = $this->request->getPostBody();
-            $attachment = null;
-        } else if ( $this->request->getContentType() == 'multipart/form-data' ) {
-            $data = $this->request->getFormField( 'data' );
-            $attachment = $this->request->getUploadedFile( 'file' );
-            if ( $attachment === false )
-                throw new Server_Error( Server_Error::UploadError );
-        } else {
+        if ( $this->command->access == 'admin' )
+            $principal->checkAdministrator();
+        else if ( $this->command->access == '*' )
+            $principal->checkAuthenticated();
+        else if ( $this->command->access != 'anonymous' )
+            throw new System_Core_Exception( 'Invalid access level' );
+
+        if ( $this->request->getContentType() == 'application/json' )
+            $body = $this->request->getPostBody();
+        else if ( $this->request->getContentType() == 'multipart/form-data' )
+            $body = $this->request->getFormField( 'data' );
+        else
             throw new Server_Error( Server_Error::SyntaxError );
+
+        if ( !mb_check_encoding( $body ) )
+            throw new System_Api_Error( System_Api_Error::InvalidString );
+
+        if ( preg_match( '/[\x00-\x1f\x7f]/', $body ) )
+            throw new System_Api_Error( System_Api_Error::InvalidString );
+
+        $data = json_decode( $body, true );
+
+        if ( !is_array( $data ) )
+            throw new Server_Error( Server_Error::SyntaxError );
+
+        $args = array();
+
+        foreach ( $this->command->params as $key => $param ) {
+            if ( is_array( $param ) ) {
+                $type = $param[ 'type' ];
+                $required = isset( $param[ 'required' ] ) ? $param[ 'required' ] : false;
+                $default = isset( $param[ 'default' ] ) ? $param[ 'default' ] : null;
+            } else {
+                $type = $param;
+                $required = false;
+                $default = null;
+            }
+            if ( $type == 'file' ) {
+                $attachment = $this->request->getUploadedFile( 'file' );
+                if ( $attachment === false )
+                    throw new Server_Error( Server_Error::UploadError );
+                if ( $attachment == null && $required )
+                    throw new Server_Error( Server_Error::InvalidArguments );
+                $args[] = $attachment;
+            } else if ( isset( $data[ $key ] ) ) {
+                $value = $data[ $key ];
+                if ( $type == 'int' ) {
+                    if ( !is_int( $value ) )
+                        throw new Server_Error( Server_Error::InvalidArguments );
+                } else if ( $type == 'bool' ) {
+                    if ( !is_bool( $value ) )
+                        throw new Server_Error( Server_Error::InvalidArguments );
+                } else if ( $type == 'string' ) {
+                    if ( !is_string( $value ) )
+                        throw new Server_Error( Server_Error::InvalidArguments );
+                } else if ( $type == 'array' ) {
+                    if ( !is_array( $value ) )
+                        throw new Server_Error( Server_Error::InvalidArguments );
+                } else {
+                    throw new System_Core_Exception( 'Invalid argument type' );
+                }
+                $args[] = $value;
+            } else {
+                if ( $required )
+                    throw new Server_Error( Server_Error::InvalidArguments );
+                $args[] = $default;
+            }
         }
 
-        if ( !mb_check_encoding( $data ) )
-            throw new System_Api_Error( System_Api_Error::InvalidString );
-
-        if ( preg_match( '/[\x00-\x1f\x7f]/', $data ) )
-            throw new System_Api_Error( System_Api_Error::InvalidString );
-
-        $arguments = json_decode( $data, true );
-
-        if ( !is_array( $arguments ) )
-            throw new Server_Error( Server_Error::SyntaxError );
-
-        $result = $this->command->run( $arguments, $attachment );
+        $result = call_user_func_array( array( $this->command, 'run' ), $args );
 
         $response[ 'result' ] = $result;
 

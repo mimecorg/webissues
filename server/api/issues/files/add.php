@@ -22,26 +22,22 @@ require_once( '../../../../system/bootstrap.inc.php' );
 
 class Server_Api_Issues_Files_Add
 {
-    public function run( $arguments, $attachment )
+    public $access = '*';
+
+    public $params = array(
+        'issueId' => array( 'type' => 'int', 'required' => true ),
+        'name' => array( 'type' => 'string', 'required' => true ),
+        'description' => 'string',
+        'attachment' => array( 'type' => 'file', 'required' => true )
+    );
+
+    public function run( $issueId, $name, $description, $attachment )
     {
-        $principal = System_Api_Principal::getCurrent();
-        $principal->checkAuthenticated();
-
-        if ( $attachment == null )
-            throw new Server_Error( Server_Error::InvalidArguments );
-
         $serverManager = new System_Api_ServerManager();
         $maxLength = $serverManager->getSetting( 'file_max_size' );
 
         if ( $attachment->getSize() > $maxLength )
             throw new Server_Error( Server_Error::UploadError );
-
-        $issueId = isset( $arguments[ 'issueId' ] ) ? (int)$arguments[ 'issueId' ] : null;
-        $name = isset( $arguments[ 'name' ] ) ? $arguments[ 'name' ] : null;
-        $description = isset( $arguments[ 'description' ] ) ? $arguments[ 'description' ] : null;
-
-        if ( $issueId == null || $name == null )
-            throw new Server_Error( Server_Error::InvalidArguments );
 
         $issueManager = new System_Api_IssueManager();
         $issue = $issueManager->getIssue( $issueId );

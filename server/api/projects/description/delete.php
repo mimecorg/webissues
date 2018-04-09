@@ -22,16 +22,14 @@ require_once( '../../../../system/bootstrap.inc.php' );
 
 class Server_Api_Projects_Description_Delete
 {
-    public function run( $arguments )
+    public $access = '*';
+
+    public $params = array(
+        'projectId' => array( 'type' => 'int', 'required' => true )
+    );
+
+    public function run( $projectId )
     {
-        $principal = System_Api_Principal::getCurrent();
-        $principal->checkAuthenticated();
-
-        $projectId = isset( $arguments[ 'projectId' ] ) ? (int)$arguments[ 'projectId' ] : null;
-
-        if ( $projectId == null )
-            throw new Server_Error( Server_Error::InvalidArguments );
-
         $projectManager = new System_Api_ProjectManager();
         $project = $projectManager->getProject( $projectId, System_Api_ProjectManager::RequireAdministrator );
 

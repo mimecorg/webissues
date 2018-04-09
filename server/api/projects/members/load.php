@@ -22,17 +22,15 @@ require_once( '../../../../system/bootstrap.inc.php' );
 
 class Server_Api_Projects_Members_Load
 {
-    public function run( $arguments )
+    public $access = '*';
+
+    public $params = array(
+        'projectId' => array( 'type' => 'int', 'required' => true ),
+        'userId' => array( 'type' => 'int', 'required' => true )
+    );
+
+    public function run( $projectId, $userId )
     {
-        $principal = System_Api_Principal::getCurrent();
-        $principal->checkAuthenticated();
-
-        $projectId = isset( $arguments[ 'projectId' ] ) ? (int)$arguments[ 'projectId' ] : null;
-        $userId = isset( $arguments[ 'userId' ] ) ? (int)$arguments[ 'userId' ] : null;
-
-        if ( $projectId == null || $userId == null )
-            throw new Server_Error( Server_Error::InvalidArguments );
-
         $projectManager = new System_Api_ProjectManager();
         $project = $projectManager->getProject( $projectId, System_Api_ProjectManager::RequireAdministrator );
 

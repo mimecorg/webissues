@@ -22,7 +22,11 @@ require_once( '../../system/bootstrap.inc.php' );
 
 class Server_Api_Global
 {
-    public function run( $arguments )
+    public $access = 'anonymous';
+
+    public $params = array();
+
+    public function run()
     {
         $serverManager = new System_Api_ServerManager();
         $server = $serverManager->getServer();

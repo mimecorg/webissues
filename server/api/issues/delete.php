@@ -22,16 +22,14 @@ require_once( '../../../system/bootstrap.inc.php' );
 
 class Server_Api_Issues_Delete
 {
-    public function run( $arguments )
+    public $access = '*';
+
+    public $params = array(
+        'issueId' => array( 'type' => 'int', 'required' => true )
+    );
+
+    public function run( $issueId )
     {
-        $principal = System_Api_Principal::getCurrent();
-        $principal->checkAuthenticated();
-
-        $issueId = isset( $arguments[ 'issueId' ] ) ? (int)$arguments[ 'issueId' ] : null;
-
-        if ( $issueId == null )
-            throw new Server_Error( Server_Error::InvalidArguments );
-
         $issueManager = new System_Api_IssueManager();
         $issue = $issueManager->getIssue( $issueId, System_Api_IssueManager::RequireAdministrator );
 

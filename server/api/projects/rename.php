@@ -22,23 +22,19 @@ require_once( '../../../system/bootstrap.inc.php' );
 
 class Server_Api_Projects_Rename
 {
-    public function run( $arguments )
+    public $access = 'admin';
+
+    public $params = array(
+        'projectId' => array( 'type' => 'int', 'required' => true ),
+        'name' => array( 'type' => 'string', 'required' => true )
+    );
+
+    public function run( $projectId, $name )
     {
-        $principal = System_Api_Principal::getCurrent();
-        $principal->checkAdministrator();
-
-        $projectId = isset( $arguments[ 'projectId' ] ) ? (int)$arguments[ 'projectId' ] : null;
-        $name = isset( $arguments[ 'name' ] ) ? $arguments[ 'name' ] : null;
-
-        if ( $projectId == null || $name == null )
-            throw new Server_Error( Server_Error::InvalidArguments );
-
         $parser = new System_Api_Parser();
-
         $name = $parser->normalizeString( $name, System_Const::NameMaxLength );
 
         $projectManager = new System_Api_ProjectManager();
-
         $project = $projectManager->getProject( $projectId );
 
         $changed = $projectManager->renameProject( $project, $name );

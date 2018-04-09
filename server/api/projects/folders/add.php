@@ -22,18 +22,16 @@ require_once( '../../../../system/bootstrap.inc.php' );
 
 class Server_Api_Projects_Folders_Add
 {
-    public function run( $arguments )
+    public $access = '*';
+
+    public $params = array(
+        'projectId' => array( 'type' => 'int', 'required' => true ),
+        'name' => array( 'type' => 'string', 'required' => true ),
+        'typeId' => array( 'type' => 'int', 'required' => true )
+    );
+
+    public function run( $projectId, $name, $typeId )
     {
-        $principal = System_Api_Principal::getCurrent();
-        $principal->checkAuthenticated();
-
-        $projectId = isset( $arguments[ 'projectId' ] ) ? (int)$arguments[ 'projectId' ] : null;
-        $name = isset( $arguments[ 'name' ] ) ? $arguments[ 'name' ] : null;
-        $typeId = isset( $arguments[ 'typeId' ] ) ? (int)$arguments[ 'typeId' ] : null;
-
-        if ( $projectId == null || $name == null || $typeId == null )
-            throw new Server_Error( Server_Error::InvalidArguments );
-
         $parser = new System_Api_Parser();
         $name = $parser->normalizeString( $name, System_Const::NameMaxLength );
 

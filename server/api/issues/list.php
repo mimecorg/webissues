@@ -22,27 +22,30 @@ require_once( '../../../system/bootstrap.inc.php' );
 
 class Server_Api_Issues_List
 {
-    public function run( $arguments )
+    public $access = 'anonymous';
+
+    public $params = array(
+        'typeId' => 'int',
+        'viewId' => 'int',
+        'projectId' => 'int',
+        'folderId' => 'int',
+        'searchColumn' => array( 'type' => 'int', 'default' => System_Api_Column::Name ),
+        'searchText' => 'string',
+        'sortColumn' => 'int',
+        'sortAscending' => array( 'type' => 'bool', 'default' => true ),
+        'offset' => array( 'type' => 'int', 'default' => 0 ),
+        'limit' => array( 'type' => 'int', 'required' => true )
+    );
+
+    public function run( $typeId, $viewId, $projectId, $folderId, $searchColumn, $searchText, $sortColumn, $sortAscending, $offset, $limit )
     {
-        $typeId = isset( $arguments[ 'typeId' ] ) ? (int)$arguments[ 'typeId' ] : null;
-        $viewId = isset( $arguments[ 'viewId' ] ) ? (int)$arguments[ 'viewId' ] : null;
-        $projectId = isset( $arguments[ 'projectId' ] ) ? (int)$arguments[ 'projectId' ] : null;
-        $folderId = isset( $arguments[ 'folderId' ] ) ? (int)$arguments[ 'folderId' ] : null;
-
-        $searchColumn = isset( $arguments[ 'searchColumn' ] ) ? (int)$arguments[ 'searchColumn' ] : System_Const::Column_Name;
-        $searchText = isset( $arguments[ 'searchText' ] ) ? $arguments[ 'searchText' ] : '';
-
-        $sortColumn = isset( $arguments[ 'sortColumn' ] ) ? (int)$arguments[ 'sortColumn' ] : null;
-        $sortAscending = isset( $arguments[ 'sortAscending' ] ) ? (bool)$arguments[ 'sortAscending' ] : null;
-
-        $offset = isset( $arguments[ 'offset' ] ) ? (int)$arguments[ 'offset' ] : 0;
-        $limit = isset( $arguments[ 'limit' ] ) ? (int)$arguments[ 'limit' ] : 50;
-
         if ( $typeId == null && $viewId == null && $folderId == null )
             throw new Server_Error( Server_Error::InvalidArguments );
         if ( $viewId != null && $typeId != null )
             throw new Server_Error( Server_Error::InvalidArguments );
         if ( $folderId != null && ( $typeId != null || $projectId != null ) )
+            throw new Server_Error( Server_Error::InvalidArguments );
+        if ( $offset < 0 || $limit < 1 )
             throw new Server_Error( Server_Error::InvalidArguments );
 
         $typeManager = new System_Api_TypeManager();

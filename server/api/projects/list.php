@@ -22,7 +22,11 @@ require_once( '../../../system/bootstrap.inc.php' );
 
 class Server_Api_Projects_List
 {
-    public function run( $arguments )
+    public $access = 'anonymous';
+
+    public $arguments = array();
+
+    public function run()
     {
         $projectManager = new System_Api_ProjectManager();
         $projects = $projectManager->getProjects();

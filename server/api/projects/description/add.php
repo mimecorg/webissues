@@ -22,18 +22,16 @@ require_once( '../../../../system/bootstrap.inc.php' );
 
 class Server_Api_Projects_Description_Add
 {
-    public function run( $arguments )
+    public $access = '*';
+
+    public $params = array(
+        'projectId' => array( 'type' => 'int', 'required' => true ),
+        'description' => array( 'type' => 'string', 'required' => true ),
+        'descriptionFormat' => array( 'type' => 'int', 'default' => System_Const::PlainText )
+    );
+
+    public function run( $projectId, $descriptionText, $descriptionFormat )
     {
-        $principal = System_Api_Principal::getCurrent();
-        $principal->checkAuthenticated();
-
-        $projectId = isset( $arguments[ 'projectId' ] ) ? (int)$arguments[ 'projectId' ] : null;
-        $descriptionText = isset( $arguments[ 'description' ] ) ? $arguments[ 'description' ] : null;
-        $descriptionFormat = isset( $arguments[ 'descriptionFormat' ] ) ? (int)$arguments[ 'descriptionFormat' ] : null;
-
-        if ( $projectId == null || $descriptionText == null )
-            throw new Server_Error( Server_Error::InvalidArguments );
-
         $projectManager = new System_Api_ProjectManager();
         $project = $projectManager->getProject( $projectId, System_Api_ProjectManager::RequireAdministrator );
 

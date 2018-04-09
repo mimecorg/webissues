@@ -22,19 +22,16 @@ require_once( '../../../system/bootstrap.inc.php' );
 
 class Server_Api_Projects_Delete
 {
-    public function run( $arguments )
+    public $access = 'admin';
+
+    public $params = array(
+        'projectId' => array( 'type' => 'int', 'required' => true ),
+        'force' => array( 'type' => 'bool', 'default' => false )
+    );
+
+    public function run( $projectId, $force )
     {
-        $principal = System_Api_Principal::getCurrent();
-        $principal->checkAdministrator();
-
-        $projectId = isset( $arguments[ 'projectId' ] ) ? (int)$arguments[ 'projectId' ] : null;
-        $force = isset( $arguments[ 'force' ] ) ? (bool)$arguments[ 'force' ] : false;
-
-        if ( $projectId == null )
-            throw new Server_Error( Server_Error::InvalidArguments );
-
         $projectManager = new System_Api_ProjectManager();
-
         $project = $projectManager->getProject( $projectId );
 
         $projectManager->deleteProject( $project, $force ? System_Api_ProjectManager::ForceDelete : 0 );

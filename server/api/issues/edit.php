@@ -22,19 +22,21 @@ require_once( '../../../system/bootstrap.inc.php' );
 
 class Server_Api_Issues_Edit
 {
-    public function run( $arguments )
+    public $access = '*';
+
+    public $params = array(
+        'issueId' => array( 'type' => 'int', 'required' => true ),
+        'name' => 'string',
+        'values' => 'array'
+    );
+
+    public function run( $issueId, $name, $values )
     {
         $principal = System_Api_Principal::getCurrent();
         $principal->checkAuthenticated();
 
-        $issueId = isset( $arguments[ 'issueId' ] ) ? (int)$arguments[ 'issueId' ] : null;
-        $name = isset( $arguments[ 'name' ] ) ? $arguments[ 'name' ] : null;
-
-        if ( $issueId == null )
-            throw new Server_Error( Server_Error::InvalidArguments );
-
         $helper = new Server_Api_Issues_Helper();
-        $values = $helper->getValues( $arguments );
+        $values = $helper->checkValues( $values );
 
         $issueManager = new System_Api_IssueManager();
         $issue = $issueManager->getIssue( $issueId );

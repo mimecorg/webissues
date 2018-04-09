@@ -22,17 +22,15 @@ require_once( '../../../../system/bootstrap.inc.php' );
 
 class Server_Api_Projects_Folders_Rename
 {
-    public function run( $arguments )
+    public $access = '*';
+
+    public $params = array(
+        'folderId' => array( 'type' => 'int', 'required' => true ),
+        'name' => array( 'type' => 'string', 'required' => true )
+    );
+
+    public function run( $folderId, $name )
     {
-        $principal = System_Api_Principal::getCurrent();
-        $principal->checkAuthenticated();
-
-        $folderId = isset( $arguments[ 'folderId' ] ) ? (int)$arguments[ 'folderId' ] : null;
-        $name = isset( $arguments[ 'name' ] ) ? $arguments[ 'name' ] : null;
-
-        if ( $folderId == null || $name == null )
-            throw new Server_Error( Server_Error::InvalidArguments );
-
         $parser = new System_Api_Parser();
         $name = $parser->normalizeString( $name, System_Const::NameMaxLength );
 

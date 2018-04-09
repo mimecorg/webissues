@@ -22,26 +22,26 @@ if ( !defined( 'WI_VERSION' ) ) die( -1 );
 
 class Server_Api_Issues_Helper
 {
-    public function getValues( $arguments )
+    public function checkValues( $values )
     {
-        $values = array();
+        $result = array();
 
-        if ( isset( $arguments[ 'values' ] ) ) {
-            if ( !is_array( $arguments[ 'values' ] ) )
-                throw new Server_Error( Server_Error::InvalidArguments );
-
-            foreach ( $arguments[ 'values' ] as $item ) {
-                $id = isset( $item[ 'id' ] ) ? (int)$item[ 'id' ] : null;
-                $value = isset( $item[ 'value' ] ) ? $item[ 'value' ] : null;
-
-                if ( $id == null )
+        if ( $values != null ) {
+            foreach ( $values as $item ) {
+                if ( !is_array( $item ) || !isset( $item[ 'id' ] ) || !is_integer( $item[ 'id' ] ) )
                     throw new Server_Error( Server_Error::InvalidArguments );
 
-                $values[ $id ] = $value;
+                if ( isset( $item[ 'value' ] ) ) {
+                    if ( !is_string( $item[ 'value' ] ) )
+                        throw new Server_Error( Server_Error::InvalidArguments );
+                    $result[ $item[ 'id' ] ] = $item[ 'value' ];
+                } else {
+                    $result[ $item[ 'id' ] ] = null;
+                }
             }
         }
 
-        return $values;
+        return $result;
     }
 
     public function getInitialValues( $attributes, $typeManager )

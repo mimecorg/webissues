@@ -22,18 +22,16 @@ require_once( '../../../../system/bootstrap.inc.php' );
 
 class Server_Api_Projects_Folders_Load
 {
-    public function run( $arguments )
+    public $access = '*';
+
+    public $params = array(
+        'projectId' => array( 'type' => 'int', 'required' => true ),
+        'folderId' => array( 'type' => 'int', 'required' => true ),
+        'access' => 'string'
+    );
+
+    public function run( $projectId, $folderId, $access )
     {
-        $principal = System_Api_Principal::getCurrent();
-        $principal->checkAuthenticated();
-
-        $projectId = isset( $arguments[ 'projectId' ] ) ? (int)$arguments[ 'projectId' ] : null;
-        $folderId = isset( $arguments[ 'folderId' ] ) ? (int)$arguments[ 'folderId' ] : null;
-        $access = isset( $arguments[ 'access' ] ) ? $arguments[ 'access' ] : null;
-
-        if ( $projectId == null || $folderId == null )
-            throw new Server_Error( Server_Error::InvalidArguments );
-
         $flags = 0;
         if ( $access == 'admin' )
             $flags = System_Api_ProjectManager::RequireAdministrator;

@@ -22,20 +22,17 @@ require_once( '../../../system/bootstrap.inc.php' );
 
 class Server_Api_Projects_Add
 {
-    public function run( $arguments )
+    public $access = 'admin';
+
+    public $params = array(
+        'name' => array( 'type' => 'string', 'required' => true ),
+        'description' => 'string',
+        'descriptionFormat' => array( 'type' => 'int', 'default' => System_Const::PlainText )
+    );
+
+    public function run( $name, $description, $descriptionFormat )
     {
-        $principal = System_Api_Principal::getCurrent();
-        $principal->checkAdministrator();
-
-        $name = isset( $arguments[ 'name' ] ) ? $arguments[ 'name' ] : null;
-        $description = isset( $arguments[ 'description' ] ) ? $arguments[ 'description' ] : null;
-        $descriptionFormat = isset( $arguments[ 'descriptionFormat' ] ) ? (int)$arguments[ 'descriptionFormat' ] : null;
-
-        if ( $name == null )
-            throw new Server_Error( Server_Error::InvalidArguments );
-
         $parser = new System_Api_Parser();
-
         $name = $parser->normalizeString( $name, System_Const::NameMaxLength );
 
         if ( $description != null ) {

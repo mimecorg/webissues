@@ -22,18 +22,16 @@ require_once( '../../../../system/bootstrap.inc.php' );
 
 class Server_Api_Issues_Comments_Add
 {
-    public function run( $arguments )
+    public $access = '*';
+
+    public $params = array(
+        'issueId' => array( 'type' => 'int', 'required' => true ),
+        'comment' => array( 'type' => 'string', 'required' => true ),
+        'commentFormat' => array( 'type' => 'int', 'default' => System_Const::PlainText )
+    );
+
+    public function run( $issueId, $commentText, $commentFormat )
     {
-        $principal = System_Api_Principal::getCurrent();
-        $principal->checkAuthenticated();
-
-        $issueId = isset( $arguments[ 'issueId' ] ) ? (int)$arguments[ 'issueId' ] : null;
-        $commentText = isset( $arguments[ 'comment' ] ) ? $arguments[ 'comment' ] : null;
-        $commentFormat = isset( $arguments[ 'commentFormat' ] ) ? (int)$arguments[ 'commentFormat' ] : null;
-
-        if ( $issueId == null || $commentText == null )
-            throw new Server_Error( Server_Error::InvalidArguments );
-
         $issueManager = new System_Api_IssueManager();
         $issue = $issueManager->getIssue( $issueId );
 

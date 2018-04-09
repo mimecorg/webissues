@@ -22,19 +22,16 @@ require_once( '../../../system/bootstrap.inc.php' );
 
 class Server_Api_Projects_Access
 {
-    public function run( $arguments )
+    public $access = '*';
+
+    public $params = array(
+        'projectId' => array( 'type' => 'int', 'required' => true ),
+        'public' => array( 'type' => 'bool', 'required' => true )
+    );
+
+    public function run( $projectId, $public )
     {
-        $principal = System_Api_Principal::getCurrent();
-        $principal->checkAuthenticated();
-
-        $projectId = isset( $arguments[ 'projectId' ] ) ? (int)$arguments[ 'projectId' ] : null;
-        $public = isset( $arguments[ 'public' ] ) ? (bool)$arguments[ 'public' ] : false;
-
-        if ( $projectId == null )
-            throw new Server_Error( Server_Error::InvalidArguments );
-
         $projectManager = new System_Api_ProjectManager();
-
         $project = $projectManager->getProject( $projectId, System_Api_ProjectManager::RequireAdministrator );
 
         $changed = $projectManager->setProjectAccess( $project, $public );

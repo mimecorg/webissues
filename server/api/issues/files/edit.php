@@ -22,18 +22,16 @@ require_once( '../../../../system/bootstrap.inc.php' );
 
 class Server_Api_Issues_Files_Edit
 {
-    public function run( $arguments )
+    public $access = '*';
+
+    public $params = array(
+        'fileId' => array( 'type' => 'int', 'required' => true ),
+        'name' => array( 'type' => 'string', 'required' => true ),
+        'description' => 'string'
+    );
+
+    public function run( $fileId, $name, $description )
     {
-        $principal = System_Api_Principal::getCurrent();
-        $principal->checkAuthenticated();
-
-        $fileId = isset( $arguments[ 'fileId' ] ) ? (int)$arguments[ 'fileId' ] : null;
-        $name = isset( $arguments[ 'name' ] ) ? $arguments[ 'name' ] : null;
-        $description = isset( $arguments[ 'description' ] ) ? $arguments[ 'description' ] : null;
-
-        if ( $fileId == null || $name == null )
-            throw new Server_Error( Server_Error::InvalidArguments );
-
         $issueManager = new System_Api_IssueManager();
         $file = $issueManager->getFile( $fileId, System_Api_IssueManager::RequireAdministratorOrOwner );
 

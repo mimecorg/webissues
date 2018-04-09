@@ -22,18 +22,19 @@ require_once( '../../../system/bootstrap.inc.php' );
 
 class Server_Api_Projects_Load
 {
-    public function run( $arguments )
+    public $access = 'anonymous';
+
+    public $params = array(
+        'projectId' => array( 'type' => 'int', 'required' => true ),
+        'description' => array( 'type' => 'bool', 'default' => false ),
+        'folders' => array( 'type' => 'bool', 'default' => false ),
+        'members' => array( 'type' => 'bool', 'default' => false ),
+        'html' => array( 'type' => 'bool', 'default' => false ),
+        'access' => 'string'
+    );
+
+    public function run( $projectId, $description, $folders, $members, $html, $access )
     {
-        $projectId = isset( $arguments[ 'projectId' ] ) ? (int)$arguments[ 'projectId' ] : null;
-        $description = isset( $arguments[ 'description' ] ) ? (bool)$arguments[ 'description' ] : false;
-        $folders = isset( $arguments[ 'folders' ] ) ? (bool)$arguments[ 'folders' ] : false;
-        $members = isset( $arguments[ 'members' ] ) ? (bool)$arguments[ 'members' ] : false;
-        $html = isset( $arguments[ 'html' ] ) ? (bool)$arguments[ 'html' ] : false;
-        $access = isset( $arguments[ 'access' ] ) ? $arguments[ 'access' ] : null;
-
-        if ( $projectId == null )
-            throw new Server_Error( Server_Error::InvalidArguments );
-
         $flags = 0;
         if ( $access == 'admin' )
             $flags = System_Api_ProjectManager::RequireAdministrator;

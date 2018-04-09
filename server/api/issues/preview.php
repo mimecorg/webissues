@@ -22,13 +22,14 @@ require_once( '../../../system/bootstrap.inc.php' );
 
 class Server_Api_Issues_Preview
 {
-    public function run( $arguments )
+    public $access = '*';
+
+    public $params = array(
+        'text' => 'string'
+    );
+
+    public function run( $text )
     {
-        $principal = System_Api_Principal::getCurrent();
-        $principal->checkAuthenticated();
-
-        $text = isset( $arguments[ 'text' ] ) ? $arguments[ 'text' ] : null;
-
         $serverManager = new System_Api_ServerManager();
         $parser = new System_Api_Parser();
 
