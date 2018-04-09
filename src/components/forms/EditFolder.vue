@@ -25,12 +25,10 @@
         <li><HyperLink v-on:click="deleteFolder"><span class="fa fa-trash" aria-hidden="true"></span> {{ $t( 'EditFolder.DeleteFolder' ) }}</HyperLink></li>
       </DropdownButton>
     </FormHeader>
-    <Prompt v-if="mode == 'rename'" path="EditFolder.RenameFolderPrompt"><strong>{{ name }}</strong></Prompt>
+    <Prompt v-if="mode == 'rename'" path="EditFolder.RenameFolderPrompt"><strong>{{ initialName }}</strong></Prompt>
     <Prompt v-else-if="mode == 'add'" path="EditFolder.AddFolderPrompt"><strong>{{ projectName }}</strong></Prompt>
-    <FormGroup id="name" v-bind:label="$t( 'EditFolder.Name' )" v-bind:required="true" v-bind:error="nameError">
-      <input ref="name" id="name" type="text" class="form-control" v-bind:maxlength="nameMaxLength" v-model="nameValue">
-    </FormGroup>
-    <FormGroup v-if="mode == 'add'" v-bind:label="$t( 'EditFolder.Type' )" v-bind:required="true" v-bind:error="typeError">
+    <FormInput ref="name" id="name" v-bind:label="$t( 'EditFolder.Name' )" v-bind="$field( 'name' )" v-model="name"/>
+    <FormGroup v-if="mode == 'add'" v-bind:label="$t( 'EditFolder.Type' )" v-bind="$field( 'typeId' )">
       <div class="dropdown-filters">
         <DropdownButton ref="type" fa-class="fa-list" v-bind:text="typeName" v-bind:title="typeTitle">
           <div class="dropdown-menu-scroll">
@@ -62,26 +60,39 @@ export default {
     projectId: Number,
     projectName: String,
     folderId: Number,
-    name: String
+    initialName: String
   },
 
-  data() {
+  fields() {
     return {
-      nameValue: this.name,
-      nameMaxLength: MaxLength.Name,
-      nameError: null,
-      type: null,
-      typeError: null
+      name: {
+        value: this.initialName,
+        type: String,
+        required: true,
+        maxLength: MaxLength.Name
+      },
+      typeId: {
+        condition: this.mode == 'add',
+        type: Number,
+        required: true,
+        requiredError: this.$t( 'EditFolder.NoTypeSelected' )
+      }
     };
   },
 
   computed: {
-    ...mapState( 'global', [ 'types', 'settings' ] ),
+    ...mapState( 'global', [ 'types' ] ),
     title() {
       if ( this.mode == 'rename' )
         return this.$t( 'EditFolder.RenameFolder' );
       else if ( this.mode == 'add' )
         return this.$t( 'EditFolder.AddFolder' );
+    },
+    type() {
+      if ( this.typeId != null )
+        return this.types.find( t => t.id == this.typeId );
+      else
+        return null;
     },
     typeName() {
       if ( this.type != null )
@@ -106,55 +117,29 @@ export default {
     },
 
     selectType( type ) {
-      this.type = type;
+      if ( type != null )
+        this.typeId = type.id;
+      else
+        this.typeId = null;
     },
 
     submit() {
-      this.nameError = null;
-      this.typeError = null;
+      if ( !this.$fields.validate() )
+        return;
+
+      if ( this.mode == 'rename' && !this.$fields.modified() ) {
+        this.returnToDetails();
+        return;
+      }
 
       const data = {};
       if ( this.mode == 'add' )
         data.projectId = this.projectId;
       else
         data.folderId = this.folderId;
-      let modified = false;
-      let valid = true;
-
-      try {
-        this.nameValue = this.$parser.normalizeString( this.nameValue, MaxLength.Name, { allowEmpty: false } );
-        if ( this.mode == 'add' || this.nameValue != this.name )
-          modified = true;
-        data.name = this.nameValue;
-      } catch ( error ) {
-        if ( error.reason == 'APIError' ) {
-          this.nameError = this.$t( 'ErrorCode.' + error.errorCode );
-          if ( valid )
-            this.$refs.name.focus();
-          valid = false;
-        } else {
-          throw error;
-        }
-      }
-
-      if ( this.mode == 'add' ) {
-        if ( this.type != null ) {
-          data.typeId = this.type.id;
-        } else {
-          this.typeError = this.$t( 'EditFolder.NoTypeSelected' );
-          if ( valid )
-            this.$refs.type.focus();
-          valid = false;
-        }
-      }
-
-      if ( !valid )
-        return;
-
-      if ( this.mode == 'rename' && !modified ) {
-        this.returnToDetails();
-        return;
-      }
+      data.name = this.name;
+      if ( this.mode == 'add' )
+        data.typeId = this.typeId;
 
       this.$emit( 'block' );
 

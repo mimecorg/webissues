@@ -20,43 +20,51 @@
 <template>
   <div class="container-fluid">
     <FormHeader v-bind:title="title" v-on:close="close"/>
-    <Prompt v-if="mode == 'rename'" path="EditProject.RenameProjectPrompt"><strong>{{ name }}</strong></Prompt>
+    <Prompt v-if="mode == 'rename'" path="EditProject.RenameProjectPrompt"><strong>{{ initialName }}</strong></Prompt>
     <Prompt v-else-if="mode == 'add'" path="EditProject.AddProjectPrompt"></Prompt>
-    <FormGroup id="name" v-bind:label="$t( 'EditProject.Name' )" v-bind:required="true" v-bind:error="nameError">
-      <input ref="name" id="name" type="text" class="form-control" v-bind:maxlength="maxLength" v-model="nameValue">
-    </FormGroup>
-    <MarkupEditor v-if="mode == 'add'" ref="description" id="description" v-bind:label="$t( 'EditProject.Description' )" v-bind:error="descriptionError"
-                  v-bind:format="selectedFormat" v-model="descriptionValue" v-on:select-format="selectFormat" v-on:error="error"/>
+    <FormInput ref="name" id="name" v-bind:label="$t( 'EditProject.Name' )" v-bind="$field( 'name' )" v-model="name"/>
+    <MarkupEditor v-if="mode == 'add'" ref="description" id="description" v-bind:label="$t( 'EditProject.Description' )" v-bind="$field( 'description' )"
+                  v-bind:format="descriptionFormat" v-model="description" v-on:select-format="selectFormat" v-on:error="error"/>
     <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
-
 import { MaxLength, ErrorCode } from '@/constants'
 
 export default {
   props: {
     mode: String,
     projectId: Number,
-    name: String,
-    descriptionFormat: Number
+    initialName: String,
+    initialFormat: Number
+  },
+
+  fields() {
+    return {
+      name: {
+        value: this.initialName,
+        type: String,
+        required: true,
+        maxLength: MaxLength.Name
+      },
+      description: {
+        condition: this.mode == 'add',
+        type: String,
+        required: false,
+        maxLength: this.$store.state.global.settings.commentMaxLength,
+        multiLine: true
+      }
+    };
   },
 
   data() {
     return {
-      nameValue: this.name,
-      nameError: null,
-      maxLength: MaxLength.Name,
-      descriptionValue: '',
-      selectedFormat: this.descriptionFormat,
-      descriptionError: null
+      descriptionFormat: this.initialFormat
     };
   },
 
   computed: {
-    ...mapState( 'global', [ 'settings' ] ),
     title() {
       if ( this.mode == 'rename' )
         return this.$t( 'EditProject.RenameProject' );
@@ -67,63 +75,25 @@ export default {
 
   methods: {
     selectFormat( format ) {
-      this.selectedFormat = format;
+      this.descriptionFormat = format;
     },
 
     submit() {
-      this.nameError = null;
-      this.descriptionError = null;
-
-      const data = {};
-      let modified = false;
-      let valid = true;
-
-      if ( this.mode == 'rename' )
-        data.projectId = this.projectId;
-
-      try {
-        this.nameValue = this.$parser.normalizeString( this.nameValue, MaxLength.Name );
-        if ( this.mode == 'add' || this.nameValue != this.name ) {
-          data.name = this.nameValue;
-          modified = true;
-        }
-      } catch ( error ) {
-        if ( error.reason == 'APIError' ) {
-          this.nameError = this.$t( 'ErrorCode.' + error.errorCode );
-          if ( valid )
-            this.$refs.name.focus();
-          valid = false;
-        } else {
-          throw error;
-        }
-      }
-
-      if ( this.mode == 'add' ) {
-        try {
-          this.descriptionValue = this.$parser.normalizeString( this.descriptionValue, this.settings.commentMaxLength, { allowEmpty: true, multiLine: true } );
-          if ( this.mode == 'add' || this.descriptionValue != this.description ) {
-            modified = true;
-            data.description = this.descriptionValue;
-            data.descriptionFormat = this.selectedFormat;
-          }
-        } catch ( error ) {
-          if ( error.reason == 'APIError' ) {
-            this.descriptionError = this.$t( 'ErrorCode.' + error.errorCode );
-            if ( valid )
-              this.$refs.description.focus();
-            valid = false;
-          } else {
-            throw error;
-          }
-        }
-      }
-
-      if ( !valid )
+      if ( !this.$fields.validate() )
         return;
 
-      if ( this.mode == 'rename' && !modified ) {
+      if ( this.mode == 'rename' && !this.$fields.modified() ) {
         this.returnToDetails( this.projectId );
         return;
+      }
+
+      const data = {};
+      if ( this.mode == 'rename' )
+        data.projectId = this.projectId;
+      data.name = this.name;
+      if ( this.mode == 'add' ) {
+        data.description = this.description;
+        data.descriptionFormat = this.descriptionFormat;
       }
 
       this.$emit( 'block' );

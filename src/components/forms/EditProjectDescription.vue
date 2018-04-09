@@ -22,34 +22,41 @@
     <FormHeader v-bind:title="title" v-on:close="close"/>
     <Prompt v-if="mode == 'edit'" path="EditProjectDescription.EditDescriptionPrompt"><strong>{{ projectName }}</strong></Prompt>
     <Prompt v-else-if="mode == 'add'" path="EditProjectDescription.AddDescriptionPrompt"><strong>{{ projectName }}</strong></Prompt>
-    <MarkupEditor ref="description" id="description" v-bind:label="$t( 'EditProjectDescription.Description' )" v-bind:required="true" v-bind:error="descriptionError"
-                  v-bind:format="selectedFormat" v-model="descriptionValue" v-on:select-format="selectFormat" v-on:error="error"/>
+    <MarkupEditor ref="description" id="description" v-bind:label="$t( 'EditProjectDescription.Description' )" v-bind="$field( 'description' )"
+                  v-bind:format="descriptionFormat" v-model="description" v-on:select-format="selectFormat" v-on:error="error"/>
     <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
-
 export default {
   props: {
     mode: String,
     projectId: Number,
     projectName: String,
-    description: String,
-    descriptionFormat: Number
+    initialDescription: String,
+    initialFormat: Number
+  },
+
+  fields() {
+    return {
+      description: {
+        value: this.initialDescription,
+        type: String,
+        required: true,
+        maxLength: this.$store.state.global.settings.commentMaxLength,
+        multiLine: true
+      }
+    };
   },
 
   data() {
     return {
-      descriptionValue: this.description,
-      selectedFormat: this.descriptionFormat,
-      descriptionError: null
+      descriptionFormat: this.initialFormat
     };
   },
 
   computed: {
-    ...mapState( 'global', [ 'settings' ] ),
     title() {
       if ( this.mode == 'edit' )
         return this.$t( 'EditProjectDescription.EditDescription' );
@@ -60,41 +67,19 @@ export default {
 
   methods: {
     selectFormat( format ) {
-      this.selectedFormat = format;
+      this.descriptionFormat = format;
     },
 
     submit() {
-      this.descriptionError = null;
-
-      const data = { projectId: this.projectId };
-      let modified = false;
-      let valid = true;
-
-      try {
-        this.descriptionValue = this.$parser.normalizeString( this.descriptionValue, this.settings.commentMaxLength, { allowEmpty: false, multiLine: true } );
-        if ( this.mode == 'add' || this.descriptionValue != this.description ) {
-          modified = true;
-          data.description = this.descriptionValue;
-          data.descriptionFormat = this.selectedFormat;
-        }
-      } catch ( error ) {
-        if ( error.reason == 'APIError' ) {
-          this.descriptionError = this.$t( 'ErrorCode.' + error.errorCode );
-          if ( valid )
-            this.$refs.description.focus();
-          valid = false;
-        } else {
-          throw error;
-        }
-      }
-
-      if ( !valid )
+      if ( !this.$fields.validate() )
         return;
 
-      if ( this.mode == 'edit' && !modified ) {
+      if ( this.mode == 'edit' && !this.$fields.modified() ) {
         this.returnToDetails();
         return;
       }
+
+      const data = { projectId: this.projectId, description: this.description, descriptionFormat: this.descriptionFormat };
 
       this.$emit( 'block' );
 

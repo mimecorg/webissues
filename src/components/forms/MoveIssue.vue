@@ -21,8 +21,8 @@
   <div class="container-fluid">
     <FormHeader v-bind:title="$t( 'MoveIssue.MoveIssue' )" v-on:close="close"/>
     <Prompt path="MoveIssue.MoveIssuePrompt"><strong>{{ name }}</strong></Prompt>
-    <FormGroup v-bind:label="$t( 'MoveIssue.Location' )" v-bind:required="true" v-bind:error="locationError">
-      <LocationFilters ref="location" v-bind:typeId="typeId" v-bind:project="project" v-bind:folder="folder" v-bind:require-admin="true"
+    <FormGroup v-bind:label="$t( 'MoveIssue.Location' )" v-bind="$field( 'folderId' )">
+      <LocationFilters ref="folderId" v-bind:typeId="typeId" v-bind:project="project" v-bind:folder="folder" v-bind:require-admin="true"
                        v-on:select-project="selectProject" v-on:select-folder="selectFolder"/>
     </FormGroup>
     <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
@@ -36,30 +36,39 @@ export default {
   props: {
     issueId: Number,
     typeId: Number,
-    projectId: Number,
-    folderId: Number,
+    initialProjectId: Number,
+    initialFolderId: Number,
     name: String
+  },
+
+  fields() {
+    return {
+      folderId: {
+        value: this.initialFolderId,
+        type: Number,
+        required: true,
+        requiredError: this.$t( 'MoveIssue.NoFolderSelected' )
+      }
+    };
   },
 
   data() {
     return {
-      selectedProjectId: this.projectId,
-      selectedFolderId: this.folderId,
-      locationError: null
+      projectId: this.initialProjectId
     };
   },
 
   computed: {
     ...mapState( 'global', [ 'projects' ] ),
     project() {
-      if ( this.selectedProjectId != null )
-        return this.projects.find( p => p.id == this.selectedProjectId );
+      if ( this.projectId != null )
+        return this.projects.find( p => p.id == this.projectId );
       else
         return null;
     },
     folder() {
-      if ( this.selectedFolderId != null && this.project != null )
-        return this.project.folders.find( f => f.id == this.selectedFolderId );
+      if ( this.folderId != null && this.project != null )
+        return this.project.folders.find( f => f.id == this.folderId );
       else
         return null;
     }
@@ -68,43 +77,28 @@ export default {
   methods: {
     selectProject( project ) {
       if ( project != null )
-        this.selectedProjectId = project.id;
+        this.projectId = project.id;
       else
-        this.selectedProjectId = null;
-      this.selectedFolderId = null;
+        this.projectId = null;
+      this.folderId = null;
     },
     selectFolder( folder ) {
       if ( folder != null )
-        this.selectedFolderId = folder.id;
+        this.folderId = folder.id;
       else
-        this.selectedFolderId = null;
+        this.folderId = null;
     },
 
     submit() {
-      this.locationError = null;
-
-      const data = { issueId: this.issueId };
-      let modified = false;
-      let valid = true;
-
-      if ( this.selectedFolderId != null ) {
-        if ( this.selectedFolderId != this.folderId )
-          modified = true;
-        data.folderId = this.selectedFolderId;
-      } else {
-        this.locationError = this.$t( 'MoveIssue.NoFolderSelected' );
-        if ( valid )
-          this.$refs.location.focus();
-        valid = false;
-      }
-
-      if ( !valid )
+      if ( !this.$fields.validate() )
         return;
 
-      if ( !modified ) {
+      if ( !this.$fields.modified() ) {
         this.returnToDetails();
         return;
       }
+
+      const data = { issueId: this.issueId, folderId: this.folderId };
 
       this.$emit( 'block' );
 

@@ -22,35 +22,42 @@
     <FormHeader v-bind:title="title" v-on:close="close"/>
     <Prompt v-if="mode == 'edit'" path="EditComment.EditCommentPrompt"><strong>{{ '#' + commentId }}</strong></Prompt>
     <Prompt v-else-if="mode == 'add'" path="EditComment.AddCommentPrompt"><strong>{{ issueName }}</strong></Prompt>
-    <MarkupEditor ref="comment" id="comment" v-bind:label="$t( 'EditComment.Comment' )" v-bind:required="true" v-bind:error="commentError"
-                  v-bind:format="selectedFormat" v-model="commentValue" v-on:select-format="selectFormat" v-on:error="error"/>
+    <MarkupEditor ref="comment" id="comment" v-bind:label="$t( 'EditComment.Comment' )" v-bind="$field( 'comment' )"
+                  v-bind:format="commentFormat" v-model="comment" v-on:select-format="selectFormat" v-on:error="error"/>
     <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
-
 export default {
   props: {
     mode: String,
     issueId: Number,
     issueName: String,
     commentId: Number,
-    comment: String,
-    commentFormat: Number
+    initialComment: String,
+    initialFormat: Number
+  },
+
+  fields() {
+    return {
+      comment: {
+        value: this.initialComment,
+        type: String,
+        required: true,
+        maxLength: this.$store.state.global.settings.commentMaxLength,
+        multiLine: true
+      }
+    };
   },
 
   data() {
     return {
-      commentValue: this.comment,
-      selectedFormat: this.commentFormat,
-      commentError: null
+      commentFormat: this.initialFormat
     };
   },
 
   computed: {
-    ...mapState( 'global', [ 'settings' ] ),
     title() {
       if ( this.mode == 'edit' )
         return this.$t( 'EditComment.EditComment' );
@@ -61,45 +68,25 @@ export default {
 
   methods: {
     selectFormat( format ) {
-      this.selectedFormat = format;
+      this.commentFormat = format;
     },
 
     submit() {
-      this.commentError = null;
+      if ( !this.$fields.validate() )
+        return;
+
+      if ( this.mode == 'edit' && !this.$fields.modified() ) {
+        this.returnToDetails( this.commentId );
+        return;
+      }
 
       const data = {};
       if ( this.mode == 'add' )
         data.issueId = this.issueId;
       else
         data.commentId = this.commentId;
-      let modified = false;
-      let valid = true;
-
-      try {
-        this.commentValue = this.$parser.normalizeString( this.commentValue, this.settings.commentMaxLength, { allowEmpty: false, multiLine: true } );
-        if ( this.mode == 'add' || this.commentValue != this.comment ) {
-          modified = true;
-          data.comment = this.commentValue;
-          data.commentFormat = this.selectedFormat;
-        }
-      } catch ( error ) {
-        if ( error.reason == 'APIError' ) {
-          this.commentError = this.$t( 'ErrorCode.' + error.errorCode );
-          if ( valid )
-            this.$refs.comment.focus();
-          valid = false;
-        } else {
-          throw error;
-        }
-      }
-
-      if ( !valid )
-        return;
-
-      if ( this.mode == 'edit' && !modified ) {
-        this.returnToDetails( this.commentId );
-        return;
-      }
+      data.comment = this.comment;
+      data.commentFormat = this.commentFormat;
 
       this.$emit( 'block' );
 

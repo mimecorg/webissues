@@ -21,8 +21,8 @@
   <div class="container-fluid">
     <FormHeader v-bind:title="$t( 'MoveFolder.MoveFolder' )" v-on:close="close"/>
     <Prompt path="MoveFolder.MoveFolderPrompt"><strong>{{ name }}</strong></Prompt>
-    <FormGroup v-bind:label="$t( 'MoveFolder.Project' )" v-bind:required="true" v-bind:error="locationError">
-      <LocationFilters ref="location" v-bind:project="project" v-bind:require-admin="true" v-bind:folder-visible="false" v-on:select-project="selectProject"/>
+    <FormGroup v-bind:label="$t( 'MoveFolder.Project' )" v-bind="$field( 'projectId' )">
+      <LocationFilters ref="projectId" v-bind:project="project" v-bind:require-admin="true" v-bind:folder-visible="false" v-on:select-project="selectProject"/>
     </FormGroup>
     <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
   </div>
@@ -35,23 +35,27 @@ import { ErrorCode } from '@/constants'
 
 export default {
   props: {
-    projectId: Number,
+    initialProjectId: Number,
     folderId: Number,
     name: String
   },
 
-  data() {
+  fields() {
     return {
-      selectedProjectId: this.projectId,
-      locationError: null
+      projectId: {
+        value: this.initialProjectId,
+        type: Number,
+        required: true,
+        requiredError: this.$t( 'MoveFolder.NoProjectSelected' )
+      }
     };
   },
 
   computed: {
     ...mapState( 'global', [ 'projects' ] ),
     project() {
-      if ( this.selectedProjectId != null )
-        return this.projects.find( p => p.id == this.selectedProjectId );
+      if ( this.projectId != null )
+        return this.projects.find( p => p.id == this.projectId );
       else
         return null;
     }
@@ -60,36 +64,21 @@ export default {
   methods: {
     selectProject( project ) {
       if ( project != null )
-        this.selectedProjectId = project.id;
+        this.projectId = project.id;
       else
-        this.selectedProjectId = null;
+        this.projectId = null;
     },
 
     submit() {
-      this.locationError = null;
-
-      const data = { folderId: this.folderId };
-      let modified = false;
-      let valid = true;
-
-      if ( this.selectedProjectId != null ) {
-        if ( this.selectedProjectId != this.projectId )
-          modified = true;
-        data.projectId = this.selectedProjectId;
-      } else {
-        this.locationError = this.$t( 'MoveFolder.NoProjectSelected' );
-        if ( valid )
-          this.$refs.location.focus();
-        valid = false;
-      }
-
-      if ( !valid )
+      if ( !this.$fields.validate() )
         return;
 
-      if ( !modified ) {
+      if ( !this.$fields.modified() ) {
         this.returnToDetails();
         return;
       }
+
+      const data = { folderId: this.folderId, projectId: this.projectId };
 
       this.$emit( 'block' );
 
@@ -100,9 +89,9 @@ export default {
       } ).catch( error => {
         if ( error.reason == 'APIError' && error.errorCode == ErrorCode.FolderAlreadyExists ) {
           this.$emit( 'unblock' );
-          this.locationError = this.$t( 'ErrorCode.' + error.errorCode );
+          this.projectIdError = this.$t( 'ErrorCode.' + error.errorCode );
           this.$nextTick( () => {
-            this.$refs.location.focus();
+            this.$refs.projectId.focus();
           } );
         } else {
           this.$emit( 'error', error );
@@ -111,11 +100,11 @@ export default {
     },
 
     cancel() {
-      this.$router.push( 'RenameFolder', { projectId: this.projectId, folderId: this.folderId } );
+      this.$router.push( 'RenameFolder', { projectId: this.initialProjectId, folderId: this.folderId } );
     },
 
     returnToDetails() {
-      this.$router.push( 'ProjectDetails', { projectId: this.projectId } );
+      this.$router.push( 'ProjectDetails', { projectId: this.initialProjectId } );
     },
 
     close() {
