@@ -52,7 +52,7 @@
       </button>
     </FormSection>
     <Grid v-if="folders.length > 0" v-bind:items="folders" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-wide', null ]"
-          v-bind:row-click-enabled="isProjectAdministrator" v-on:row-click="rowClick">
+          v-bind:row-click-disabled="!isProjectAdministrator" v-on:row-click="rowClick">
       <template slot-scope="{ item, columnIndex, columnClass }">
         <td v-bind:class="columnClass">{{ getCellValue( columnIndex, item ) }}</td>
       </template>

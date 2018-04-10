@@ -25,7 +25,7 @@
     <Prompt v-else-if="mode == 'clone'" path="EditIssue.CloneIssuePrompt"><strong>{{ name }}</strong></Prompt>
     <FormInput ref="name" id="name" v-bind:label="$t( 'EditIssue.Name' )" v-bind="$field( 'name' )" v-model="name"/>
     <FormGroup v-if="mode == 'add' || mode == 'clone'" v-bind:label="$t( 'EditIssue.Location' )" v-bind="$field( 'folderId' )">
-      <LocationFilters ref="folderId" v-bind:typeId="typeId" v-bind:project="project" v-bind:folder="folder" v-on:select-project="selectProject" v-on:select-folder="selectFolder"/>
+      <LocationFilters ref="folderId" v-bind:typeId="typeId" v-bind:project="project" v-bind:folder="folder" folder-visible v-on:select-project="selectProject" v-on:select-folder="selectFolder"/>
     </FormGroup>
     <Panel v-if="attributes.length > 0" v-bind:title="$t( 'EditIssue.Attributes' )">
       <FormGroup v-for="( attribute, index ) in attributes" v-bind:key="attribute.id" v-bind:id="'attribute' + attribute.id" v-bind:label="$t( 'EditIssue.AttributeLabel', [ attribute.name ] )"

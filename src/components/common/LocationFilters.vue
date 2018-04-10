@@ -59,7 +59,7 @@ export default {
     project: Object,
     folder: Object,
     requireAdmin: Boolean,
-    folderVisible: { type: Boolean, default: true }
+    folderVisible: Boolean
   },
 
   computed: {

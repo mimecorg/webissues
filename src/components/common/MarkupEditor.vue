@@ -45,7 +45,7 @@
         <div class="formatted-text" v-hljs="previewHtml"></div>
       </div>
     </FormGroup>
-    <FormGroup v-bind:label="$t( 'MarkupEditor.TextFormat' )" v-bind:required="true">
+    <FormGroup v-bind:label="$t( 'MarkupEditor.TextFormat' )" required>
       <div class="dropdown-select">
         <DropdownButton v-bind:text="formatName">
           <li v-bind:class="{ active: !isMarkup }"><HyperLink v-on:click="selectMarkup( false )">{{ $t( 'MarkupEditor.PlainText' ) }}</HyperLink></li>

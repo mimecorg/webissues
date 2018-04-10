@@ -35,7 +35,7 @@
     </div>
     <div class="grid-body">
       <div ref="bodyScroll" class="grid-body-scroll" v-on:scroll="updateHeaderScroll">
-        <table v-bind:class="[ 'grid-body-table', { 'grid-body-hover': rowClickEnabled } ]">
+        <table v-bind:class="[ 'grid-body-table', { 'grid-body-hover': !rowClickDisabled } ]">
           <tbody>
             <tr v-for="( item, rowIndex ) in items" v-on:click="rowClick( rowIndex )">
               <slot v-for="( columnName, columnIndex ) in columnNames" v-bind:item="item" v-bind:column-index="columnIndex"
@@ -75,7 +75,7 @@ export default {
     sortEnabled: Boolean,
     sortColumn: Number,
     sortAscending: Boolean,
-    rowClickEnabled: { type: Boolean, default: true },
+    rowClickDisabled: Boolean,
     footerVisible: Boolean,
     previousEnabled: Boolean,
     nextEnabled: Boolean,
@@ -121,7 +121,7 @@ export default {
       this.$emit( 'sort', columnIndex );
     },
     rowClick( rowIndex ) {
-      if ( this.rowClickEnabled )
+      if ( !this.rowClickDisabled )
         this.$emit( 'row-click', rowIndex );
     },
     previous() {

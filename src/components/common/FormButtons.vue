@@ -19,16 +19,16 @@
 
 <template>
   <div class="form-buttons">
-    <button v-if="hasOK" class="btn btn-primary" v-on:click="ok">{{ $t( 'Common.OK' ) }}</button>
-    <button v-if="hasCancel" class="btn btn-default" v-on:click="cancel">{{ $t( 'Common.Cancel' ) }}</button>
+    <button v-if="!okHidden" class="btn btn-primary" v-on:click="ok">{{ $t( 'Common.OK' ) }}</button>
+    <button v-if="!cancelHidden" class="btn btn-default" v-on:click="cancel">{{ $t( 'Common.Cancel' ) }}</button>
   </div>
 </template>
 
 <script>
 export default {
   props: {
-    hasOK: { type: Boolean, default: true },
-    hasCancel: { type: Boolean, default: true }
+    okHidden: Boolean,
+    cancelHidden: Boolean
   },
   methods: {
     ok() {

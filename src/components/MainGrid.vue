@@ -19,8 +19,8 @@
 
 <template>
   <Grid id="main-grid" v-bind:items="issues" v-bind:column-names="columnNames" v-bind:column-classes="columnClasses"
-        v-bind:sort-enabled="true" v-bind:sort-column="sortColumnIndex" v-bind:sort-ascending="sortAscending"
-        v-bind:footer-visible="true" v-bind:previous-enabled="previousEnabled" v-bind:next-enabled="nextEnabled"
+        sort-enabled v-bind:sort-column="sortColumnIndex" v-bind:sort-ascending="sortAscending"
+        footer-visible v-bind:previous-enabled="previousEnabled" v-bind:next-enabled="nextEnabled"
         v-bind:status-text="statusText" v-bind:busy="busy" v-on:sort="sort" v-on:previous="previous" v-on:next="next"
         v-on:row-click="rowClick">
     <template slot-scope="{ item, columnIndex, columnClass }">

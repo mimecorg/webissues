@@ -21,7 +21,7 @@
   <div class="container-fluid">
     <FormHeader v-bind:title="$t( 'EditProjectAccess.EditProjectAccess' )" v-on:close="close"/>
     <Prompt path="EditProjectAccess.EditProjectAccessPrompt"><strong>{{ name }}</strong></Prompt>
-    <FormGroup v-bind:label="$t( 'EditProjectAccess.Access' )" v-bind:required="true">
+    <FormGroup v-bind:label="$t( 'EditProjectAccess.Access' )" required>
       <div class="radio">
         <label><input type="radio" v-model="public" v-bind:value="false"> {{ $t( 'EditProjectAccess.RegularProject' ) }}</label>
       </div>

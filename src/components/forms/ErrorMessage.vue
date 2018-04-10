@@ -23,7 +23,7 @@
     <div class="alert alert-danger">
       <p>{{ message }}</p>
     </div>
-    <FormButtons v-bind:has-cancel="false" v-on:ok="close"/>
+    <FormButtons cancel-hidden v-on:ok="close"/>
   </div>
 </template>
 

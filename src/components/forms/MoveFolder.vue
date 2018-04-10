@@ -22,7 +22,7 @@
     <FormHeader v-bind:title="$t( 'MoveFolder.MoveFolder' )" v-on:close="close"/>
     <Prompt path="MoveFolder.MoveFolderPrompt"><strong>{{ name }}</strong></Prompt>
     <FormGroup v-bind:label="$t( 'MoveFolder.Project' )" v-bind="$field( 'projectId' )">
-      <LocationFilters ref="projectId" v-bind:project="project" v-bind:require-admin="true" v-bind:folder-visible="false" v-on:select-project="selectProject"/>
+      <LocationFilters ref="projectId" v-bind:project="project" require-admin v-on:select-project="selectProject"/>
     </FormGroup>
     <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
   </div>

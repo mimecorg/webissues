@@ -40,7 +40,7 @@
       </div>
     </Panel>
     <Prompt v-else-if="mode == 'add'" path="EditMember.NoAvailableUsers" alert-class="alert-warning"/>
-    <FormGroup v-if="canEdit" v-bind:label="$t( 'EditMember.Access' )" v-bind:required="true">
+    <FormGroup v-if="canEdit" v-bind:label="$t( 'EditMember.Access' )" required>
       <div class="radio">
         <label><input type="radio" v-model="access" v-bind:value="normalAccess"> {{ $t( 'EditMember.RegularMember' ) }}</label>
       </div>
