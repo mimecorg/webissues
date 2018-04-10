@@ -172,6 +172,8 @@ export default {
       this.$refs.file.addEventListener( 'dragover', this.handleDragDrop );
       this.$refs.file.addEventListener( 'dragleave', this.handleDragDrop );
       this.$refs.file.addEventListener( 'drop', this.handleDragDrop );
+    } else {
+      this.$refs.name.focus();
     }
   },
   beforeDestroy() {
