@@ -75,7 +75,7 @@ export default {
       if ( !this.$fields.validate() )
         return;
 
-      if ( this.mode == 'edit' && !this.$fields.modified() ) {
+      if ( this.mode == 'edit' && !this.$fields.modified() && this.commentFormat == this.initialFormat ) {
         this.returnToDetails( this.commentId );
         return;
       }
