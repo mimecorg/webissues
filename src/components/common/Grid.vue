@@ -26,9 +26,11 @@
             <th v-for="( columnName, columnIndex ) in columnNames" v-bind:class="getColumnClass( columnIndex )" v-on:click="sort( columnIndex )">
               {{ columnName }} <span v-if="columnIndex == sortColumn" v-bind:class="sortClass" aria-hidden="true"></span>
             </th>
+            <th class="column-fill"></th>
           </thead>
           <thead v-else>
             <th v-for="( columnName, columnIndex ) in columnNames" v-bind:class="getColumnClass( columnIndex )">{{ columnName }}</th>
+            <th class="column-fill"></th>
           </thead>
         </table>
       </div>
@@ -40,6 +42,7 @@
             <tr v-for="( item, rowIndex ) in items" v-on:click="rowClick( rowIndex )">
               <slot v-for="( columnName, columnIndex ) in columnNames" v-bind:item="item" v-bind:column-index="columnIndex"
                     v-bind:row-index="rowIndex" v-bind:column-class="getColumnClass( columnIndex )"/>
+              <td class="column-fill"></td>
             </tr>
           </tbody>
         </table>
@@ -163,6 +166,8 @@ export default {
 }
 
 .grid-header-table {
+  width: 100%;
+
   th {
     text-align: left;
     padding: 5px 10px 3px 10px;
@@ -187,6 +192,10 @@ export default {
   &:hover {
     color: @grid-header-hover-color;
   }
+
+  &.column-fill {
+    cursor: initial;
+  }
 }
 
 .grid-body-scroll {
@@ -194,6 +203,8 @@ export default {
 }
 
 .grid-body-table {
+  width: 100%;
+
   tr {
     border-bottom: 1px solid @grid-body-border-color;
   }
@@ -220,6 +231,13 @@ export default {
   &.column-wide {
   min-width: 2 * @grid-column-width;
   max-width: 2 * @grid-column-width;
+  }
+
+  &.column-fill {
+    padding: 0;
+    width: 100%;
+    min-width: 0;
+    max-width: initial;
   }
 }
 
