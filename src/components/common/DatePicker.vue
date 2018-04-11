@@ -20,8 +20,8 @@
 <template>
   <div v-bind:class="[ 'input-group', className ]">
     <input ref="input" type="text" class="form-control" autocomplete="off"
-           v-bind:id="id" v-bind:value="value" v-bind:maxlength="maxlength"
-           v-on:input="valueChanged" v-on:keydown="keyDown" v-on:blur="close">
+           v-bind:id="id" v-bind:maxlength="maxlength" v-model="text"
+           v-on:input="updateDate" v-on:keydown="keyDown" v-on:blur="close">
     <span v-bind:class="[ 'input-group-btn', { open } ]">
       <button class="btn btn-default" type="button" tabindex="-1" v-on:click="toggle( 'date' )" v-on:mousedown.prevent>
         <span class="fa fa-calendar" aria-hidden="true"></span>
@@ -184,7 +184,7 @@ export default {
 
   data() {
     return {
-      currentValue: this.value,
+      text: this.value,
       currentDate: null,
       selectedDate: null,
       open: false,
@@ -250,8 +250,11 @@ export default {
 
   watch: {
     value( value ) {
-      this.currentValue = value;
+      this.text = value;
       this.updateDate();
+    },
+    text( value ) {
+      this.$emit( 'input', value );
     }
   },
 
@@ -307,7 +310,7 @@ export default {
           this.selectedDate = this.createDate( this.currentYear, this.currentMonth, day, this.selectedDate.getHours(), this.selectedDate.getMinutes() );
         else
           this.selectedDate = this.createDate( this.currentYear, this.currentMonth, day );
-        this.updateValue();
+        this.updateText();
         this.close();
       }
     },
@@ -329,7 +332,7 @@ export default {
         this.selectedDate = this.createDate( now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), now.getMinutes() );
       else
         this.selectedDate = this.createDate( now.getFullYear(), now.getMonth(), now.getDate() );
-      this.updateValue();
+      this.updateText();
       this.close();
     },
 
@@ -394,7 +397,7 @@ export default {
       }
       if ( newDate.getFullYear() >= 1 && newDate.getFullYear() <= 9999 ) {
         this.selectedDate = newDate;
-        this.updateValue();
+        this.updateText();
       }
     },
     toggleAmPm() {
@@ -411,7 +414,7 @@ export default {
         const now = new Date();
         this.selectedDate = this.createDate( now.getFullYear(), now.getMonth(), now.getDate(), hours, 0 );
       }
-      this.updateValue();
+      this.updateText();
       this.selector = null;
     },
     selectMinutes( row, col ) {
@@ -422,7 +425,7 @@ export default {
         const now = new Date();
         this.selectedDate = this.createDate( now.getFullYear(), now.getMonth(), now.getDate(), 0, minutes );
       }
-      this.updateValue();
+      this.updateText();
       this.selector = null;
     },
 
@@ -445,33 +448,20 @@ export default {
     },
 
     /* change the value of the input control based on selected date */
-    updateValue() {
-      if ( this.selectedDate != null ) {
-        const value = this.$parser.formatDate( this.selectedDate, { withTime: this.withTime } );
-        this.setValue( value );
-      }
+    updateText() {
+      if ( this.selectedDate != null )
+        this.text = this.$parser.formatDate( this.selectedDate, { withTime: this.withTime } );
     },
 
     /* update selected date based on user input */
     updateDate() {
-      if ( this.currentValue != null ) {
-        const date = this.$parser.parseDate( this.currentValue, { withTime: this.withTime } );
+      if ( this.text != null ) {
+        const date = this.$parser.parseDate( this.text, { withTime: this.withTime } );
         if ( date != null ) {
           this.selectedDate = date;
           this.currentDate = this.createDate( date.getFullYear(), date.getMonth(), 1 );
         }
       }
-    },
-
-    setValue( value ) {
-      this.currentValue = value;
-      this.$refs.input.value = value;
-      this.$emit( 'input', value );
-    },
-
-    valueChanged( e ) {
-      this.setValue( e.target.value );
-      this.updateDate();
     },
 
     keyDown( e ) {

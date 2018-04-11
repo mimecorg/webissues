@@ -20,8 +20,8 @@
 <template>
   <div v-bind:class="[ 'input-group', className ]">
     <input ref="input" type="text" class="form-control" autocomplete="off"
-           v-bind:id="id" v-bind:value="value" v-bind:maxlength="maxlength"
-           v-on:input="valueChanged" v-on:keydown="keyDown" v-on:blur="close">
+           v-bind:id="id" v-bind:maxlength="maxlength" v-model="text"
+           v-on:input="dropdown" v-on:keydown="keyDown" v-on:blur="close">
     <span v-bind:class="[ 'input-group-btn', 'dropdown-input-group', { open } ]">
       <button class="btn btn-default" type="button" tabindex="-1" v-on:click="toggle()" v-on:mousedown.prevent><span class="fa fa-chevron-down" aria-hidden="true"></span></button>
       <div v-if="open && matchingItems.length > 0" class="dropdown-menu dropdown-menu-both" v-on:mousedown.prevent>
@@ -48,7 +48,7 @@ export default {
 
   data() {
     return {
-      currentValue: this.value,
+      text: this.value,
       matchPrefix: null,
       open: false
     }
@@ -60,9 +60,9 @@ export default {
     },
     currentItem() {
       if ( this.multiSelect )
-        return this.currentValue.split( /,\s*/ ).pop();
+        return this.text.split( /,\s*/ ).pop();
       else
-        return this.currentValue;
+        return this.text;
     },
     currentItemIndex() {
       return this.matchingItems.findIndex( item => item == this.currentItem );
@@ -71,7 +71,10 @@ export default {
 
   watch: {
     value( value ) {
-      this.currentValue = value;
+      this.text = value;
+    },
+    text( value ) {
+      this.$emit( 'input', value );
     }
   },
 
@@ -107,24 +110,13 @@ export default {
     },
     setItem( item ) {
       if ( this.multiSelect ) {
-        let parts = this.currentValue.split( /,\s*/ );
+        let parts = this.text.split( /,\s*/ );
         parts.pop();
         parts.push( item );
-        this.setValue( parts.join( ', ' ) );
+        this.text = parts.join( ', ' );
       } else {
-        this.setValue( item );
+        this.text = item;
       }
-    },
-
-    setValue( value ) {
-      this.currentValue = value;
-      this.$refs.input.value = value;
-      this.$emit( 'input', value );
-    },
-
-    valueChanged( e ) {
-      this.setValue( e.target.value );
-      this.dropdown();
     },
 
     keyDown( e ) {
