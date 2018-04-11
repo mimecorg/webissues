@@ -23,7 +23,7 @@
     <Prompt v-if="mode == 'edit'" path="EditComment.EditCommentPrompt"><strong>{{ '#' + commentId }}</strong></Prompt>
     <Prompt v-else-if="mode == 'add'" path="EditComment.AddCommentPrompt"><strong>{{ issueName }}</strong></Prompt>
     <MarkupEditor ref="comment" id="comment" v-bind:label="$t( 'EditComment.Comment' )" v-bind="$field( 'comment' )"
-                  v-bind:format="commentFormat" v-model="comment" v-on:select-format="selectFormat" v-on:error="error"/>
+                  v-bind:format.sync="commentFormat" v-model="comment" v-on:error="error"/>
     <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
   </div>
 </template>
@@ -67,10 +67,6 @@ export default {
   },
 
   methods: {
-    selectFormat( format ) {
-      this.commentFormat = format;
-    },
-
     submit() {
       if ( !this.$fields.validate() )
         return;

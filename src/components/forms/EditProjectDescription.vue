@@ -23,7 +23,7 @@
     <Prompt v-if="mode == 'edit'" path="EditProjectDescription.EditDescriptionPrompt"><strong>{{ projectName }}</strong></Prompt>
     <Prompt v-else-if="mode == 'add'" path="EditProjectDescription.AddDescriptionPrompt"><strong>{{ projectName }}</strong></Prompt>
     <MarkupEditor ref="description" id="description" v-bind:label="$t( 'EditProjectDescription.Description' )" v-bind="$field( 'description' )"
-                  v-bind:format="descriptionFormat" v-model="description" v-on:select-format="selectFormat" v-on:error="error"/>
+                  v-bind:format.sync="descriptionFormat" v-model="description" v-on:error="error"/>
     <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
   </div>
 </template>
@@ -66,10 +66,6 @@ export default {
   },
 
   methods: {
-    selectFormat( format ) {
-      this.descriptionFormat = format;
-    },
-
     submit() {
       if ( !this.$fields.validate() )
         return;

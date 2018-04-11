@@ -35,7 +35,7 @@
       </FormGroup>
     </Panel>
     <MarkupEditor v-if="mode == 'add' || mode == 'clone'" ref="description" id="description" v-bind:label="$t( 'EditIssue.Description' )" v-bind="$field( 'description' )"
-                  v-bind:format="descriptionFormat" v-model="description" v-on:select-format="selectFormat" v-on:error="error"/>
+                  v-bind:format.sync="descriptionFormat" v-model="description" v-on:error="error"/>
     <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
   </div>
 </template>
@@ -162,9 +162,6 @@ export default {
         this.folderId = folder.id;
       else
         this.folderId = null;
-    },
-    selectFormat( format ) {
-      this.descriptionFormat = format;
     },
 
     submit() {

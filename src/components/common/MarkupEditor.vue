@@ -97,10 +97,10 @@ export default {
     },
     selectMarkup( markup ) {
       if ( markup ) {
-        this.$emit( 'select-format', TextFormat.TextWithMarkup );
+        this.$emit( 'update:format', TextFormat.TextWithMarkup );
       } else {
         this.previewHtml = null;
-        this.$emit( 'select-format', TextFormat.PlainText );
+        this.$emit( 'update:format', TextFormat.PlainText );
       }
     },
 

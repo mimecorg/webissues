@@ -24,7 +24,7 @@
     <Prompt v-else-if="mode == 'add'" path="EditProject.AddProjectPrompt"></Prompt>
     <FormInput ref="name" id="name" v-bind:label="$t( 'EditProject.Name' )" v-bind="$field( 'name' )" v-model="name"/>
     <MarkupEditor v-if="mode == 'add'" ref="description" id="description" v-bind:label="$t( 'EditProject.Description' )" v-bind="$field( 'description' )"
-                  v-bind:format="descriptionFormat" v-model="description" v-on:select-format="selectFormat" v-on:error="error"/>
+                  v-bind:format.sync="descriptionFormat" v-model="description" v-on:error="error"/>
     <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
   </div>
 </template>
@@ -74,10 +74,6 @@ export default {
   },
 
   methods: {
-    selectFormat( format ) {
-      this.descriptionFormat = format;
-    },
-
     submit() {
       if ( !this.$fields.validate() )
         return;
