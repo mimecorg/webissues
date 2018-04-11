@@ -22,15 +22,13 @@
     <FormHeader v-bind:title="$t( 'MoveFolder.MoveFolder' )" v-on:close="close"/>
     <Prompt path="MoveFolder.MoveFolderPrompt"><strong>{{ name }}</strong></Prompt>
     <FormGroup v-bind:label="$t( 'MoveFolder.Project' )" v-bind="$field( 'projectId' )">
-      <LocationFilters ref="projectId" v-bind:project="project" require-admin v-on:select-project="selectProject"/>
+      <LocationFilters ref="projectId" v-bind:projectId.sync="projectId" require-admin/>
     </FormGroup>
     <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
-
 import { ErrorCode } from '@/constants'
 
 export default {
@@ -51,24 +49,7 @@ export default {
     };
   },
 
-  computed: {
-    ...mapState( 'global', [ 'projects' ] ),
-    project() {
-      if ( this.projectId != null )
-        return this.projects.find( p => p.id == this.projectId );
-      else
-        return null;
-    }
-  },
-
   methods: {
-    selectProject( project ) {
-      if ( project != null )
-        this.projectId = project.id;
-      else
-        this.projectId = null;
-    },
-
     submit() {
       if ( !this.$fields.validate() )
         return;

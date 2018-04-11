@@ -22,16 +22,13 @@
     <FormHeader v-bind:title="$t( 'MoveIssue.MoveIssue' )" v-on:close="close"/>
     <Prompt path="MoveIssue.MoveIssuePrompt"><strong>{{ name }}</strong></Prompt>
     <FormGroup v-bind:label="$t( 'MoveIssue.Location' )" v-bind="$field( 'folderId' )">
-      <LocationFilters ref="folderId" v-bind:typeId="typeId" v-bind:project="project" v-bind:folder="folder" require-admin folder-visible
-                       v-on:select-project="selectProject" v-on:select-folder="selectFolder"/>
+      <LocationFilters ref="folderId" v-bind:typeId="typeId" v-bind:projectId.sync="projectId" v-bind:folderId.sync="folderId" require-admin folder-visible/>
     </FormGroup>
     <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
-
 export default {
   props: {
     issueId: Number,
@@ -58,37 +55,7 @@ export default {
     };
   },
 
-  computed: {
-    ...mapState( 'global', [ 'projects' ] ),
-    project() {
-      if ( this.projectId != null )
-        return this.projects.find( p => p.id == this.projectId );
-      else
-        return null;
-    },
-    folder() {
-      if ( this.folderId != null && this.project != null )
-        return this.project.folders.find( f => f.id == this.folderId );
-      else
-        return null;
-    }
-  },
-
   methods: {
-    selectProject( project ) {
-      if ( project != null )
-        this.projectId = project.id;
-      else
-        this.projectId = null;
-      this.folderId = null;
-    },
-    selectFolder( folder ) {
-      if ( folder != null )
-        this.folderId = folder.id;
-      else
-        this.folderId = null;
-    },
-
     submit() {
       if ( !this.$fields.validate() )
         return;

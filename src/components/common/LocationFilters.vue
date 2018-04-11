@@ -37,9 +37,9 @@
         <li v-bind:class="{ active: folder == null }">
           <HyperLink v-on:click="selectFolder( null )">{{ $t( 'LocationFilters.SelectFolder' ) }}</HyperLink>
         </li>
-        <template v-if="folders.length > 0">
+        <template v-if="availableFolders.length > 0">
           <li role="separator" class="divider"></li>
-          <li v-for="f in folders" v-bind:key="f.id" v-bind:class="{ active: folder != null && f.id == folder.id }">
+          <li v-for="f in availableFolders" v-bind:key="f.id" v-bind:class="{ active: folder != null && f.id == folder.id }">
             <HyperLink v-on:click="selectFolder( f )">{{ f.name }}</HyperLink>
           </li>
         </template>
@@ -56,8 +56,8 @@ import { Access } from '@/constants'
 export default {
   props: {
     typeId: Number,
-    project: Object,
-    folder: Object,
+    projectId: Number,
+    folderId: Number,
     requireAdmin: Boolean,
     folderVisible: Boolean
   },
@@ -70,11 +70,23 @@ export default {
       else
         return this.projects;
     },
-    folders() {
+    availableFolders() {
       if ( this.project != null )
         return this.project.folders.filter( f => f.typeId == this.typeId );
       else
         return [];
+    },
+    project() {
+      if ( this.projectId != null )
+        return this.availableProjects.find( p => p.id == this.projectId );
+      else
+        return null;
+    },
+    folder() {
+      if ( this.folderId != null && this.project != null )
+        return this.project.folders.find( f => f.id == this.folderId );
+      else
+        return null;
     },
     projectName() {
       if ( this.project != null )
@@ -111,10 +123,18 @@ export default {
     },
 
     selectProject( project ) {
-      this.$emit( 'select-project', project );
+      if ( project != null )
+        this.$emit( 'update:projectId', project.id );
+      else
+        this.$emit( 'update:projectId', null );
+      this.$emit( 'update:folderId', null );
     },
+
     selectFolder( folder ) {
-      this.$emit( 'select-folder', folder );
+      if ( folder != null )
+        this.$emit( 'update:folderId', folder.id );
+      else
+        this.$emit( 'update:folderId', null );
     }
   }
 }
