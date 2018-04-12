@@ -12,7 +12,7 @@
 <?php endif ?>
   <script type="text/javascript" src="<?php echo $this->url( $scriptUrl ) ?>"></script>
 </head>
-<body>
+<body class="front-body">
 
 <div id="navbar">
   <div class="container-fluid">

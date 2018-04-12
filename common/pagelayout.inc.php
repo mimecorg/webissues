@@ -48,19 +48,20 @@ class Common_PageLayout extends System_Web_Component
         $devMode = $site->getConfig( 'dev_mode' );
         $devUrl = $site->getConfig( 'dev_url' );
 
-        $assetsPath = WI_ROOT_DIR . '/assets/assets.json';
+        if ( !$devMode ) {
+            $assetsPath = WI_ROOT_DIR . '/assets/assets.json';
 
-        if ( !file_exists( $assetsPath ) )
-            throw new System_Core_Exception( 'Assets were not built' );
+            if ( !file_exists( $assetsPath ) )
+                throw new System_Core_Exception( 'Assets were not built' );
 
-        $assets = json_decode( file_get_contents( $assetsPath ), true );
+            $assets = json_decode( file_get_contents( $assetsPath ), true );
 
-        $this->styleUrl = '/assets/' . $assets[ 'main' ][ 'css' ];
-
-        if ( !$devMode )
+            $this->styleUrl = '/assets/' . $assets[ 'main' ][ 'css' ];
             $this->scriptUrl = '/assets/' . $assets[ 'front' ][ 'js' ];
-        else
+        } else {
+            $this->styleUrl = null;
             $this->scriptUrl = $devUrl . 'js/front.js';
+        }
 
         $this->manualUrl = $application->getManualUrl();
     }

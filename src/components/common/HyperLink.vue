@@ -31,12 +31,3 @@ export default {
   }
 }
 </script>
-
-<style lang="less">
-@import "~@/styles/variables.less";
-@import "~@/styles/mixins.less";
-
-a[role="link"] {
-  cursor: pointer;
-}
-</style>

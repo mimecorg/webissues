@@ -17,34 +17,23 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-if ( process.env.NODE_ENV != 'production' )
-  require( '@/styles/global.less' );
+.busy-overlay {
+  position: absolute;
+  left: 0; right: 0;
+  top: 0; bottom: 0;
+  background-color: rgba( 255, 255, 255, 0.5 );
+  z-index: 20;
+  outline: 0;
+  cursor: wait;
 
-let expanded = false;
-
-export function front() {
-  const toggleButton = document.getElementById( 'toggle-button' );
-  if ( toggleButton != null )
-    toggleButton.addEventListener( 'click', toggle );
-  window.addEventListener( 'resize', handleWindowResize );
-}
-
-function toggle() {
-  expanded = !expanded;
-  updateNavbar();
-}
-
-function handleWindowResize() {
-  if ( window.innerWidth >= 768 && expanded ) {
-    expanded = false;
-    updateNavbar();
+  #window > & {
+    border-radius: @border-radius-large;
   }
 }
 
-function updateNavbar() {
-  const collapseDiv = document.getElementById( 'navbar-element-collapse' );
-  if ( collapseDiv != null ) {
-    collapseDiv.setAttribute( 'class', 'navbar-element collapse' + ( expanded ? ' in' : '' ) );
-    collapseDiv.setAttribute( 'aria-expanded', expanded ? 'true' : 'false' );
-  }
+.busy-spinner {
+  position: absolute;
+  left: 50%; top: 50%;
+  margin: -21px 0 0 -15px;
+  font-size: 30px;
 }

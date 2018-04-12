@@ -17,34 +17,64 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-if ( process.env.NODE_ENV != 'production' )
-  require( '@/styles/global.less' );
-
-let expanded = false;
-
-export function front() {
-  const toggleButton = document.getElementById( 'toggle-button' );
-  if ( toggleButton != null )
-    toggleButton.addEventListener( 'click', toggle );
-  window.addEventListener( 'resize', handleWindowResize );
+.description-panel {
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid @description-panel-border;
+  border-radius: @border-radius-base;
 }
 
-function toggle() {
-  expanded = !expanded;
-  updateNavbar();
+.markup-editor .btn-toolbar {
+  margin-bottom: 5px;
 }
 
-function handleWindowResize() {
-  if ( window.innerWidth >= 768 && expanded ) {
-    expanded = false;
-    updateNavbar();
+.markup-preview {
+  padding: 10px;
+  margin-top: 5px;
+  border: 1px solid @description-panel-border;
+  border-radius: @border-radius-base;
+}
+
+.last-edited {
+  color: @last-edited-color;
+  text-align: right;
+  margin-top: 5px;
+
+  .fa {
+    margin-right: 3px;
   }
 }
 
-function updateNavbar() {
-  const collapseDiv = document.getElementById( 'navbar-element-collapse' );
-  if ( collapseDiv != null ) {
-    collapseDiv.setAttribute( 'class', 'navbar-element collapse' + ( expanded ? ' in' : '' ) );
-    collapseDiv.setAttribute( 'aria-expanded', expanded ? 'true' : 'false' );
+.formatted-text {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+
+  ul {
+    margin-bottom: 0;
   }
+
+  .quote {
+    margin-bottom: 5px;
+    padding: 5px 10px;
+    border-left: 2px solid #777;
+  }
+
+  .quote-title {
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+
+  pre, pre.hljs {
+    margin-bottom: 5px;
+    padding: 5px 10px;
+  }
+
+  .rtl {
+    direction: rtl;
+  }
+}
+
+.hljs {
+  color: @pre-color;
+  background: @pre-bg;
 }

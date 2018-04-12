@@ -117,7 +117,7 @@ module.exports = function( { production } = {} ) {
         comments: false
       } ),
       new ExtractTextPlugin( {
-        filename: 'css/style.min.css?[contenthash]'
+        filename: 'css/[name].min.css?[contenthash]'
       } ),
       new AssetsPlugin( {
         filename: 'assets.json',

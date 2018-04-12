@@ -17,34 +17,20 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-if ( process.env.NODE_ENV != 'production' )
-  require( '@/styles/global.less' );
-
-let expanded = false;
-
-export function front() {
-  const toggleButton = document.getElementById( 'toggle-button' );
-  if ( toggleButton != null )
-    toggleButton.addEventListener( 'click', toggle );
-  window.addEventListener( 'resize', handleWindowResize );
+.panel-title {
+  font-size: @panel-title-font-size;
+  font-weight: bold;
 }
 
-function toggle() {
-  expanded = !expanded;
-  updateNavbar();
+.panel-body > .form-group:last-child {
+  margin-bottom: 5px;
 }
 
-function handleWindowResize() {
-  if ( window.innerWidth >= 768 && expanded ) {
-    expanded = false;
-    updateNavbar();
-  }
-}
+.panel-links {
+  float: right;
+  line-height: 1.2;
 
-function updateNavbar() {
-  const collapseDiv = document.getElementById( 'navbar-element-collapse' );
-  if ( collapseDiv != null ) {
-    collapseDiv.setAttribute( 'class', 'navbar-element collapse' + ( expanded ? ' in' : '' ) );
-    collapseDiv.setAttribute( 'aria-expanded', expanded ? 'true' : 'false' );
+  a {
+    margin-left: 10px;
   }
 }

@@ -1,0 +1,91 @@
+/**************************************************************************
+* This file is part of the WebIssues Server program
+* Copyright (C) 2006 Michał Męciński
+* Copyright (C) 2007-2017 WebIssues Team
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU Affero General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Affero General Public License for more details.
+*
+* You should have received a copy of the GNU Affero General Public License
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.
+**************************************************************************/
+
+.datepicker {
+  width: 280px;
+  margin: 0 5px;
+
+  td, th {
+    padding: 7px 5px;
+    text-align: center;
+    border-radius: @border-radius-base;
+  }
+
+  .datepicker-btn:hover {
+    background-color: @dropdown-link-hover-bg;
+    cursor: pointer;
+  }
+
+  .datepicker-btn.active {
+    color: @dropdown-link-active-color;
+    background-color: @dropdown-link-active-bg;
+  }
+
+  .dropdown-menu & .fa {
+    color: @text-color;
+  }
+}
+
+.datepicker-time {
+  width: 150px;
+}
+
+.datepicker-header {
+  th {
+    width: 100% / 7;
+
+    &.datepicker-wide {
+      width: 100% * 5 / 7;
+    }
+  }
+}
+
+.datepicker-timepicker12 {
+  td {
+    width: 30%;
+
+    &.datepicker-separator {
+      width: 10%;
+    }
+  }
+}
+
+.datepicker-timepicker24 {
+  td {
+    width: 40%;
+
+    &.datepicker-separator {
+      width: 20%;
+    }
+  }
+}
+
+.datepicker-n-cols( @cols ) {
+  .datepicker-@{cols}-cols {
+    th, td {
+      width: 100% / @cols;
+    }
+  }
+}
+
+.datepicker-n-cols( 3 );
+.datepicker-n-cols( 4 );
+.datepicker-n-cols( 5 );
+.datepicker-n-cols( 6 );
+.datepicker-n-cols( 7 );

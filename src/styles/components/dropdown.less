@@ -1,0 +1,144 @@
+/**************************************************************************
+* This file is part of the WebIssues Server program
+* Copyright (C) 2006 Michał Męciński
+* Copyright (C) 2007-2017 WebIssues Team
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU Affero General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Affero General Public License for more details.
+*
+* You should have received a copy of the GNU Affero General Public License
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.
+**************************************************************************/
+
+.dropdown-toggle {
+  text-align: left;
+  .ellipsis();
+}
+
+.dropdown-has-caret {
+  position: relative;
+  padding-right: 23px;
+
+  .caret {
+    position: absolute;
+    top: 15px; right: 12px;
+  }
+}
+
+.dropdown-menu {
+  min-width: 120px;
+}
+
+.dropdown-menu > li > a, .dropdown-header {
+  padding: 3px 12px;
+  .ellipsis();
+}
+
+.dropdown-menu-scroll {
+  max-height: 156px;
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  @media ( min-width: @screen-sm-min ) {
+    max-height: 260px;
+  }
+
+  > li > a {
+    display: block;
+    clear: both;
+    padding: 3px 12px;
+    font-weight: normal;
+    line-height: @line-height-base;
+    color: @dropdown-link-color;
+    .ellipsis();
+    cursor: pointer;
+  }
+}
+
+.dropdown-menu-scroll > li > a {
+  &:hover,
+  &:focus {
+    text-decoration: none;
+    color: @dropdown-link-hover-color;
+    background-color: @dropdown-link-hover-bg;
+  }
+}
+
+.dropdown-menu-scroll > .active > a {
+  &,
+  &:hover,
+  &:focus {
+    text-decoration: none;
+    color: @dropdown-link-active-color;
+    background-color: @dropdown-link-active-bg;
+  }
+}
+
+.dropdown-menu > li > a:focus, .dropdown-menu-scroll > li > a:focus {
+  outline: 0;
+  box-shadow: inset 1px 1px @input-border-focus, inset -1px -1px @input-border-focus;
+}
+
+.dropdown-menu > .active > a:focus, .dropdown-menu-scroll > .active > a:focus {
+  box-shadow: none;
+}
+
+.dropdown-menu .fa {
+  color: @dropdown-icon-color;
+  .fa-fw();
+}
+
+.dropdown-menu-both {
+  right: 0;
+}
+
+.dropdown-input-group {
+  position: initial;
+}
+
+.dropdown-filters {
+  white-space: nowrap;
+
+  .dropdown-toggle {
+    width: 140px;
+
+    @media ( min-width: @screen-sm-min ) {
+      width: 175px;
+    }
+
+    .has-error & {
+      border-color: @state-danger-text;
+      &:focus {
+        border-color: darken( @state-danger-text, 10% );
+      }
+    }
+  }
+
+  .dropdown-menu {
+    right: 0;
+  }
+}
+
+.dropdown-select {
+  .dropdown-toggle {
+    width: 250px;
+
+    .has-error & {
+      border-color: @state-danger-text;
+      &:focus {
+        border-color: darken( @state-danger-text, 10% );
+      }
+    }
+  }
+
+  .dropdown-menu {
+    right: 0;
+  }
+}

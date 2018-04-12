@@ -185,37 +185,3 @@ export default {
   }
 }
 </script>
-
-<style lang="less">
-@import "~@/styles/variables.less";
-@import "~@/styles/mixins.less";
-
-.form-upload {
-  border: 1px dashed @btn-default-border;
-  border-radius: @border-radius-base;
-  min-height: 60px;
-  position: relative;
-  cursor: pointer;
-
-  &:hover, &.drag-over {
-    background-color: #f8f8f8;
-    border-color: darken( @btn-default-border, 12% );
-  }
-
-  .has-error & {
-    border-color: @state-danger-text;
-  }
-
-  > .form-control {
-    opacity: 0;
-    height: 58px;
-    position: absolute;
-    cursor: pointer;
-  }
-
-  > p {
-    text-align: center;
-    margin-top: 19px;
-  }
-}
-</style>

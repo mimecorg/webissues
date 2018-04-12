@@ -40,20 +40,3 @@ export default {
   }
 }
 </script>
-
-<style lang="less">
-@import "~@/styles/variables.less";
-@import "~@/styles/mixins.less";
-
-.form-buttons {
-  text-align: right;
-  margin: 15px -15px 0 -15px;
-  padding: 15px;
-  border-top: 1px solid @window-separator-color;
-
-  > .btn {
-    min-width: 120px;
-    margin-left: 10px;
-  }
-}
-</style>

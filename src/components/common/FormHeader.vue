@@ -43,37 +43,3 @@ export default {
   }
 }
 </script>
-
-<style lang="less">
-@import "~@/styles/variables.less";
-@import "~@/styles/mixins.less";
-
-.form-header {
-  margin: 0 -15px 15px -15px;
-  padding: 0 15px;
-  border-bottom: 1px solid @window-separator-color;
-}
-
-.form-header-group {
-  .group();
-  margin-top: 15px;
-  margin-bottom: 15px;
-}
-
-.form-header-title {
-  .element();
-  .element-wide();
-
-  > h1 {
-    margin: 6px 0;
-    font-weight: bold;
-    font-size: @form-header-font-size;
-    line-height: @line-height-base;
-    white-space: normal;
-  }
-}
-
-.form-header-buttons {
-  .element();
-}
-</style>

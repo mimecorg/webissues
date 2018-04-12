@@ -282,19 +282,3 @@ export default {
   }
 }
 </script>
-
-<style lang="less">
-@import "~@/styles/variables.less";
-@import "~@/styles/mixins.less";
-
-.markup-editor .btn-toolbar {
-  margin-bottom: 5px;
-}
-
-.markup-preview {
-  padding: 10px;
-  margin-top: 5px;
-  border: 1px solid @description-panel-border;
-  border-radius: @border-radius-base;
-}
-</style>
