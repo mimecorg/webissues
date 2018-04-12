@@ -68,7 +68,7 @@ class Client_Index extends System_Web_Component
             $this->scriptUrl = '/assets/' . $assets[ 'main' ][ 'js' ];
         } else {
             $this->styleUrl = null;
-            $this->scriptUrl = $devUrl . 'js/webissues.js';
+            $this->scriptUrl = $devUrl . 'js/main.js';
         }
 
         $options[ 'baseURL' ] = WI_BASE_URL;

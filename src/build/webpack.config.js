@@ -47,11 +47,14 @@ module.exports = function( { production } = {} ) {
   }
 
   return {
-    entry: './src/main.js',
+    entry: {
+      main: './src/main.js',
+      front: './src/front.js'
+    },
     output: {
       path: path.resolve( __dirname, '../../assets' ),
       publicPath: production ? '../' : 'http://localhost:8080/',
-      filename: production ? 'js/webissues.min.js?[chunkhash]' : 'js/webissues.js',
+      filename: production ? 'js/[name].min.js?[chunkhash]' : 'js/[name].js',
       library: 'WebIssues'
     },
     module: {

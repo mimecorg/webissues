@@ -42,48 +42,26 @@ class Common_PageLayout extends System_Web_Component
             $application->handleException( $ex );
         }
 
-        $this->pageTitle = $this->view->getSlot( 'page_title', $this->tr( 'Untitled page' ) );
-
-        $principal = System_Api_Principal::getCurrent();
-        if ( $principal->isAuthenticated() )
-            $this->homeUrl = '/client/index.php';
-        else
-            $this->homeUrl = '/index.php';
-
-        $scriptFiles = $this->view->getSlot( 'script_files' );
-
-        $this->scriptFiles[] = '/common/js/jquery.js';
-        $this->scriptFiles[] = '/common/js/jquery.cookie.js';
-        $this->scriptFiles[] = '/common/js/webissues.min.js';
-
-        if ( !empty( $scriptFiles ) ) {
-            foreach ( $scriptFiles as $file )
-                $this->scriptFiles[] = $file;
-        }
-
-        $cssFiles = $this->view->getSlot( 'css_files' );
-
-        if ( !empty( $cssFiles ) ) {
-            foreach ( $cssFiles as $file )
-                $this->cssFiles[] = $file;
-        }
-
-        $this->cssFiles[] = '/common/theme/style.css';
-
-        $this->cssConditional[ 'lt IE 8' ] = '/common/theme/ie7.css';
-
-        $inlineCode = $this->view->getSlot( 'inline_code' );
-        if ( !empty( $inlineCode ) )
-            $this->inlineCode = new System_Web_RawValue( "    $( function() {" . join( '', $inlineCode ) . "\n    } );\n" );
-
         $this->icon = '/common/images/webissues.ico';
 
-        $this->manualUrl = $application->getManualUrl();
+        $site = System_Core_Application::getInstance()->getSite();
+        $devMode = $site->getConfig( 'dev_mode' );
+        $devUrl = $site->getConfig( 'dev_url' );
 
-        if ( $application->isDebugInfoEnabled() && $application->getFatalError() == null ) {
-            $this->errors = array();
-            foreach ( $application->getErrors() as $exception )
-                $this->errors[] = $exception->__toString();
-        }
+        $assetsPath = WI_ROOT_DIR . '/assets/assets.json';
+
+        if ( !file_exists( $assetsPath ) )
+            throw new System_Core_Exception( 'Assets were not built' );
+
+        $assets = json_decode( file_get_contents( $assetsPath ), true );
+
+        $this->styleUrl = '/assets/' . $assets[ 'main' ][ 'css' ];
+
+        if ( !$devMode )
+            $this->scriptUrl = '/assets/' . $assets[ 'front' ][ 'js' ];
+        else
+            $this->scriptUrl = $devUrl . 'js/front.js';
+
+        $this->manualUrl = $application->getManualUrl();
     }
 }

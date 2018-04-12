@@ -18,7 +18,7 @@
 -->
 
 <template>
-  <div id="navbar">
+  <div id="navbar" class="navbar-fixed">
     <div class="container-fluid">
       <div class="navbar-group">
         <div class="navbar-element navbar-element-wide">
@@ -166,14 +166,18 @@ export default {
 @import "~@/styles/mixins.less";
 
 #navbar {
-  position: absolute;
-  left: 0; right: 0;
-  top: 0; height: @navbar-height;
+  height: @navbar-height;
   background: @navbar-bg;
 
   .btn-default {
     .button-variant( @btn-navbar-color, @btn-navbar-bg, @btn-navbar-border );
   }
+}
+
+.navbar-fixed {
+  position: absolute;
+  left: 0; right: 0;
+  top: 0;
 }
 
 .navbar-group {
