@@ -52,26 +52,9 @@ class Client_Index extends System_Web_Component
 
         $this->icon = '/common/images/webissues.ico';
 
-        $site = System_Core_Application::getInstance()->getSite();
-        $devMode = $site->getConfig( 'dev_mode' );
-        $devUrl = $site->getConfig( 'dev_url' );
-
-        if ( !$devMode ) {
-            $assetsPath = WI_ROOT_DIR . '/assets/assets.json';
-
-            if ( !file_exists( $assetsPath ) )
-                throw new System_Core_Exception( 'Assets were not built' );
-
-            $assets = json_decode( file_get_contents( $assetsPath ), true );
-
-            $this->styleUrl = '/assets/' . $assets[ 'common' ][ 'css' ];
-            $this->commonScriptUrl = '/assets/' . $assets[ 'common' ][ 'js' ];
-            $this->mainScriptUrl = '/assets/' . $assets[ 'main' ][ 'js' ];
-        } else {
-            $this->styleUrl = null;
-            $this->commonScriptUrl = $devUrl . 'js/common.js';
-            $this->mainScriptUrl = $devUrl . 'js/main.js';
-        }
+        $this->assets = new System_Web_Assets();
+        $this->assets->add( 'common' );
+        $this->assets->add( 'main' );
 
         $options[ 'baseURL' ] = WI_BASE_URL;
         $options[ 'csrfToken' ] = $csrfToken;
