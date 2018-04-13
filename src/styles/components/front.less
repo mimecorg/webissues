@@ -1,0 +1,59 @@
+/**************************************************************************
+* This file is part of the WebIssues Server program
+* Copyright (C) 2006 Michał Męciński
+* Copyright (C) 2007-2017 WebIssues Team
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU Affero General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Affero General Public License for more details.
+*
+* You should have received a copy of the GNU Affero General Public License
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.
+**************************************************************************/
+
+.front-body {
+  background-color: @front-bg;
+
+  #window {
+    border-color: @front-window-border-color;
+    margin-top: 10px;
+
+    @media ( min-width: @screen-sm-min ) {
+      &.window-small {
+        margin-top: 75px;
+      }
+    }
+  }
+
+  .form-header-title {
+    max-width: none;
+  }
+}
+
+.front-login-buttons {
+  margin: 20px 0;
+
+  > .btn {
+    width: 100%;
+    margin: 0;
+  }
+
+  > p {
+    margin: 10px 0;
+    text-align: center;
+    color: #777;
+  }
+}
+
+.front-login-options {
+  margin: 0 -15px;
+  padding: 15px 15px 5px;
+  border-top: 1px solid @window-separator-color;
+  text-align: center;
+}

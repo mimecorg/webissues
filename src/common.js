@@ -29,6 +29,7 @@ export function initialize() {
   if ( toggleButton != null )
     toggleButton.addEventListener( 'click', toggle );
   window.addEventListener( 'resize', handleWindowResize );
+  focusFirstControl();
 }
 
 function toggle() {
@@ -48,5 +49,18 @@ function updateNavbar() {
   if ( collapseDiv != null ) {
     collapseDiv.setAttribute( 'class', 'navbar-element collapse' + ( expanded ? ' in' : '' ) );
     collapseDiv.setAttribute( 'aria-expanded', expanded ? 'true' : 'false' );
+  }
+}
+
+function focusFirstControl() {
+  const errorDivs = document.getElementsByClassName( 'has-error' );
+  if ( errorDivs.length > 0 ) {
+    const errorControls = errorDivs[ 0 ].getElementsByClassName( 'form-control' );
+    if ( errorControls.length > 0 )
+      errorControls[ 0 ].focus();
+  } else {
+    const allControls = document.getElementsByClassName( 'form-control' );
+    if ( allControls.length > 0 )
+      allControls[ 0 ].focus();
   }
 }

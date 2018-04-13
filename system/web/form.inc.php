@@ -149,7 +149,7 @@ class System_Web_Form extends System_Web_Base
     */
     public function isSubmittedWith( $key )
     {
-        return $this->request->getFormField( $key . 'Submit' ) != null;
+        return $this->request->getFormField( 'submit' ) == $key;
     }
 
     /**
@@ -300,7 +300,7 @@ class System_Web_Form extends System_Web_Base
         $id = 'form-' . $this->formId;
         $this->renderTag( 'form', array_merge( array( 'action' => $url, 'method' => 'post', 'accept-charset' => 'UTF-8', 'id' => $id ), $attributes ), true );
         echo '<div>';
-        $this->renderInput( 'hidden', '__formId', $this->formId );
+        $this->renderInput( 'hidden', '__formId', $this->formId, array( 'class' => null ) );
     }
 
     /**
@@ -309,7 +309,7 @@ class System_Web_Form extends System_Web_Base
     public function renderFormClose()
     {
         if ( !empty( $this->viewState ) )
-            $this->renderInput( 'hidden', '__viewState', $this->saveViewState() );
+            $this->renderInput( 'hidden', '__viewState', $this->saveViewState(), array( 'class' => null ) );
         echo "</div></form>\n";
     }
 
@@ -322,7 +322,7 @@ class System_Web_Form extends System_Web_Base
     */
     public function renderText( $label, $key, $attributes = array() )
     {
-        echo "<div class=\"form-field\">\n";
+        echo '<div class="form-group' . ( !empty( $this->errors[ $key ] ) ? ' has-error' : '' ) . "\">\n";
         $this->renderLabel( $label, $key );
         $this->renderInput( 'text', $key, $this->getValue( $key ), $attributes );
         $this->renderError( $key );
@@ -341,7 +341,7 @@ class System_Web_Form extends System_Web_Base
     */
     public function renderPassword( $label, $key, $attributes = array() )
     {
-        echo "<div class=\"form-field\">\n";
+        echo '<div class="form-group' . ( !empty( $this->errors[ $key ] ) ? ' has-error' : '' ) . "\">\n";
         $this->renderLabel( $label, $key );
         $this->renderInput( 'password', $key, $this->getValue( $key ), $attributes );
         $this->renderError( $key );
@@ -361,7 +361,7 @@ class System_Web_Form extends System_Web_Base
     */
     public function renderRadioGroup( $key, $items, $attributes = array() )
     {
-        echo "<div class=\"form-radiogroup\">\n";
+        echo '<div class="form-group' . ( !empty( $this->errors[ $key ] ) ? ' has-error' : '' ) . "\">\n";
         foreach( $items as $item => $label )
             $this->renderRadio( $label, $key, $item, $attributes );
         $this->renderError( $key );
@@ -397,7 +397,7 @@ class System_Web_Form extends System_Web_Base
     */
     public function renderCheckBox( $label, $key, $attributes = array() )
     {
-        echo "<div class=\"form-checkbox\">\n";
+        echo '<div class="form-group' . ( !empty( $this->errors[ $key ] ) ? ' has-error' : '' ) . "\">\n";
         $this->renderInput( 'checkbox', $key, '1', array_merge( array( 'checked' => ( $this->getValue( $key ) == true ) ), $attributes ) );
         $this->renderLabel( $label, $key, null, false );
         $this->renderError( $key );
@@ -419,7 +419,7 @@ class System_Web_Form extends System_Web_Base
     */
     public function renderFile( $label, $key, $attributes = array() )
     {
-        echo "<div class=\"form-field\">\n";
+        echo '<div class="form-group' . ( !empty( $this->errors[ $key ] ) ? ' has-error' : '' ) . "\">\n";
         $this->renderLabel( $label, $key );
         $this->renderInput( 'file', $key, null, $attributes );
         $this->renderError( $key );
@@ -437,7 +437,7 @@ class System_Web_Form extends System_Web_Base
     */
     public function renderSelect( $label, $key, $items, $attributes = array() )
     {
-        echo "<div class=\"form-field\">\n";
+        echo '<div class="form-group' . ( !empty( $this->errors[ $key ] ) ? ' has-error' : '' ) . "\">\n";
         $id = 'field-' . $this->formId . '-' . $key;
         $currentValue = $this->getValue( $key );
         $this->renderLabel( $label, $key, $id );
@@ -469,7 +469,7 @@ class System_Web_Form extends System_Web_Base
     */
     public function renderTextArea( $label, $key, $attributes = array() )
     {
-        echo "<div class=\"form-field\">\n";
+        echo '<div class="form-group' . ( !empty( $this->errors[ $key ] ) ? ' has-error' : '' ) . "\">\n";
         $id = 'field-' . $this->formId . '-' . $key;
         $this->renderLabel( $label, $key, $id );
         $this->renderTag( 'textarea', array_merge( array( 'name' => $key, 'id' => $id ), $attributes ), $this->getValue( $key ) );
@@ -489,7 +489,12 @@ class System_Web_Form extends System_Web_Base
     */
     public function renderSubmit( $label, $key, $attributes = array() )
     {
-        $this->renderInput( 'submit', $key . 'Submit', $label, array_merge( array( 'class' => 'form-button' ), $attributes ) );
+        $id = 'field-' . $this->formId . '-' . $key . 'Submit';
+        if ( $key == 'cancel' )
+            $buttonClass = 'btn btn-default';
+        else
+            $buttonClass = 'btn btn-primary';
+        $this->renderTag( 'button', array_merge( array( 'type' => 'submit', 'name' => 'submit', 'value' => $key, 'id' => $id, 'class' => $buttonClass ), $attributes ), $label );
     }
 
     /**
@@ -500,7 +505,7 @@ class System_Web_Form extends System_Web_Base
     public function renderError( $key )
     {
         if ( !empty( $this->errors[ $key ] ) )
-            echo "<p class=\"error\">" . $this->errors[ $key ] . "</p>\n";
+            echo "<p class=\"help-block\">" . $this->errors[ $key ] . "</p>\n";
     }
 
     private function renderLabel( $label, $key, $id = null, $markRequired = true )
@@ -509,8 +514,8 @@ class System_Web_Form extends System_Web_Base
             if ( empty( $id ) )
                 $id = 'field-' . $this->formId . '-' . $key;
             if ( $markRequired && $this->getRule( $key, 'required' ) )
-                $label .= " <span class=\"required\">*</span>";
-            echo "<label for=\"$id\">$label</label>\n";
+                $label .= ' *';
+            echo "<label for=\"$id\" class=\"control-label\">$label</label>\n";
         }
     }
 
@@ -523,7 +528,7 @@ class System_Web_Form extends System_Web_Base
             if ( $rule != null )
                 $maxLength = $rule[ 'max-length' ];
         }
-        $this->renderTag( 'input', array_merge( array( 'type' => $type, 'name' => $key, 'id' => $id, 'value' => $value, 'maxlength' => $maxLength ), $attributes ) );
+        $this->renderTag( 'input', array_merge( array( 'type' => $type, 'name' => $key, 'id' => $id, 'value' => $value, 'maxlength' => $maxLength, 'class' => 'form-control' ), $attributes ) );
     }
 
     private function renderTag( $name, $attributes, $text = null )

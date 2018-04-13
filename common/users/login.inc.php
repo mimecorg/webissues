@@ -31,8 +31,9 @@ class Common_Users_Login extends System_Web_Component
 
     protected function execute()
     {
-        $this->view->setDecoratorClass( 'Common_MessageBlock' );
+        $this->view->setDecoratorClass( 'Common_Window' );
         $this->view->setSlot( 'page_title', $this->tr( 'Log in to WebIssues' ) );
+        $this->view->setSlot( 'window_size', 'small' );
 
         if ( System_Api_Principal::getCurrent()->isAuthenticated() ) {
             $sessionManager = new System_Api_SessionManager();
@@ -72,18 +73,10 @@ class Common_Users_Login extends System_Web_Component
 
         $this->initializeRules();
 
-        $this->toolBar = new System_Web_Toolbar();
-        $this->toolBar->setFilterParameters( array() );
+        $serverManager = new System_Api_ServerManager();
 
-        if ( !$this->request->isRelativePathUnder( '/mobile' ) ) {
-            $serverManager = new System_Api_ServerManager();
-        
-            if ( $serverManager->getSetting( 'anonymous_access' ) == 1 )
-                $this->toolBar->addFixedCommand( '/client/index.php', '/common/images/user-disabled-16.png', $this->tr( 'Anonymous Access' ) );
-
-            if ( $serverManager->getSetting( 'self_register' ) == 1 && $serverManager->getSetting( 'email_engine' ) != null )
-                $this->toolBar->addFixedCommand( '/register.php', '/common/images/user-new-16.png', $this->tr( 'Register New Account' ) );
-        }
+        $this->anonymousAccess = $serverManager->getSetting( 'anonymous_access' ) == 1;
+        $this->selfRegister = $serverManager->getSetting( 'self_register' ) == 1 && $serverManager->getSetting( 'email_engine' ) != null;
     }
 
     private function initializeRules()
