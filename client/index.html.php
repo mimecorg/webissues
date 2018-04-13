@@ -10,10 +10,11 @@
 <?php if ( !empty( $styleUrl ) ): ?>
   <link rel="stylesheet" href="<?php echo $this->url( $styleUrl ) ?>" type="text/css">
 <?php endif ?>
-  <script type="text/javascript" src="<?php echo $this->url( $scriptUrl ) ?>"></script>
+  <script type="text/javascript" src="<?php echo $this->url( $commonScriptUrl ) ?>"></script>
+  <script type="text/javascript" src="<?php echo $this->url( $mainScriptUrl ) ?>"></script>
 </head>
 <body>
   <div id="application"></div>
-  <script type="text/javascript">WebIssues.main(<?php echo $options ?>);</script>
+  <script type="text/javascript">WebIssues_main.initialize(<?php echo $options ?>);</script>
 </body>
 </html>

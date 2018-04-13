@@ -17,12 +17,7 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-import 'babel-polyfill'
-import 'whatwg-fetch'
-
 import Vue from 'vue'
-
-import '@/styles/global.less'
 
 import Application from '@/components/Application'
 
@@ -35,14 +30,14 @@ import makeRouter from '@/services/router'
 import '@/services/fields'
 import '@/services/hljs'
 
-import makeI18n from '@/i18n';
+import makeI18n from '@/i18n'
 import makeStore from '@/store'
 
 import registerRoutes from '@/routes'
 
 let app = null;
 
-export function main( { baseURL, csrfToken, locale, ...initialState } ) {
+export function initialize( { baseURL, csrfToken, locale, ...initialState } ) {
   if ( app )
     throw new Error( 'Application already initialized' );
 

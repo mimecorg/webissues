@@ -64,11 +64,13 @@ class Client_Index extends System_Web_Component
 
             $assets = json_decode( file_get_contents( $assetsPath ), true );
 
-            $this->styleUrl = '/assets/' . $assets[ 'main' ][ 'css' ];
-            $this->scriptUrl = '/assets/' . $assets[ 'main' ][ 'js' ];
+            $this->styleUrl = '/assets/' . $assets[ 'common' ][ 'css' ];
+            $this->commonScriptUrl = '/assets/' . $assets[ 'common' ][ 'js' ];
+            $this->mainScriptUrl = '/assets/' . $assets[ 'main' ][ 'js' ];
         } else {
             $this->styleUrl = null;
-            $this->scriptUrl = $devUrl . 'js/main.js';
+            $this->commonScriptUrl = $devUrl . 'js/common.js';
+            $this->mainScriptUrl = $devUrl . 'js/main.js';
         }
 
         $options[ 'baseURL' ] = WI_BASE_URL;

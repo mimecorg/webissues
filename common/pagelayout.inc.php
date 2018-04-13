@@ -56,11 +56,11 @@ class Common_PageLayout extends System_Web_Component
 
             $assets = json_decode( file_get_contents( $assetsPath ), true );
 
-            $this->styleUrl = '/assets/' . $assets[ 'main' ][ 'css' ];
-            $this->scriptUrl = '/assets/' . $assets[ 'front' ][ 'js' ];
+            $this->styleUrl = '/assets/' . $assets[ 'common' ][ 'css' ];
+            $this->scriptUrl = '/assets/' . $assets[ 'common' ][ 'js' ];
         } else {
             $this->styleUrl = null;
-            $this->scriptUrl = $devUrl . 'js/front.js';
+            $this->scriptUrl = $devUrl . 'js/common.js';
         }
 
         $this->manualUrl = $application->getManualUrl();

@@ -17,12 +17,14 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-if ( process.env.NODE_ENV != 'production' )
-  require( '@/styles/global.less' );
+import 'babel-polyfill'
+import 'whatwg-fetch'
+
+import '@/styles/global.less'
 
 let expanded = false;
 
-export function front() {
+export function initialize() {
   const toggleButton = document.getElementById( 'toggle-button' );
   if ( toggleButton != null )
     toggleButton.addEventListener( 'click', toggle );

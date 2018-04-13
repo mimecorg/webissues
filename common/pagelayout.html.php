@@ -50,7 +50,7 @@
 
 <?php $this->insertContent() ?>
 
-<script type="text/javascript">WebIssues.front();</script>
+<script type="text/javascript">WebIssues_common.initialize();</script>
 
 </body>
 </html>
