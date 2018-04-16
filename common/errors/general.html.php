@@ -5,5 +5,7 @@
 </div>
 
 <?php if ( !empty( $errorMessage ) ): ?>
-<p class="front-error"><?php echo $this->tr( 'Reason: %1.', null, $errorMessage ) ?></p>
+<div class="alert alert-default">
+<p><?php echo $this->tr( 'Reason: %1.', null, $errorMessage ) ?></p>
+</div>
 <?php endif ?>

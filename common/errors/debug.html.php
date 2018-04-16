@@ -4,8 +4,8 @@
 <p><?php echo $this->tr( 'The following error(s) occured while processing the request:' ) ?></p>
 </div>
 
-<ul class="front-error">
+<div class="alert alert-default">
 <?php foreach ( $errors as $error ): ?>
-<li><?php echo nl2br( $error ) ?></li>
+<p><?php echo nl2br( $error ) ?></p>
 <?php endforeach ?>
-</ul>
+</div>
