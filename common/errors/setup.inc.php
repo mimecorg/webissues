@@ -29,34 +29,33 @@ class Common_Errors_Setup extends System_Web_Component
 
     protected function execute()
     {
-        $this->view->setDecoratorClass( 'Common_FixedBlock' );
+        $this->view->setDecoratorClass( 'Common_Window' );
+        $this->view->setSlot( 'window_size', 'small' );
 
         $application = System_Core_Application::getInstance();
         $error = $application->getFatalError();
 
         switch ( $error->getCode() ) {
             case System_Core_SetupException::SiteConfigNotFound:
-                $this->view->setSlot( 'page_title', $this->tr( 'Server Not Configured' ) );
-                $this->infoMessage = $this->tr( 'This WebIssues Server has not been configured yet.' );
-                if ( !$this->request->isRelativePathUnder( '/mobile' ) ) {
-                    $this->linkMessage = $this->tr( 'Go to the %1 page to configure this server.', null,
-                        $this->link( '/admin/setup/install.php', $this->tr( 'Server Configuration' ) ) );
-                }
+                $this->view->setSlot( 'page_title', $this->tr( 'Welcome to WebIssues' ) );
+                $this->infoMessage = $this->tr( 'Your WebIssues Server is almost ready. We just need to set up the database.' );
+                $this->alertClass = 'info';
+                $this->linkUrl = '/admin/setup/install.php';
+                $this->linkName = $this->tr( 'Configure Database' );
                 break;
 
             case System_Core_SetupException::DatabaseNotCompatible:
-                $this->view->setSlot( 'page_title', $this->tr( 'Wrong Database Version' ) );
-                $this->view->setSlot( 'header_class', 'error' );
-                $this->infoMessage = $this->tr( 'Current version of the database is not compatible with this version of WebIssues Server.' );
+                $this->view->setSlot( 'page_title', $this->tr( 'Incompatible Database' ) );
+                $this->infoMessage = $this->tr( 'The database is not compatible with this version of WebIssues.' );
+                $this->alertClass = 'danger';
                 break;
 
             case System_Core_SetupException::DatabaseNotUpdated:
-                $this->view->setSlot( 'page_title', $this->tr( 'Database Not Updated' ) );
-                $this->infoMessage = $this->tr( 'The database of this WebIssues Server has not been updated yet.' );
-                if ( !$this->request->isRelativePathUnder( '/mobile' ) ) {
-                    $this->linkMessage = $this->tr( 'Go to the %1 page to update the database.', null,
-                        $this->link( '/admin/setup/update.php', $this->tr( 'Server Update' ) ) );
-                }
+                $this->view->setSlot( 'page_title', $this->tr( 'Update Required' ) );
+                $this->infoMessage = $this->tr( 'The database must be updated to the current version of WebIssues.' );
+                $this->alertClass = 'info';
+                $this->linkUrl = '/admin/setup/update.php';
+                $this->linkName = $this->tr( 'Update Database' );
                 break;
         }
    }

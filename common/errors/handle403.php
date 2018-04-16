@@ -31,9 +31,9 @@ class Common_Errors_Handle403 extends System_Web_Component
     {
         $this->response->setStatus( '403 Forbidden' );
 
-        $this->view->setDecoratorClass( 'Common_MessageBlock' );
+        $this->view->setDecoratorClass( 'Common_Window' );
+        $this->view->setSlot( 'window_size', 'small' );
         $this->view->setSlot( 'page_title', $this->tr( 'Access Forbidden' ) );
-        $this->view->setSlot( 'header_class', 'error' );
 
         if ( System_Core_Application::getInstance()->isLoggingEnabled() ) {
             $helper = new Common_Errors_Helper();

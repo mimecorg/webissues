@@ -31,9 +31,9 @@ class Common_Errors_Handle401 extends System_Web_Component
     {
         $this->response->setStatus( '401 Unauthorized' );
 
-        $this->view->setDecoratorClass( 'Common_MessageBlock' );
+        $this->view->setDecoratorClass( 'Common_Window' );
+        $this->view->setSlot( 'window_size', 'small' );
         $this->view->setSlot( 'page_title', $this->tr( 'Unauthorized' ) );
-        $this->view->setSlot( 'header_class', 'error' );
 
         if ( System_Core_Application::getInstance()->isLoggingEnabled() ) {
             $helper = new Common_Errors_Helper();
