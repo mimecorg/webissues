@@ -20,4 +20,4 @@
 
 require_once( 'system/bootstrap.inc.php' );
 
-System_Bootstrap::run( 'Common_Application', 'Common_Users_Login' );
+System_Bootstrap::run( 'Common_Application', 'Users_Login' );

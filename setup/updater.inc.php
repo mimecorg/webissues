@@ -20,7 +20,7 @@
 
 if ( !defined( 'WI_VERSION' ) ) die( -1 );
 
-class Admin_Setup_Updater extends System_Web_Base
+class Setup_Updater extends System_Web_Base
 {
     private $connection = null;
 

@@ -18,7 +18,9 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-class Common_Users_Register extends System_Web_Component
+require_once( '../system/bootstrap.inc.php' );
+
+class Users_Register extends System_Web_Component
 {
     private $rules = null;
 
@@ -147,3 +149,5 @@ class Common_Users_Register extends System_Web_Component
         $registrationManager->approveRequest( $request );
     }
 }
+
+System_Bootstrap::run( 'Common_Application', 'Users_Register' );

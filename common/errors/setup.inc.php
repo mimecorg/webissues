@@ -40,7 +40,7 @@ class Common_Errors_Setup extends System_Web_Component
                 $this->view->setSlot( 'page_title', $this->tr( 'Welcome to WebIssues' ) );
                 $this->infoMessage = $this->tr( 'Your WebIssues Server is almost ready. We just need to set up the database.' );
                 $this->alertClass = 'info';
-                $this->linkUrl = '/admin/setup/install.php';
+                $this->linkUrl = '/setup/install.php';
                 $this->linkName = $this->tr( 'Configure Database' );
                 break;
 
@@ -54,7 +54,7 @@ class Common_Errors_Setup extends System_Web_Component
                 $this->view->setSlot( 'page_title', $this->tr( 'Update Required' ) );
                 $this->infoMessage = $this->tr( 'The database must be updated to the current version of WebIssues.' );
                 $this->alertClass = 'info';
-                $this->linkUrl = '/admin/setup/update.php';
+                $this->linkUrl = '/setup/update.php';
                 $this->linkName = $this->tr( 'Update Database' );
                 break;
         }

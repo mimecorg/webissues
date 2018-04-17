@@ -20,7 +20,7 @@
 
 if ( !defined( 'WI_VERSION' ) ) die( -1 );
 
-class Admin_Setup_Config extends System_Web_Component
+class Setup_Config extends System_Web_Component
 {
     private $values = null;
 

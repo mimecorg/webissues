@@ -18,9 +18,9 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-require_once( '../../system/bootstrap.inc.php' );
+require_once( '../system/bootstrap.inc.php' );
 
-class Admin_Setup_Install extends System_Web_Component
+class Setup_Install extends System_Web_Component
 {
     private $rules = null;
 
@@ -453,7 +453,7 @@ class Admin_Setup_Install extends System_Web_Component
         $connection = System_Core_Application::getInstance()->getConnection();
 
         try {
-            $installer = new Admin_Setup_Installer( $connection );
+            $installer = new Setup_Installer( $connection );
 
             $installer->installSchema();
             $installer->installData( $this->serverName, $this->adminPassword );
@@ -494,7 +494,7 @@ class Admin_Setup_Install extends System_Web_Component
         $connection = System_Core_Application::getInstance()->getConnection();
 
         try {
-            $updater = new Admin_Setup_Updater( $connection );
+            $updater = new Setup_Updater( $connection );
 
             $updater->updateDatabase( $version );
 
@@ -518,7 +518,7 @@ class Admin_Setup_Install extends System_Web_Component
         foreach( array( 'engine', 'host', 'database', 'user', 'password', 'prefix' ) as $key )
             $values[ 'db_' . $key ] = $this->$key;
 
-        $config = System_Web_Component::createComponent( 'Admin_Setup_Config', null, $values );
+        $config = System_Web_Component::createComponent( 'Setup_Config', null, $values );
         $body = "<?php\n" . $config->run();
 
         $site = System_Core_Application::getInstance()->getSite();
@@ -545,4 +545,4 @@ class Admin_Setup_Install extends System_Web_Component
     }
 }
 
-System_Bootstrap::run( 'Common_Application', 'Admin_Setup_Install' );
+System_Bootstrap::run( 'Common_Application', 'Setup_Install' );

@@ -20,7 +20,7 @@
 
 if ( !defined( 'WI_VERSION' ) ) die( -1 );
 
-class Admin_Setup_Installer extends System_Web_Base
+class Setup_Installer extends System_Web_Base
 {
     private $connection = null;
     private $generator = null;

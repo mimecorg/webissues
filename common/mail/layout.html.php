@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <title><?php $this->insertSlot( 'subject' ) ?></title>
   <style type="text/css">
-<?php readfile( WI_ROOT_DIR . '/common/theme/mail.css' ) ?>
+<?php readfile( WI_ROOT_DIR . '/common/css/mail.css' ) ?>
   </style>
 </head>
 <body>

@@ -18,9 +18,9 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-require_once( '../../system/bootstrap.inc.php' );
+require_once( '../system/bootstrap.inc.php' );
 
-class Admin_Setup_Update extends System_Web_Component
+class Setup_Update extends System_Web_Component
 {
     protected function __construct()
     {
@@ -143,7 +143,7 @@ class Admin_Setup_Update extends System_Web_Component
         $connection = System_Core_Application::getInstance()->getConnection();
 
         try {
-            $updater = new Admin_Setup_Updater( $connection );
+            $updater = new Setup_Updater( $connection );
 
             $updater->updateDatabase( $this->version );
 
@@ -171,4 +171,4 @@ class Admin_Setup_Update extends System_Web_Component
     }
 }
 
-System_Bootstrap::run( 'Common_Application', 'Admin_Setup_Update' );
+System_Bootstrap::run( 'Common_Application', 'Setup_Update' );

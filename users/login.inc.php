@@ -20,7 +20,7 @@
 
 if ( !defined( 'WI_VERSION' ) ) die( -1 );
 
-class Common_Users_Login extends System_Web_Component
+class Users_Login extends System_Web_Component
 {
     private $rules = null;
 

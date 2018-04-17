@@ -18,7 +18,7 @@ case 'login': ?>
 
 <?php if ( $selfRegister ): ?>
 <div class="form-options">
-<p><?php echo $this->link( '/register.php', '<span class="fa fa-user-plus" aria-hidden="true"></span> ' . $this->tr( 'Register New Account' ) ) ?></p>
+<p><?php echo $this->link( '/users/register.php', '<span class="fa fa-user-plus" aria-hidden="true"></span> ' . $this->tr( 'Register New Account' ) ) ?></p>
 </div>
 <?php endif ?>
 
