@@ -58,7 +58,7 @@ case 'register': ?>
 </div>
 
 <div class="form-buttons">
-<?php $form->renderSubmit( $this->tr( 'Register' ), 'register' ) ?>
+<?php $form->renderSubmit( $this->tr( 'Register' ), 'register', array( 'class' => 'btn btn-primary' ) ) ?>
 <?php $form->renderSubmit( $this->tr( 'Cancel' ), 'cancel' ) ?>
 </div>
 
@@ -70,7 +70,7 @@ case 'registered': ?>
 </div>
 
 <div class="form-buttons">
-<?php $form->renderSubmit( $this->tr( 'OK' ), 'ok' ) ?>
+<?php $form->renderSubmit( $this->tr( 'OK' ), 'ok', array( 'class' => 'btn btn-primary' ) ) ?>
 </div>
 
 <?php break;
@@ -81,7 +81,7 @@ case 'activated': ?>
 </div>
 
 <div class="form-buttons">
-<?php $form->renderSubmit( $this->tr( 'OK' ), 'ok' ) ?>
+<?php $form->renderSubmit( $this->tr( 'OK' ), 'ok', array( 'class' => 'btn btn-primary' ) ) ?>
 </div>
 
 <?php break;
@@ -92,7 +92,7 @@ case 'approved': ?>
 </div>
 
 <div class="form-buttons">
-<?php $form->renderSubmit( $this->tr( 'OK' ), 'ok' ) ?>
+<?php $form->renderSubmit( $this->tr( 'OK' ), 'ok', array( 'class' => 'btn btn-primary' ) ) ?>
 </div>
 
 <?php break;

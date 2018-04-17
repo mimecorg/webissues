@@ -359,9 +359,10 @@ class System_Web_Form extends System_Web_Base
     * @param $attributes Optional array of attributes to be added
     * to the @c input tags.
     */
-    public function renderRadioGroup( $key, $items, $attributes = array() )
+    public function renderRadioGroup( $label, $key, $items, $attributes = array() )
     {
         echo '<div class="form-group' . ( !empty( $this->errors[ $key ] ) ? ' has-error' : '' ) . "\">\n";
+        $this->renderLabel( $label, $key );
         foreach( $items as $item => $label )
             $this->renderRadio( $label, $key, $item, $attributes );
         $this->renderError( $key );
@@ -381,11 +382,10 @@ class System_Web_Form extends System_Web_Base
     */
     public function renderRadio( $label, $key, $item, $attributes = array() )
     {
-        echo "<div class=\"form-radio\">\n";
+        echo "<div class=\"radio\">\n<label>\n";
         $id = 'field-' . $this->formId . '-' . $key . '-' . $item;
-        $this->renderInput( 'radio', $key, $item, array_merge( array( 'id' => $id, 'checked' => !strcmp( $this->getValue( $key ), $item ) ), $attributes ) );
-        $this->renderLabel( $label, $key, $id, false );
-        echo "</div>\n";
+        $this->renderInput( 'radio', $key, $item, array_merge( array( 'id' => $id, 'checked' => !strcmp( $this->getValue( $key ), $item ), 'class' => null ), $attributes ) );
+        echo $label . "</label></div>\n";
     }
 
     /**
@@ -441,7 +441,7 @@ class System_Web_Form extends System_Web_Base
         $id = 'field-' . $this->formId . '-' . $key;
         $currentValue = $this->getValue( $key );
         $this->renderLabel( $label, $key, $id );
-        $this->renderTag( 'select', array_merge( array( 'name' => $key, 'id' => $id ), $attributes ), true );
+        $this->renderTag( 'select', array_merge( array( 'name' => $key, 'id' => $id, 'class' => 'form-control' ), $attributes ), true );
         foreach ( $items as $itemKey => $itemValue ) {
             if ( is_array( $itemValue ) || is_object( $itemValue ) && is_a( $itemValue, 'Iterator' ) ) {
                 $this->renderTag( 'optgroup', array( 'label' => $itemKey ), true );
@@ -490,19 +490,23 @@ class System_Web_Form extends System_Web_Base
     public function renderSubmit( $label, $key, $attributes = array() )
     {
         $id = 'field-' . $this->formId . '-' . $key . 'Submit';
-        if ( $key == 'cancel' )
-            $buttonClass = 'btn btn-default';
-        else
-            $buttonClass = 'btn btn-primary';
-        $this->renderTag( 'button', array_merge( array( 'type' => 'submit', 'name' => 'submit', 'value' => $key, 'id' => $id, 'class' => $buttonClass ), $attributes ), $label );
+        $this->renderTag( 'button', array_merge( array( 'type' => 'submit', 'name' => 'submit', 'value' => $key, 'id' => $id, 'class' => 'btn btn-default' ), $attributes ), $label );
     }
 
     /**
-    * Render an error message if it was set. It is rendered using a paragraph
-    * with @c error class.
+    * Render an error message if it was set.
     * @param $key The name of the error message.
     */
-    public function renderError( $key )
+    public function renderErrorMessage( $key )
+    {
+        if ( !empty( $this->errors[ $key ] ) ) {
+            echo "<div class=\"has-error\">\n";
+            $this->renderError( $key );
+            echo "</div>\n";
+        }
+    }
+
+    private function renderError( $key )
     {
         if ( !empty( $this->errors[ $key ] ) )
             echo "<p class=\"help-block\">" . $this->errors[ $key ] . "</p>\n";

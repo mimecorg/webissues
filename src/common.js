@@ -28,8 +28,18 @@ export function initialize() {
   const toggleButton = document.getElementById( 'toggle-button' );
   if ( toggleButton != null )
     toggleButton.addEventListener( 'click', toggle );
+
   window.addEventListener( 'resize', handleWindowResize );
+
   focusFirstControl();
+
+  const installButton = document.getElementById( 'field-install-installSubmit' );
+  if ( installButton != null )
+    installButton.addEventListener( 'click', displayBusyOverlay );
+
+  const updateButton = document.getElementById( 'field-update-updateSubmit' );
+  if ( updateButton != null )
+    updateButton.addEventListener( 'click', displayBusyOverlay );
 }
 
 function toggle() {
@@ -53,14 +63,23 @@ function updateNavbar() {
 }
 
 function focusFirstControl() {
-  const errorDivs = document.getElementsByClassName( 'has-error' );
-  if ( errorDivs.length > 0 ) {
-    const errorControls = errorDivs[ 0 ].getElementsByClassName( 'form-control' );
-    if ( errorControls.length > 0 )
-      errorControls[ 0 ].focus();
+  const errorGroups = document.getElementsByClassName( 'has-error' );
+  if ( errorGroups.length > 0 ) {
+    const controls = errorGroups[ 0 ].getElementsByClassName( 'form-control' );
+    if ( controls.length > 0 )
+      controls[ 0 ].focus();
   } else {
-    const allControls = document.getElementsByClassName( 'form-control' );
-    if ( allControls.length > 0 )
-      allControls[ 0 ].focus();
+    const allGroups = document.getElementsByClassName( 'form-group' );
+    if ( allGroups.length > 0 ) {
+      const controls = allGroups[ 0 ].getElementsByClassName( 'form-control' );
+      if ( controls.length > 0 )
+        controls[ 0 ].focus();
+    }
   }
+}
+
+function displayBusyOverlay() {
+  const overlayDivs = document.getElementsByClassName( 'busy-overlay' );
+  if ( overlayDivs.length > 0 )
+    overlayDivs[ 0 ].style.display = 'block';
 }

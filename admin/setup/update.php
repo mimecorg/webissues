@@ -46,13 +46,31 @@ class Admin_Setup_Update extends System_Web_Component
             $this->showNext = !$this->showUpdate;
         }
 
-        $this->view->setDecoratorClass( 'Common_FixedBlock' );
-        $this->view->setSlot( 'page_title', $this->tr( 'Server Update' ) );
-        $this->view->setSlot( 'header', $this->tr( 'Update your WebIssues Server' ) );
+        $this->view->setDecoratorClass( 'Common_Window' );
 
-        if ( $this->showUpdate ) {
-            $javaScript = new System_Web_JavaScript( $this->view );
-            $javaScript->registerBlockUI( $this->form->getSubmitSelector( 'update' ), '#progress' );
+        switch ( $this->page ) {
+            case 'up_to_date':
+                $this->view->setSlot( 'page_title', $this->tr( 'Server Already Updated' ) );
+                $this->view->setSlot( 'window_size', 'small' );
+                break;
+
+            case 'login':
+                $this->view->setSlot( 'page_title', $this->tr( 'Log in to WebIssues' ) );
+                $this->view->setSlot( 'window_size', 'small' );
+                break;
+
+            case 'update':
+                $this->view->setSlot( 'page_title', $this->tr( 'Confirm Update' ) );
+                break;
+
+            case 'completed':
+                $this->view->setSlot( 'page_title', $this->tr( 'Update Completed' ) );
+                $this->view->setSlot( 'window_size', 'small' );
+                break;
+
+            case 'failed':
+                $this->view->setSlot( 'page_title', $this->tr( 'Update Failed' ) );
+                break;
         }
     }
 
@@ -67,6 +85,14 @@ class Admin_Setup_Update extends System_Web_Component
             $this->page = 'up_to_date';
             return false;
         }
+
+        $this->serverName = $server[ 'server_name' ];
+
+        $site = System_Core_Application::getInstance()->getSite();
+
+        $this->host = $site->getConfig( 'db_host' );
+        $this->database = $site->getConfig( 'db_database' );
+        $this->prefix = $site->getConfig( 'db_prefix' );
 
         return true;
     }

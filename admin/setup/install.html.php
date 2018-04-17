@@ -3,28 +3,36 @@
 <?php switch ( $page ):
 case 'config_exists': ?>
 
-<p class="error"><?php echo $this->tr( 'The configuration file of this WebIssues Server already exists.' ) ?></p>
+<div class="alert alert-info">
+<p><?php echo $this->tr( 'This WebIssues Server is already configured.' ) ?></p>
+</div>
 
-<p><?php echo $this->tr( 'For security reasons, you must first delete the server configuration file and then run the %1 page again.', null,
-    $this->link( WI_SCRIPT_URL, $this->tr( 'Server Configuration' ) ) ) ?></p>
+<div class="alert alert-default">
+<p><?php echo $this->tr( 'For security reasons you must delete the server configuration file before the installation.' ) ?></p>
+</div>
 
 <?php break;
 case 'completed': ?>
 
+<div class="alert alert-success">
 <p><?php echo $this->tr( 'Installation of your WebIssues Server was successfully completed.' ) ?></p>
+</div>
 
+<div class="alert alert-default">
 <p><?php echo $this->tr( 'Go to the %1 to continue the configuration of this server.', null,
-    $this->link( '/admin/index.php', $this->tr( 'Administration Panel' ) ) ) ?></p>
-
-<?php if ( !empty( $hasFileSystemFiles ) ): ?>
-<p><?php echo $this->tr( 'Do not forget to copy attachments stored in the file system from the old version of the server.' ) ?></p>
-<?php endif ?>
+    $this->link( '/client/index.php', $this->tr( 'Web Client' ) ) ) ?></p>
+</div>
 
 <?php break;
 case 'failed': ?>
 
-<p class="error"><?php echo $this->tr( 'Installation failed with the following fatal error:' ) ?></p>
+<div class="alert alert-danger">
+<p><?php echo $this->tr( 'Installation failed with the following fatal error:' ) ?></p>
+</div>
+
+<div class="alert alert-default">
 <p><?php echo nl2br( $error ) ?></p>
+</div>
 
 <?php break;
 default: ?>
@@ -34,9 +42,15 @@ default: ?>
 <?php switch ( $page ):
 case 'language': ?>
 
-<p><?php echo $this->tr( 'Select language used during the installation.' ) ?></p>
+<?php $form->renderSelect( $this->tr( 'Language:' ), 'language', $languageOptions ) ?>
 
-<?php $form->renderSelect( $this->tr( 'Language:' ), 'language', $languageOptions, array( 'style' => 'width: 20em;' ) ) ?>
+<?php break;
+case 'site_error': ?>
+
+<div class="alert alert-danger">
+<p><?php echo $this->tr( 'The following configuration error was detected:' ) ?></p>
+<p><?php echo $error ?></p>
+</div>
 
 <?php break;
 case 'site': ?>
@@ -48,133 +62,150 @@ case 'site': ?>
 <?php break;
 case 'connection': ?>
 
+<div class="alert alert-info">
 <p><?php echo $this->tr( 'Please enter information required to connect to the database.' ) ?></p>
+</div>
 
-<fieldset class="form-fieldset">
-<legend><?php echo $this->tr( 'Database Engine' ) ?></legend>
+<div class="panel panel-default">
+<div class="panel-heading">
+<h2 class="panel-title"><?php echo $this->tr( 'Installation Mode' ) ?></h2>
+</div>
+<div class="panel-body">
 
-<p><?php echo $this->tr( 'Select the type of the database to use:' ) ?></p>
+<p><?php echo $this->tr( 'You can create database tables for a new server or recreate the configuration file for a previously configured server.' ) ?></p>
 
-<?php $form->renderRadioGroup( 'engine', $engineOptions ) ?>
+<?php $form->renderRadioGroup( $this->tr( 'Installation mode:' ), 'mode', $modeOptions ) ?>
 
-</fieldset>
+</div>
+</div>
 
-<fieldset class="form-fieldset">
-<legend><?php echo $this->tr( 'Connection Details' ) ?></legend>
+<div class="panel panel-default">
+<div class="panel-heading">
+<h2 class="panel-title"><?php echo $this->tr( 'Connection Details' ) ?></h2>
+</div>
+<div class="panel-body">
 
-<?php $form->renderText( $this->tr( 'Host name:' ), 'host', array( 'size' => 40 ) ) ?>
-<?php $form->renderText( $this->tr( 'Database name:' ), 'database', array( 'size' => 40 ) ) ?>
-<?php $form->renderText( $this->tr( 'User name:' ), 'user', array( 'size' => 40 ) ) ?>
-<?php $form->renderPassword( $this->tr( 'Password:' ), 'password', array( 'size' => 40 ) ) ?>
+<?php $form->renderErrorMessage( 'connection' ) ?>
 
-<?php $form->renderError( 'connection' ) ?>
+<?php $form->renderRadioGroup( $this->tr( 'Database type:' ), 'engine', $engineOptions ) ?>
 
-</fieldset>
-
-<fieldset class="form-fieldset">
-<legend><?php echo $this->tr( 'Mode' ) ?></legend>
-
-<p><?php echo $this->tr( 'Select if you want to install a new server or recreate the configuration file for an existing server:' ) ?></p>
-
-<?php $form->renderRadioGroup( 'mode', $modeOptions ) ?>
-
-</fieldset>
-
-<fieldset class="form-fieldset">
-<legend><?php echo $this->tr( 'Table Prefix' ) ?></legend>
+<?php $form->renderText( $this->tr( 'Host name:' ), 'host' ) ?>
+<?php $form->renderText( $this->tr( 'Database name:' ), 'database' ) ?>
+<?php $form->renderText( $this->tr( 'User name:' ), 'user' ) ?>
+<?php $form->renderPassword( $this->tr( 'Password:' ), 'password' ) ?>
 
 <p><?php echo $this->tr( 'You can enter an optional prefix for table names. This allows installing multiple servers using the same database.' ) ?></p>
 
-<?php $form->renderText( $this->tr( 'Table prefix:' ), 'prefix', array( 'size' => 40 ) ) ?>
+<?php $form->renderText( $this->tr( 'Table prefix:' ), 'prefix' ) ?>
 
-</fieldset>
+</div>
+</div>
 
 <?php break;
 case 'server': ?>
 
+<div class="alert alert-info">
 <p><?php echo $this->tr( 'Please enter the parameters of the new server.' ) ?></p>
+</div>
 
-<fieldset class="form-fieldset">
-<legend><?php echo $this->tr( 'Server Information' ) ?></legend>
+<div class="panel panel-default">
+<div class="panel-heading">
+<h2 class="panel-title"><?php echo $this->tr( 'Server Information' ) ?></h2>
+</div>
+<div class="panel-body">
 
-<p><?php echo $this->tr( 'Enter the name of this server.' ) ?></p>
+<?php $form->renderText( $this->tr( 'Server name:' ), 'serverName' ) ?>
 
-<?php $form->renderText( $this->tr( 'Server name:' ), 'serverName', array( 'size' => 40 ) ) ?>
+<?php $form->renderRadioGroup( $this->tr( 'Initial configuration:' ), 'initialData', $dataOptions ) ?>
 
-</fieldset>
+</div>
+</div>
 
-<fieldset class="form-fieldset">
-<legend><?php echo $this->tr( 'Administrator Account' ) ?></legend>
+<div class="panel panel-default">
+<div class="panel-heading">
+<h2 class="panel-title"><?php echo $this->tr( 'Administrator Account' ) ?></h2>
+</div>
+<div class="panel-body">
 
-<p><?php echo $this->tr( 'The Administrator user account will be created allowing you to log in to the server and change its settings.' ) ?></p>
+<?php $form->renderText( $this->tr( 'Login:' ), 'adminLogin', array( 'value' => 'admin', 'readonly' => true ) ) ?>
+<?php $form->renderPassword( $this->tr( 'Password:' ), 'adminPassword' ) ?>
+<?php $form->renderPassword( $this->tr( 'Confirm password:' ), 'adminConfirm' ) ?>
 
-<?php $form->renderText( $this->tr( 'Login:' ), 'adminLogin', array( 'value' => 'admin', 'size' => 40, 'disabled' => true ) ) ?>
-<?php $form->renderPassword( $this->tr( 'Password:' ), 'adminPassword', array( 'size' => 40 ) ) ?>
-<?php $form->renderPassword( $this->tr( 'Confirm password:' ), 'adminConfirm', array( 'size' => 40 ) ) ?>
-
-</fieldset>
-
-<fieldset class="form-fieldset">
-<legend><?php echo $this->tr( 'Initial Configuration' ) ?></legend>
-
-<p><?php echo $this->tr( 'Select the initial configuration of this server:' ) ?></p>
-
-<?php $form->renderRadioGroup( 'initialData', $dataOptions ) ?>
-
-</fieldset>
+</div>
+</div>
 
 <?php break;
-case 'new_site': ?>
-
-<p><?php echo $this->tr( 'The new server will be installed in the selected database.' ) ?></p>
-
-<fieldset class="form-fieldset">
-<legend><?php echo $this->tr( 'Server Information' ) ?></legend>
-
-<table class="info-list info-align">
-<tr>
-<td><?php echo $this->tr( 'Server name:' ) ?></td>
-<td><?php echo $serverName ?></td>
-</tr>
-<tr>
-<td><?php echo $this->tr( 'Initial configuration:' ) ?></td>
-<td><?php echo $initialData == 'default' ? $this->tr( 'Default issue types' ) : $this->tr( 'No issue types' ) ?></td>
-</tr>
-</table>
-
-</fieldset>
-
-<?php $this->insertComponent( 'Admin_Info_Database', array( $host, $database, $prefix ) ) ?>
-
-<?php break;
+case 'new_site':
 case 'existing_site': ?>
 
-<?php if ( $update ): ?>
+<div class="alert alert-info">
+<?php if ( $page == 'new_site' ): ?>
+<p><?php echo $this->tr( 'The new server will be installed in the selected database.' ) ?></p>
+<?php elseif ( $update ): ?>
 <p><?php echo $this->tr( 'The database of this WebIssues Server will be updated to version %1.', null, WI_DATABASE_VERSION ) ?></p>
 <?php else: ?>
 <p><?php echo $this->tr( 'The server is already configured. It will not be modified during the installation.' ) ?></p>
 <?php endif ?>
+</div>
 
-<?php $this->insertComponent( 'Admin_Info_Server' ) ?>
+<div class="panel panel-default">
+<div class="panel-heading">
+<h2 class="panel-title"><?php echo $this->tr( 'Server Information' ) ?></h2>
+</div>
+<div class="panel-body panel-table">
 
-<?php $this->insertComponent( 'Admin_Info_Database', array( $host, $database, $prefix ) ) ?>
+<div class="row">
+  <div class="col-sm-4"><strong><?php echo $this->tr( 'Server name:' ) ?></strong></div>
+  <div class="col-sm-8"><?php echo $serverName ?></div>
+</div>
+<?php if ( $page == 'new_site' ): ?>
+<div class="row">
+  <div class="col-sm-4"><strong><?php echo $this->tr( 'Initial configuration:' ) ?></strong></div>
+  <div class="col-sm-8"><?php echo $initialData == 'default' ? $this->tr( 'Default issue types' ) : $this->tr( 'No issue types' ) ?></div>
+</div>
+<?php endif ?>
+
+</div>
+</div>
+
+<div class="panel panel-default">
+<div class="panel-heading">
+<h2 class="panel-title"><?php echo $this->tr( 'Database Configuration' ) ?></h2>
+</div>
+<div class="panel-body panel-table">
+
+<div class="row">
+  <div class="col-sm-4"><strong><?php echo $this->tr( 'Host name:' ) ?></strong></div>
+  <div class="col-sm-8"><?php echo $host ?></div>
+</div>
+<div class="row">
+  <div class="col-sm-4"><strong><?php echo $this->tr( 'Database name:' ) ?></strong></div>
+  <div class="col-sm-8"><?php echo $database ?></div>
+</div>
+<div class="row">
+  <div class="col-sm-4"><strong><?php echo $this->tr( 'Table prefix:' ) ?></strong></div>
+  <div class="col-sm-8"><?php echo $prefix ?></div>
+</div>
+
+</div>
+</div>
 
 <?php break;
 endswitch ?>
 
-<div class="form-submit">
+<div class="form-buttons">
 <?php
     if ( $showRefresh ):
-        $form->renderSubmit( $this->tr( 'Refresh' ), 'refresh' );
+        $form->renderSubmit( $this->tr( 'Refresh' ), 'refresh', array( 'class' => 'btn btn-primary' ) );
     endif;
     if ( $showBack ):
-        $form->renderSubmit( $this->tr( '&lt; Back' ), 'back' );
+        $form->renderSubmit( '<span class="fa fa-caret-left" aria-hidden="true"></span> ' . $this->tr( 'Back' ), 'back' );
     endif;
     if ( $showNext ):
-        $form->renderSubmit( $this->tr( 'Next &gt;' ), 'next', array( 'disabled' => !empty( $disableNext ) ) );
+        $form->renderSubmit( $this->tr( 'Next' ) . ' <span class="fa fa-caret-right" aria-hidden="true"></span>', 'next', array( 'class' => 'btn btn-primary' ) );
     endif;
     if ( $showInstall ):
-        $form->renderSubmit( $this->tr( 'Install' ), 'install', array( 'disabled' => !empty( $disableInstall ) ) );
+        $form->renderSubmit( $this->tr( 'Install' ), 'install', array( 'class' => 'btn btn-primary' ) );
     endif;
 ?>
 </div>
@@ -182,8 +213,10 @@ endswitch ?>
 <?php $form->renderFormClose() ?>
 
 <?php if ( $showInstall ): ?>
-<div id="progress" style="display: none">
-    <?php echo $this->image( '/common/images/throbber.gif', '', array( 'width' => 32, 'height' => 32 ) ) . $this->tr( 'Installation in progress...' ) ?>
+<div tabindex="-1" class="busy-overlay" style="display: none">
+  <div class="busy-spinner">
+    <span class="fa fa-spinner fa-spin" aria-hidden="true"></span>
+  </div>
 </div>
 <?php endif ?>
 

@@ -9,7 +9,7 @@ case 'login': ?>
 <?php $form->renderPassword( $this->tr( 'Password:' ), 'password', array( 'size' => 40 ) ) ?>
 
 <div class="front-login-buttons">
-<?php $form->renderSubmit( '<span class="fa fa-sign-in" aria-hidden="true"></span> ' . $this->tr( 'Log in' ), 'login' ) ?>
+<?php $form->renderSubmit( '<span class="fa fa-sign-in" aria-hidden="true"></span> ' . $this->tr( 'Log in' ), 'login', array( 'class' => 'btn btn-primary' ) ) ?>
 <?php if ( $anonymousAccess ): ?>
 <p>OR</p>
 <?php echo $this->link( '/client/index.php', '<span class="fa fa-user-o" aria-hidden="true"></span> ' . $this->tr( 'Anonymous Access' ), array( 'class' => 'btn btn-default' ) ) ?>
@@ -17,7 +17,7 @@ case 'login': ?>
 </div>
 
 <?php if ( $selfRegister ): ?>
-<div class="front-options">
+<div class="form-options">
 <p><?php echo $this->link( '/register.php', '<span class="fa fa-user-plus" aria-hidden="true"></span> ' . $this->tr( 'Register New Account' ) ) ?></p>
 </div>
 <?php endif ?>
@@ -33,7 +33,7 @@ case 'password': ?>
 <?php $form->renderPassword( $this->tr( 'Confirm password:' ), 'newPasswordConfirm', array( 'size' => 40 ) ) ?>
 
 <div class="form-buttons">
-<?php $form->renderSubmit( $this->tr( 'Log in' ), 'login' ) ?>
+<?php $form->renderSubmit( $this->tr( 'Log in' ), 'login', array( 'class' => 'btn btn-primary' ) ) ?>
 <?php $form->renderSubmit( $this->tr( 'Cancel' ), 'cancel' ) ?>
 </div>
 

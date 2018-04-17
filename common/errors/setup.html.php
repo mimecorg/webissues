@@ -5,7 +5,7 @@
 </div>
 
 <?php if ( !empty( $linkName ) ): ?>
-<div class="front-options">
+<div class="form-options">
 <p><?php echo $this->link( $linkUrl, '<span class="fa fa-wrench" aria-hidden="true"></span> ' . $linkName ) ?></p>
 </div>
 <?php endif ?>
