@@ -36,11 +36,6 @@ if ( !function_exists( 'mb_strlen' ) )
 define( 'WI_VERSION', '1.1.5' );
 
 /**
-* Current version of the WebIssues protocol.
-*/
-define( 'WI_PROTOCOL_VERSION', '1.1' );
-
-/**
 * Current version of the WebIssues database schema.
 */
 define( 'WI_DATABASE_VERSION', '1.1.007' );
