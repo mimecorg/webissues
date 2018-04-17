@@ -110,19 +110,6 @@ class System_Api_RegistrationManager extends System_Api_Base
     }
 
     /**
-    * Return sortable column definitions for the System_Web_Grid.
-    */
-    public function getRequestsColumns()
-    {
-        return array(
-            'name' => 'user_name COLLATE LOCALE',
-            'login' => 'user_login COLLATE LOCALE',
-            'email' => 'user_email COLLATE LOCALE',
-            'date' => 'created_time'
-            );
-    }
-
-    /**
     * Add a request to register a new account.
     * @param $login The login of the user.
     * @param $name The name of the user.

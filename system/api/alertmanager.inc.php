@@ -255,16 +255,6 @@ class System_Api_AlertManager extends System_Api_Base
     }
 
     /**
-    * Return sortable column definitions for the System_Web_Grid.
-    */
-    public function getAlertsColumns()
-    {
-        return array(
-            'name' => 'view_name COLLATE LOCALE'
-        );
-    }
-
-    /**
     * Get the alert with given identifier.
     * @param $alertId Identifier of the alert.
     * @param $flags If AllowEdit is passed an error is thrown if the user

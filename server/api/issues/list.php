@@ -116,11 +116,11 @@ class Server_Api_Issues_List
         }
 
         if ( $sortColumn !== null ) {
-            $order = $sortAscending ? System_Web_Grid::Ascending : System_Web_Grid::Descending;
-            $orderBy = System_Web_Grid::makeOrderBy( $queryGenerator->getColumnExpression( $sortColumn ), $order );
+            $order = $sortAscending ? System_Const::Ascending : System_Const::Descending;
+            $orderBy = System_Web_ColumnHelper::makeOrderBy( $queryGenerator->getColumnExpression( $sortColumn ), $order );
         } else {
             $sortColumn = $queryGenerator->getColumnFromName( $queryGenerator->getSortColumn() );
-            $sortAscending = ( $queryGenerator->getSortOrder() == System_Web_Grid::Ascending );
+            $sortAscending = ( $queryGenerator->getSortOrder() == System_Const::Ascending );
             $orderBy = $queryGenerator->getOrderBy();
         }
 

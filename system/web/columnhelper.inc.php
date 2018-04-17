@@ -48,4 +48,26 @@ class System_Web_ColumnHelper extends System_Web_Base
             System_Api_Column::Location => $this->tr( 'Location' )
         );
     }
+
+    /**
+    * Create the sorting order specifier for given column and sorting order.
+    */
+    public static function makeOrderBy( $column, $sort )
+    {
+        if ( $sort == System_Const::Ascending )
+            $order = ' ASC';
+        else if ( $sort == System_Const::Descending )
+            $order = ' DESC';
+        else
+            throw new System_Core_Exception( 'Invalid sort order' );
+
+        $parts = explode( ', ', $column );
+
+        foreach ( $parts as &$part ) {
+            if ( substr( $part, -4 ) != ' ASC' && substr( $part, -5 ) != ' DESC' )
+                $part .= $order;
+        }
+
+        return implode( ', ', $parts );
+    }
 }

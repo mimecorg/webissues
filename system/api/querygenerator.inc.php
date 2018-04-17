@@ -62,7 +62,7 @@ class System_Api_QueryGenerator extends System_Api_Base
         $this->columns[] = System_Api_Column::ModifiedBy;
 
         $this->sortColumn = $this->getColumnName( System_Api_Column::ID );
-        $this->sortOrder = System_Web_Grid::Ascending;
+        $this->sortOrder = System_Const::Ascending;
 
         $this->locale = new System_Api_Locale();
     }
@@ -125,7 +125,7 @@ class System_Api_QueryGenerator extends System_Api_Base
 
         if ( array_search( $sortColumn, $allColumns ) !== false ) {
             $this->sortColumn = $this->getColumnName( $sortColumn );
-            $this->sortOrder = $info->getMetadata( 'sort-desc', 0 ) ? System_Web_Grid::Descending : System_Web_Grid::Ascending;
+            $this->sortOrder = $info->getMetadata( 'sort-desc', 0 ) ? System_Const::Descending : System_Const::Ascending;
         }
 
         $filters = $info->getMetadata( 'filters' );
@@ -280,9 +280,9 @@ class System_Api_QueryGenerator extends System_Api_Base
     */
     public function getOrderBy()
     {
-        $columns = $this->getGridColumns();
+        $columns = $this->getSortableColumns();
 
-        return System_Web_Grid::makeOrderBy( $columns[ $this->sortColumn ], $this->sortOrder );
+        return System_Web_ColumnHelper::makeOrderBy( $columns[ $this->sortColumn ], $this->sortOrder );
     }
 
     /**
@@ -381,14 +381,14 @@ class System_Api_QueryGenerator extends System_Api_Base
     }
 
     /**
-    * Return the list of sortable columns which can be used by System_Web_Grid.
+    * Return the list of sortable columns.
     */
-    public function getGridColumns()
+    public function getSortableColumns()
     {
-        $gridColumns = array();
+        $columns = array();
         foreach ( $this->columns as $column )
-            $gridColumns[ $this->getColumnName( $column ) ] = $this->getColumnExpression( $column );
-        return $gridColumns;
+            $columns[ $this->getColumnName( $column ) ] = $this->getColumnExpression( $column );
+        return $columns;
     }
 
     /**

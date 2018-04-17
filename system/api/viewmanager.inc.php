@@ -138,16 +138,6 @@ class System_Api_ViewManager extends System_Api_Base
     }
 
     /**
-    * Return sortable column definitions for the System_Web_Grid.
-    */
-    public function getViewsColumns()
-    {
-        return array(
-            'name' => 'view_name COLLATE LOCALE'
-        );
-    }
-
-    /**
     * Get the view with given identifier.
     * @param $viewId Identifier of the view.
     * @param $flags If AllowEdit is passed an error is thrown if the user
