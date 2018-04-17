@@ -118,17 +118,17 @@ class System_Web_LinkLocator extends System_Web_Base
     {
         if ( $url[ 0 ] == '#' ) {
             $mode = self::getLinkMode();
-            if ( $mode == self::AutoLinks ) {
-                $baseUrl = WI_BASE_URL;
-                if ( $baseUrl != '' && System_Core_Application::getInstance()->getRequest()->isRelativePathUnder( '/mobile' ) )
-                    $baseUrl .= '/mobile';
-            } else if ( $mode == self::RouteLinks ) {
+
+            if ( $mode == self::RouteLinks )
                 return '#/items/' . substr( $url, 1 );
-            } else {
+
+            if ( $mode == self::AutoLinks )
+                $baseUrl = WI_BASE_URL;
+            else
                 $baseUrl = self::getBaseUrl();
-            }
+
             if ( $baseUrl != '' )
-                return $baseUrl . '/client/index.php?item=' . substr( $url, 1 );
+                return $baseUrl . '/client/index.php#/items/' . substr( $url, 1 );
             else
                 return '#item' . substr( $url, 1 );
         }

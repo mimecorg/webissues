@@ -52,12 +52,8 @@ class Common_Users_Register extends System_Web_Component
         $this->form->addField( 'email' );
 
         if ( $this->form->loadForm() ) {
-            if ( $this->form->isSubmittedWith( 'cancel' ) || $this->form->isSubmittedWith( 'ok' ) ) {
-                if ( $this->request->isRelativePathUnder( '/mobile' ) )
-                    $this->response->redirect( '/mobile/index.php' );
-                else
-                    $this->response->redirect( '/index.php' );
-            }
+            if ( $this->form->isSubmittedWith( 'cancel' ) || $this->form->isSubmittedWith( 'ok' ) )
+                $this->response->redirect( '/index.php' );
 
             $this->initializeRules();
             $this->validate();

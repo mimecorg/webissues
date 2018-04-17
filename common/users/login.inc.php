@@ -59,12 +59,8 @@ class Common_Users_Login extends System_Web_Component
                 if ( $this->form->isSubmittedWith( 'login' ) && !$this->form->hasErrors() ) {
                     if ( $this->submit() ) {
                         $url = $this->request->getQueryString( 'url' );
-                        if ( $url == null || $url[ 0 ] != '/' ) {
-                            if ( $this->request->isRelativePathUnder( '/mobile' ) )
-                                $url = '/mobile/client/index.php';
-                            else
-                                $url = '/client/index.php';
-                        }
+                        if ( $url == null || $url[ 0 ] != '/' )
+                            $url = '/client/index.php';
                         $this->response->redirect( $url );
                     }
                 }
