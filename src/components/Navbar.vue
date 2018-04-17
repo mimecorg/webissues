@@ -84,7 +84,7 @@
             </div>
             <div class="navbar-sub-element">
               <button type="button" class="btn btn-default" v-bind:title="$t( 'Navbar.AboutWebIssues' )"><span class="fa fa-info-circle" aria-hidden="true"></span></button>
-              <a type="button" class="btn btn-default" v-bind:title="$t( 'Navbar.WebIssuesManual' )" v-bind:href="baseURL + '/doc/en/index.html'" target="_blank">
+              <a type="button" class="btn btn-default" v-bind:title="$t( 'Navbar.WebIssuesManual' )" v-bind:href="manualURL" target="_blank">
                 <span class="fa fa-question-circle" aria-hidden="true"></span>
               </a>
             </div>
@@ -122,6 +122,9 @@ export default {
         return this.$t( 'Navbar.UserTitle', [ this.userName ] );
       else
         return this.$t( 'Navbar.AnonymousUser' );
+    },
+    manualURL() {
+      return 'http://doc.mimec.org/webissues/1.1/en/index.html';
     }
   },
 

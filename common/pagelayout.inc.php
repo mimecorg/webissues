@@ -47,6 +47,6 @@ class Common_PageLayout extends System_Web_Component
         $this->assets = new System_Web_Assets();
         $this->assets->add( 'common' );
 
-        $this->manualUrl = $application->getManualUrl();
+        $this->manualUrl = 'http://doc.mimec.org/webissues/1.1/en/index.html';
     }
 }
