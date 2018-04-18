@@ -35,31 +35,3 @@ export default {
   }
 }
 </script>
-
-<style lang="less">
-@import "~@/styles/variables.less";
-@import "~@/styles/mixins.less";
-
-.form-section {
-  .group();
-  margin-top: 3px;
-  margin-bottom: 3px;
-}
-
-.form-section-title {
-  .element();
-  .element-wide();
-  vertical-align: bottom;
-}
-
-.form-section-header {
-  font-weight: bold;
-  margin: 7px 0 6px 0;
-  font-size: @form-section-font-size;
-}
-
-.form-section-buttons {
-  .element();
-  vertical-align: bottom;
-}
-</style>

@@ -50,134 +50,25 @@
 
 @import (inline) "~highlight.js/styles/github.css";
 
+@import "components/busy.less";
+@import "components/datepicker.less";
+@import "components/description.less";
+@import "components/dropdown.less";
+@import "components/form.less";
+@import "components/front.less";
+@import "components/grid.less";
+@import "components/issue.less";
+@import "components/main.less";
+@import "components/navbar.less";
+@import "components/panel.less";
+@import "components/window.less";
+
+a[role="link"] {
+  cursor: pointer;
+}
+
 .btn .fa {
   .fa-fw();
-}
-
-.dropdown-toggle {
-  text-align: left;
-  .ellipsis();
-}
-
-.dropdown-has-caret {
-  position: relative;
-  padding-right: 23px;
-
-  .caret {
-    position: absolute;
-    top: 15px; right: 12px;
-  }
-}
-
-.dropdown-menu {
-  min-width: 120px;
-}
-
-.dropdown-menu > li > a, .dropdown-header {
-  padding: 3px 12px;
-  .ellipsis();
-}
-
-.dropdown-menu-scroll {
-  max-height: 156px;
-  overflow-x: hidden;
-  overflow-y: auto;
-
-  @media ( min-width: @screen-sm-min ) {
-    max-height: 260px;
-  }
-
-  > li > a {
-    display: block;
-    clear: both;
-    padding: 3px 12px;
-    font-weight: normal;
-    line-height: @line-height-base;
-    color: @dropdown-link-color;
-    .ellipsis();
-    cursor: pointer;
-  }
-}
-
-.dropdown-menu-scroll > li > a {
-  &:hover,
-  &:focus {
-    text-decoration: none;
-    color: @dropdown-link-hover-color;
-    background-color: @dropdown-link-hover-bg;
-  }
-}
-
-.dropdown-menu-scroll > .active > a {
-  &,
-  &:hover,
-  &:focus {
-    text-decoration: none;
-    color: @dropdown-link-active-color;
-    background-color: @dropdown-link-active-bg;
-  }
-}
-
-.dropdown-menu > li > a:focus, .dropdown-menu-scroll > li > a:focus {
-  outline: 0;
-  box-shadow: inset 1px 1px @input-border-focus, inset -1px -1px @input-border-focus;
-}
-
-.dropdown-menu > .active > a:focus, .dropdown-menu-scroll > .active > a:focus {
-  box-shadow: none;
-}
-
-.dropdown-menu .fa {
-  color: @dropdown-icon-color;
-  .fa-fw();
-}
-
-.dropdown-menu-both {
-  right: 0;
-}
-
-.dropdown-input-group {
-  position: initial;
-}
-
-.dropdown-filters {
-  white-space: nowrap;
-
-  .dropdown-toggle {
-    width: 140px;
-
-    @media ( min-width: @screen-sm-min ) {
-      width: 175px;
-    }
-
-    .has-error & {
-      border-color: @state-danger-text;
-      &:focus {
-        border-color: darken( @state-danger-text, 10% );
-      }
-    }
-  }
-
-  .dropdown-menu {
-    right: 0;
-  }
-}
-
-.dropdown-select {
-  .dropdown-toggle {
-    width: 250px;
-
-    .has-error & {
-      border-color: @state-danger-text;
-      &:focus {
-        border-color: darken( @state-danger-text, 10% );
-      }
-    }
-  }
-
-  .dropdown-menu {
-    right: 0;
-  }
 }
 
 .input-group-btn:last-child > .btn:not(:last-child):not(.dropdown-toggle):last-of-type {
@@ -197,72 +88,10 @@
   }
 }
 
-.panel-title {
-  font-size: @panel-title-font-size;
-  font-weight: bold;
+.has-error .radio label {
+  color: @text-color;
 }
 
-.panel-body > .form-group:last-child {
-  margin-bottom: 5px;
-}
-
-.description-panel {
-  padding: 10px;
-  margin-bottom: 20px;
-  border: 1px solid @description-panel-border;
-  border-radius: @border-radius-base;
-}
-
-.last-edited {
-  color: @last-edited-color;
-  text-align: right;
-  margin-top: 5px;
-
-  .fa {
-    margin-right: 3px;
-  }
-}
-
-.formatted-text {
-  white-space: pre-wrap;
-  word-wrap: break-word;
-
-  ul {
-    margin-bottom: 0;
-  }
-
-  .quote {
-    margin-bottom: 5px;
-    padding: 5px 10px;
-    border-left: 2px solid #777;
-  }
-
-  .quote-title {
-    margin-bottom: 5px;
-    font-weight: bold;
-  }
-
-  pre, pre.hljs {
-    margin-bottom: 5px;
-    padding: 5px 10px;
-  }
-
-  .rtl {
-    direction: rtl;
-  }
-}
-
-.hljs {
-  color: @pre-color;
-  background: @pre-bg;
-}
-
-.checkbox-group {
-  margin-top: -10px;
-
-  .checkbox {
-    margin-top: 10px;
-    margin-bottom: 0;
-    .ellipsis();
-  }
+.alert-default {
+  border-color: @panel-default-border;
 }

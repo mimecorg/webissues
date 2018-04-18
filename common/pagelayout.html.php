@@ -3,51 +3,51 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title><?php echo $pageTitle ?> | <?php echo $siteName ?></title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><?php echo $siteName ?></title>
   <link rel="shortcut icon" href="<?php echo $this->url( $icon ) ?>" type="image/vnd.microsoft.icon">
-<?php foreach ( $cssFiles as $file ): ?>
-  <link rel="stylesheet" href="<?php echo $this->url( $file ) ?>" type="text/css">
-<?php endforeach ?>
-<?php foreach ( $cssConditional as $condition => $file ): ?>
-  <!--[if <?php echo $condition ?>]><link rel="stylesheet" href="<?php echo $this->url( $file ) ?>" type="text/css"><![endif]-->
-<?php endforeach ?>
-<?php foreach ( $scriptFiles as $file ): ?>
-  <script type="text/javascript" src="<?php echo $this->url( $file ) ?>"></script>
-<?php endforeach ?>
-<?php if ( !empty( $inlineCode ) ): ?>
-  <script type="text/javascript">
-<?php echo $inlineCode ?>
-  </script>
-<?php endif ?>
+<?php $assets->render() ?>
 </head>
-<body>
+<body class="front-body">
 
-<div id="header">
-  <a href="<?php echo $this->url( $homeUrl ) ?>"><img id="site-logo" src="<?php echo $this->url( '/common/images/webissues-logo.png' ) ?>" alt="WebIssues"></a>
-  <div id="site-name"><?php echo $this->link( $homeUrl, $siteName ) ?></div>
-  <div id="header-right">
-<?php
-    echo $this->tr( 'WebIssues %1', null, WI_VERSION ) . ' | ';
-    echo $this->link( $manualUrl, $this->tr( 'Manual' ), array( 'target' => '_blank' ) );
-?>
+<div id="navbar">
+  <div class="container-fluid">
+    <div class="navbar-group">
+      <div class="navbar-element navbar-element-wide">
+        <div class="navbar-brand">
+          <div class="navbar-brand-logo">
+            <a href="<?php echo $this->url( '/index.php' ) ?>">
+              <div class="navbar-brand-img"></div>
+            </a>
+          </div>
+          <div class="navbar-brand-name">
+            <a href="<?php echo $this->url( '/index.php' ) ?>"><?php echo $siteName ?></a>
+          </div>
+        </div>
+      </div>
+      <div id="navbar-element-collapse" aria-expanded="false" class="navbar-element collapse">
+        <div class="navbar-sub-group">
+          <div class="navbar-sub-element navbar-sub-element-wide">
+            <div class="navbar-version">WebIssues <?php echo WI_VERSION ?></div>
+          </div>
+          <div class="navbar-sub-element">
+            <a type="button" title="<?php echo $this->tr( 'WebIssues Manual' ) ?>" href="<?php echo $this->url( $manualUrl ) ?>" target="_blank" class="btn btn-default">
+              <span aria-hidden="true" class="fa fa-question-circle"></span>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div id="navbar-element-toggle" class="navbar-element">
+        <button id="toggle-button" type="button" title="<?php echo $this->tr( 'Toggle Navigation' ) ?>" class="btn btn-default"><span aria-hidden="true" class="fa fa-bars"></span></button>
+      </div>
+    </div>
   </div>
-  <div id="infobar-left"><?php echo $pageTitle ?></div>
-  <div id="infobar-right"></div>
 </div>
 
-<div id="body">
 <?php $this->insertContent() ?>
-</div>
 
-<?php if ( !empty( $errors ) ): ?>
-<div class="debug">
-<ul>
-<?php foreach ( $errors as $error ): ?>
-<li><?php echo nl2br( $error ) ?></li>
-<?php endforeach ?>
-</ul>
-</div>
-<?php endif ?>
+<script type="text/javascript">WebIssues_common.initialize();</script>
 
 </body>
 </html>

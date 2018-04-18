@@ -1,0 +1,195 @@
+/**************************************************************************
+* This file is part of the WebIssues Server program
+* Copyright (C) 2006 Michał Męciński
+* Copyright (C) 2007-2017 WebIssues Team
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU Affero General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Affero General Public License for more details.
+*
+* You should have received a copy of the GNU Affero General Public License
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.
+**************************************************************************/
+
+#navbar {
+  height: @navbar-height;
+  background: @navbar-bg;
+
+  .btn-default {
+    .button-variant( @btn-navbar-color, @btn-navbar-bg, @btn-navbar-border );
+  }
+}
+
+.navbar-fixed {
+  position: absolute;
+  left: 0; right: 0;
+  top: 0;
+}
+
+.navbar-group {
+  .group();
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+.navbar-element {
+  .element();
+}
+
+.navbar-element-wide {
+  .element-wide();
+}
+
+.navbar-brand {
+  display: table;
+  width: 100%;
+
+  a, a:focus, a:hover {
+    text-decoration: none;
+    color: @navbar-brand-color;
+  }
+}
+
+.navbar-brand-logo {
+  display: table-cell;
+}
+
+.navbar-brand-img {
+  .image( '~@/images/webissues-logo.png'; 32px; 32px );
+  margin: 1px 10px 1px 0;
+}
+
+.navbar-brand-name {
+  display: table-cell;
+  vertical-align: middle;
+  width: 100%;
+  max-width: 0;
+  color: @navbar-brand-color;
+  font-size: @navbar-brand-font-size;
+  .ellipsis();
+}
+
+.navbar-sub-group, .navbar-sub-element {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.navbar-version {
+  margin-left: 15px;
+  margin-right: 15px;
+  color: @navbar-text-color;
+  .ellipsis();
+}
+
+#navbar-element-toggle {
+  display: none;
+
+  @media ( max-width: @screen-xs-max ) {
+    display: table-cell;
+  }
+}
+
+#navbar-element-collapse {
+  .dropdown-toggle {
+    max-width: 200px;
+  }
+
+  .dropdown-menu {
+    background-color: @navbar-dropdown-bg;
+    border-color: @navbar-border-color;
+
+    > li > a {
+      color: @navbar-link-color;
+
+      &:hover, &:focus {
+        background-color: @navbar-link-active-bg;
+        color: @navbar-link-color;
+      }
+    }
+
+    .divider {
+      background-color: @navbar-divider-color;
+    }
+
+    .fa {
+      color: @navbar-icon-color;
+    }
+  }
+
+  @media ( max-width: @screen-xs-max ) {
+    display: none;
+    position: absolute;
+    left: 0; right: 0;
+    top: @navbar-height;
+    max-height: @navbar-collapse-max-height;
+    background-color: @navbar-bg;
+    padding: 0 15px 0 15px;
+    .touch-scroll();
+    z-index: 100;
+
+    &.in {
+      display: block;
+    }
+
+    &.collapsing {
+      display: block;
+      overflow: hidden;
+    }
+
+    > .btn, > .btn-group {
+      display: block;
+      margin: 5px 0;
+    }
+
+    > .btn, > .btn-group, > .btn-group > .btn {
+      width: 100%;
+      text-align: left;
+    }
+
+    .btn, .btn-group, .dropdown-menu {
+      float: none;
+    }
+
+    .dropdown-menu {
+      position: static;
+    }
+
+    .dropdown-toggle {
+      max-width: initial;
+    }
+
+    .dropdown-backdrop {
+      display: none;
+    }
+
+    .navbar-sub-group {
+      display: table;
+      margin: 5px 0 8px 0;
+    }
+
+    .navbar-sub-element {
+      display: table-cell;
+      white-space: nowrap;
+    }
+
+    .navbar-sub-element-wide {
+      .element-wide();
+    }
+
+    .navbar-version {
+      margin-left: 0;
+    }
+  }
+
+  @media ( min-width: @screen-sm-min ) {
+    display: table-cell!important;
+    height: auto!important;
+    overflow: visible!important;
+  }
+}

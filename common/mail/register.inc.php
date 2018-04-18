@@ -42,6 +42,6 @@ class Common_Mail_Register extends System_Web_Component
 
         // Note: use WI_BASE_URL here because this email is always sent from the registration form and the link
         // is valid even if the server URL is not configured.
-        $this->activationUrl = $this->appendQueryString( WI_BASE_URL . '/register.php', array( 'key' => $this->register[ 'request_key' ] ) );
+        $this->activationUrl = $this->appendQueryString( WI_BASE_URL . '/users/register.php', array( 'key' => $this->register[ 'request_key' ] ) );
     }
 }

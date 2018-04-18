@@ -1,0 +1,132 @@
+/**************************************************************************
+* This file is part of the WebIssues Server program
+* Copyright (C) 2006 Michał Męciński
+* Copyright (C) 2007-2017 WebIssues Team
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU Affero General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Affero General Public License for more details.
+*
+* You should have received a copy of the GNU Affero General Public License
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.
+**************************************************************************/
+
+#main-toolbar {
+  position: absolute;
+  left: 0; right: 0;
+  top: @navbar-height; height: @main-toolbar-height;
+  padding: 4px 0;
+  background-color: @main-toolbar-bg;
+  border-bottom: 1px solid @main-toolbar-border-color;
+
+  .type-selected & {
+    height: @main-toolbar-3x-height;
+
+    @media ( min-width: @screen-sm-min ) {
+      height: @main-toolbar-2x-height;
+    }
+
+    @media ( min-width: @screen-lg-min ) {
+      height: @main-toolbar-height;
+    }
+  }
+
+  .row > div {
+    margin-top: 4px;
+    margin-bottom: 4px;
+  }
+}
+
+.main-group {
+  .group();
+}
+
+.main-element {
+  .element();
+}
+
+.main-element-wide {
+  .element-wide();
+
+  > .input-group {
+    width: 100%;
+  }
+}
+
+#main-grid {
+  position: absolute;
+  left: 0; right: 0;
+  top: @navbar-height + @main-toolbar-height; bottom: 0;
+  margin: 0;
+
+  .type-selected & {
+    top: @navbar-height + @main-toolbar-3x-height;
+
+    @media ( min-width: @screen-sm-min ) {
+      top: @navbar-height + @main-toolbar-2x-height;
+    }
+
+    @media ( min-width: @screen-lg-min ) {
+      top: @navbar-height + @main-toolbar-height;
+    }
+  }
+
+  .grid-body {
+    position: absolute;
+    left: 0; right: 0;
+    top: @grid-header-height; bottom: @grid-footer-height;
+  }
+
+  .grid-body-scroll {
+    position: absolute;
+    left: 0; right: 0;
+    top: 0; bottom: 0;
+    .touch-scroll();
+  }
+
+  .grid-footer {
+    position: absolute;
+    left: 0; right: 0;
+    bottom: 0;
+  }
+
+  .grid-header-table th, .grid-body-table td {
+    &.column-id {
+      min-width: 100px;
+      max-width: 100px;
+    }
+
+    &.column-name {
+      min-width: 400px;
+      max-width: 400px;
+
+      @media ( min-width: @screen-lg-min ) {
+        min-width: 600px;
+        max-width: 600px;
+      }
+    }
+
+    &.column-location {
+      min-width: 300px;
+      max-width: 300px;
+    }
+  }
+
+  .grid-body-table td .fa {
+    margin-right: 5px;
+
+    &.issue-unread {
+      color: @brand-primary;
+    }
+
+    &.issue-modified {
+      color: @brand-success;
+    }
+  }
+}

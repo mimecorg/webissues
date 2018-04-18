@@ -592,14 +592,4 @@ class System_Api_TypeManager extends System_Api_Base
 
         return $this->connection->queryPage( $query, $orderBy, $limit, $offset );
     }
-
-    /**
-    * Return sortable column definitions for the System_Web_Grid.
-    */
-    public function getIssueTypesColumns()
-    {
-        return array(
-            'name' => 'type_name COLLATE LOCALE'
-        );
-    }
 }

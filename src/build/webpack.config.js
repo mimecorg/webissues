@@ -47,12 +47,15 @@ module.exports = function( { production } = {} ) {
   }
 
   return {
-    entry: './src/main.js',
+    entry: {
+      common: './src/common.js',
+      main: './src/main.js'
+    },
     output: {
       path: path.resolve( __dirname, '../../assets' ),
       publicPath: production ? '../' : 'http://localhost:8080/',
-      filename: production ? 'js/webissues.min.js?[chunkhash]' : 'js/webissues.js',
-      library: 'WebIssues'
+      filename: production ? 'js/[name].min.js?[chunkhash]' : 'js/[name].js',
+      library: 'WebIssues_[name]'
     },
     module: {
       rules: [
@@ -114,7 +117,7 @@ module.exports = function( { production } = {} ) {
         comments: false
       } ),
       new ExtractTextPlugin( {
-        filename: 'css/style.min.css?[contenthash]'
+        filename: 'css/[name].min.css?[contenthash]'
       } ),
       new AssetsPlugin( {
         filename: 'assets.json',

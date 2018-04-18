@@ -1,8 +1,11 @@
 <?php if ( !defined( 'WI_VERSION' ) ) die( -1 ); ?>
 
+<div class="alert alert-danger">
 <p><?php echo $this->tr( 'The following error(s) occured while processing the request:' ) ?></p>
-<ul>
+</div>
+
+<div class="alert alert-default">
 <?php foreach ( $errors as $error ): ?>
-<li><?php echo nl2br( $error ) ?></li>
+<p><?php echo nl2br( $error ) ?></p>
 <?php endforeach ?>
-</ul>
+</div>

@@ -88,6 +88,20 @@ class System_Const
     /*@}*/
 
     /**
+    * @name Sort Order
+    */
+    /*@{*/
+    /**
+    * Sort in ascending order.
+    */
+    const Ascending = 0;
+    /**
+    * Sort in descending order.
+    */
+    const Descending = 1;
+    /*@}*/
+
+    /**
     * Limits
     */
     /*@{*/

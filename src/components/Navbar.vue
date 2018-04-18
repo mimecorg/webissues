@@ -18,7 +18,7 @@
 -->
 
 <template>
-  <div id="navbar">
+  <div id="navbar" class="navbar-fixed">
     <div class="container-fluid">
       <div class="navbar-group">
         <div class="navbar-element navbar-element-wide">
@@ -84,7 +84,7 @@
             </div>
             <div class="navbar-sub-element">
               <button type="button" class="btn btn-default" v-bind:title="$t( 'Navbar.AboutWebIssues' )"><span class="fa fa-info-circle" aria-hidden="true"></span></button>
-              <a type="button" class="btn btn-default" v-bind:title="$t( 'Navbar.WebIssuesManual' )" v-bind:href="baseURL + '/doc/en/index.html'" target="_blank">
+              <a type="button" class="btn btn-default" v-bind:title="$t( 'Navbar.WebIssuesManual' )" v-bind:href="manualURL" target="_blank">
                 <span class="fa fa-question-circle" aria-hidden="true"></span>
               </a>
             </div>
@@ -122,6 +122,9 @@ export default {
         return this.$t( 'Navbar.UserTitle', [ this.userName ] );
       else
         return this.$t( 'Navbar.AnonymousUser' );
+    },
+    manualURL() {
+      return 'http://doc.mimec.org/webissues/1.1/en/index.html';
     }
   },
 
@@ -160,181 +163,3 @@ export default {
   }
 }
 </script>
-
-<style lang="less">
-@import "~@/styles/variables.less";
-@import "~@/styles/mixins.less";
-
-#navbar {
-  position: absolute;
-  left: 0; right: 0;
-  top: 0; height: @navbar-height;
-  background: @navbar-bg;
-
-  .btn-default {
-    .button-variant( @btn-navbar-color, @btn-navbar-bg, @btn-navbar-border );
-  }
-}
-
-.navbar-group {
-  .group();
-  margin-top: 8px;
-  margin-bottom: 8px;
-}
-
-.navbar-element {
-  .element();
-}
-
-.navbar-element-wide {
-  .element-wide();
-}
-
-.navbar-brand {
-  display: table;
-  width: 100%;
-
-  a, a:focus, a:hover {
-    text-decoration: none;
-    color: @navbar-brand-color;
-  }
-}
-
-.navbar-brand-logo {
-  display: table-cell;
-}
-
-.navbar-brand-img {
-  .image( '~@/images/webissues-logo.png'; 32px; 32px );
-  margin: 1px 10px 1px 0;
-}
-
-.navbar-brand-name {
-  display: table-cell;
-  vertical-align: middle;
-  width: 100%;
-  max-width: 0;
-  color: @navbar-brand-color;
-  font-size: @navbar-brand-font-size;
-  .ellipsis();
-}
-
-.navbar-sub-group, .navbar-sub-element {
-  display: inline-block;
-  vertical-align: middle;
-}
-
-.navbar-version {
-  margin-left: 15px;
-  margin-right: 15px;
-  color: @navbar-text-color;
-  .ellipsis();
-}
-
-#navbar-element-toggle {
-  display: none;
-
-  @media ( max-width: @screen-xs-max ) {
-    display: table-cell;
-  }
-}
-
-#navbar-element-collapse {
-  .dropdown-toggle {
-    max-width: 200px;
-  }
-
-  .dropdown-menu {
-    background-color: @navbar-dropdown-bg;
-    border-color: @navbar-border-color;
-
-    > li > a {
-      color: @navbar-link-color;
-
-      &:hover, &:focus {
-        background-color: @navbar-link-active-bg;
-        color: @navbar-link-color;
-      }
-    }
-
-    .divider {
-      background-color: @navbar-divider-color;
-    }
-
-    .fa {
-      color: @navbar-icon-color;
-    }
-  }
-
-  @media ( max-width: @screen-xs-max ) {
-    display: none;
-    position: absolute;
-    left: 0; right: 0;
-    top: @navbar-height;
-    max-height: @navbar-collapse-max-height;
-    background-color: @navbar-bg;
-    padding: 0 15px 0 15px;
-    .touch-scroll();
-    z-index: 100;
-
-    &.in {
-      display: block;
-    }
-
-    &.collapsing {
-      display: block;
-      overflow: hidden;
-    }
-
-    > .btn, > .btn-group {
-      display: block;
-      margin: 5px 0;
-    }
-
-    > .btn, > .btn-group, > .btn-group > .btn {
-      width: 100%;
-      text-align: left;
-    }
-
-    .btn, .btn-group, .dropdown-menu {
-      float: none;
-    }
-
-    .dropdown-menu {
-      position: static;
-    }
-
-    .dropdown-toggle {
-      max-width: initial;
-    }
-
-    .dropdown-backdrop {
-      display: none;
-    }
-
-    .navbar-sub-group {
-      display: table;
-      margin: 5px 0 8px 0;
-    }
-
-    .navbar-sub-element {
-      display: table-cell;
-      white-space: nowrap;
-    }
-
-    .navbar-sub-element-wide {
-      .element-wide();
-    }
-
-    .navbar-version {
-      margin-left: 0;
-    }
-  }
-
-  @media ( min-width: @screen-sm-min ) {
-    display: table-cell!important;
-    height: auto!important;
-    overflow: visible!important;
-  }
-}
-</style>

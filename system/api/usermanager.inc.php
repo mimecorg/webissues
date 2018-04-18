@@ -154,19 +154,6 @@ class System_Api_UserManager extends System_Api_Base
     }
 
     /**
-    * Return sortable column definitions for the System_Web_Grid.
-    */
-    public function getUsersColumns()
-    {
-        return array(
-            'name' => 'u.user_name COLLATE LOCALE',
-            'login' => 'u.user_login COLLATE LOCALE',
-            'email' => 'p.pref_value COLLATE LOCALE',
-            'access' => 'u.user_access'
-            );
-    }
-
-    /**
     * Return the number of members of given project.
     * @param $project The project to count members.
     * @return The number of members.
@@ -196,17 +183,6 @@ class System_Api_UserManager extends System_Api_Base
             . ' JOIN {users} AS u ON u.user_id = r.user_id AND r.project_id = %d';
 
         return $this->connection->queryPage( $query, $orderBy, $limit, $offset, $projectId );
-    }
-
-    /**
-    * Return sortable column definitions for the System_Web_Grid.
-    */
-    public function getMembersColumns()
-    {
-        return array(
-            'name' => 'u.user_name COLLATE LOCALE',
-            'access' => 'r.project_access'
-        );
     }
 
     /**
@@ -258,17 +234,6 @@ class System_Api_UserManager extends System_Api_Base
             . ' WHERE r.user_id = %d AND p.is_archived = 0';
 
         return $this->connection->queryPage( $query, $orderBy, $limit, $offset, $userId );
-    }
-
-    /**
-    * Return sortable column definitions for the System_Web_Grid.
-    */
-    public function getUserProjectsColumns()
-    {
-        return array(
-            'name' => 'p.project_name COLLATE LOCALE',
-            'access' => 'r.project_access'
-        );
     }
 
     public function getPreferences()

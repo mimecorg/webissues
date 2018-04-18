@@ -657,14 +657,6 @@ class System_Api_ProjectManager extends System_Api_Base
     }
 
     /**
-    * Return sortable column definitions for the System_Web_Grid.
-    */
-    public function getProjectsColumns()
-    {
-        return array( 'name' => 'p.project_name COLLATE LOCALE' );
-    }
-
-    /**
     * Return the total number of accessible projects.
     * @param $flags If RequireAdministrator is passed only projects
     * to which the user has administrator access are returned.

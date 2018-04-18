@@ -52,10 +52,10 @@ class Common_Application extends System_Web_Application
         if ( $this->request->isRelativePathUnder( '/common/errors' ) )
             return;
 
-        if ( $exception->getCode() == System_Core_SetupException::SiteConfigNotFound && $this->request->isRelativePath( '/admin/setup/install.php' ) )
+        if ( $exception->getCode() == System_Core_SetupException::SiteConfigNotFound && $this->request->isRelativePath( '/setup/install.php' ) )
             return;
 
-        if ( $exception->getCode() == System_Core_SetupException::DatabaseNotUpdated && $this->request->isRelativePath( '/admin/setup/update.php' ) )
+        if ( $exception->getCode() == System_Core_SetupException::DatabaseNotUpdated && $this->request->isRelativePath( '/setup/update.php' ) )
             return;
 
         $this->handleException( $exception );
@@ -79,25 +79,5 @@ class Common_Application extends System_Web_Application
         $this->response->setContent( $content );
 
         $this->response->send();
-    }
-
-    public function getManualUrl()
-    {
-        $language = $this->translator->getLanguage( System_Core_Translator::UserLanguage );
-
-        while ( $language != '' ) {
-            $url = '/doc/' . $language . '/index.html';
-
-            if ( file_exists( WI_ROOT_DIR . $url ) )
-                return $url;
-
-            $pos = strrpos( $language, '_' );
-            if ( $pos === false )
-                break;
-
-            $language = substr( $language, 0, $pos );
-        }
-
-        return '/doc/en/index.html';
     }
 }

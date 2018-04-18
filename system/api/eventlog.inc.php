@@ -98,16 +98,6 @@ class System_Api_EventLog extends System_Api_Base
     }
 
     /**
-    * Return sortable column definitions for the System_Web_Grid.
-    */
-    public function getEventsColumns()
-    {
-        return array(
-            'date' => 'e.event_id'
-            );
-    }
-
-    /**
     * Get details of an event.
     * @param $eventId The identifier of the event.
     * @return Array containing event details.
@@ -158,7 +148,7 @@ class System_Api_EventLog extends System_Api_Base
     {
         $type = self::Errors;
         $severity = self::Error;
-        
+
         if ( is_a( $exception, 'System_Core_ErrorException' ) ) {
             $errno = $exception->getErrno();
             if ( $errno == E_NOTICE || $errno == E_STRICT || $errno == E_DEPRECATED || $errno == E_USER_NOTICE || $errno == E_USER_DEPRECATED )

@@ -1,0 +1,139 @@
+/**************************************************************************
+* This file is part of the WebIssues Server program
+* Copyright (C) 2006 Michał Męciński
+* Copyright (C) 2007-2017 WebIssues Team
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU Affero General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Affero General Public License for more details.
+*
+* You should have received a copy of the GNU Affero General Public License
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.
+**************************************************************************/
+
+.form-buttons {
+  text-align: right;
+  margin: 15px -15px 0 -15px;
+  padding: 15px;
+  border-top: 1px solid @window-separator-color;
+
+  > .btn {
+    min-width: 120px;
+    margin-left: 10px;
+  }
+}
+
+.form-options {
+  margin: 0 -15px;
+  padding: 15px 15px 5px;
+  border-top: 1px solid @window-separator-color;
+  text-align: center;
+}
+
+.form-group {
+  .radio {
+    margin-left: 15px;
+    margin-top: 0;
+  }
+
+  .radio + .radio {
+    margin-top: -5px;
+  }
+}
+
+.form-header {
+  margin: 0 -15px 15px -15px;
+  padding: 0 15px;
+  border-bottom: 1px solid @window-separator-color;
+}
+
+.form-header-group {
+  .group();
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.form-header-title {
+  .element();
+  .element-wide();
+
+  > h1 {
+    margin: 6px 0;
+    font-weight: bold;
+    font-size: @form-header-font-size;
+    line-height: @line-height-base;
+    white-space: normal;
+  }
+}
+
+.form-header-buttons {
+  .element();
+}
+
+.form-section {
+  .group();
+  margin-top: 3px;
+  margin-bottom: 3px;
+}
+
+.form-section-title {
+  .element();
+  .element-wide();
+  vertical-align: bottom;
+}
+
+.form-section-header {
+  font-weight: bold;
+  margin: 7px 0 6px 0;
+  font-size: @form-section-font-size;
+}
+
+.form-section-buttons {
+  .element();
+  vertical-align: bottom;
+}
+
+.form-upload {
+  border: 1px dashed @btn-default-border;
+  border-radius: @border-radius-base;
+  min-height: 60px;
+  position: relative;
+  cursor: pointer;
+
+  &:hover, &.drag-over {
+    background-color: #f8f8f8;
+    border-color: darken( @btn-default-border, 12% );
+  }
+
+  .has-error & {
+    border-color: @state-danger-text;
+  }
+
+  > .form-control {
+    opacity: 0;
+    height: 58px;
+    position: absolute;
+    cursor: pointer;
+  }
+
+  > p {
+    text-align: center;
+    margin-top: 19px;
+  }
+}
+
+.checkbox-group {
+  margin-top: -10px;
+
+  .checkbox {
+    margin-top: 10px;
+    margin-bottom: 0;
+    .ellipsis();
+  }
+}

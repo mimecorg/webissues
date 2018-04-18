@@ -1,0 +1,80 @@
+/**************************************************************************
+* This file is part of the WebIssues Server program
+* Copyright (C) 2006 Michał Męciński
+* Copyright (C) 2007-2017 WebIssues Team
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU Affero General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Affero General Public License for more details.
+*
+* You should have received a copy of the GNU Affero General Public License
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.
+**************************************************************************/
+
+.description-panel {
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid @description-panel-border;
+  border-radius: @border-radius-base;
+}
+
+.markup-editor .btn-toolbar {
+  margin-bottom: 5px;
+}
+
+.markup-preview {
+  padding: 10px;
+  margin-top: 5px;
+  border: 1px solid @description-panel-border;
+  border-radius: @border-radius-base;
+}
+
+.last-edited {
+  color: @last-edited-color;
+  text-align: right;
+  margin-top: 5px;
+
+  .fa {
+    margin-right: 3px;
+  }
+}
+
+.formatted-text {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+
+  ul {
+    margin-bottom: 0;
+  }
+
+  .quote {
+    margin-bottom: 5px;
+    padding: 5px 10px;
+    border-left: 2px solid #777;
+  }
+
+  .quote-title {
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+
+  pre, pre.hljs {
+    margin-bottom: 5px;
+    padding: 5px 10px;
+  }
+
+  .rtl {
+    direction: rtl;
+  }
+}
+
+.hljs {
+  color: @pre-color;
+  background: @pre-bg;
+}
