@@ -5,8 +5,14 @@
   "author": "WebIssues Team",
   "private": true,
   "scripts": {
-    "dev": "webpack-dev-server --config src/build/webpack.config.js",
-    "build": "webpack --config src/build/webpack.config.js --env.production --hide-modules"
+    "build": "npm run build-web && npm run build-electron && npm run build-main",
+    "build-web": "webpack --config src/build/webpack.config.js --env.production --hide-modules",
+    "build-electron": "webpack --config src/build/webpack.config.js --env.electron --env.production --hide-modules",
+    "build-main": "webpack --config app/src/build/webpack.config.js --env.production --hide-modules",
+    "dev-web": "webpack-dev-server --config src/build/webpack.config.js",
+    "dev-electron": "webpack-dev-server --config src/build/webpack.config.js --env.electron",
+    "start": "electron ./app/assets/js/main.min.js",
+    "start-dev": "electron ./app/src/main.js"
   },
   "dependencies": {
     "babel-polyfill": "^6.26.0",
@@ -26,6 +32,7 @@
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.6.1",
     "css-loader": "^0.28.7",
+    "electron": "^1.8.4",
     "extract-text-webpack-plugin": "^3.0.2",
     "file-loader": "^1.1.5",
     "less": "^2.7.3",

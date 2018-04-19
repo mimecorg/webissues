@@ -47,7 +47,7 @@
 
 <?php $this->insertContent() ?>
 
-<script type="text/javascript">WebIssues_common.initialize();</script>
+<script type="text/javascript">WebIssues_common.onPageLoad();</script>
 
 </body>
 </html>
