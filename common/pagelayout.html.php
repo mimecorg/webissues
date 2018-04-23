@@ -9,7 +9,7 @@
   <link rel="shortcut icon" href="<?php echo $this->url( $icon ) ?>" type="image/vnd.microsoft.icon">
 <?php $assets->render() ?>
 </head>
-<body class="front-body">
+<body>
 
 <div id="navbar">
   <div class="container-fluid">

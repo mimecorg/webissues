@@ -20,6 +20,10 @@
 @import "~bootstrap/less/variables.less";
 @import "~font-awesome/less/variables.less";
 
+/* overrides */
+
+@body-bg: #eee;
+
 /* global */
 
 @dropdown-icon-color: #999;
@@ -64,7 +68,8 @@
 /* Window */
 
 @window-bg: #fff;
-@window-border-color: #444;
+@window-border-color: #aaa;
+@window-overlay-border-color: #444;
 @window-separator-color: #ddd;
 
 /* FormHeader */
@@ -85,6 +90,7 @@
 
 @grid-header-font-size: 12px;
 
+@grid-body-bg: #fff;
 @grid-body-color: @text-color;
 @grid-body-hover-color: #f8f8f8;
 @grid-body-border-color: #ddd;
@@ -111,8 +117,3 @@
 @issue-attachment-border: @alert-info-border;
 @issue-attachment-text: @alert-info-text;
 
-/* front */
-
-@front-bg: #eee;
-
-@front-window-border-color: #aaa;
