@@ -19,27 +19,27 @@
 
 <template>
   <div id="application" v-bind:class="{ 'type-selected': type != null }">
-    <Navbar/>
-    <MainToolbar/>
-    <MainGrid/>
-    <Window v-if="route != null"/>
+    <ApplicationNavbar/>
+    <ApplicationToolbar/>
+    <ApplicationGrid/>
+    <ApplicationWindow v-if="route != null"/>
   </div>
 </template>
 
 <script>
 import { mapState, mapGetters } from 'vuex'
 
-import Navbar from '@/components/Navbar'
-import MainToolbar from '@/components/MainToolbar'
-import MainGrid from '@/components/MainGrid'
-import Window from '@/components/Window'
+import ApplicationNavbar from '@/components/ApplicationNavbar'
+import ApplicationToolbar from '@/components/ApplicationToolbar'
+import ApplicationGrid from '@/components/ApplicationGrid'
+import ApplicationWindow from '@/components/ApplicationWindow'
 
 export default {
   components: {
-    Navbar,
-    MainToolbar,
-    MainGrid,
-    Window
+    ApplicationNavbar,
+    ApplicationToolbar,
+    ApplicationGrid,
+    ApplicationWindow
   },
   computed: {
     ...mapGetters( 'list', [ 'type' ] ),

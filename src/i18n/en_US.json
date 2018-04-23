@@ -52,7 +52,7 @@
     "EnterLinkURL": "Enter link URL:",
     "LinkText": "Link text"
   },
-  "Navbar": {
+  "ApplicationNavbar": {
     "Add": "Add",
     "AddIssue": "Add Issue",
     "GoTo": "Go To",
@@ -85,7 +85,7 @@
     "WebIssuesManual": "WebIssues Manual",
     "ToggleNavigation": "Toggle Navigation"
   },
-  "Main": {
+  "ApplicationToolbar": {
     "SelectType": "Select Type",
     "AllIssues": "All Issues",
     "PersonalViews": "Personal Views",
@@ -109,7 +109,9 @@
     "MarkAllAsRead": "Mark All As Read",
     "MarkAllAsUnread": "Mark All As Unread",
     "ProjectDescription": "Project Description",
-    "ExportToCSV": "Export To CSV",
+    "ExportToCSV": "Export To CSV"
+  },
+  "ApplicationGrid": {
     "NoIssues": "No issues",
     "IssuesCount": "{0} issues",
     "IssuesCountOf": "{0}-{1} of {2} issues"
