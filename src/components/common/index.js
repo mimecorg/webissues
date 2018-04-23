@@ -17,13 +17,11 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-const context = require.context( '.', false, /\.vue$/ );
+import Vue from 'vue'
 
-const index = {};
+const context = require.context( '.', false, /\.vue$/ );
 
 context.keys().forEach( key => {
   const name = key.replace( /^\.\//, '' ).replace( /\.vue$/, '' );
-  index[ name ] = context( key ).default;
+  Vue.component( name, context( key ).default );
 } );
-
-export default index;

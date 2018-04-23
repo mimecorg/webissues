@@ -19,7 +19,7 @@
 
 import Vue from 'vue'
 
-import commonComponents from '@/components/common'
+import '@/components/common'
 
 import Application from '@/components/Application'
 
@@ -34,11 +34,6 @@ import makeI18n from '@/i18n'
 import makeStore from '@/store'
 
 import registerRoutes from '@/routes'
-
-for ( const name in commonComponents ) {
-  if ( commonComponents.hasOwnProperty( name ) )
-    Vue.component( name, commonComponents[ name ] );
-}
 
 let app = null;
 
