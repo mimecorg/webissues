@@ -19,20 +19,69 @@
 
 import '@/styles/global.less'
 
-import { startApplication } from '@/application';
+import { shell, ipcRenderer } from 'electron'
+
+import Vue from 'vue'
+
+import Client from '@/components/Client'
+
+import makeAjax from '@/services/ajax'
+import { makeClientParser } from '@/services/parser'
+
+import makeI18n from '@/i18n'
+
+import { startApplication, destroyApplication } from '@/application';
 
 if ( process.env.NODE_ENV == 'production' )
   __webpack_public_path__ = './assets/';
 
-export function startClient() {
+Vue.prototype.$client = {
+  switchToApplication,
+  switchToClient,
+  openExternal: shell.openExternal
+};
+
+let client = null;
+
+ipcRenderer.on( 'start-client', ( event, arg ) => {
+  if ( client != null )
+    throw new Error( 'Client already started' );
+
+  const i18n = makeI18n( 'en_US' );
+  const ajax = makeAjax( 'http://localhost/webissues', null );
+  const parser = makeClientParser();
+
+  client = new Vue( {
+    i18n,
+    ajax,
+    parser,
+    el: '#application',
+    render( createElement ) {
+      return createElement( Client );
+    }
+  } );
+} );
+
+function switchToApplication( { userId, userName, userAccess, csrfToken } ) {
+  client.$destroy();
+  client = null;
+
   startApplication( {
     baseURL: 'http://localhost/webissues',
-    csrfToken: null,
+    csrfToken,
     locale: 'en_US',
     serverName: 'My WebIssues Server',
     serverVersion: '2.0',
-    userId: 0,
-    userName: '',
-    userAccess:0
+    userId,
+    userName,
+    userAccess
   } );
+}
+
+function switchToClient() {
+  destroyApplication();
+
+  window.location.hash = '';
+
+  ipcRenderer.send( 'switch-to-client' );
 }

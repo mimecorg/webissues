@@ -49,7 +49,7 @@ export default function makeAjax( baseURL, csrfToken ) {
           method: 'POST',
           body,
           headers,
-          credentials: 'same-origin'
+          credentials: process.env.TARGET == 'web' ? 'same-origin' : 'include'
         } ).then( response => {
           response.json().then( ( { result, errorCode, errorMessage } ) => {
             if ( errorCode != null )

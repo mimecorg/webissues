@@ -81,6 +81,7 @@
     "LogOut": "Log Out",
     "LogIn": "Log In",
     "Register": "Register",
+    "WebIssuesSettings": "WebIssues Settings",
     "AboutWebIssues": "About WebIssues",
     "WebIssuesManual": "WebIssues Manual",
     "ToggleNavigation": "Toggle Navigation"
@@ -349,6 +350,20 @@
   "RemoveMember": {
     "RemoveMember": "Remove Member",
     "RemoveMemberPrompt": "Do you want to remove user {0} from project {1}?"
+  },
+  "ClientNavbar": {
+    "WebIssuesSettings": "WebIssues Settings",
+    "AboutWebIssues": "About WebIssues",
+    "WebIssuesManual": "WebIssues Manual",
+    "ToggleNavigation": "Toggle Navigation"
+  },
+  "ClientLogin": {
+    "LogInToWebIssues": "Log in to WebIssues",
+    "Login": "Login:",
+    "Password": "Password:",
+    "LogIn": "Log In",
+    "OR": "OR",
+    "AnonymousAccess": "Anonymous Access"
   },
   "Error": {
     "PageNotFound": "Page Not Found",

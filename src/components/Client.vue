@@ -18,16 +18,20 @@
 -->
 
 <template>
-  <a ref="link" role="link" tabindex="0" v-on:click="click" v-on:keydown.enter="click"><slot/></a>
+  <div id="application">
+    <ClientNavbar/>
+    <ClientWindow/>
+  </div>
 </template>
 
 <script>
+import ClientNavbar from '@/components/ClientNavbar'
+import ClientWindow from '@/components/ClientWindow'
+
 export default {
-  methods: {
-    click() {
-      this.$refs.link.blur();
-      this.$emit( 'click' );
-    }
+  components: {
+    ClientNavbar,
+    ClientWindow
   }
 }
 </script>

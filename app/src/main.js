@@ -17,7 +17,7 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-const { app, BrowserWindow } = require( 'electron' );
+const { app, BrowserWindow, ipcMain } = require( 'electron' );
 const path = require( 'path' );
 const url = require( 'url' );
 
@@ -30,9 +30,15 @@ app.on( 'window-all-closed', () => {
     app.quit();
 } );
 
-app.on('activate', () => {
+app.on( 'activate', () => {
   if ( mainWindow == null )
     createWindow();
+} );
+
+ipcMain.on( 'switch-to-client', ( event, arg ) => {
+  event.sender.session.clearStorageData( { storages: [ 'cookies' ] }, () => {
+    event.sender.send( 'start-client' );
+  } );
 } );
 
 function createWindow() {
@@ -46,7 +52,11 @@ function createWindow() {
 
   mainWindow.loadURL( url.format( { pathname, protocol: 'file:', slashes: true } ) );
 
-  mainWindow.on('closed', () => {
-    mainWindow = null
+  mainWindow.webContents.on( 'did-finish-load', () => {
+    mainWindow.webContents.send( 'start-client' );
+  } );
+
+  mainWindow.on( 'closed', () => {
+    mainWindow = null;
   } );
 }

@@ -58,9 +58,11 @@ export default function makeRouter() {
     return lastRoute;
   }
 
-  window.addEventListener( 'hashchange', () => {
+  function onHashChange() {
     callHandlers( handlers, getCurrentRoute() );
-  } );
+  }
+
+  window.addEventListener( 'hashchange', onHashChange );
 
   return {
     get path() {
@@ -100,6 +102,9 @@ export default function makeRouter() {
       const index = handlers.indexOf( handler );
       if ( index >= 0 )
         handlers.splice( index, 1 );
+    },
+    destroy() {
+      window.removeEventListener( 'hashchange', onHashChange );
     }
   };
 }

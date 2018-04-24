@@ -18,15 +18,36 @@
 -->
 
 <template>
-  <a ref="link" role="link" tabindex="0" v-on:click="click" v-on:keydown.enter="click"><slot/></a>
+  <div id="window" v-bind:class="'window-' + size">
+    <component v-if="childComponent != null" v-bind:is="childComponent" v-bind="childProps"
+               v-on:block="block" v-on:unblock="unblock"/>
+    <BusyOverlay v-if="busy"/>
+  </div>
 </template>
 
 <script>
+import forms from '@/components/forms'
+
 export default {
+  components: {
+    ...forms
+  },
+
+  data() {
+    return {
+      childComponent: 'ClientLogin',
+      childProps: {},
+      size: 'small',
+      busy: false
+    };
+  },
+
   methods: {
-    click() {
-      this.$refs.link.blur();
-      this.$emit( 'click' );
+    block() {
+      this.busy = true;
+    },
+    unblock() {
+      this.busy = false;
     }
   }
 }
