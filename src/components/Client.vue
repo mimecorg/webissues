@@ -74,7 +74,7 @@ export default {
     clientSettings() {
       if ( !this.busy ) {
         this.childComponent = 'ClientSettings';
-        this.childProps = { initialBaseURL: this.$client.settings.baseURL };
+        this.childProps = {};
         this.size = 'normal';
       }
     },

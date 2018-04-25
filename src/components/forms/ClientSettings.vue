@@ -19,30 +19,32 @@
 
 <template>
   <div class="container-fluid">
-    <FormHeader v-if="initialBaseURL != null" v-bind:title="$t( 'ClientSettings.WebIssuesSettings' )" v-on:close="close"/>
+    <FormHeader v-if="isConfigured" v-bind:title="$t( 'ClientSettings.WebIssuesSettings' )" v-on:close="close"/>
     <div v-else class="form-header">
       <h1>{{ $t( 'ClientSettings.WebIssuesSettings' ) }}</h1>
     </div>
     <FormInput ref="baseURL" id="baseURL" v-bind:label="$t( 'ClientSettings.ServerURL' )" v-bind="$field( 'baseURL' )" v-model="baseURL"/>
-    <FormButtons v-bind:cancel-hidden="initialBaseURL == null" v-on:ok="submit" v-on:cancel="cancel"/>
+    <FormButtons v-bind:cancel-hidden="!isConfigured" v-on:ok="submit" v-on:cancel="cancel"/>
   </div>
 </template>
 
 <script>
 export default {
-  props: {
-    initialBaseURL: String
-  },
-
   fields() {
     return {
       baseURL: {
-        value: this.initialBaseURL != null ? this.initialBaseURL + '/' : '',
+        value: this.$client.settings.baseURL != null ? this.$client.settings.baseURL + '/' : '',
         type: String,
         required: true,
         maxLength: 250,
         parse: this.parseURL
       }
+    }
+  },
+
+  computed: {
+    isConfigured() {
+      return this.$client.settings.baseURL != null;
     }
   },
 

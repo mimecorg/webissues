@@ -23,10 +23,7 @@ export default function makeUserRoutes() {
   return function userRoutes( route ) {
     if ( process.env.TARGET == 'electron' ) {
       route( 'ClientSettings', '/settings', () => {
-        return Promise.resolve( {
-          component: 'ClientSettings',
-          initialBaseURL: Vue.prototype.$client.settings.baseURL
-        } );
+        return Promise.resolve( { component: 'ClientSettings' } );
       } );
     }
   }
