@@ -26,8 +26,13 @@
     <FormInput ref="password" id="password" type="password" v-bind:label="$t( 'ClientLogin.Password' )" v-bind="$field( 'password' )" v-model="password" v-on:keydown.enter="submit"/>
     <div class="front-login-buttons">
       <button class="btn btn-primary" v-on:click="submit"><span class="fa fa-sign-in" aria-hidden="true"></span> {{ $t( 'ClientLogin.LogIn' ) }}</button>
-      <p>{{ $t( 'ClientLogin.OR' ) }}</p>
-      <button class="btn btn-default" v-on:click="anonymousAccess"><span class="fa fa-user-o" aria-hidden="true"></span> {{ $t( 'ClientLogin.AnonymousAccess' ) }}</button>
+      <template v-if="anonymousAccess">
+        <p>{{ $t( 'ClientLogin.OR' ) }}</p>
+        <button class="btn btn-default" v-on:click="startAnonymous"><span class="fa fa-user-o" aria-hidden="true"></span> {{ $t( 'ClientLogin.AnonymousAccess' ) }}</button>
+      </template>
+    </div>
+    <div v-if="selfRegister" class="form-options">
+      <p><HyperLink v-on:click="openRegister"><span class="fa fa-user-plus" aria-hidden="true"></span> {{ $t( 'ClientLogin.RegisterNewAccount' ) }}</HyperLink></p>
     </div>
   </div>
 </template>
@@ -36,6 +41,11 @@
 import { MaxLength, ErrorCode } from '@/constants'
 
 export default {
+  props: {
+    anonymousAccess: Boolean,
+    selfRegister: Boolean
+  },
+
   fields() {
     return {
       login: {
@@ -74,9 +84,14 @@ export default {
         }
       } );
     },
-    anonymousAccess() {
+
+    startAnonymous() {
       this.$client.startApplication( { userId: 0, userName: '', userAccess: 0, csrfToken: null } );
-    }
+    },
+
+    openRegister() {
+      this.$client.openExternal( this.$client.settings.baseURL + '/users/register.php' );
+    },
   },
 
   mounted() {

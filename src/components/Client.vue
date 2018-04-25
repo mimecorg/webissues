@@ -39,6 +39,7 @@ export default {
     return {
       serverName: null,
       serverVersion: null,
+      settings: {},
       childComponent: null,
       childProps: null,
       size: 'small',
@@ -65,7 +66,7 @@ export default {
     clientLogin() {
       if ( !this.busy ) {
         this.childComponent = 'ClientLogin';
-        this.childProps = {};
+        this.childProps = { anonymousAccess: this.settings.anonymousAccess, selfRegister: this.settings.selfRegister };
         this.size = 'small';
       }
     },
@@ -98,13 +99,14 @@ export default {
 
     this.busy = true;
 
-    this.$ajax.post( '/server/api/info.php' ).then( ( { serverName, serverVersion } ) => {
+    this.$ajax.post( '/server/api/info.php' ).then( ( { serverName, serverVersion, settings } ) => {
       this.$client.settings.serverName = serverName;
       this.$client.settings.serverVersion = serverVersion;
       this.$client.saveSettings();
 
       this.serverName = serverName;
       this.serverVersion = serverVersion;
+      this.settings = settings;
       this.busy = false;
       this.loaded = true;
 

@@ -34,6 +34,13 @@ class Server_Api_Info
         $result[ 'serverName' ] = $server[ 'server_name' ];
         $result[ 'serverVersion' ] = $server[ 'server_version' ];
 
+        $serverManager = new System_Api_ServerManager();
+
+        $settings[ 'anonymousAccess' ] = $serverManager->getSetting( 'anonymous_access' ) == 1;
+        $settings[ 'selfRegister' ] = $serverManager->getSetting( 'self_register' ) == 1 && $serverManager->getSetting( 'email_engine' ) != null;
+
+        $result[ 'settings' ] = $settings;
+
         return $result;
     }
 }

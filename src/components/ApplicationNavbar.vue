@@ -80,11 +80,11 @@
             </template>
             <template v-else-if="isWeb">
               <li><a v-bind:href="baseURL + '/index.php'"><span class="fa fa-sign-in" aria-hidden="true"></span> {{ $t( 'ApplicationNavbar.LogIn' ) }}</a></li>
-              <li><a v-bind:href="baseURL + '/users/register.php'"><span class="fa fa-user-plus" aria-hidden="true"></span> {{ $t( 'ApplicationNavbar.Register' ) }}</a></li>
+              <li v-if="selfRegister"><a v-bind:href="baseURL + '/users/register.php'"><span class="fa fa-user-plus" aria-hidden="true"></span> {{ $t( 'ApplicationNavbar.Register' ) }}</a></li>
             </template>
             <template v-else="isWeb">
               <li><HyperLink v-on:click="restartClient"><span class="fa fa-sign-in" aria-hidden="true"></span> {{ $t( 'ApplicationNavbar.LogIn' ) }}</HyperLink></li>
-              <li><HyperLink v-on:click="openRegister"><span class="fa fa-user-plus" aria-hidden="true"></span> {{ $t( 'ApplicationNavbar.Register' ) }}</HyperLink></li>
+              <li v-if="selfRegister"><HyperLink v-on:click="openRegister"><span class="fa fa-user-plus" aria-hidden="true"></span> {{ $t( 'ApplicationNavbar.Register' ) }}</HyperLink></li>
             </template>
           </DropdownButton>
           <div class="navbar-sub-group">
@@ -143,6 +143,9 @@ export default {
     },
     isWeb() {
       return process.env.TARGET == 'web';
+    },
+    selfRegister() {
+      return this.$store.state.global.settings.selfRegister;
     }
   },
 

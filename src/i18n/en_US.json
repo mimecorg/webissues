@@ -363,7 +363,8 @@
     "Password": "Password:",
     "LogIn": "Log In",
     "OR": "OR",
-    "AnonymousAccess": "Anonymous Access"
+    "AnonymousAccess": "Anonymous Access",
+    "RegisterNewAccount": "Register New Account"
   },
   "ClientSettings": {
     "WebIssuesSettings": "WebIssues Settings",
