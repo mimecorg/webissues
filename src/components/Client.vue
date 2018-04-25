@@ -21,7 +21,7 @@
   <div id="application">
     <ClientNavbar v-bind:server-name="serverName" v-bind:server-version="serverVersion" v-on:client-settings="clientSettings"/>
     <ClientWindow v-bind:child-component="childComponent" v-bind:child-props="childProps" v-bind:size="size" v-bind:busy="busy"
-                  v-on:close="close" v-on:block="block" v-on:unblock="unblock"/>
+                  v-on:close="close" v-on:block="block" v-on:unblock="unblock" v-on:error="error"/>
   </div>
 </template>
 
@@ -42,13 +42,17 @@ export default {
       childComponent: null,
       childProps: null,
       size: 'small',
-      busy: false
+      busy: false,
+      loaded: false
     };
   },
 
   methods: {
     close() {
-      this.clientLogin();
+      if ( this.childComponent == 'ErrorMessage' || !this.loaded )
+        this.$client.restartClient();
+      else
+        this.clientLogin();
     },
 
     block() {
@@ -72,6 +76,14 @@ export default {
         this.childProps = { initialBaseURL: this.$client.settings.baseURL };
         this.size = 'normal';
       }
+    },
+
+    error( error ) {
+      this.childComponent = 'ErrorMessage';
+      this.childProps = { error, isAuthenticated: false };
+      this.size = 'small';
+      this.busy = false;
+      console.error( error );
     }
   },
 
@@ -94,8 +106,11 @@ export default {
       this.serverName = serverName;
       this.serverVersion = serverVersion;
       this.busy = false;
+      this.loaded = true;
 
       this.clientLogin();
+    } ).catch( error => {
+      this.error( error );
     } );
   }
 }

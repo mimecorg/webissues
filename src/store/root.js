@@ -173,7 +173,8 @@ function makeActions( router ) {
     },
 
     redirect( { state }, url ) {
-      router.redirect( state.global.baseURL + url );
+      if ( process.env.TARGET == 'web' )
+        router.redirect( state.global.baseURL + url );
     }
   };
 }

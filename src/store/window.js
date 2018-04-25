@@ -17,6 +17,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
+import Vue from 'vue'
+
 import { ErrorCode } from '@/constants'
 
 export default function makeWindowModule( router ) {
@@ -80,7 +82,7 @@ function makeMutations() {
 
 function makeActions( router ) {
   return {
-    handleRoute( { state, commit, dispatch }, route ) {
+    handleRoute( { state, rootGetters, commit, dispatch }, route ) {
       commit( 'setRoute', route );
       if ( route.name != 'error' ) {
         const promise = route.handler( route.params );
@@ -102,17 +104,24 @@ function makeActions( router ) {
           }
         } );
       } else {
-        commit( 'setComponent', { component: 'ErrorMessage', props: { error: route.error }, size: 'small' } );
+        commit( 'setComponent', { component: 'ErrorMessage', props: { error: route.error, isAuthenticated: rootGetters[ 'global/isAuthenticated' ] }, size: 'small' } );
         commit( 'setBusy', false );
       }
     },
 
     close( { getters, rootGetters, dispatch } ) {
       if ( getters.error != null ) {
-        if ( rootGetters[ 'global/isAuthenticated' ] && getters.error.errorCode == ErrorCode.LoginRequired )
-          dispatch( 'redirect', '/index.php', { root: true } );
-        else
-          dispatch( 'redirect', '/client/index.php', { root: true } );
+        if ( rootGetters[ 'global/isAuthenticated' ] && getters.error.errorCode == ErrorCode.LoginRequired ) {
+          if ( process.env.TARGET == 'web' )
+            dispatch( 'redirect', '/index.php', { root: true } );
+          else
+            Vue.prototype.$client.restartClient();
+        } else {
+          if ( process.env.TARGET == 'web' )
+            dispatch( 'redirect', '/client/index.php', { root: true } );
+          else
+            Vue.prototype.$client.restartApplication();
+        }
       } else {
         dispatch( 'pushMainRoute', null, { root: true } );
       }

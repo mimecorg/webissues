@@ -28,16 +28,14 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-
 import { ErrorCode } from '@/constants'
 
 export default {
   props: {
-    error: Error
+    error: Error,
+    isAuthenticated: Boolean
   },
   computed: {
-    ...mapGetters( 'global', [ 'isAuthenticated' ] ),
     title() {
       switch ( this.error.reason ) {
         case 'PageNotFound':

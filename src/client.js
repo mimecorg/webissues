@@ -63,6 +63,8 @@ ipcRenderer.on( 'start-client', ( event, arg ) => {
 } );
 
 function makeClientAPI() {
+  let sessionData = null;
+
   return {
     get settings() {
       return settings;
@@ -76,6 +78,8 @@ function makeClientAPI() {
       client.$destroy();
       client = null;
 
+      sessionData = { userId, userName, userAccess, csrfToken };
+
       startApplication( {
         baseURL: settings.baseURL,
         csrfToken,
@@ -85,6 +89,19 @@ function makeClientAPI() {
         userId,
         userName,
         userAccess
+      } );
+    },
+
+    restartApplication() {
+      destroyApplication();
+      window.location.hash = '';
+
+      startApplication( {
+        baseURL: settings.baseURL,
+        locale: 'en_US',
+        serverName: settings.serverName,
+        serverVersion: settings.serverVersion,
+        ...sessionData
       } );
     },
 
