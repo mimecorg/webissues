@@ -365,6 +365,11 @@
     "OR": "OR",
     "AnonymousAccess": "Anonymous Access"
   },
+  "ClientSettings": {
+    "WebIssuesSettings": "WebIssues Settings",
+    "ServerURL": "Server URL:",
+    "InvalidURL": "Invalid URL."
+  },
   "Error": {
     "PageNotFound": "Page Not Found",
     "NetworkError": "Network Error",

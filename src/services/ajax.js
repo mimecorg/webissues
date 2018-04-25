@@ -72,6 +72,9 @@ export default function makeAjax( baseURL, csrfToken ) {
           reject( error );
         } );
       } );
+    },
+    withBaseURL( baseURL ) {
+      return makeAjax( baseURL, null );
     }
   };
 }

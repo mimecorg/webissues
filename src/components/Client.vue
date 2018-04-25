@@ -19,8 +19,9 @@
 
 <template>
   <div id="application">
-    <ClientNavbar/>
-    <ClientWindow/>
+    <ClientNavbar v-bind:server-name="serverName" v-bind:server-version="serverVersion" v-on:client-settings="clientSettings"/>
+    <ClientWindow v-bind:child-component="childComponent" v-bind:child-props="childProps" v-bind:size="size" v-bind:busy="busy"
+                  v-on:close="close" v-on:block="block" v-on:unblock="unblock"/>
   </div>
 </template>
 
@@ -32,6 +33,70 @@ export default {
   components: {
     ClientNavbar,
     ClientWindow
+  },
+
+  data() {
+    return {
+      serverName: null,
+      serverVersion: null,
+      childComponent: null,
+      childProps: null,
+      size: 'small',
+      busy: false
+    };
+  },
+
+  methods: {
+    close() {
+      this.clientLogin();
+    },
+
+    block() {
+      this.busy = true;
+    },
+    unblock() {
+      this.busy = false;
+    },
+
+    clientLogin() {
+      if ( !this.busy ) {
+        this.childComponent = 'ClientLogin';
+        this.childProps = {};
+        this.size = 'small';
+      }
+    },
+
+    clientSettings() {
+      if ( !this.busy ) {
+        this.childComponent = 'ClientSettings';
+        this.childProps = { initialBaseURL: this.$client.settings.baseURL };
+        this.size = 'normal';
+      }
+    }
+  },
+
+  mounted() {
+    if ( this.$client.settings.baseURL == null ) {
+      this.clientSettings();
+      return;
+    }
+
+    this.serverName = this.$client.settings.serverName;
+    this.serverVersion = this.$client.settings.serverVersion;
+
+    this.busy = true;
+
+    this.$ajax.post( '/server/api/info.php' ).then( ( { serverName, serverVersion } ) => {
+      this.$client.settings.serverName = serverName;
+      this.$client.settings.serverVersion = serverVersion;
+      this.$client.saveSettings();
+
+      this.serverName = serverName;
+      this.serverVersion = serverVersion;
+      this.busy = false;
+
+      this.clientLogin();
+    } );
   }
 }
 </script>

@@ -76,14 +76,14 @@
               <li><HyperLink><span class="fa fa-unlock-alt" aria-hidden="true"></span> {{ $t( 'ApplicationNavbar.ChangePassword' ) }}</HyperLink></li>
               <li role="separator" class="divider"></li>
               <li v-if="isWeb"><a v-bind:href="baseURL + '/index.php'"><span class="fa fa-sign-out" aria-hidden="true"></span> {{ $t( 'ApplicationNavbar.LogOut' ) }}</a></li>
-              <li v-else><HyperLink v-on:click="switchToClient"><span class="fa fa-sign-out" aria-hidden="true"></span> {{ $t( 'ApplicationNavbar.LogOut' ) }}</HyperLink></li>
+              <li v-else><HyperLink v-on:click="restartClient"><span class="fa fa-sign-out" aria-hidden="true"></span> {{ $t( 'ApplicationNavbar.LogOut' ) }}</HyperLink></li>
             </template>
             <template v-else-if="isWeb">
               <li><a v-bind:href="baseURL + '/index.php'"><span class="fa fa-sign-in" aria-hidden="true"></span> {{ $t( 'ApplicationNavbar.LogIn' ) }}</a></li>
               <li><a v-bind:href="baseURL + '/users/register.php'"><span class="fa fa-user-plus" aria-hidden="true"></span> {{ $t( 'ApplicationNavbar.Register' ) }}</a></li>
             </template>
             <template v-else="isWeb">
-              <li><HyperLink v-on:click="switchToClient"><span class="fa fa-sign-in" aria-hidden="true"></span> {{ $t( 'ApplicationNavbar.LogIn' ) }}</HyperLink></li>
+              <li><HyperLink v-on:click="restartClient"><span class="fa fa-sign-in" aria-hidden="true"></span> {{ $t( 'ApplicationNavbar.LogIn' ) }}</HyperLink></li>
               <li><HyperLink v-on:click="openRegister"><span class="fa fa-user-plus" aria-hidden="true"></span> {{ $t( 'ApplicationNavbar.Register' ) }}</HyperLink></li>
             </template>
           </DropdownButton>
@@ -92,6 +92,9 @@
               <div class="navbar-version">WebIssues {{ serverVersion }}</div>
             </div>
             <div class="navbar-sub-element">
+              <button v-if="!isWeb" type="button" class="btn btn-default" v-bind:title="$t( 'ApplicationNavbar.WebIssuesSettings' )" v-on:click="clientSettings">
+                <span class="fa fa-wrench" aria-hidden="true"></span>
+              </button>
               <button type="button" class="btn btn-default" v-bind:title="$t( 'ApplicationNavbar.AboutWebIssues' )"><span class="fa fa-info-circle" aria-hidden="true"></span></button>
               <a v-if="isWeb" type="button" class="btn btn-default" v-bind:title="$t( 'ApplicationNavbar.WebIssuesManual' )" v-bind:href="manualURL" target="_blank">
                 <span class="fa fa-question-circle" aria-hidden="true"></span>
@@ -158,9 +161,14 @@ export default {
       this.$router.push( 'ManageProjects' );
     },
 
-    switchToClient() {
+    restartClient() {
       if ( process.env.TARGET == 'electron' )
-        this.$client.switchToClient();
+        this.$client.restartClient();
+    },
+
+    clientSettings() {
+      if ( process.env.TARGET == 'electron' )
+        this.$router.push( 'ClientSettings' );
     },
 
     openRegister() {

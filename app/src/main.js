@@ -18,16 +18,32 @@
 **************************************************************************/
 
 const { app, BrowserWindow, ipcMain } = require( 'electron' );
+
+const fs = require( 'fs' );
 const path = require( 'path' );
 const url = require( 'url' );
 
+const dataPath = initializeDataPath();
+
+const config = {
+  settings: {
+    baseURL: null
+  }
+};
+
 let mainWindow = null;
 
-app.on( 'ready', createWindow );
+app.on( 'ready', () => {
+  loadConfiguraton( () => {
+    createWindow();
+  } );
+} );
 
 app.on( 'window-all-closed', () => {
-  if ( process.platform != 'darwin' )
-    app.quit();
+  saveConfiguration( () => {
+    if ( process.platform != 'darwin' )
+      app.quit();
+  } );
 } );
 
 app.on( 'activate', () => {
@@ -35,9 +51,17 @@ app.on( 'activate', () => {
     createWindow();
 } );
 
-ipcMain.on( 'switch-to-client', ( event, arg ) => {
-  event.sender.session.clearStorageData( { storages: [ 'cookies' ] }, () => {
-    event.sender.send( 'start-client' );
+ipcMain.on( 'save-settings', ( event, arg ) => {
+  config.settings = arg;
+  saveConfiguration( () => {} );
+} );
+
+ipcMain.on( 'restart-client', ( event, arg ) => {
+  config.settings = arg;
+  saveConfiguration( () => {
+    event.sender.session.clearStorageData( { storages: [ 'cookies' ] }, () => {
+      event.sender.send( 'start-client', config.settings );
+    } );
   } );
 } );
 
@@ -53,10 +77,67 @@ function createWindow() {
   mainWindow.loadURL( url.format( { pathname, protocol: 'file:', slashes: true } ) );
 
   mainWindow.webContents.on( 'did-finish-load', () => {
-    mainWindow.webContents.send( 'start-client' );
+    mainWindow.webContents.send( 'start-client', config.settings );
   } );
 
   mainWindow.on( 'closed', () => {
     mainWindow = null;
   } );
+}
+
+function initializeDataPath() {
+  let dataPath;
+
+  if ( process.platform == 'win32' )
+    dataPath = path.join( process.env.LOCALAPPDATA, 'WebIssues Client\\2.0' )
+  else
+    dataPath = path.join( app.getPath( 'appData' ), 'webissues-2.0' );
+
+  app.setPath( 'userData', path.join( dataPath, 'user' ) );
+
+  return dataPath;
+}
+
+function loadConfiguraton( callback ) {
+  loadJSON( path.join( dataPath, 'config.json' ), ( error, data ) => {
+    if ( error == null && data != null )
+      mergeConfig( config, data );
+
+    callback( error, config );
+  } );
+}
+
+function saveConfiguration( callback ) {
+  saveJSON( path.join( dataPath, 'config.json' ), config, callback );
+}
+
+function loadJSON( filePath, callback ) {
+  fs.readFile( filePath, 'utf8', ( error, body ) => {
+    if ( error != null )
+      return callback( error, null );
+
+    let result;
+    try {
+      result = JSON.parse( body );
+    } catch ( error2 ) {
+      return callback( error2, null );
+    }
+
+    callback( null, result );
+  } );
+}
+
+function saveJSON( filePath, data, callback ) {
+  const body = JSON.stringify( data, null, 2 );
+
+  fs.writeFile( filePath, body, { encoding: 'utf8' }, callback );
+}
+
+function mergeConfig( target, source ) {
+  for ( const key in source ) {
+    if ( target[ key ] != null && typeof target[ key ] == 'object' && source[ key ] != null && typeof source[ key ] == 'object' )
+      mergeConfig( target[ key ], source[ key ] );
+    else
+      target[ key ] = source[ key ];
+  }
 }

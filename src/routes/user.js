@@ -1,4 +1,4 @@
-<!--
+/**************************************************************************
 * This file is part of the WebIssues Server program
 * Copyright (C) 2006 Michał Męciński
 * Copyright (C) 2007-2017 WebIssues Team
@@ -15,28 +15,19 @@
 *
 * You should have received a copy of the GNU Affero General Public License
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
--->
+**************************************************************************/
 
-<template>
-  <div id="window" v-bind:class="'window-' + size">
-    <component v-if="childComponent != null" v-bind:is="childComponent" v-bind="childProps" v-on="$listeners"/>
-    <BusyOverlay v-if="busy"/>
-  </div>
-</template>
+import Vue from 'vue'
 
-<script>
-import forms from '@/components/forms'
-
-export default {
-  components: {
-    ...forms
-  },
-
-  props: {
-    childComponent: String,
-    childProps: Object,
-    size: String,
-    busy: Boolean
+export default function makeUserRoutes() {
+  return function userRoutes( route ) {
+    if ( process.env.TARGET == 'electron' ) {
+      route( 'ClientSettings', '/settings', () => {
+        return Promise.resolve( {
+          component: 'ClientSettings',
+          initialBaseURL: Vue.prototype.$client.settings.baseURL
+        } );
+      } );
+    }
   }
 }
-</script>

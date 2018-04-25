@@ -27,18 +27,20 @@
               <div class="navbar-brand-img"></div>
             </div>
             <div class="navbar-brand-name">
-              WebIssues
+              {{ serverName != null ? serverName : 'WebIssues' }}
             </div>
           </div>
         </div>
         <div id="navbar-element-collapse" v-bind:class="[ 'navbar-element', 'collapse', { 'in' : expanded } ]" v-bind:aria-expanded="expanded ? 'true' : 'false'">
           <div class="navbar-sub-group">
             <div class="navbar-sub-element navbar-sub-element-wide">
-              <div class="navbar-version">WebIssues 2.0</div>
+              <div v-if="serverVersion != null" class="navbar-version">WebIssues {{ serverVersion }}</div>
             </div>
             <div class="navbar-sub-element">
-              <button type="button" class="btn btn-default" v-bind:title="$t( 'ClientNavbar.WebIssuesSettings' )"><span class="fa fa-wrench" aria-hidden="true"></span></button>
-              <button type="button" class="btn btn-default" v-bind:title="$t( 'ClientNavbar.AboutWebIssues' )"><span class="fa fa-info-circle" aria-hidden="true"></span></button>
+              <button v-if="serverName != null" type="button" class="btn btn-default" v-bind:title="$t( 'ClientNavbar.WebIssuesSettings' )" v-on:click="clientSettings">
+                <span class="fa fa-wrench" aria-hidden="true"></span>
+              </button>
+              <button v-if="serverName != null" type="button" class="btn btn-default" v-bind:title="$t( 'ClientNavbar.AboutWebIssues' )"><span class="fa fa-info-circle" aria-hidden="true"></span></button>
               <button type="button" class="btn btn-default" v-bind:title="$t( 'ClientNavbar.WebIssuesManual' )" v-on:click="openManual">
                 <span class="fa fa-question-circle" aria-hidden="true"></span>
               </button>
@@ -57,6 +59,11 @@
 
 <script>
 export default {
+  props: {
+    serverName: String,
+    serverVersion: String
+  },
+
   data() {
     return {
       expanded: false
@@ -72,6 +79,10 @@ export default {
   methods: {
     openManual() {
       this.$client.openExternal( this.manualURL );
+    },
+
+    clientSettings() {
+      this.$emit( 'client-settings' );
     },
 
     toggle() {

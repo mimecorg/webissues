@@ -35,11 +35,9 @@ import { startApplication, destroyApplication } from '@/application';
 if ( process.env.NODE_ENV == 'production' )
   __webpack_public_path__ = './assets/';
 
-Vue.prototype.$client = {
-  switchToApplication,
-  switchToClient,
-  openExternal: shell.openExternal
-};
+Vue.prototype.$client = makeClientAPI();
+
+let settings = null;
 
 let client = null;
 
@@ -47,8 +45,10 @@ ipcRenderer.on( 'start-client', ( event, arg ) => {
   if ( client != null )
     throw new Error( 'Client already started' );
 
+  settings = arg;
+
   const i18n = makeI18n( 'en_US' );
-  const ajax = makeAjax( 'http://localhost/webissues', null );
+  const ajax = makeAjax( settings.baseURL, null );
   const parser = makeClientParser();
 
   client = new Vue( {
@@ -62,26 +62,44 @@ ipcRenderer.on( 'start-client', ( event, arg ) => {
   } );
 } );
 
-function switchToApplication( { userId, userName, userAccess, csrfToken } ) {
-  client.$destroy();
-  client = null;
+function makeClientAPI() {
+  return {
+    get settings() {
+      return settings;
+    },
 
-  startApplication( {
-    baseURL: 'http://localhost/webissues',
-    csrfToken,
-    locale: 'en_US',
-    serverName: 'My WebIssues Server',
-    serverVersion: '2.0',
-    userId,
-    userName,
-    userAccess
-  } );
-}
+    saveSettings() {
+      ipcRenderer.send( 'save-settings', settings );
+    },
 
-function switchToClient() {
-  destroyApplication();
+    startApplication( { userId, userName, userAccess, csrfToken } ) {
+      client.$destroy();
+      client = null;
 
-  window.location.hash = '';
+      startApplication( {
+        baseURL: settings.baseURL,
+        csrfToken,
+        locale: 'en_US',
+        serverName: settings.serverName,
+        serverVersion: settings.serverVersion,
+        userId,
+        userName,
+        userAccess
+      } );
+    },
 
-  ipcRenderer.send( 'switch-to-client' );
+    restartClient() {
+      if ( client != null ) {
+        client.$destroy();
+        client = null;
+      } else {
+        destroyApplication();
+        window.location.hash = '';
+      }
+
+      ipcRenderer.send( 'restart-client', settings );
+    },
+
+    openExternal: shell.openExternal
+  };
 }

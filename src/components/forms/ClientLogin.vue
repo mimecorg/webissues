@@ -61,7 +61,7 @@ export default {
       this.$emit( 'block' );
 
       this.$ajax.post( '/server/api/login.php', data ).then( ( { userId, userName, userAccess, csrfToken } ) => {
-        this.$client.switchToApplication( { userId, userName, userAccess, csrfToken } );
+        this.$client.startApplication( { userId, userName, userAccess, csrfToken } );
       } ).catch( error => {
         if ( error.reason == 'APIError' && error.errorCode == ErrorCode.IncorrectLogin ) {
           this.$emit( 'unblock' );
@@ -75,7 +75,7 @@ export default {
       } );
     },
     anonymousAccess() {
-      this.$client.switchToApplication( { userId: 0, userName: '', userAccess: 0, csrfToken: null } );
+      this.$client.startApplication( { userId: 0, userName: '', userAccess: 0, csrfToken: null } );
     }
   },
 
