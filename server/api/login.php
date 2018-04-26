@@ -26,17 +26,20 @@ class Server_Api_Login
 
     public $params = array(
         'login' => array( 'type' => 'string', 'required' => true ),
-        'password' => array( 'type' => 'string', 'required' => true )
+        'password' => array( 'type' => 'string', 'required' => true ),
+        'newPassword' => 'string'
     );
 
-    public function run( $login, $password )
+    public function run( $login, $password, $newPassword )
     {
         $parser = new System_Api_Parser();
         $login = $parser->normalizeString( $login, System_Const::NameMaxLength );
         $password = $parser->normalizeString( $password, System_Const::PasswordMaxLength );
+        if ( $newPassword != null )
+            $newPassword = $parser->normalizeString( $newPassword, System_Const::PasswordMaxLength );
 
         $sessionManager = new System_Api_SessionManager();
-        $user = $sessionManager->login( $login, $password );
+        $user = $sessionManager->login( $login, $password, $newPassword );
 
         $result[ 'userId' ] = $user[ 'user_id' ];
         $result[ 'userName' ] = $user[ 'user_name' ];

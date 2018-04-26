@@ -364,7 +364,10 @@
     "LogIn": "Log In",
     "OR": "OR",
     "AnonymousAccess": "Anonymous Access",
-    "RegisterNewAccount": "Register New Account"
+    "RegisterNewAccount": "Register New Account",
+    "NewPasswordPrompt": "You have to enter a new password in order to log in.",
+    "NewPassword": "New password:",
+    "ConfirmPassword": "Confirm password:"
   },
   "ClientSettings": {
     "WebIssuesSettings": "WebIssues Settings",
