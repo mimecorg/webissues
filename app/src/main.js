@@ -18,7 +18,7 @@
 **************************************************************************/
 
 const electron = require( 'electron' );
-const { app, BrowserWindow, ipcMain, shell } = electron;
+const { app, BrowserWindow, clipboard, ipcMain, Menu, shell } = electron;
 
 const fs = require( 'fs' );
 const path = require( 'path' );
@@ -120,6 +120,8 @@ function createWindow() {
     event.preventDefault();
     shell.openExternal( url );
   }
+
+  mainWindow.webContents.on( 'context-menu', makeContextMenuHandler() );
 
   mainWindow.on( 'resize', handleStateChange );
   mainWindow.on( 'move', handleStateChange );
@@ -224,4 +226,59 @@ function adjustPosition( position ) {
     if ( position.y >= workArea.y + workArea.height )
       position.y = workArea.y + workArea.height - position.height;
   }
+}
+
+function makeContextMenuHandler() {
+  const inputMenu = Menu.buildFromTemplate( [
+    { role: 'undo' },
+    { role: 'redo' },
+    { type: 'separator' },
+    { role: 'cut' },
+    { role: 'copy' },
+    { role: 'paste' },
+    { type: 'separator' },
+    { role: 'selectall' },
+  ] );
+
+  const selectionMenu = Menu.buildFromTemplate( [
+    { role: 'copy' },
+  ] );
+
+  const linkMenu = Menu.buildFromTemplate( [
+    { label: 'Open link', click: openLink },
+    { label: 'Copy link address ', click: copyLink }
+  ] );
+
+  let linkURL = null;
+
+  function openLink() {
+    shell.openExternal( linkURL );
+  }
+
+  function copyLink() {
+    clipboard.writeText( linkURL );
+  }
+
+  return function contextMenuHandler( event, props ) {
+    if ( props.isEditable ) {
+      inputMenu.items[ 0 ].enabled = props.editFlags.canUndo;
+      inputMenu.items[ 1 ].enabled = props.editFlags.canRedo;
+      inputMenu.items[ 3 ].enabled = props.editFlags.canCut;
+      inputMenu.items[ 4 ].enabled = props.editFlags.canCopy;
+      inputMenu.items[ 5 ].enabled = props.editFlags.canPaste;
+      inputMenu.items[ 7 ].enabled = props.editFlags.canSelectAll;
+      inputMenu.popup( mainWindow ) ;
+    } else if ( props.selectionText != '' ) {
+      selectionMenu.popup( mainWindow );
+    } else if ( props.linkURL != '' ) {
+      let baseURL = props.pageURL;
+      const index = baseURL.indexOf( '#' );
+      if ( index >= 0 )
+        baseURL = baseURL.substr( 0, index );
+      if ( !props.linkURL.startsWith( baseURL ) ) {
+        linkURL = props.linkURL;
+        linkMenu.popup( mainWindow );
+      }
+    }
+  };
 }
