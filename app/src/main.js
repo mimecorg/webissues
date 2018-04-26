@@ -17,7 +17,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-const { app, BrowserWindow, ipcMain } = require( 'electron' );
+const electron = require( 'electron' );
+const { app, BrowserWindow, ipcMain } = electron;
 
 const fs = require( 'fs' );
 const path = require( 'path' );
@@ -28,8 +29,17 @@ const dataPath = initializeDataPath();
 const config = {
   settings: {
     baseURL: null
+  },
+  position: {
+    x: null,
+    y: null,
+    width: 1280,
+    height: 800,
+    maximized: true
   }
 };
+
+let configSaved = false;
 
 let mainWindow = null;
 
@@ -40,10 +50,19 @@ app.on( 'ready', () => {
 } );
 
 app.on( 'window-all-closed', () => {
-  saveConfiguration( () => {
-    if ( process.platform != 'darwin' )
+  if ( process.platform != 'darwin' )
+    app.quit();
+} );
+
+app.on( 'will-quit', event => {
+  if ( !configSaved ) {
+    event.preventDefault();
+
+    saveConfiguration( () => {
+      configSaved = true;
       app.quit();
-  } );
+    } );
+  }
 } );
 
 app.on( 'activate', () => {
@@ -66,7 +85,21 @@ ipcMain.on( 'restart-client', ( event, arg ) => {
 } );
 
 function createWindow() {
-  mainWindow = new BrowserWindow( { width: 1280, height: 800 } );
+  const position = config.position;
+  adjustPosition( position );
+
+  mainWindow = new BrowserWindow( {
+    x: position.x,
+    y: position.y,
+    width: position.width,
+    height: position.height,
+    minWidth: 200,
+    minHeight: 120,
+    show: !position.maximized
+  } );
+
+  if ( position.maximized )
+    mainWindow.maximize();
 
   let pathname;
   if ( process.env.NODE_ENV == 'production' )
@@ -78,6 +111,29 @@ function createWindow() {
 
   mainWindow.webContents.on( 'did-finish-load', () => {
     mainWindow.webContents.send( 'start-client', config.settings );
+  } );
+
+  mainWindow.on( 'resize', handleStateChange );
+  mainWindow.on( 'move', handleStateChange );
+
+  function handleStateChange() {
+    if ( !mainWindow.isMinimized() && !mainWindow.isFullScreen() ) {
+      if ( !mainWindow.isMaximized() ) {
+        const bounds = mainWindow.getBounds();
+        position.x = bounds.x;
+        position.y = bounds.y;
+        position.width = bounds.width;
+        position.height = bounds.height;
+      }
+      position.maximized = mainWindow.isMaximized();
+    }
+  }
+
+  mainWindow.on( 'close', () => {
+    mainWindow.removeListener( 'resize', handleStateChange );
+    mainWindow.removeListener( 'move', handleStateChange );
+
+    config.position = position;
   } );
 
   mainWindow.on( 'closed', () => {
@@ -139,5 +195,25 @@ function mergeConfig( target, source ) {
       mergeConfig( target[ key ], source[ key ] );
     else
       target[ key ] = source[ key ];
+  }
+}
+
+function adjustPosition( position ) {
+  let workArea;
+  if ( position.x != null && position.y != null )
+    workArea = electron.screen.getDisplayMatching( position ).workArea;
+  else
+    workArea = electron.screen.getPrimaryDisplay().workArea;
+
+  if ( position.width > workArea.width )
+    position.width = workArea.width;
+  if ( position.height > workArea.height )
+    position.height = workArea.height;
+
+  if ( position.x != null && position.y != null ) {
+    if ( position.x >= workArea.x + workArea.width )
+      position.x = workArea.x + workArea.width - position.width;
+    if ( position.y >= workArea.y + workArea.height )
+      position.y = workArea.y + workArea.height - position.height;
   }
 }
