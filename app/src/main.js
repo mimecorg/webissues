@@ -149,7 +149,7 @@ function initializeDataPath() {
   else
     dataPath = path.join( app.getPath( 'appData' ), 'webissues-2.0' );
 
-  app.setPath( 'userData', path.join( dataPath, 'user' ) );
+  app.setPath( 'userData', path.join( dataPath, 'browser' ) );
 
   return dataPath;
 }
