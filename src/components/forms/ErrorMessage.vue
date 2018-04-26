@@ -53,6 +53,8 @@ export default {
           } else {
             return this.$t( 'Error.UnexpectedError' );
           }
+        case 'UnsupportedVersion':
+          return this.$t( 'Error.UnsupportedVersion' );
         default:
           return this.$t( 'Error.UnexpectedError' );
       }
@@ -88,6 +90,8 @@ export default {
             return this.$t( 'ErrorMessage.UploadError' );
           else
             return this.$t( 'ErrorMessage.BadRequest' );
+        case 'UnsupportedVersion':
+          return this.$t( 'ErrorMessage.UnsupportedVersion' );
         default:
           return this.$t( 'ErrorMessage.UnknownError' );
       }

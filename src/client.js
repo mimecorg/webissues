@@ -117,6 +117,10 @@ function makeClientAPI() {
       ipcRenderer.send( 'restart-client', settings );
     },
 
-    openExternal: shell.openExternal
+    openExternal: shell.openExternal,
+
+    isSupportedVersion( serverVersion ) {
+      return /^2\..+$/.test( serverVersion );
+    }
   };
 }

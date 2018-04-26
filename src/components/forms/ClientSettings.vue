@@ -63,6 +63,12 @@ export default {
       this.$emit( 'block' );
 
       this.$ajax.withBaseURL( baseURL ).post( '/server/api/info.php' ).then( ( { serverName, serverVersion } ) => {
+        if ( !this.$client.isSupportedVersion( serverVersion ) ) {
+          const error = new Error( 'Unsupported server version: ' + serverVersion );
+          error.reason = 'UnsupportedVersion';
+          throw error;
+        }
+
         this.$client.settings.baseURL = baseURL;
         this.$client.settings.serverName = serverName;
         this.$client.settings.serverVersion = serverVersion;
@@ -108,6 +114,8 @@ export default {
             return this.$t( 'ErrorMessage.ServerError' );
         case 'BadRequest':
           return this.$t( 'ErrorMessage.BadRequest' );
+        case 'UnsupportedVersion':
+          return this.$t( 'ErrorMessage.UnsupportedVersion' );
         default:
           return this.$t( 'ErrorMessage.UnknownError' );
       }

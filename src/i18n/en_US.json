@@ -380,6 +380,7 @@
     "SessionExpired": "Session Expired",
     "LoginRequired": "Login Required",
     "AccessDenied": "Access Denied",
+    "UnsupportedVersion": "Unsupported Version",
     "UnexpectedError": "Unexpected Error"
   },
   "ErrorMessage": {
@@ -393,6 +394,7 @@
     "ServerError": "An internal server error occurred.",
     "UploadError": "File could not be uploaded.",
     "BadRequest": "Server could not understand the request.",
+    "UnsupportedVersion": "Server version is not supported.",
     "UnknownError": "An unknown error occurred."
   },
   "ErrorCode": {
