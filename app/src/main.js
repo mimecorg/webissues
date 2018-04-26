@@ -18,7 +18,7 @@
 **************************************************************************/
 
 const electron = require( 'electron' );
-const { app, BrowserWindow, ipcMain } = electron;
+const { app, BrowserWindow, ipcMain, shell } = electron;
 
 const fs = require( 'fs' );
 const path = require( 'path' );
@@ -112,6 +112,14 @@ function createWindow() {
   mainWindow.webContents.on( 'did-finish-load', () => {
     mainWindow.webContents.send( 'start-client', config.settings );
   } );
+
+  mainWindow.webContents.on( 'will-navigate', handleLink );
+  mainWindow.webContents.on( 'new-window', handleLink );
+
+  function handleLink( event, url ) {
+    event.preventDefault();
+    shell.openExternal( url );
+  }
 
   mainWindow.on( 'resize', handleStateChange );
   mainWindow.on( 'move', handleStateChange );
