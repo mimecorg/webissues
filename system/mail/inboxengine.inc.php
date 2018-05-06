@@ -61,7 +61,7 @@ class System_Mail_InboxEngine
 
         $address = '{' . $address . '}';
         
-        if ( !empty( $setings[ 'inbox_mailbox' ] ) )
+        if ( !empty( $settings[ 'inbox_mailbox' ] ) )
             $address .= imap_utf7_encode( $settings[ 'inbox_mailbox' ] );
 
         if ( !empty( $settings[ 'inbox_user' ] ) ) {
