@@ -116,8 +116,10 @@ function createWindow() {
   mainWindow.webContents.on( 'new-window', handleLink );
 
   function handleLink( event, url ) {
+    if ( url != mainWindow.webContents.getURL() ) {
     event.preventDefault();
     shell.openExternal( url );
+  }
   }
 
   mainWindow.webContents.on( 'context-menu', makeContextMenuHandler() );
