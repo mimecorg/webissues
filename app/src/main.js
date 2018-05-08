@@ -20,11 +20,10 @@
 const electron = require( 'electron' );
 const { app, BrowserWindow, clipboard, ipcMain, Menu, shell } = electron;
 
-const fs = require( 'fs' );
 const path = require( 'path' );
 const url = require( 'url' );
 
-const dataPath = initializeDataPath();
+const { dataPath, loadJSON, saveJSON } = require( './lib/files' );
 
 const config = {
   settings: {
@@ -151,19 +150,6 @@ function createWindow() {
   } );
 }
 
-function initializeDataPath() {
-  let dataPath;
-
-  if ( process.platform == 'win32' )
-    dataPath = path.join( process.env.LOCALAPPDATA, 'WebIssues Client\\2.0' )
-  else
-    dataPath = path.join( app.getPath( 'appData' ), 'webissues-2.0' );
-
-  app.setPath( 'userData', path.join( dataPath, 'browser' ) );
-
-  return dataPath;
-}
-
 function loadConfiguraton( callback ) {
   loadJSON( path.join( dataPath, 'config.json' ), ( error, data ) => {
     if ( error == null && data != null )
@@ -175,28 +161,6 @@ function loadConfiguraton( callback ) {
 
 function saveConfiguration( callback ) {
   saveJSON( path.join( dataPath, 'config.json' ), config, callback );
-}
-
-function loadJSON( filePath, callback ) {
-  fs.readFile( filePath, 'utf8', ( error, body ) => {
-    if ( error != null )
-      return callback( error, null );
-
-    let result;
-    try {
-      result = JSON.parse( body );
-    } catch ( error2 ) {
-      return callback( error2, null );
-    }
-
-    callback( null, result );
-  } );
-}
-
-function saveJSON( filePath, data, callback ) {
-  const body = JSON.stringify( data, null, 2 );
-
-  fs.writeFile( filePath, body, { encoding: 'utf8' }, callback );
 }
 
 function mergeConfig( target, source ) {
