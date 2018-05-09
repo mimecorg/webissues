@@ -17,8 +17,6 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-import Vue from 'vue'
-
 export default function makeUserRoutes() {
   return function userRoutes( route ) {
     if ( process.env.TARGET == 'electron' ) {

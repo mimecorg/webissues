@@ -17,6 +17,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
+import Vue from 'vue'
+
 import { TextFormat, ErrorCode } from '@/constants'
 
 export default function makeIssueRoutes( i18n, ajax, store, parser ) {
@@ -287,6 +289,24 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
         };
       } );
     } );
+
+    if ( process.env.TARGET == 'electron' ) {
+      route( 'ClientDownload', '/issues/:issueId/files/:fileId/download', ( { issueId, fileId } ) => {
+        return ajax.post( '/server/api/issues/files/load.php', { issueId, fileId } ).then( ( { name, total, size } ) => {
+          return Vue.prototype.$client.findAttachment( store.state.global.serverUUID, fileId ).then( filePath => {
+            return {
+              component: 'ClientDownload',
+              issueId,
+              fileId,
+              name,
+              total,
+              fileSize: size,
+              initialPath: filePath
+            };
+          } );
+        } );
+      } );
+    }
   }
 }
 

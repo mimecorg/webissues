@@ -120,7 +120,10 @@
               </div>
             </div>
             <div v-else-if="isFileAdded( item )" class="issue-attachment">
-              <span class="fa fa-paperclip" aria-hidden="true"></span> <a v-bind:href="getFileURL( item.id )">{{ item.name }}</a> ({{ item.size }})
+              <span class="fa fa-paperclip" aria-hidden="true"></span>
+              <a v-if="isWeb" v-bind:href="getFileURL( item.id )">{{ item.name }}</a>
+              <HyperLink v-else v-on:click="downloadFile( item )">{{ item.name }}</HyperLink>
+              ({{ item.size }})
               <span v-if="item.description" v-html="'&mdash; ' + item.description"></span>
               <div v-if="item.modifiedDate" class="last-edited">
                 <span class="fa fa-pencil" aria-hidden="true"></span> {{ item.modifiedDate }} &mdash; {{ item.modifiedBy }}
@@ -167,6 +170,9 @@ export default {
         History.Files,
         History.CommentsAndFiles
       ];
+    },
+    isWeb() {
+      return process.env.TARGET == 'web';
     }
   },
 
@@ -285,6 +291,11 @@ export default {
         this.$router.push( 'DeleteComment', { issueId: this.issueId, commentId: item.id } );
       else if ( item.type == Change.FileAdded )
         this.$router.push( 'DeleteFile', { issueId: this.issueId, fileId: item.id } );
+    },
+
+    downloadFile( item ) {
+      if ( process.env.TARGET == 'electron' )
+        this.$router.push( 'ClientDownload', { issueId: this.issueId, fileId: item.id } );
     },
 
     setUnread( unread ) {

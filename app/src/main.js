@@ -24,6 +24,7 @@ const path = require( 'path' );
 const url = require( 'url' );
 
 const { dataPath, loadJSON, saveJSON } = require( './lib/files' );
+const { initializeAttachments } = require( './lib/attachments' );
 
 const config = {
   settings: {
@@ -44,7 +45,9 @@ let mainWindow = null;
 
 app.on( 'ready', () => {
   loadConfiguraton( () => {
-    createWindow();
+    initializeAttachments( () => {
+      createWindow();
+    } );
   } );
 } );
 
@@ -117,9 +120,9 @@ function createWindow() {
 
   function handleLink( event, url ) {
     if ( url != mainWindow.webContents.getURL() ) {
-    event.preventDefault();
-    shell.openExternal( url );
-  }
+      event.preventDefault();
+      shell.openExternal( url );
+    }
   }
 
   mainWindow.webContents.on( 'context-menu', makeContextMenuHandler() );

@@ -33,6 +33,7 @@ class Server_Api_Global
 
         $result[ 'serverName' ] = $server[ 'server_name' ];
         $result[ 'serverVersion' ] = $server[ 'server_version' ];
+        $result[ 'serverUUID' ] = $server[ 'server_uuid' ];
 
         $principal = System_Api_Principal::getCurrent();
 

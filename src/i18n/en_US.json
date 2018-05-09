@@ -357,6 +357,15 @@
     "WebIssuesManual": "WebIssues Manual",
     "ToggleNavigation": "Toggle Navigation"
   },
+  "ClientDownload": {
+    "DownloadFile": "Download File",
+    "DownloadFilePrompt": "Open or save file {0}.",
+    "Open": "Open",
+    "SaveAs": "Save As",
+    "Downloaded": "Downloaded {0} of {1}.",
+    "DownloadError": "File could not be downloaded.",
+    "SaveError": "File could not be saved."
+  },
   "ClientLogin": {
     "LogInToWebIssues": "Log in to WebIssues",
     "Login": "Login:",
