@@ -25,7 +25,7 @@ const path = require( 'path' );
 const dataPath = initializeDataPath();
 
 function loadJSON( filePath, callback ) {
-  loadText( filePath, ( error, text ) => {
+  fs.readFile( filePath, 'utf8', ( error, text ) => {
     if ( error != null )
       return callback( error, null );
 
@@ -43,47 +43,24 @@ function loadJSON( filePath, callback ) {
 function saveJSON( filePath, data, callback ) {
   const text = JSON.stringify( data, null, 2 );
 
-  saveText( filePath, text, callback );
+  writeFileSafe( filePath, text, 'utf8', callback );
 }
 
-function loadText( filePath, callback ) {
-  fs.open( filePath + '.bak', 'r', ( error, fd ) => {
-    if ( error != null && error.code != 'ENOENT' )
-      return callback( error, null );
+function writeFileSafe( filePath, data, options, callback ) {
+  const tempPath = filePath + '.tmp';
 
-    if ( error == null ) {
-      fs.close( fd, error => {
-        if ( error != null )
-          return callback( error, null );
-
-        fs.unlink( filePath, error => {
-          if ( error != null && error.code != 'ENOENT' )
-            return callback( error, null );
-
-          fs.rename( filePath + '.bak', filePath, error => {
-            if ( error != null )
-              return callback( error, null );
-
-            fs.readFile( filePath, 'utf8', callback );
-          } );
-        } );
-      } );
-    } else {
-      fs.readFile( filePath, 'utf8', callback );
-    }
-  } );
-}
-
-function saveText( filePath, text, callback ) {
-  fs.rename( filePath, filePath + '.bak', error => {
-    if ( error != null && error.code != 'ENOENT' )
+  fs.writeFile( tempPath, data, options, error => {
+    if ( error != null )
       return callback( error );
 
-    fs.writeFile( filePath, text, { encoding: 'utf8' }, error => {
-      if ( error != null )
-        return callback( error );
-
-      fs.unlink( filePath + '.bak', callback );
+    fs.rename( tempPath, filePath, error => {
+      if ( error != null ) {
+        fs.unlink( tempPath, () => {
+          callback( error );
+        } );
+      } else {
+        callback( null );
+      }
     } );
   } );
 }
@@ -105,6 +82,5 @@ module.exports = {
   dataPath,
   loadJSON,
   saveJSON,
-  loadText,
-  saveText
+  writeFileSafe
 };
