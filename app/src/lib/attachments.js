@@ -22,9 +22,9 @@ const { app, dialog, ipcMain } = require( 'electron' );
 const fs = require( 'fs' );
 const path = require( 'path' );
 
-const { dataPath, loadJSON, saveJSON } = require( './files' );
+const { makeCache } = require( './cache' );
 
-let records = [];
+const cache = makeCache( 'files', { maxSize: 200 * 1024 * 1024, maxCount: 200 } );
 
 let currentWindow = null;
 
@@ -39,14 +39,14 @@ app.on( 'browser-window-created', ( event, window ) => {
 } );
 
 ipcMain.on( 'find-attachment', ( event, serverUUID, fileId ) => {
-  const record = records.find( r => r.serverUUID == serverUUID && r.fileId == fileId );
+  const record = cache.find( r => r.serverUUID == serverUUID && r.fileId == fileId );
 
   if ( record == null ) {
     event.sender.send( 'find-attachment-result', null, null );
     return;
   }
 
-  const filePath = path.join( dataPath, 'files', record.name );
+  const filePath = cache.getFilePath( record.name );
 
   fs.access( filePath, error => {
     if ( error != null && error.code == 'ENOENT' ) {
@@ -56,7 +56,7 @@ ipcMain.on( 'find-attachment', ( event, serverUUID, fileId ) => {
     } else {
       record.lastAccess = Date.now();
 
-      saveRecords( error => {
+      cache.save( error => {
         event.sender.send( 'find-attachment-result', null, filePath );
       } );
     }
@@ -64,14 +64,14 @@ ipcMain.on( 'find-attachment', ( event, serverUUID, fileId ) => {
 } );
 
 ipcMain.on( 'download-attachment', ( event, serverUUID, fileId, name, size, url ) => {
-  allocateSpace( size, () => {
+  cache.allocateSpace( size, () => {
     generateFileName( name, ( error, generatedName ) => {
       if ( error != null ) {
         event.sender.send( 'download-attachment-result', error.message, null );
         return;
       }
 
-      const filePath = path.join( dataPath, 'files', generatedName );
+      const filePath = cache.getFilePath( generatedName );
 
       if ( currentWindow == null ) {
         event.sender.send( 'download-attachment-result', 'Browser window closed', null );
@@ -90,9 +90,9 @@ ipcMain.on( 'download-attachment', ( event, serverUUID, fileId, name, size, url 
           } else if ( state == 'completed' ) {
             currentItem = null;
 
-            records.push( { serverUUID, fileId, name: generatedName, size, lastAccess: Date.now() } );
+            cache.push( { serverUUID, fileId, name: generatedName, size, lastAccess: Date.now() } );
 
-            saveRecords( error => {
+            cache.save( error => {
               if ( currentWindow != null )
                 currentWindow.webContents.send( 'download-attachment-result', null, filePath );
             } );
@@ -135,81 +135,14 @@ ipcMain.on( 'save-attachment', ( event, filePath, name ) => {
 } );
 
 function initializeAttachments( callback ) {
-  loadJSON( path.join( dataPath, 'files.json' ), ( error, data ) => {
-    if ( error == null && data != null )
-      records = data;
-
-    fs.mkdir( path.join( dataPath, 'files' ), error => {
-      allocateSpace( 0, callback );
-    } );
-  } );
-}
-
-function saveRecords( callback ) {
-  saveJSON( path.join( dataPath, 'files.json' ), records, callback );
-}
-
-function allocateSpace( allocated, callback ) {
-  const maxSize = 200 * 1024 * 1024;
-  const maxCount = 200;
-
-  const sorted = [ ...records ];
-  sorted.sort( ( r1, r2 ) => r1.lastAccess - r2.lastAccess );
-
-  let modified = false;
-
-  checkRecord( 0 );
-
-  function checkRecord( index ) {
-    if ( index >= sorted.length )
-      return finish();
-
-    let size = records.reduce( ( sum, r ) => sum + r.size, 0 );
-    let count = records.length;
-
-    if ( allocated > 0 ) {
-      size += allocated;
-      count++;
-    }
-
-    const filePath = path.join( dataPath, 'files', sorted[ index ].name );
-
-    if ( size > maxSize || count > maxCount ) {
-      fs.unlink( filePath, error => {
-        if ( error != null && error.code == 'ENOENT' || error == null )
-          removeRecord( sorted[ index ].name );
-        checkRecord( index + 1 );
-      } );
-    } else {
-      fs.access( filePath, error => {
-        if ( error != null && error.code == 'ENOENT' )
-          removeRecord( sorted[ index ].name );
-        checkRecord( index + 1 );
-      } );
-    }
-  }
-
-  function removeRecord( name ) {
-    records = records.filter( r => r.name != name );
-    modified = true;
-  }
-
-  function finish() {
-    if ( modified ) {
-      saveRecords( error => {
-        callback();
-      } );
-    } else {
-      callback();
-    }
-  }
+  cache.initialize( callback );
 }
 
 function generateFileName( name, callback ) {
   checkAccess( name, 1 );
 
   function checkAccess( generatedName, counter ) {
-    const filePath = path.join( dataPath, 'files', generatedName );
+    const filePath = cache.getFilePath( generatedName );
 
     fs.access( filePath, error => {
       if ( error != null && error.code == 'ENOENT' )
