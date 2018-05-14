@@ -17,28 +17,14 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-const electron = require( 'electron' );
-const { app, BrowserWindow, ipcMain, shell } = electron;
+const { app, BrowserWindow, ipcMain, shell } = require( 'electron' );
 
 const path = require( 'path' );
 const url = require( 'url' );
 
-const { dataPath, loadJSON, saveJSON } = require( './lib/files' );
+const { config, loadConfiguraton, saveConfiguration, adjustPosition } = require( './lib/config' );
 const { initializeAttachments } = require( './lib/attachments' );
 const { makeContextMenuHandler } = require( './lib/menus' );
-
-const config = {
-  settings: {
-    baseURL: null
-  },
-  position: {
-    x: null,
-    y: null,
-    width: 1280,
-    height: 800,
-    maximized: true
-  }
-};
 
 let configSaved = false;
 
@@ -154,46 +140,4 @@ function createWindow() {
   mainWindow.on( 'closed', () => {
     mainWindow = null;
   } );
-}
-
-function loadConfiguraton( callback ) {
-  loadJSON( path.join( dataPath, 'config.json' ), ( error, data ) => {
-    if ( error == null && data != null )
-      mergeConfig( config, data );
-
-    callback( error, config );
-  } );
-}
-
-function saveConfiguration( callback ) {
-  saveJSON( path.join( dataPath, 'config.json' ), config, callback );
-}
-
-function mergeConfig( target, source ) {
-  for ( const key in source ) {
-    if ( target[ key ] != null && typeof target[ key ] == 'object' && source[ key ] != null && typeof source[ key ] == 'object' )
-      mergeConfig( target[ key ], source[ key ] );
-    else
-      target[ key ] = source[ key ];
-  }
-}
-
-function adjustPosition( position ) {
-  let workArea;
-  if ( position.x != null && position.y != null )
-    workArea = electron.screen.getDisplayMatching( position ).workArea;
-  else
-    workArea = electron.screen.getPrimaryDisplay().workArea;
-
-  if ( position.width > workArea.width )
-    position.width = workArea.width;
-  if ( position.height > workArea.height )
-    position.height = workArea.height;
-
-  if ( position.x != null && position.y != null ) {
-    if ( position.x >= workArea.x + workArea.width )
-      position.x = workArea.x + workArea.width - position.width;
-    if ( position.y >= workArea.y + workArea.height )
-      position.y = workArea.y + workArea.height - position.height;
-  }
 }
