@@ -84,7 +84,8 @@ function createWindow() {
     height: position.height,
     minWidth: 200,
     minHeight: 120,
-    show: !position.maximized
+    show: !position.maximized,
+    title: 'WebIssues Client'
   } );
 
   if ( position.maximized )
