@@ -176,11 +176,11 @@ export default {
 
     openRegister() {
       if ( process.env.TARGET == 'electron' )
-        this.$client.openExternal( this.baseURL + '/users/register.php' );
+        this.$client.openURL( this.baseURL + '/users/register.php' );
     },
     openManual() {
       if ( process.env.TARGET == 'electron' )
-        this.$client.openExternal( this.manualURL );
+        this.$client.openURL( this.manualURL );
     },
 
     toggle() {

@@ -133,7 +133,7 @@ export default {
     },
 
     openRegister() {
-      this.$client.openExternal( this.$client.settings.baseURL + '/users/register.php' );
+      this.$client.openURL( this.$client.settings.baseURL + '/users/register.php' );
     },
 
     cancelPassword() {

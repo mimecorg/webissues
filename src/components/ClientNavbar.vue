@@ -78,7 +78,7 @@ export default {
 
   methods: {
     openManual() {
-      this.$client.openExternal( this.manualURL );
+      this.$client.openURL( this.manualURL );
     },
 
     clientSettings() {

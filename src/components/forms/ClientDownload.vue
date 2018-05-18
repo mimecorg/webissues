@@ -69,7 +69,7 @@ export default {
 
   methods: {
     open() {
-      this.$client.openExternal( this.path );
+      this.$client.openFile( this.path );
       this.returnToDetails();
     },
 

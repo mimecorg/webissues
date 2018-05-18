@@ -21,6 +21,8 @@ import '@/styles/global.less'
 
 import { shell, ipcRenderer } from 'electron'
 
+import url from 'url'
+
 import Vue from 'vue'
 
 import Client from '@/components/Client'
@@ -120,7 +122,13 @@ function makeClientAPI() {
       ipcRenderer.send( 'restart-client', settings );
     },
 
-    openExternal: shell.openExternal,
+    openURL( url ) {
+      shell.openExternal( url );
+    },
+
+    openFile( path ) {
+      shell.openExternal( url.format( { pathname: path, protocol: 'file:', slashes: true } ) );
+    },
 
     isSupportedVersion( serverVersion ) {
       return /^2\..+$/.test( serverVersion );
