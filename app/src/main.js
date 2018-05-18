@@ -88,8 +88,12 @@ function createWindow() {
     title: 'WebIssues Client'
   } );
 
-  if ( position.maximized )
+  if ( position.maximized ) {
     mainWindow.maximize();
+
+    if ( !mainWindow.isVisible() )
+      mainWindow.show();
+  }
 
   let pathname;
   if ( process.env.NODE_ENV == 'production' )
