@@ -36,7 +36,26 @@ packager( {
   platform,
   arch,
   icon: path.resolve( __dirname, '../icons/webissues' + ( platform == 'darwin' ? '.icns' : '.ico' ) ),
-  appCopyright: 'Copyright (C) 2007-2017 WebIssues Team'
+  appCopyright: 'Copyright (C) 2007-2017 WebIssues Team',
+
+  afterExtract: [
+    ( buildPath, electronVersion, platform, arch, callback ) => {
+      const licenseSrc = path.resolve( __dirname, '../../../LICENSE' );
+      const licenseDest = path.join( buildPath, 'LICENSE' );
+
+      fs.rename( licenseDest, licenseDest + '.electron', err => {
+        if ( err != null )
+          console.error( err );
+
+        fs.copyFile( licenseSrc, licenseDest, err => {
+          if ( err != null )
+            console.error( err );
+
+          callback();
+        } );
+      } );
+    }
+  ],
 } ).then( () => {
   const dirname = 'WebIssues-' + platform + '-' + arch;
   const zipname = 'webissues-client-' + platform + '-' + arch + '.zip';
