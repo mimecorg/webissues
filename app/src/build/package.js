@@ -25,6 +25,8 @@ const packager = require( 'electron-packager' );
 const Archiver = require( 'archiver/lib/core' );
 const zip = require( 'archiver/lib/plugins/zip' );
 
+const version = require( '../../../package' ).version;
+
 const platform = process.argv[ 2 ] || process.platform;
 const arch = process.argv[ 3 ] || process.arch;
 
@@ -100,13 +102,13 @@ packager( {
     }
   ],
 } ).then( () => {
-  const dirname = 'WebIssues-' + platform + '-' + arch;
-  const zipname = 'webissues-client-' + platform + '-' + arch + '.zip';
+  const dirName = 'WebIssues-' + platform + '-' + arch;
+  const zipName = 'WebIssues-v' + version + '-' + platform + '-' + arch + '.zip';
 
-  const output = fs.createWriteStream( path.join( out, zipname ) );
+  const output = fs.createWriteStream( path.join( out, zipName ) );
   const archive = createZipArchive( { zlib: { level: 9 } } );
 
   archive.pipe( output );
-  archive.directory( path.join( out, dirname ), false );
+  archive.directory( path.join( out, dirName ), false );
   archive.finalize();
 } );
