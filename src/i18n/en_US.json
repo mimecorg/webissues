@@ -48,9 +48,7 @@
     "QuoteBlock": "Quote Block",
     "CodeBlock": "Code Block",
     "RightToLeftText": "Right-To-Left Text",
-    "Preview": "Preview",
-    "EnterLinkURL": "Enter link URL:",
-    "LinkText": "Link text"
+    "Preview": "Preview"
   },
   "ApplicationNavbar": {
     "Add": "Add",

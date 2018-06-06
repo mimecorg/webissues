@@ -114,24 +114,22 @@ export default {
       this.markupMultiline( '', '', '`', '`' );
     },
     markupLink() {
-      const url = window.prompt( this.$t( 'MarkupEditor.EnterLinkURL' ), 'http://' );
-      if ( url != null )
-        this.markup( '[' + url + ' ', ']', this.$t( 'MarkupEditor.LinkText' ) );
+      this.markupPlaceholder( '[', ']', 'http://' );
     },
     markupList() {
       this.markupMultiline( '[list]\n', '\n[/list]', '* ', '' );
     },
     markupQuote() {
-      this.markup( '[quote]\n', '\n[/quote]', '' );
+      this.markup( '[quote]\n', '\n[/quote]' );
     },
     markupCode() {
-      this.markup( '[code]\n', '\n[/code]', '' );
+      this.markup( '[code]\n', '\n[/code]' );
     },
     markupRTL() {
-      this.markup( '[rtl]\n', '\n[/rtl]', '' );
+      this.markup( '[rtl]\n', '\n[/rtl]' );
     },
 
-    markup( openBlockWith, closeBlockWith, placeholder ) {
+    markup( openBlockWith, closeBlockWith ) {
       const scrollTop = this.$refs.textarea.scrollTop;
       this.$refs.textarea.focus();
 
@@ -149,10 +147,37 @@ export default {
           block = openBlockWith + selection.text + closeBlockWith;
         start += block.length;
       } else {
-        block = openBlockWith + placeholder + closeBlockWith;
+        block = openBlockWith + closeBlockWith;
         start += openBlockWith.length;
-        length = placeholder.length;
       }
+
+      this.updateSelection( selection, block, start, length );
+
+      this.$refs.textarea.scrollTop = scrollTop;
+    },
+
+    markupPlaceholder( openBlockWith, closeBlockWith, placeholder ) {
+      const scrollTop = this.$refs.textarea.scrollTop;
+      this.$refs.textarea.focus();
+
+      const selection = this.getSelection();
+
+      let block;
+      let start = selection.caretPosition;
+      let length = 0;
+
+      if ( selection.text != '' ) {
+        const trailingNewlines = selection.text.match( /[ \t\r\n]*$/ );
+        if ( trailingNewlines != null )
+          block = openBlockWith + placeholder + ' ' + selection.text.replace( /[ \t\r\n]*$/, '' ) + closeBlockWith + trailingNewlines[ 0 ];
+        else
+          block = openBlockWith + placeholder + ' ' + selection.text + closeBlockWith;
+      } else {
+        block = openBlockWith + placeholder + closeBlockWith;
+      }
+
+      start += openBlockWith.length;
+      length = placeholder.length;
 
       this.updateSelection( selection, block, start, length );
 
