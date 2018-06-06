@@ -24,7 +24,7 @@ const url = require( 'url' );
 
 const { config, loadConfiguraton, saveConfiguration, adjustPosition } = require( './lib/config' );
 const { initializeAttachments } = require( './lib/attachments' );
-const { makeContextMenuHandler } = require( './lib/menus' );
+const { makeContextMenuHandler, makeDarwinMenu } = require( './lib/menus' );
 
 let configSaved = false;
 
@@ -145,4 +145,7 @@ function createWindow() {
   mainWindow.on( 'closed', () => {
     mainWindow = null;
   } );
+
+  if ( process.platform == 'darwin' )
+    makeDarwinMenu();
 }
