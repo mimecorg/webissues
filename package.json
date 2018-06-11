@@ -13,9 +13,11 @@
     "dev-electron": "webpack-dev-server --config src/build/webpack.config.js --env.electron",
     "start": "electron ./app/assets/js/main.min.js",
     "start-dev": "electron ./app/src/main.js",
-    "package": "npm run package-win32 && npm run package-darwin",
+    "package": "node ./app/src/build/package.js",
     "package-win32": "node ./app/src/build/package.js win32 ia32",
-    "package-darwin": "node ./app/src/build/package.js darwin x64"
+    "package-darwin": "node ./app/src/build/package.js darwin x64",
+    "package-linux-ia32": "node ./app/src/build/package.js linux ia32",
+    "package-linux-x64": "node ./app/src/build/package.js linux x64"
   },
   "dependencies": {
     "babel-polyfill": "^6.26.0",
