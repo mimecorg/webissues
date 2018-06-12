@@ -30,6 +30,12 @@ const arch = process.argv[ 3 ] || process.arch;
 
 const out = path.resolve( __dirname, '../../../packages' );
 
+let icon = null;
+if ( platform == 'win32' )
+  icon = path.resolve( __dirname, '../icons/webissues.ico' );
+else if ( platform == 'darwin' )
+  icon = path.resolve( __dirname, '../icons/webissues.icns' );
+
 packager( {
   name: 'WebIssues',
   dir: path.resolve( __dirname, '../..' ),
@@ -38,7 +44,7 @@ packager( {
   overwrite: true,
   platform,
   arch,
-  icon: path.resolve( __dirname, '../icons/webissues' + ( platform == 'darwin' ? '.icns' : '.ico' ) ),
+  icon,
   appCopyright: 'Copyright (C) 2007-2017 WebIssues Team',
 
   afterExtract: [

@@ -77,6 +77,14 @@ function createWindow() {
   const position = config.position;
   adjustPosition( position );
 
+  let icon = null;
+  if ( process.platform == 'linux' ) {
+    if ( process.env.NODE_ENV == 'production' )
+      icon = path.join( __dirname, '../images/webissues-logo.png' );
+    else
+      icon = path.join( __dirname, '../../src/images/webissues-logo.png' );
+  }
+
   mainWindow = new BrowserWindow( {
     x: position.x,
     y: position.y,
@@ -85,7 +93,8 @@ function createWindow() {
     minWidth: 200,
     minHeight: 120,
     show: !position.maximized,
-    title: 'WebIssues'
+    title: 'WebIssues',
+    icon
   } );
 
   if ( position.maximized ) {
