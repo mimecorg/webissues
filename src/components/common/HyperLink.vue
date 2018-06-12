@@ -25,8 +25,8 @@
 export default {
   methods: {
     click() {
-      this.$emit( 'click' );
       this.$refs.link.blur();
+      this.$emit( 'click' );
     }
   }
 }

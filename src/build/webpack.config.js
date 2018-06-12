@@ -22,7 +22,7 @@ const webpack = require( 'webpack' );
 const ExtractTextPlugin = require( 'extract-text-webpack-plugin' );
 const AssetsPlugin = require( 'assets-webpack-plugin' );
 
-module.exports = function( { production } = {} ) {
+module.exports = function( { electron, production } = {} ) {
   if ( production )
     process.env.NODE_ENV = 'production';
 
@@ -46,16 +46,18 @@ module.exports = function( { production } = {} ) {
     }
   }
 
-  return {
-    entry: {
+  const config = {
+    entry: electron ? {
+      client: './src/client.js'
+    } : {
       common: './src/common.js',
-      main: './src/main.js'
+      application: './src/application.js'
     },
     output: {
-      path: path.resolve( __dirname, '../../assets' ),
+      path: path.resolve( __dirname, electron ? '../../app/assets' : '../../assets' ),
       publicPath: production ? '../' : 'http://localhost:8080/',
       filename: production ? 'js/[name].min.js?[chunkhash]' : 'js/[name].js',
-      library: 'WebIssues_[name]'
+      library: electron ? undefined : 'WebIssues_[name]'
     },
     module: {
       rules: [
@@ -104,32 +106,11 @@ module.exports = function( { production } = {} ) {
         '@': path.resolve( __dirname, '..' )
       }
     },
-    plugins: production ? [
-      new webpack.DefinePlugin( {
-        'process.env': {
-          NODE_ENV: '"production"'
-        }
-      } ),
-      new webpack.optimize.UglifyJsPlugin( {
-        compress: {
-          warnings: false
-        },
-        comments: false
-      } ),
-      new ExtractTextPlugin( {
-        filename: 'css/[name].min.css?[contenthash]'
-      } ),
-      new AssetsPlugin( {
-        filename: 'assets.json',
-        path: path.resolve( __dirname, '../../assets' ),
-        fullPath: false
-      } ),
-      new webpack.BannerPlugin( {
-        banner: "Copyright (C) 2007-2017 WebIssues Team | License: AGPLv3"
+    plugins: [
+      new webpack.EnvironmentPlugin( {
+        NODE_ENV: production ? 'production' : 'development',
+        TARGET: electron ? 'electron' : 'web'
       } )
-    ] : [
-      new webpack.NamedModulesPlugin(),
-      new webpack.HotModuleReplacementPlugin()
     ],
     devServer: {
       headers: {
@@ -144,8 +125,37 @@ module.exports = function( { production } = {} ) {
       hints: false
     },
     stats: {
-      children: false
+      children: false,
+      modules: false
     },
     devtool: production ? false : '#cheap-module-eval-source-map',
+    target: electron ? 'electron-renderer' : 'web'
   };
+
+  if ( production ) {
+    config.plugins.push( new webpack.optimize.UglifyJsPlugin( {
+      compress: {
+        warnings: false
+      },
+      comments: false
+    } ) );
+    config.plugins.push( new ExtractTextPlugin( {
+      filename: 'css/[name].min.css?[contenthash]'
+    } ) );
+    config.plugins.push( new webpack.BannerPlugin( {
+      banner: "Copyright (C) 2007-2017 WebIssues Team | License: AGPLv3"
+    } ) );
+    if ( !electron ) {
+      config.plugins.push( new AssetsPlugin( {
+        filename: 'assets.json',
+        path: config.output.path,
+        fullPath: false
+      } ) );
+    }
+  } else {
+    config.plugins.push( new webpack.NamedModulesPlugin() );
+    config.plugins.push( new webpack.HotModuleReplacementPlugin() );
+  }
+
+  return config;
 };

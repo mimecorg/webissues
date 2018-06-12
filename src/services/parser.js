@@ -60,6 +60,12 @@ export default function makeParser( store ) {
   };
 }
 
+export function makeClientParser() {
+  return {
+    normalizeString
+  };
+}
+
 function normalizeString( string, maxLength = null, { allowEmpty = false, multiLine = false } = {} ) {
   if ( string == null )
     string = '';

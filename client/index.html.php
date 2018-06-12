@@ -11,6 +11,6 @@
 </head>
 <body>
   <div id="application"></div>
-  <script type="text/javascript">WebIssues_main.initialize(<?php echo $options ?>);</script>
+  <script type="text/javascript">WebIssues_application.startApplication(<?php echo $options ?>);</script>
 </body>
 </html>

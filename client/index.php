@@ -54,7 +54,7 @@ class Client_Index extends System_Web_Component
 
         $this->assets = new System_Web_Assets();
         $this->assets->add( 'common' );
-        $this->assets->add( 'main' );
+        $this->assets->add( 'application' );
 
         $options[ 'baseURL' ] = WI_BASE_URL;
         $options[ 'csrfToken' ] = $csrfToken;
@@ -63,6 +63,7 @@ class Client_Index extends System_Web_Component
 
         $options[ 'serverName' ] = $server[ 'server_name' ];
         $options[ 'serverVersion' ] = $server[ 'server_version' ];
+        $options[ 'serverUUID' ] = $server[ 'server_uuid' ];
 
         $options[ 'userId' ] = $principal->getUserId();
         $options[ 'userName' ] = $principal->getUserName();

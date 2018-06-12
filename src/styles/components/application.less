@@ -17,7 +17,7 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-#main-toolbar {
+#application-toolbar {
   position: absolute;
   left: 0; right: 0;
   top: @navbar-height; height: @main-toolbar-height;
@@ -41,25 +41,25 @@
     margin-top: 4px;
     margin-bottom: 4px;
   }
-}
 
-.main-group {
-  .group();
-}
+  .toolbar-group {
+    .group();
+  }
 
-.main-element {
-  .element();
-}
+  .toolbar-element {
+    .element();
+  }
 
-.main-element-wide {
-  .element-wide();
+  .toolbar-element-wide {
+    .element-wide();
 
-  > .input-group {
-    width: 100%;
+    > .input-group {
+      width: 100%;
+    }
   }
 }
 
-#main-grid {
+#application-grid {
   position: absolute;
   left: 0; right: 0;
   top: @navbar-height + @main-toolbar-height; bottom: 0;

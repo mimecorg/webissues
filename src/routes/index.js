@@ -20,20 +20,22 @@
 import staticRoutes from '@/routes/static'
 import makeIssueRoutes from '@/routes/issue'
 import makeAdminRoutes from '@/routes/admin'
+import makeUserRoutes from '@/routes/user'
 
 export default function registerRoutes( router, i18n, ajax, store, parser ) {
   function makeRoutes() {
     return [
       staticRoutes,
       makeIssueRoutes( i18n, ajax, store, parser ),
-      makeAdminRoutes( ajax, store )
+      makeAdminRoutes( ajax, store ),
+      makeUserRoutes()
     ];
   }
 
   router.register( makeRoutes() );
 
   if ( process.env.NODE_ENV != 'production' && module.hot != null ) {
-    module.hot.accept( [ '@/routes/static', '@/routes/issue', '@/routes/admin' ], () => {
+    module.hot.accept( [ '@/routes/static', '@/routes/issue', '@/routes/admin', '@/routes/user' ], () => {
       router.hotUpdate( makeRoutes() );
     } );
   }

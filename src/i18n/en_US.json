@@ -48,11 +48,9 @@
     "QuoteBlock": "Quote Block",
     "CodeBlock": "Code Block",
     "RightToLeftText": "Right-To-Left Text",
-    "Preview": "Preview",
-    "EnterLinkURL": "Enter link URL:",
-    "LinkText": "Link text"
+    "Preview": "Preview"
   },
-  "Navbar": {
+  "ApplicationNavbar": {
     "Add": "Add",
     "AddIssue": "Add Issue",
     "GoTo": "Go To",
@@ -81,11 +79,12 @@
     "LogOut": "Log Out",
     "LogIn": "Log In",
     "Register": "Register",
+    "WebIssuesSettings": "WebIssues Settings",
     "AboutWebIssues": "About WebIssues",
     "WebIssuesManual": "WebIssues Manual",
     "ToggleNavigation": "Toggle Navigation"
   },
-  "Main": {
+  "ApplicationToolbar": {
     "SelectType": "Select Type",
     "AllIssues": "All Issues",
     "PersonalViews": "Personal Views",
@@ -109,7 +108,9 @@
     "MarkAllAsRead": "Mark All As Read",
     "MarkAllAsUnread": "Mark All As Unread",
     "ProjectDescription": "Project Description",
-    "ExportToCSV": "Export To CSV",
+    "ExportToCSV": "Export To CSV"
+  },
+  "ApplicationGrid": {
     "NoIssues": "No issues",
     "IssuesCount": "{0} issues",
     "IssuesCountOf": "{0}-{1} of {2} issues"
@@ -348,12 +349,45 @@
     "RemoveMember": "Remove Member",
     "RemoveMemberPrompt": "Do you want to remove user {0} from project {1}?"
   },
+  "ClientNavbar": {
+    "WebIssuesSettings": "WebIssues Settings",
+    "AboutWebIssues": "About WebIssues",
+    "WebIssuesManual": "WebIssues Manual",
+    "ToggleNavigation": "Toggle Navigation"
+  },
+  "ClientDownload": {
+    "DownloadFile": "Download File",
+    "DownloadFilePrompt": "Open or save file {0}.",
+    "Open": "Open",
+    "SaveAs": "Save As",
+    "Downloaded": "Downloaded {0} of {1}.",
+    "DownloadError": "File could not be downloaded.",
+    "SaveError": "File could not be saved."
+  },
+  "ClientLogin": {
+    "LogInToWebIssues": "Log in to WebIssues",
+    "Login": "Login:",
+    "Password": "Password:",
+    "LogIn": "Log In",
+    "OR": "OR",
+    "AnonymousAccess": "Anonymous Access",
+    "RegisterNewAccount": "Register New Account",
+    "NewPasswordPrompt": "You have to enter a new password in order to log in.",
+    "NewPassword": "New password:",
+    "ConfirmPassword": "Confirm password:"
+  },
+  "ClientSettings": {
+    "WebIssuesSettings": "WebIssues Settings",
+    "ServerURL": "Server URL:",
+    "InvalidURL": "Invalid URL."
+  },
   "Error": {
     "PageNotFound": "Page Not Found",
     "NetworkError": "Network Error",
     "SessionExpired": "Session Expired",
     "LoginRequired": "Login Required",
     "AccessDenied": "Access Denied",
+    "UnsupportedVersion": "Unsupported Version",
     "UnexpectedError": "Unexpected Error"
   },
   "ErrorMessage": {
@@ -367,6 +401,7 @@
     "ServerError": "An internal server error occurred.",
     "UploadError": "File could not be uploaded.",
     "BadRequest": "Server could not understand the request.",
+    "UnsupportedVersion": "Server version is not supported.",
     "UnknownError": "An unknown error occurred."
   },
   "ErrorCode": {

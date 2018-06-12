@@ -33,6 +33,7 @@ class Server_Api_Global
 
         $result[ 'serverName' ] = $server[ 'server_name' ];
         $result[ 'serverVersion' ] = $server[ 'server_version' ];
+        $result[ 'serverUUID' ] = $server[ 'server_uuid' ];
 
         $principal = System_Api_Principal::getCurrent();
 
@@ -167,6 +168,7 @@ class Server_Api_Global
         $settings[ 'commentMaxLength' ] = (int)$serverManager->getSetting( 'comment_max_length' );
         $settings[ 'fileMaxSize' ] = (int)$serverManager->getSetting( 'file_max_size' );
         $settings[ 'hideEmptyValues' ] = $serverManager->getSetting( 'hide_empty_values' ) == '1';
+        $settings[ 'selfRegister' ] = $serverManager->getSetting( 'self_register' ) == 1 && $serverManager->getSetting( 'email_engine' ) != null;
 
         $preferencesManager = new System_Api_PreferencesManager();
         $settings[ 'historyOrder' ] = $preferencesManager->getPreferenceOrSetting( 'history_order' );

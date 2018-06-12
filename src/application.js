@@ -19,9 +19,9 @@
 
 import Vue from 'vue'
 
-import Application from '@/components/Application'
+import '@/components/common'
 
-import commonComponents from '@/components/common'
+import Application from '@/components/Application'
 
 import makeAjax from '@/services/ajax'
 import makeParser from '@/services/parser'
@@ -37,11 +37,11 @@ import registerRoutes from '@/routes'
 
 let app = null;
 
-export function initialize( { baseURL, csrfToken, locale, ...initialState } ) {
-  if ( app )
-    throw new Error( 'Application already initialized' );
+export function startApplication( { baseURL, csrfToken, locale, ...initialState } ) {
+  if ( app != null )
+    throw new Error( 'Application already started' );
 
-  if ( process.env.NODE_ENV == 'production' )
+  if ( process.env.NODE_ENV == 'production' && process.env.TARGET == 'web' )
     __webpack_public_path__ = baseURL + '/assets/';
 
   const i18n = makeI18n( locale );
@@ -51,8 +51,6 @@ export function initialize( { baseURL, csrfToken, locale, ...initialState } ) {
   const parser = makeParser( store );
 
   registerRoutes( router, i18n, ajax, store, parser );
-
-  registerComponents( commonComponents );
 
   app = new Vue( {
     i18n,
@@ -67,9 +65,9 @@ export function initialize( { baseURL, csrfToken, locale, ...initialState } ) {
   } );
 }
 
-function registerComponents( components ) {
-  for ( const name in components ) {
-    if ( components.hasOwnProperty( name ) )
-      Vue.component( name, components[ name ] );
-  }
+export function destroyApplication()
+{
+  app.$destroy();
+  app.$options.router.destroy();
+  app = null;
 }

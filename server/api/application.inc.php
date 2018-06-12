@@ -36,25 +36,27 @@ class Server_Api_Application extends System_Core_Application
         if ( $this->request->getRequestMethod() != 'POST' )
             throw new Server_Error( Server_Error::SyntaxError );
 
-        $principal = System_Api_Principal::getCurrent();
-        $serverManager = new System_Api_ServerManager();
+        if ( $this->command->access != 'public' ) {
+            $principal = System_Api_Principal::getCurrent();
+            $serverManager = new System_Api_ServerManager();
 
-        if ( $principal->isAuthenticated() ) {
-            $headerCsrfToken = $this->request->getCsrfToken();
-            $sessionCsrfToken = $this->session->getValue( 'CSRF_TOKEN' );
-            if ( $headerCsrfToken == null || $sessionCsrfToken == null || $headerCsrfToken != $sessionCsrfToken )
-                throw new System_Api_Error( Server_Error::SyntaxError );
-        } else {
-            if ( $this->session->isDestroyed() || $serverManager->getSetting( 'anonymous_access' ) != 1 )
-                throw new System_Api_Error( System_Api_Error::LoginRequired );
+            if ( $principal->isAuthenticated() ) {
+                $headerCsrfToken = $this->request->getCsrfToken();
+                $sessionCsrfToken = $this->session->getValue( 'CSRF_TOKEN' );
+                if ( $headerCsrfToken == null || $sessionCsrfToken == null || $headerCsrfToken != $sessionCsrfToken )
+                    throw new System_Api_Error( Server_Error::SyntaxError );
+            } else {
+                if ( $this->session->isDestroyed() || $serverManager->getSetting( 'anonymous_access' ) != 1 )
+                    throw new System_Api_Error( System_Api_Error::LoginRequired );
+            }
+
+            if ( $this->command->access == 'admin' )
+                $principal->checkAdministrator();
+            else if ( $this->command->access == '*' )
+                $principal->checkAuthenticated();
+            else if ( $this->command->access != 'anonymous' )
+                throw new System_Core_Exception( 'Invalid access level' );
         }
-
-        if ( $this->command->access == 'admin' )
-            $principal->checkAdministrator();
-        else if ( $this->command->access == '*' )
-            $principal->checkAuthenticated();
-        else if ( $this->command->access != 'anonymous' )
-            throw new System_Core_Exception( 'Invalid access level' );
 
         if ( $this->request->getContentType() == 'application/json' )
             $body = $this->request->getPostBody();

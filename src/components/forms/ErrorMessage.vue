@@ -28,16 +28,14 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-
 import { ErrorCode } from '@/constants'
 
 export default {
   props: {
-    error: Error
+    error: Error,
+    isAuthenticated: Boolean
   },
   computed: {
-    ...mapGetters( 'global', [ 'isAuthenticated' ] ),
     title() {
       switch ( this.error.reason ) {
         case 'PageNotFound':
@@ -55,6 +53,8 @@ export default {
           } else {
             return this.$t( 'Error.UnexpectedError' );
           }
+        case 'UnsupportedVersion':
+          return this.$t( 'Error.UnsupportedVersion' );
         default:
           return this.$t( 'Error.UnexpectedError' );
       }
@@ -90,6 +90,8 @@ export default {
             return this.$t( 'ErrorMessage.UploadError' );
           else
             return this.$t( 'ErrorMessage.BadRequest' );
+        case 'UnsupportedVersion':
+          return this.$t( 'ErrorMessage.UnsupportedVersion' );
         default:
           return this.$t( 'ErrorMessage.UnknownError' );
       }

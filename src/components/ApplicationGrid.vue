@@ -18,7 +18,7 @@
 -->
 
 <template>
-  <Grid id="main-grid" v-bind:items="issues" v-bind:column-names="columnNames" v-bind:column-classes="columnClasses"
+  <Grid id="application-grid" v-bind:items="issues" v-bind:column-names="columnNames" v-bind:column-classes="columnClasses"
         sort-enabled v-bind:sort-column="sortColumnIndex" v-bind:sort-ascending="sortAscending"
         footer-visible v-bind:previous-enabled="previousEnabled" v-bind:next-enabled="nextEnabled"
         v-bind:status-text="statusText" v-bind:busy="busy" v-on:sort="sort" v-on:previous="previous" v-on:next="next"
@@ -68,11 +68,11 @@ export default {
     },
     statusText() {
       if ( this.totalCount == 0 )
-        return this.$t( 'Main.NoIssues' );
+        return this.$t( 'ApplicationGrid.NoIssues' );
       else if ( this.firstIndex == 1 && this.lastIndex == this.totalCount )
-        return this.$t( 'Main.IssuesCount', [ this.totalCount ] );
+        return this.$t( 'ApplicationGrid.IssuesCount', [ this.totalCount ] );
       else
-        return this.$t( 'Main.IssuesCountOf', [ this.firstIndex, this.lastIndex, this.totalCount ] );
+        return this.$t( 'ApplicationGrid.IssuesCountOf', [ this.firstIndex, this.lastIndex, this.totalCount ] );
     }
   },
 

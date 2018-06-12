@@ -9,7 +9,7 @@
   <link rel="shortcut icon" href="<?php echo $this->url( $icon ) ?>" type="image/vnd.microsoft.icon">
 <?php $assets->render() ?>
 </head>
-<body class="front-body">
+<body>
 
 <div id="navbar">
   <div class="container-fluid">
@@ -47,7 +47,7 @@
 
 <?php $this->insertContent() ?>
 
-<script type="text/javascript">WebIssues_common.initialize();</script>
+<script type="text/javascript">WebIssues_common.onPageLoad();</script>
 
 </body>
 </html>

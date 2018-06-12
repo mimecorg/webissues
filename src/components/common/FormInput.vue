@@ -19,7 +19,7 @@
 
 <template>
   <FormGroup v-bind:id="id" v-bind:label="label" v-bind:required="required" v-bind:error="error">
-    <input ref="input" v-bind:id="id" type="text" class="form-control" v-bind:value="value" v-bind:maxlength="maxlength" v-on="inputListeners">
+    <input ref="input" v-bind:id="id" v-bind:type="type" class="form-control" v-bind:value="value" v-bind:maxlength="maxlength" v-on="inputListeners">
   </FormGroup>
 </template>
 
@@ -27,6 +27,7 @@
 export default {
   props: {
     id: String,
+    type: { type: String, default: 'text' },
     value: String,
     label: String,
     required: Boolean,

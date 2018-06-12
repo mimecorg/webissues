@@ -1,0 +1,11 @@
+{
+  "name": "webissues",
+  "productName": "WebIssues",
+  "description": "WebIssues team collaboration system",
+  "version": "2.0.0",
+  "author": "WebIssues Team",
+  "private": true,
+  "main": "./assets/js/main.min.js",
+  "dependencies": {
+  }
+}

@@ -49,7 +49,7 @@ export default function makeAjax( baseURL, csrfToken ) {
           method: 'POST',
           body,
           headers,
-          credentials: 'same-origin'
+          credentials: process.env.TARGET == 'web' ? 'same-origin' : 'include'
         } ).then( response => {
           response.json().then( ( { result, errorCode, errorMessage } ) => {
             if ( errorCode != null )
@@ -72,6 +72,9 @@ export default function makeAjax( baseURL, csrfToken ) {
           reject( error );
         } );
       } );
+    },
+    withBaseURL( baseURL ) {
+      return makeAjax( baseURL, null );
     }
   };
 }

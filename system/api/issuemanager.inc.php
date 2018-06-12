@@ -323,7 +323,7 @@ class System_Api_IssueManager extends System_Api_Base
     {
         $principal = System_Api_Principal::getCurrent();
 
-        $query = 'SELECT fl.file_id, fl.file_name, fl.file_descr, fl.file_storage, i.issue_id, i.folder_id, sc.user_id, sc.stamp_time,';
+        $query = 'SELECT fl.file_id, fl.file_name, fl.file_size, fl.file_descr, fl.file_storage, i.issue_id, i.folder_id, sc.user_id, sc.stamp_time,';
         if ( !$principal->isAuthenticated() )
             $query .= ' %4d AS project_access';
         else if ( !$principal->isAdministrator() )

@@ -31,11 +31,12 @@ export default function makeGlobalModule( baseURL, initialState, ajax ) {
   };
 }
 
-function makeState( baseURL, { serverName, serverVersion, userId, userName, userAccess } ) {
+function makeState( baseURL, { serverName, serverVersion, serverUUID, userId, userName, userAccess } ) {
   return {
     baseURL,
     serverName,
     serverVersion,
+    serverUUID,
     userId,
     userName,
     userAccess,
@@ -72,9 +73,10 @@ function makeMutations() {
     setDirty( state ) {
       state.dirty = true;
     },
-    setData( state, { serverName, serverVersion, userId, userName, userAccess, projects, types, users, settings } ) {
+    setData( state, { serverName, serverVersion, serverUUID, userId, userName, userAccess, projects, types, users, settings } ) {
       state.serverName = serverName;
       state.serverVersion = serverVersion;
+      state.serverUUID = serverUUID;
       state.userId = userId;
       state.userName = userName;
       state.userAccess = userAccess;

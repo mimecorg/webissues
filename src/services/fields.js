@@ -75,6 +75,11 @@ function validate() {
 
     this[ name + 'Error' ] = null;
 
+    if ( typeof field.condition == 'function' ) {
+      if ( !field.condition.apply( this ) )
+        continue;
+    }
+
     if ( field.type == String ) {
       const { required = false, multiLine = false, maxLength, parse } = field;
       try {
