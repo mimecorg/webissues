@@ -46,6 +46,8 @@ packager( {
   arch,
   icon,
   appCopyright: 'Copyright (C) 2007-2017 WebIssues Team',
+  appBundleId: 'org.mimec.webissues',
+  appCategoryType: 'public.app-category.developer-tools',
 
   afterExtract: [
     ( buildPath, electronVersion, platform, arch, callback ) => {
