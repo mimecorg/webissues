@@ -56,7 +56,8 @@ module.exports = function( { production } = {} ) {
       hints: false
     },
     stats: {
-      children: false
+      children: false,
+      modules: false
     },
     node: {
       __dirname: false,

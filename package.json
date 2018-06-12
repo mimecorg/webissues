@@ -6,9 +6,9 @@
   "private": true,
   "scripts": {
     "build": "npm run build:web && npm run build:electron && npm run build:main",
-    "build:web": "webpack --config src/build/webpack.config.js --env.production --hide-modules",
-    "build:electron": "webpack --config src/build/webpack.config.js --env.electron --env.production --hide-modules",
-    "build:main": "webpack --config app/src/build/webpack.config.js --env.production --hide-modules",
+    "build:web": "webpack --config src/build/webpack.config.js --env.production",
+    "build:electron": "webpack --config src/build/webpack.config.js --env.electron --env.production",
+    "build:main": "webpack --config app/src/build/webpack.config.js --env.production",
     "dev:web": "webpack-dev-server --config src/build/webpack.config.js",
     "dev:electron": "webpack-dev-server --config src/build/webpack.config.js --env.electron",
     "start": "electron ./app/assets/js/main.min.js",
