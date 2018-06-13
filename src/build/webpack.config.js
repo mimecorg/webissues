@@ -19,34 +19,25 @@
 
 const path = require( 'path' );
 const webpack = require( 'webpack' );
-const ExtractTextPlugin = require( 'extract-text-webpack-plugin' );
+const VueLoaderPlugin = require( 'vue-loader/lib/plugin' );
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const AssetsPlugin = require( 'assets-webpack-plugin' );
 
 module.exports = function( { electron, production } = {} ) {
   if ( production )
     process.env.NODE_ENV = 'production';
 
-  function makeStyleLoader( type ) {
+  const styleLoader = production ? MiniCssExtractPlugin.loader : 'vue-style-loader';
+
     const cssLoader = {
       loader: 'css-loader',
       options: {
-        minimize: production ? { discardComments: { removeAll: true } } : false
+      minimize: production
       }
-    }
-    const loaders = [ cssLoader ];
-    if ( type )
-      loaders.push( type + '-loader' );
-    if ( production ) {
-      return ExtractTextPlugin.extract( {
-        use: loaders,
-        fallback: 'vue-style-loader'
-      } );
-    } else {
-      return [ 'vue-style-loader' ].concat( loaders );
-    }
-  }
+  };
 
   const config = {
+    mode: production ? 'production' : 'development',
     entry: electron ? {
       client: './src/client.js'
     } : {
@@ -63,13 +54,7 @@ module.exports = function( { electron, production } = {} ) {
       rules: [
         {
           test: /\.vue$/,
-          loader: 'vue-loader',
-          options: {
-            loaders: {
-              css: makeStyleLoader(),
-              less: makeStyleLoader( 'less' )
-            }
-          }
+          loader: 'vue-loader'
         },
         {
           test: /\.js$/,
@@ -92,11 +77,11 @@ module.exports = function( { electron, production } = {} ) {
         },
         {
           test: /\.css$/,
-          use: makeStyleLoader()
+          use: [ styleLoader, cssLoader ]
         },
         {
           test: /\.less$/,
-          use: makeStyleLoader( 'less' )
+          use: [ styleLoader, cssLoader, 'less-loader' ]
         }
       ]
     },
@@ -107,8 +92,8 @@ module.exports = function( { electron, production } = {} ) {
       }
     },
     plugins: [
+      new VueLoaderPlugin(),
       new webpack.EnvironmentPlugin( {
-        NODE_ENV: production ? 'production' : 'development',
         TARGET: electron ? 'electron' : 'web'
       } )
     ],
@@ -133,13 +118,7 @@ module.exports = function( { electron, production } = {} ) {
   };
 
   if ( production ) {
-    config.plugins.push( new webpack.optimize.UglifyJsPlugin( {
-      compress: {
-        warnings: false
-      },
-      comments: false
-    } ) );
-    config.plugins.push( new ExtractTextPlugin( {
+    config.plugins.push( new MiniCssExtractPlugin( {
       filename: 'css/[name].min.css?[contenthash]'
     } ) );
     config.plugins.push( new webpack.BannerPlugin( {
@@ -153,7 +132,6 @@ module.exports = function( { electron, production } = {} ) {
       } ) );
     }
   } else {
-    config.plugins.push( new webpack.NamedModulesPlugin() );
     config.plugins.push( new webpack.HotModuleReplacementPlugin() );
   }
 

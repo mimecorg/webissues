@@ -25,6 +25,7 @@ module.exports = function( { production } = {} ) {
     process.env.NODE_ENV = 'production';
 
   const config = {
+    mode: production ? 'production' : 'development',
     entry: {
       main: './app/src/main.js'
     },
@@ -47,11 +48,7 @@ module.exports = function( { production } = {} ) {
         '@': path.resolve( __dirname, '..' )
       }
     },
-    plugins: [
-      new webpack.EnvironmentPlugin( {
-        NODE_ENV: production ? 'production' : 'development'
-      } )
-    ],
+    plugins: [],
     performance: {
       hints: false
     },
@@ -68,12 +65,6 @@ module.exports = function( { production } = {} ) {
   };
 
   if ( production ) {
-    config.plugins.push( new webpack.optimize.UglifyJsPlugin( {
-      compress: {
-        warnings: false
-      },
-      comments: false
-    } ) );
     config.plugins.push( new webpack.BannerPlugin( {
       banner: "Copyright (C) 2007-2017 WebIssues Team | License: AGPLv3"
     } ) );
