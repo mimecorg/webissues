@@ -23,17 +23,19 @@ const VueLoaderPlugin = require( 'vue-loader/lib/plugin' );
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const AssetsPlugin = require( 'assets-webpack-plugin' );
 
+const version = require( '../../package' ).version;
+
 module.exports = function( { electron, production } = {} ) {
   if ( production )
     process.env.NODE_ENV = 'production';
 
   const styleLoader = production ? MiniCssExtractPlugin.loader : 'vue-style-loader';
 
-    const cssLoader = {
-      loader: 'css-loader',
-      options: {
+  const cssLoader = {
+    loader: 'css-loader',
+    options: {
       minimize: production
-      }
+    }
   };
 
   const config = {
@@ -122,7 +124,7 @@ module.exports = function( { electron, production } = {} ) {
       filename: 'css/[name].min.css?[contenthash]'
     } ) );
     config.plugins.push( new webpack.BannerPlugin( {
-      banner: "Copyright (C) 2007-2017 WebIssues Team | License: AGPLv3"
+      banner: 'WebIssues v' + version + '\nCopyright (C) 2007-2017 WebIssues Team\nLicense: Affero GPL v3.0'
     } ) );
     if ( !electron ) {
       config.plugins.push( new AssetsPlugin( {

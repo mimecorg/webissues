@@ -20,6 +20,8 @@
 const path = require( 'path' );
 const webpack = require( 'webpack' );
 
+const version = require( '../../../package' ).version;
+
 module.exports = function( { production } = {} ) {
   if ( production )
     process.env.NODE_ENV = 'production';
@@ -66,7 +68,7 @@ module.exports = function( { production } = {} ) {
 
   if ( production ) {
     config.plugins.push( new webpack.BannerPlugin( {
-      banner: "Copyright (C) 2007-2017 WebIssues Team | License: AGPLv3"
+      banner: 'WebIssues v' + version + '\nCopyright (C) 2007-2017 WebIssues Team\nLicense: Affero GPL v3.0'
     } ) );
   }
 
