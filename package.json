@@ -17,7 +17,8 @@
     "package:win32": "node ./app/src/build/package.js win32 ia32",
     "package:darwin": "node ./app/src/build/package.js darwin x64",
     "package:linux-ia32": "node ./app/src/build/package.js linux ia32",
-    "package:linux-x64": "node ./app/src/build/package.js linux x64"
+    "package:linux-x64": "node ./app/src/build/package.js linux x64",
+    "package:server": "node ./src/build/package.js"
   },
   "dependencies": {
     "babel-polyfill": "^6.26.0",
@@ -41,9 +42,12 @@
     "electron": "^2.0.2",
     "electron-packager": "^12.1.0",
     "file-loader": "^1.1.11",
+    "glob": "^7.1.2",
     "less": "^3.0.4",
     "less-loader": "^4.1.0",
     "mini-css-extract-plugin": "^0.4.0",
+    "mkdirp": "^0.5.1",
+    "rimraf": "^2.6.2",
     "vue-loader": "^15.2.4",
     "vue-template-compiler": "^2.5.16",
     "webpack": "^4.12.0",
