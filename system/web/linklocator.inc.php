@@ -66,19 +66,19 @@ class System_Web_LinkLocator extends System_Web_Base
                 }
                 $result[] = htmlspecialchars( $match );
             } else {
-                $url = htmlspecialchars( self::convertUrl( $match ) );
+                $url = htmlspecialchars( self::convertUrl( $match, $extraAttributes ) );
                 if ( $maxLength !== null ) {
                     $length = mb_strlen( $match );
                     if ( $length > $maxLength - 3 ) {
                         if ( $maxLength > 3 )
-                            $result[] = "<a href=\"$url\">" . htmlspecialchars( mb_substr( $match, 0, $maxLength - 3 ) ) . '...</a>';
+                            $result[] = "<a href=\"$url\"$extraAttributes>" . htmlspecialchars( mb_substr( $match, 0, $maxLength - 3 ) ) . '...</a>';
                         else
                             $result[] = '...';
                         break;
                     }
                     $maxLength -= $length;
                 }
-                $result[] = "<a href=\"$url\">" . htmlspecialchars( $match ) . '</a>';
+                $result[] = "<a href=\"$url\"$extraAttributes>" . htmlspecialchars( $match ) . '</a>';
             }
         }
 
@@ -114,9 +114,11 @@ class System_Web_LinkLocator extends System_Web_Base
         return self::convertToRawHtml( $text );
     }
 
-    public static function convertUrl( $url )
+    public static function convertUrl( $url, &$extraAttributes )
     {
         if ( $url[ 0 ] == '#' ) {
+            $extraAttributes = '';
+
             $mode = self::getLinkMode();
 
             if ( $mode == self::RouteLinks )
@@ -132,6 +134,8 @@ class System_Web_LinkLocator extends System_Web_Base
             else
                 return '#item' . substr( $url, 1 );
         }
+
+        $extraAttributes = ' target="_blank" rel="noopener noreferrer"';
 
         if ( strtolower( substr( $url, 0, 4 ) ) == 'www.' )
             return 'http://' . $url;

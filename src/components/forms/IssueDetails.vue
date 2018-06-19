@@ -121,7 +121,7 @@
             </div>
             <div v-else-if="isFileAdded( item )" class="issue-attachment">
               <span class="fa fa-paperclip" aria-hidden="true"></span>
-              <a v-if="isWeb" v-bind:href="getFileURL( item.id )">{{ item.name }}</a>
+              <a v-if="isWeb" v-bind:href="getFileURL( item.id )" target="_blank">{{ item.name }}</a>
               <HyperLink v-else v-on:click="downloadFile( item )">{{ item.name }}</HyperLink>
               ({{ item.size }})
               <span v-if="item.description" v-html="'&mdash; ' + item.description"></span>

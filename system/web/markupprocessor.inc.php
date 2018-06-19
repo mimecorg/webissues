@@ -257,8 +257,8 @@ class System_Web_MarkupProcessor
 
                 case self::T_LINK:
                     $title = ( $this->extra != '' ) ? $this->extra : $this->value;
-                    $url = System_Web_LinkLocator::convertUrl( $this->value );
-                    $this->result[] = '<a href="' . htmlspecialchars( $url ) . '">' . htmlspecialchars( $title ) . '</a>';
+                    $url = System_Web_LinkLocator::convertUrl( $this->value, $extraAttributes );
+                    $this->result[] = '<a href="' . htmlspecialchars( $url ) . '"' . $extraAttributes . '>' . htmlspecialchars( $title ) . '</a>';
                     $this->next();
                     break;
 
