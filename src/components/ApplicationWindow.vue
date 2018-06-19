@@ -55,7 +55,7 @@ export default {
       } else {
         this.$refs.overlay.removeEventListener( 'scroll', this.restoreScroll );
         this.$nextTick( () => {
-          if ( document.activeElement != this.$refs.overlay && !isChildElement( document.activeElement, this.$refs.overlay ) )
+          if ( !this.$refs.overlay.contains( document.activeElement ) )
             this.$refs.overlay.focus();
         } );
       }
@@ -91,7 +91,7 @@ export default {
     },
 
     handleFocusIn( e ) {
-      if ( e.target != document && e.target != this.$refs.overlay && !isChildElement( e.target, this.$refs.overlay ) )
+      if ( e.target != document && !this.$refs.overlay.contains( e.target ) )
         this.$refs.overlay.focus();
     },
 
@@ -108,14 +108,5 @@ export default {
   beforeDestroy() {
     document.removeEventListener( 'focusin', this.handleFocusIn );
   }
-}
-
-function isChildElement( element, parent ) {
-  while ( element != null ) {
-    if ( element.parentElement == parent )
-      return true;
-    element = element.parentElement;
-  }
-  return false;
 }
 </script>
