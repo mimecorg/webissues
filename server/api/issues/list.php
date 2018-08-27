@@ -164,45 +164,43 @@ class Server_Api_Issues_List
             $resultIssue[ 'id' ] = $row[ 'issue_id' ];
             $resultIssue[ 'read' ] = $row[ 'read_id' ];
             $resultIssue[ 'stamp' ] = $row[ 'stamp_id' ];
-            $resultIssue[ 'name' ] = $row[ 'issue_name' ];
+
+            $cells = array();
 
             foreach ( $columns as $column => $name ) {
                 $value = $row[ $name ];
 
                 switch ( $column ) {
+                    case System_Api_Column::ID:
+                        $cells[] = '#' . $value;
+                        break;
+
+                    case System_Api_Column::Name:
+                        $cells[] = System_Web_LinkLocator::convertToHtml( $value );
+                        break;
+
                     case System_Api_Column::Location:
-                        $resultIssue[ 'project' ] = $row[ 'project_name' ];
-                        $resultIssue[ 'folder' ] = $value;
+                        $cells[] = htmlspecialchars( $row[ 'project_name' ] ) . ' &mdash; ' . htmlspecialchars( $value );
                         break;
 
                     case System_Api_Column::CreatedDate:
-                        $resultIssue[ 'createdDate' ] = $formatter->formatDateTime( $value, System_Api_Formatter::ToLocalTimeZone );
-                        break;
-
-                    case System_Api_Column::CreatedBy:
-                        $resultIssue[ 'createdBy' ] = $value;
-                        break;
-
                     case System_Api_Column::ModifiedDate:
-                        $resultIssue[ 'modifiedDate' ] = $formatter->formatDateTime( $value, System_Api_Formatter::ToLocalTimeZone );
-                        break;
-
-                    case System_Api_Column::ModifiedBy:
-                        $resultIssue[ 'modifiedBy' ] = $value;
+                        $cells[] = $formatter->formatDateTime( $value, System_Api_Formatter::ToLocalTimeZone );
                         break;
 
                     default:
                         if ( $column > System_Api_Column::UserDefined ) {
                             $attribute = $queryGenerator->getAttributeForColumn( $column );
                             $value = $formatter->convertAttributeValue( $attribute[ 'attr_def' ], $value );
-                            if ( $value != '' ) {
-                                $key = 'a' . ( $column - System_Api_Column::UserDefined );
-                                $resultIssue[ $key ] = System_Web_LinkLocator::convertToHtml( $value );
-                            }
+                            $cells[] = System_Web_LinkLocator::convertToHtml( $value );
+                        } else {
+                            $cells[] = htmlspecialchars( $value );
                         }
                         break;
                 }
             }
+
+            $resultIssue[ 'cells' ] = $cells;
 
             $result[ 'issues' ][] = $resultIssue;
         }

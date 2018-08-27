@@ -24,12 +24,7 @@
         v-bind:status-text="statusText" v-bind:busy="busy" v-on:sort="sort" v-on:previous="previous" v-on:next="next"
         v-on:row-click="rowClick">
     <template slot-scope="{ item, columnIndex, columnClass }">
-      <td v-if="isNameColumn( columnIndex )" v-bind:class="columnClass">
-        <span v-if="item.read < item.stamp" v-bind:class="getUnreadClass( item )" aria-hidden="true"></span> {{ item.name }}
-      </td>
-      <td v-else-if="isLocationColumn( columnIndex )" v-bind:class="columnClass">{{ item.project }} &mdash; {{ item.folder }}</td>
-      <td v-else-if="isUserColumn( columnIndex )" v-bind:class="columnClass" v-html="getUserCellValue( columnIndex, item )"></td>
-      <td v-else v-bind:class="columnClass">{{ getCellValue( columnIndex, item ) }}</td>
+      <td v-bind:class="columnClass" v-html="getCellValue( columnIndex, item )"></td>
     </template>
   </Grid>
 </template>
@@ -77,38 +72,11 @@ export default {
   },
 
   methods: {
-    isNameColumn( columnIndex ) {
-      return this.columns[ columnIndex ].id == Column.Name;
-    },
-    isLocationColumn( columnIndex ) {
-      return this.columns[ columnIndex ].id == Column.Location;
-    },
-    isUserColumn( columnIndex ) {
-      return this.columns[ columnIndex ].id > Column.UserDefined;
-    },
-
-    getUnreadClass( issue ) {
-      return [ 'fa', 'fa-circle', issue.read > 0 ? 'issue-modified' : 'issue-unread' ];
-    },
-
     getCellValue( columnIndex, issue ) {
-      const column = this.columns[ columnIndex ].id;
-      switch ( column ) {
-        case Column.ID:
-          return '#' + issue.id;
-        case Column.CreatedDate:
-          return issue.createdDate;
-        case Column.CreatedBy:
-          return issue.createdBy;
-        case Column.ModifiedDate:
-          return issue.modifiedDate;
-        case Column.ModifiedBy:
-          return issue.modifiedBy;
-      }
-    },
-    getUserCellValue( columnIndex, issue ) {
-      const column = this.columns[ columnIndex ].id;
-      return issue[ 'a' + ( column - Column.UserDefined ) ];
+      if ( this.columns[ columnIndex ].id == Column.Name && issue.read < issue.stamp )
+        return '<span class="fa fa-circle issue-' + ( issue.read > 0 ? 'modified' : 'unread' ) + '" aria-hidden="true"></span> ' + issue.cells[ columnIndex ];
+      else
+        return issue.cells[ columnIndex ];
     },
 
     sort( columnIndex ) {
