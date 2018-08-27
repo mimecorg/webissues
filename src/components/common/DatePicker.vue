@@ -450,7 +450,7 @@ export default {
     /* change the value of the input control based on selected date */
     updateText() {
       if ( this.selectedDate != null )
-        this.text = this.$parser.formatDate( this.selectedDate, { withTime: this.withTime } );
+        this.text = this.$formatter.formatDate( this.selectedDate, { withTime: this.withTime } );
     },
 
     /* update selected date based on user input */

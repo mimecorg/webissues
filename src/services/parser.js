@@ -21,6 +21,8 @@ import Vue from 'vue'
 
 import { ErrorCode } from '@/constants'
 
+import { makeDateString, makeTimeString } from '@/services/formatter'
+
 Vue.mixin( {
   beforeCreate() {
     const options = this.$options;
@@ -48,14 +50,8 @@ export default function makeParser( store ) {
     normalizeAttributeValue( value, attribute, project = null ) {
       return normalizeAttributeValue( value, attribute, project, store.state.global.users, store.state.global.settings );
     },
-    convertInitialValue( value, attribute ) {
-      return convertInitialValue( value, attribute, store.state.global.userName, store.state.global.settings );
-    },
     parseDate( value, flags = {} ) {
       return parseDate( value, flags, store.state.global.settings );
-    },
-    formatDate( date, flags = {} ) {
-      return formatDate( date, flags, store.state.global.settings );
     }
   };
 }
@@ -288,24 +284,6 @@ function normalizeAttributeValue( value, attribute, project, users, settings ) {
   return value;
 }
 
-function convertInitialValue( value, attribute, userName, settings ) {
-  if ( value == null || value == '' )
-    return '';
-
-  if ( ( attribute.type == 'TEXT' || attribute.type == 'ENUM' || attribute.type == 'USER' ) && value.substr( 0, 4 ) == '[Me]' )
-    return userName;
-
-  if ( attribute.type == 'DATETIME' && value.substr( 0, 7 ) == '[Today]' ) {
-    const date = new Date();
-    const offset = value.substr( 7 );
-    if ( offset != '' )
-      date.setDate( date.getDate() + Number( offset ) );
-    return formatDate( date, { withTime: attribute.time == 1 }, settings );
-  }
-
-  return value;
-}
-
 function parseDate( value, { withTime = false }, { dateOrder, dateSeparator, timeMode, timeSeparator } ) {
   let pattern = '^\\s*' + makeDatePattern( dateOrder, dateSeparator )
   if ( withTime )
@@ -341,20 +319,6 @@ function parseDate( value, { withTime = false }, { dateOrder, dateSeparator, tim
     }
   }
   return null;
-}
-
-function formatDate( date, { withTime = false }, { dateOrder, dateSeparator, padMonth, padDay, timeMode, timeSeparator, padHours } ) {
-  let value = makeDateString( date.getFullYear(), date.getMonth() + 1, date.getDate(), dateOrder, dateSeparator, padMonth, padDay );
-  if ( withTime )
-    value += ' ' + formatTime( date, timeMode, timeSeparator, padHours );
-  return value;
-}
-
-function formatTime( date, timeMode, timeSeparator, padHours ) {
-  if ( timeMode == 12 )
-    return makeTimeString( ( date.getHours() + 11 ) % 12 + 1, date.getMinutes(), date.getHours() >= 12 ? ' pm' : ' am', timeSeparator, padHours );
-  else
-    return makeTimeString( date.getHours(), date.getMinutes(), '', timeSeparator, padHours );
 }
 
 function checkLength( value, minLength, maxLength ) {
@@ -410,32 +374,6 @@ function isValidDate( year, month, day ) {
   if ( date.getFullYear() != year || date.getMonth() != month - 1 || date.getDate( day ) != day )
     return false;
   return true;
-}
-
-function makeDateString( year, month, day, dateOrder, dateSeparator, padMonth, padDay ) {
-  if ( padMonth )
-    month = month.toString().padStart( 2, '0' );
-  if ( padDay )
-    day = day.toString().padStart( 2, '0' );
-  year = year.toString().padStart( 4, '0' );
-  const parts = [];
-  for ( let i = 0; i < 3; i++ ) {
-    const ch = dateOrder.charAt( i );
-    if ( ch == 'y' )
-      parts.push( year );
-    else if ( ch == 'm' )
-      parts.push( month );
-    else if ( ch == 'd' )
-      parts.push( day );
-  }
-  return parts.join( dateSeparator );
-}
-
-function makeTimeString( hours, minutes, amPm, timeSeparator, padHours ) {
-  if ( padHours )
-    hours = hours.toString().padStart( 2, '0' );
-  minutes = minutes.toString().padStart( 2, '0' );
-  return hours + timeSeparator + minutes + amPm;
 }
 
 function escape( string ) {

@@ -22,11 +22,11 @@ import makeIssueRoutes from '@/routes/issue'
 import makeAdminRoutes from '@/routes/admin'
 import makeUserRoutes from '@/routes/user'
 
-export default function registerRoutes( router, i18n, ajax, store, parser ) {
+export default function registerRoutes( router, i18n, ajax, store, formatter ) {
   function makeRoutes() {
     return [
       staticRoutes,
-      makeIssueRoutes( i18n, ajax, store, parser ),
+      makeIssueRoutes( i18n, ajax, store, formatter ),
       makeAdminRoutes( ajax, store ),
       makeUserRoutes()
     ];

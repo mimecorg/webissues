@@ -21,7 +21,7 @@ import Vue from 'vue'
 
 import { TextFormat, ErrorCode } from '@/constants'
 
-export default function makeIssueRoutes( i18n, ajax, store, parser ) {
+export default function makeIssueRoutes( i18n, ajax, store, formatter ) {
   return function issueRoutes( route ) {
     function loadIssueDetails( issueId ) {
       if ( store.state.issue.issueId != issueId ) {
@@ -83,7 +83,7 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
       const attributes = type.attributes.map( attribute => ( {
         id: attribute.id,
         name: attribute.name,
-        value: parser.convertInitialValue( attribute.default, attribute )
+        value: formatter.convertInitialValue( attribute.default, attribute )
       } ) );
       return Promise.resolve( {
         component: 'EditIssue',

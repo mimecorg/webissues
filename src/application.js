@@ -25,6 +25,7 @@ import Application from '@/components/Application'
 
 import makeAjax from '@/services/ajax'
 import makeParser from '@/services/parser'
+import makeFormatter from '@/services/formatter'
 import makeRouter from '@/services/router'
 
 import '@/services/fields'
@@ -49,14 +50,16 @@ export function startApplication( { baseURL, csrfToken, locale, ...initialState 
   const router = makeRouter();
   const store = makeStore( baseURL, initialState, ajax, router );
   const parser = makeParser( store );
+  const formatter = makeFormatter( store );
 
-  registerRoutes( router, i18n, ajax, store, parser );
+  registerRoutes( router, i18n, ajax, store, formatter );
 
   app = new Vue( {
     i18n,
     ajax,
     router,
     parser,
+    formatter,
     store,
     el: '#application',
     render( createElement ) {
