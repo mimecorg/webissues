@@ -287,7 +287,10 @@
     "ValueChanged": "{0}: {1} &raquo; {2}",
     "Empty": "empty",
     "IssueMoved": "Issue moved from {0} to {1}",
-    "UnknownFolder": "Unknown Folder"
+    "UnknownType": "Unknown Type",
+    "UnknownProject": "Unknown Project",
+    "UnknownFolder": "Unknown Folder",
+    "UnknownUser": "Unknown User"
   },
   "ManageProjects": {
     "Projects": "Projects",

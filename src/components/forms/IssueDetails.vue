@@ -42,13 +42,13 @@
           <div class="issue-details-title">{{ $t( 'IssueDetails.ID' ) }}</div>
           <div class="issue-details-value">#{{ details.id }}</div>
           <div class="issue-details-title">{{ $t( 'IssueDetails.Type' ) }}</div>
-          <div class="issue-details-value">{{ details.type }}</div>
+          <div class="issue-details-value">{{ typeName }}</div>
           <div class="issue-details-title">{{ $t( 'IssueDetails.Location' ) }}</div>
-          <div class="issue-details-value">{{ details.project }} &mdash; {{ details.folder }}</div>
+          <div class="issue-details-value">{{ projectName }} &mdash; {{ folderName }}</div>
           <div class="issue-details-title">{{ $t( 'IssueDetails.Created' ) }}</div>
-          <div class="issue-details-value">{{ details.createdDate }} &mdash; {{ details.createdBy }}</div>
+          <div class="issue-details-value">{{ createdDate }} &mdash; {{ createdByName }}</div>
           <div class="issue-details-title">{{ $t( 'IssueDetails.LastModified' ) }}</div>
-          <div class="issue-details-value">{{ details.modifiedDate }} &mdash; {{ details.modifiedBy }}</div>
+          <div class="issue-details-value">{{ modifiedDate }} &mdash; {{ modifiedByName }}</div>
         </div>
 
         <div v-if="filteredAttributes.length > 0" class="issue-details">
@@ -153,15 +153,69 @@ import { Access, Change, History, KeyCode } from '@/constants'
 
 export default {
   computed: {
-    ...mapState( 'global', [ 'baseURL' ] ),
+    ...mapState( 'global', [ 'baseURL', 'userId', 'projects', 'types', 'users' ] ),
     ...mapGetters( 'global', [ 'isAuthenticated' ] ),
     ...mapState( 'issue', [ 'issueId', 'filter', 'unread', 'details', 'description' ] ),
     ...mapGetters( 'issue', [ 'filteredAttributes', 'isItemInHistory', 'processedHistory' ] ),
+    typeName() {
+      const type = this.types.find( t => t.id == this.details.typeId );
+      if ( type != null )
+        return type.name;
+      else
+        return this.$t( 'IssueDetails.UnknownType' );
+    },
+    project() {
+      return this.projects.find( p => p.folders.some( f => f.id == this.details.folderId ) );
+    },
+    projectName() {
+      if ( this.project != null )
+        return this.project.name;
+      else
+        return this.$t( 'IssueDetails.UnknownProject' );
+    },
+    folder() {
+      if ( this.project != null )
+        return this.project.folders.find( f => f.id == this.details.folderId );
+      else
+        return null;
+    },
+    folderName() {
+      if ( this.folder != null )
+        return this.folder.name;
+      else
+        return this.$t( 'IssueDetails.UnknownFolder' );
+    },
+    createdByName() {
+      const user = this.users.find( u => u.id == this.details.createdBy );
+      if ( user != null )
+        return user.name;
+      else
+        return this.$t( 'IssueDetails.UnknownUser' );
+    },
+    modifiedByName() {
+      const user = this.users.find( u => u.id == this.details.modifiedBy );
+      if ( user != null )
+        return user.name;
+      else
+        return this.$t( 'IssueDetails.UnknownUser' );
+    },
+    createdDate() {
+      return this.$formatter.formatStamp( this.details.createdDate );
+    },
+    modifiedDate() {
+      return this.$formatter.formatStamp( this.details.modifiedDate );
+    },
+    access() {
+      if ( this.project != null )
+        return this.project.access;
+      else
+        return Access.NoAccess;
+    },
     canMoveDelete() {
-      return this.details.access == Access.AdministratorAccess;
+      return this.access == Access.AdministratorAccess;
     },
     canEditDescription() {
-      return this.details.access == Access.AdministratorAccess || this.details.own;
+      return this.access == Access.AdministratorAccess || this.details.createdBy == this.userId;
     },
     allFilters() {
       return [
@@ -178,7 +232,7 @@ export default {
 
   methods: {
     canEditItem( item ) {
-      return this.details.access == Access.AdministratorAccess || item.own;
+      return this.access == Access.AdministratorAccess || item.own;
     },
     canReply( item ) {
       return this.isAuthenticated && item.type == Change.CommentAdded;

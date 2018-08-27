@@ -57,18 +57,12 @@ class Server_Api_Issues_Load
 
         $resultDetails[ 'id' ] = $issue[ 'issue_id' ];
         $resultDetails[ 'name' ] = $issue[ 'issue_name' ];
-        $resultDetails[ 'project' ] = $issue[ 'project_name' ];
-        $resultDetails[ 'projectId' ] = $issue[ 'project_id' ];
-        $resultDetails[ 'folder' ] = $issue[ 'folder_name' ];
         $resultDetails[ 'folderId' ] = $issue[ 'folder_id' ];
-        $resultDetails[ 'type' ] = $issue[ 'type_name' ];
         $resultDetails[ 'typeId' ] = $issue[ 'type_id' ];
-        $resultDetails[ 'access' ] = $issue[ 'project_access' ];
-        $resultDetails[ 'createdDate' ] = $formatter->formatDateTime( $issue[ 'created_date' ], System_Api_Formatter::ToLocalTimeZone );
-        $resultDetails[ 'createdBy' ] = $issue[ 'created_by' ];
-        $resultDetails[ 'modifiedDate' ] = $formatter->formatDateTime( $issue[ 'modified_date' ], System_Api_Formatter::ToLocalTimeZone );
-        $resultDetails[ 'modifiedBy' ] = $issue[ 'modified_by' ];
-        $resultDetails[ 'own' ] = $issue[ 'created_user' ] == $principal->getUserId();
+        $resultDetails[ 'createdDate' ] = $issue[ 'created_date' ];
+        $resultDetails[ 'createdBy' ] = $issue[ 'created_user' ];
+        $resultDetails[ 'modifiedDate' ] = $issue[ 'modified_date' ];
+        $resultDetails[ 'modifiedBy' ] = $issue[ 'modified_user' ];
         $resultDetails[ 'stamp' ] = $issue[ 'stamp_id' ];
 
         $result[ 'details' ] = $resultDetails;
