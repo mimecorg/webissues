@@ -54,8 +54,8 @@
         <div v-if="filteredAttributes.length > 0" class="issue-details">
           <div class="issue-header">{{ $t( 'IssueDetails.Attributes' ) }}</div>
           <template v-for="attribute in filteredAttributes">
-            <div class="issue-details-title">{{ attribute.name }}</div>
-            <div class="issue-details-value" v-html="attribute.value"></div>
+            <div class="issue-details-title">{{ getAttributeName( attribute.id ) }}</div>
+            <div class="issue-details-value" v-html="convertAttributeValue( attribute.value, attribute.id )"></div>
           </template>
         </div>
 
@@ -157,10 +157,12 @@ export default {
     ...mapGetters( 'global', [ 'isAuthenticated' ] ),
     ...mapState( 'issue', [ 'issueId', 'filter', 'unread', 'details', 'description' ] ),
     ...mapGetters( 'issue', [ 'filteredAttributes', 'isItemInHistory', 'processedHistory' ] ),
+    type() {
+      return this.types.find( t => t.id == this.details.typeId );
+    },
     typeName() {
-      const type = this.types.find( t => t.id == this.details.typeId );
-      if ( type != null )
-        return type.name;
+      if ( this.type != null )
+        return this.type.name;
       else
         return this.$t( 'IssueDetails.UnknownType' );
     },
@@ -238,12 +240,27 @@ export default {
   },
 
   methods: {
+    getAttributeName( attributeId ) {
+      const attribute = this.type.attributes.find( a => a.id == attributeId );
+      if ( attribute != null )
+        return attribute.name;
+      else
+        return this.$t( 'IssueDetails.UnknownAttribute' );
+    },
     getUserName( userId ) {
       const user = this.users.find( u => u.id == userId );
       if ( user != null )
         return user.name;
       else
         return this.$t( 'IssueDetails.UnknownUser' );
+    },
+
+    convertAttributeValue( value, attributeId ) {
+      let attribute = this.type.attributes.find( a => a.id == attributeId );
+      if ( attribute == null )
+        attribute = { type: 'TEXT' };
+      value = this.$formatter.convertAttributeValue( value, attribute, { multiLine: true } );
+      return escape( value );
     },
 
     canEditItem( item ) {

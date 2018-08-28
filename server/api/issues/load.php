@@ -88,11 +88,6 @@ class Server_Api_Issues_Load
         if ( $attributes ) {
             $attributeValues = $issueManager->getAllAttributeValuesForIssue( $issue );
 
-            foreach ( $attributeValues as &$value ) {
-                $formatted = $formatter->convertAttributeValue( $value[ 'attr_def' ], $value[ 'attr_value' ], System_Api_Formatter::MultiLine );
-                $value[ 'attr_value' ] = $this->convertText( $formatted, $html );
-            }
-
             $typeManager = new System_Api_TypeManager();
             $type = $typeManager->getIssueTypeForIssue( $issue );
 
@@ -104,7 +99,6 @@ class Server_Api_Issues_Load
             foreach( $attributeValues as $value ) {
                 $resultAttr = array();
                 $resultAttr[ 'id' ] = $value[ 'attr_id' ];
-                $resultAttr[ 'name' ] = $value[ 'attr_name' ];
                 $resultAttr[ 'value' ] = $value[ 'attr_value' ];
                 $result[ 'attributes' ][] = $resultAttr;
             }

@@ -288,6 +288,7 @@
     "Empty": "empty",
     "IssueMoved": "Issue moved from {0} to {1}",
     "UnknownType": "Unknown Type",
+    "UnknownAttribute": "Unknown Attribute",
     "UnknownProject": "Unknown Project",
     "UnknownFolder": "Unknown Folder",
     "UnknownUser": "Unknown User"

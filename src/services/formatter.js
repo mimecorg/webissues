@@ -31,6 +31,9 @@ Vue.mixin( {
 
 export default function makeFormatter( store ) {
   return {
+    convertAttributeValue( value, attribute, flags = {} ) {
+      return convertAttributeValue( value, attribute, flags, store.state.global.settings );
+    },
     convertInitialValue( value, attribute ) {
       return convertInitialValue( value, attribute, store.state.global.userName, store.state.global.settings );
     },
@@ -40,6 +43,81 @@ export default function makeFormatter( store ) {
     formatStamp( stamp ) {
       return formatDate( new Date( stamp * 1000 ), { withTime: true }, store.state.global.settings );
     }
+  }
+}
+
+function convertDecimalNumber( value, decimal, { stripZeros = false }, { groupSeparator, decimalSeparator } ) {
+  const fixed = Number.parseFloat( value ).toFixed( decimal );
+
+  let [ integerPart, fractionPart = '' ] = fixed.split( '.', 2 );
+
+  // strip trailing zeros
+  if ( decimal > 0 && stripZeros )
+    fractionPart = fractionPart.replace( /0+$/, '' );
+
+  // change '-0' to '0'
+  if ( integerPart == '-0' && fractionPart == '' )
+    integerPart = '0';
+
+  // add thousands separators - see https://stackoverflow.com/a/2901298
+  if ( groupSeparator != '' )
+    integerPart = integerPart.replace( /\B(?=(\d{3})+(?!\d))/g , groupSeparator );
+
+  return fractionPart != '' ? ( integerPart + decimalSeparator + fractionPart ) : integerPart;
+}
+
+function convertDateTime( value, { toLocalTimeZone = false }, settings ) {
+  const parts = parseDate( value );
+  if ( parts == null )
+    return '';
+
+  const year = Number( parts[ 1 ] );
+  const month = Number( parts[ 2 ] );
+  const day = Number( parts[ 3 ] );
+
+  const hours = parts[ 4 ] != null ? Number( parts[ 4 ] ) : 0;
+  const minutes = parts[ 5 ] != null ? Number( parts[ 5 ] ) : 0;
+
+  const date = toLocalTimeZone ? new Date( Date.UTC( year, month - 1, day, hours, minutes ) ) : new Date( year, month - 1, day, hours, minutes );
+
+  return formatDate( date, { withTime: true }, settings );
+}
+
+function convertDate( value, { dateOrder, dateSeparator, padMonth, padDay } ) {
+  const parts = parseDate( value );
+  if ( parts == null )
+    return '';
+
+  const year = Number( parts[ 1 ] );
+  const month = Number( parts[ 2 ] );
+  const day = Number( parts[ 3 ] );
+
+  return makeDateString( year, month, day, dateOrder, dateSeparator, padMonth, padDay );
+}
+
+function convertAttributeValue( value, attribute, { multiLine = false }, settings ) {
+  if ( value == null || value == '' )
+    return '';
+
+  switch ( attribute.type ) {
+    case 'TEXT':
+      if ( attribute[ 'multi-line' ] == 1 && multiLine )
+        return value;
+      else
+        return toSingleLine( value );
+
+    case 'ENUM':
+    case 'USER':
+        return toSingleLine( value );
+
+    case 'NUMERIC':
+      return convertDecimalNumber( value, attribute.decimal, { stripZeros: attribute.strip == 1 }, settings );
+
+    case 'DATETIME':
+      if ( attribute.time == 1 )
+        return convertDateTime( value, { toLocalTimeZone: attribute.local == 1 }, settings );
+      else
+        return convertDate( value, settings );
   }
 }
 
@@ -99,4 +177,15 @@ export function makeTimeString( hours, minutes, amPm, timeSeparator, padHours ) 
     hours = hours.toString().padStart( 2, '0' );
   minutes = minutes.toString().padStart( 2, '0' );
   return hours + timeSeparator + minutes + amPm;
+}
+
+function toSingleLine( string ) {
+  string = string.replace( /^[ \t\n]+/, '' );
+  string = string.replace( /[ \t\n]+$/, '' );
+  string = string.replace( /[ \t\n]+/g, ' ' );
+  return string;
+}
+
+function parseDate( value ) {
+  return /^(\d\d\d\d)-(\d\d)-(\d\d)(?: (\d\d):(\d\d))?$/.exec( value );
 }
