@@ -73,10 +73,10 @@
           </button>
         </FormSection>
 
-        <div v-if="description" class="description-panel">
+        <div v-if="description != null" class="description-panel">
           <div class="formatted-text" v-hljs="description.text"></div>
-          <div v-if="description.modifiedDate" class="last-edited">
-            <span class="fa fa-pencil" aria-hidden="true"></span> {{ description.modifiedDate }} &mdash; {{ description.modifiedBy }}
+          <div v-if="isDescriptionModified" class="last-edited">
+            <span class="fa fa-pencil" aria-hidden="true"></span> {{ descriptionModifiedDate }} &mdash; {{ descriptionModifiedByName }}
           </div>
         </div>
         <div v-else class="alert alert-info">
@@ -186,18 +186,10 @@ export default {
         return this.$t( 'IssueDetails.UnknownFolder' );
     },
     createdByName() {
-      const user = this.users.find( u => u.id == this.details.createdBy );
-      if ( user != null )
-        return user.name;
-      else
-        return this.$t( 'IssueDetails.UnknownUser' );
+      return this.getUserName( this.details.createdBy );
     },
     modifiedByName() {
-      const user = this.users.find( u => u.id == this.details.modifiedBy );
-      if ( user != null )
-        return user.name;
-      else
-        return this.$t( 'IssueDetails.UnknownUser' );
+      return this.getUserName( this.details.modifiedBy );
     },
     createdDate() {
       return this.$formatter.formatStamp( this.details.createdDate );
@@ -217,6 +209,21 @@ export default {
     canEditDescription() {
       return this.access == Access.AdministratorAccess || this.details.createdBy == this.userId;
     },
+    isDescriptionModified() {
+      return this.description != null && ( ( this.description.modifiedDate - this.details.createdDate ) > 180 || this.description.modifiedBy != this.details.createdBy );
+    },
+    descriptionModifiedByName() {
+      if ( this.description != null )
+        return this.getUserName( this.description.modifiedBy );
+      else
+        return null;
+    },
+    descriptionModifiedDate() {
+      if ( this.description != null )
+        return this.$formatter.formatStamp( this.description.modifiedDate );
+      else
+        return null;
+    },
     allFilters() {
       return [
         History.AllHistory,
@@ -231,6 +238,14 @@ export default {
   },
 
   methods: {
+    getUserName( userId ) {
+      const user = this.users.find( u => u.id == userId );
+      if ( user != null )
+        return user.name;
+      else
+        return this.$t( 'IssueDetails.UnknownUser' );
+    },
+
     canEditItem( item ) {
       return this.access == Access.AdministratorAccess || item.own;
     },

@@ -74,11 +74,8 @@ class Server_Api_Issues_Load
             if ( $issue[ 'descr_id' ] != null ) {
                 $descr = $issueManager->getDescription( $issue );
 
-                if ( ( $descr[ 'modified_date' ] - $issue[ 'created_date' ] ) > 180 || $descr[ 'modified_user' ] != $issue[ 'created_user' ] ) {
-                    $resultDescription[ 'modifiedBy' ] = $descr[ 'modified_by' ];
-                    $resultDescription[ 'modifiedDate' ] = $formatter->formatDateTime( $descr[ 'modified_date' ], System_Api_Formatter::ToLocalTimeZone );
-                }
-
+                $resultDescription[ 'modifiedBy' ] = $descr[ 'modified_user' ];
+                $resultDescription[ 'modifiedDate' ] = $descr[ 'modified_date' ];
                 $resultDescription[ 'text' ] = $this->convertText( $descr[ 'descr_text' ], $html, $descr[ 'descr_format' ] );
                 $resultDescription[ 'format' ] = $descr[ 'descr_format' ];
 
