@@ -260,7 +260,7 @@ export default {
       if ( attribute == null )
         attribute = { type: 'TEXT' };
       value = this.$formatter.convertAttributeValue( value, attribute, { multiLine: true } );
-      return escape( value );
+      return this.$formatter.convertLinks( value );
     },
 
     canEditItem( item ) {

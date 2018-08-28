@@ -31,6 +31,7 @@ Vue.mixin( {
 
 export default function makeFormatter( store ) {
   return {
+    convertLinks,
     convertAttributeValue( value, attribute, flags = {} ) {
       return convertAttributeValue( value, attribute, flags, store.state.global.settings );
     },
@@ -44,6 +45,31 @@ export default function makeFormatter( store ) {
       return formatDate( new Date( stamp * 1000 ), { withTime: true }, store.state.global.settings );
     }
   }
+}
+
+function convertLinks( text ) {
+  const mail = '\\b(?:mailto:)?[\\w.%+-]+@[\\w.-]+\\.[a-z]{2,}\\b';
+  const url = '(?:\\b(?:(?:https?|ftp|file):\\/\\/|www\\.|ftp\\.)|\\\\\\\\)(?:\\([\\w+&@#\\/\\\\%=~|$?!:,.-]*\\)|[\\w+&@#\\/\\\\%=~|$?!:,.-])*(?:\\([\w+&@#\\/\\\\%=~|$?!:,.-]*\\)|[\\w+&@#\\/\\\\%=~|$])';
+  const id = '#\\d+\\b';
+  const pattern = new RegExp( mail + '|' + url + '|' + id, 'uig' );
+
+  let result = '';
+  let i = 0;
+  let match;
+
+  while ( ( match = pattern.exec( text ) ) != null ) {
+    if ( match.index > i )
+      result += escape( text.substr( i, match.index - i ) );
+    const url = convertUrl( match[ 0 ] );
+    const extraAttrs = url[ 0 ] != '#' ? ' target="_blank" rel="noopener noreferrer"' : '';
+    result += '<a href="' + escape( url ) + '"' + extraAttrs + '>' + escape( match[ 0 ] ) + '</a>';
+    i = match.index + match[ 0 ].length;
+  }
+
+  if ( i < text.length )
+    result += escape( text.substr( i ) );
+
+  return result;
 }
 
 function convertDecimalNumber( value, decimal, { stripZeros = false }, { groupSeparator, decimalSeparator } ) {
@@ -188,4 +214,30 @@ function toSingleLine( string ) {
 
 function parseDate( value ) {
   return /^(\d\d\d\d)-(\d\d)-(\d\d)(?: (\d\d):(\d\d))?$/.exec( value );
+}
+
+const Entities = {
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;',
+  '&': '&amp;'
+};
+
+function escape( text ) {
+  return text.replace( /[<>"&]/g, ch => Entities[ ch ] || ch )
+}
+
+function convertUrl( url ) {
+  if ( url[ 0 ] == '#' )
+    return '#/items/' + url.substr( 1 );
+  else if ( url.substr( 0, 4 ).toLowerCase() == 'www.' )
+    return 'http://' + url;
+  else if ( url.substr( 0, 4 ).toLowerCase() == 'ftp.' )
+    return 'ftp://' + url;
+  else if ( url.substr( 0, 2 ) == '\\\\' )
+    return 'file:///' + url;
+  else if ( url.indexOf( ':' ) < 0 )
+    return 'mailto:' + url;
+  else
+    return url;
 }
