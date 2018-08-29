@@ -30,6 +30,11 @@
     "November": "November",
     "December": "December"
   },
+  "FileSize": {
+    "Bytes": "{0} bytes",
+    "Kilobytes": "{0} kB",
+    "Megabytes": "{0} MB"
+  },
   "LocationFilters": {
     "SelectProject": "Select Project",
     "SelectFolder": "Select Folder",

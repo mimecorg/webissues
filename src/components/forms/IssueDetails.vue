@@ -55,7 +55,7 @@
           <div class="issue-header">{{ $t( 'IssueDetails.Attributes' ) }}</div>
           <template v-for="attribute in filteredAttributes">
             <div class="issue-details-title">{{ getAttributeName( attribute.id ) }}</div>
-            <div class="issue-details-value" v-html="convertAttributeValue( attribute.value, attribute.id )"></div>
+            <div class="issue-details-value" v-html="convertAttributeValue( attribute.value, attribute.id, { multiLine: true } )"></div>
           </template>
         </div>
 
@@ -100,7 +100,7 @@
 
             <div v-if="isCommentAdded( item ) || isFileAdded( item )" class="issue-group">
               <div class="issue-element issue-element-wide">
-                <div class="issue-history-title">{{ item.createdDate }} &mdash; {{ item.createdBy }}</div>
+                <div class="issue-history-title">{{ formatStamp( item.createdDate ) }} &mdash; {{ getUserName( item.createdBy ) }}</div>
               </div>
               <div class="issue-element">
                 <a class="issue-history-id" v-bind:href="'#/items/' + item.id">#{{ item.id }}</a>
@@ -111,22 +111,22 @@
                 </DropdownButton>
               </div>
             </div>
-            <div v-else class="issue-history-title">{{ item.createdDate }} &mdash; {{ item.createdBy }}</div>
+            <div v-else class="issue-history-title">{{ formatStamp( item.createdDate ) }} &mdash; {{ getUserName( item.createdBy ) }}</div>
 
             <div v-if="isCommentAdded( item )" class="issue-comment">
               <div class="formatted-text" v-hljs="item.text"></div>
               <div v-if="item.modifiedDate" class="last-edited">
-                <span class="fa fa-pencil" aria-hidden="true"></span> {{ item.modifiedDate }} &mdash; {{ item.modifiedBy }}
+                <span class="fa fa-pencil" aria-hidden="true"></span> {{ formatStamp( item.modifiedDate ) }} &mdash; {{ getUserName( item.modifiedBy ) }}
               </div>
             </div>
             <div v-else-if="isFileAdded( item )" class="issue-attachment">
               <span class="fa fa-paperclip" aria-hidden="true"></span>
               <a v-if="isWeb" v-bind:href="getFileURL( item.id )" target="_blank">{{ item.name }}</a>
               <HyperLink v-else v-on:click="downloadFile( item )">{{ item.name }}</HyperLink>
-              ({{ item.size }})
+              ({{ formatFileSize( item.size ) }})
               <span v-if="item.description" v-html="'&mdash; ' + item.description"></span>
               <div v-if="item.modifiedDate" class="last-edited">
-                <span class="fa fa-pencil" aria-hidden="true"></span> {{ item.modifiedDate }} &mdash; {{ item.modifiedBy }}
+                <span class="fa fa-pencil" aria-hidden="true"></span> {{ formatStamp( item.modifiedDate ) }} &mdash; {{ getUserName( item.modifiedBy ) }}
               </div>
             </div>
             <ul v-else-if="isChangeList( item )" class="issue-history-list">
@@ -255,16 +255,23 @@ export default {
         return this.$t( 'IssueDetails.UnknownUser' );
     },
 
-    convertAttributeValue( value, attributeId ) {
-      let attribute = this.type.attributes.find( a => a.id == attributeId );
+    formatStamp( stamp ) {
+      return this.$formatter.formatStamp( stamp );
+    },
+    formatFileSize( size ) {
+      return this.$formatter.formatFileSize( size );
+    },
+
+    convertAttributeValue( value, attributeId, flags = {} ) {
+      let attribute = attributeId != null ? this.type.attributes.find( a => a.id == attributeId ) : null;
       if ( attribute == null )
         attribute = { type: 'TEXT' };
-      value = this.$formatter.convertAttributeValue( value, attribute, { multiLine: true } );
+      value = this.$formatter.convertAttributeValue( value, attribute, flags );
       return this.$formatter.convertLinks( value );
     },
 
     canEditItem( item ) {
-      return this.access == Access.AdministratorAccess || item.own;
+      return this.access == Access.AdministratorAccess || item.createdBy == this.userId;
     },
     canReply( item ) {
       return this.isAuthenticated && item.type == Change.CommentAdded;
@@ -307,22 +314,26 @@ export default {
     },
 
     formatChange( change ) {
-      if ( change.type == Change.IssueCreated )
+      if ( change.type == Change.IssueCreated ) {
         return this.$t( 'IssueDetails.IssueCreated', [ this.formatValue( change.new ) ] );
-      else if ( change.type == Change.IssueRenamed )
+      } else if ( change.type == Change.IssueRenamed ) {
         return this.$t( 'IssueDetails.IssueRenamed', [ this.formatValue( change.old ), this.formatValue( change.new ) ] );
-      else if ( change.type == Change.ValueChanged )
-        return this.$t( 'IssueDetails.ValueChanged', [ escape( change.name ), this.formatValue( change.old ), this.formatValue( change.new ) ] );
-    },
-    formatValue( value ) {
-      return value ? '&quot;' + value + '&quot;' : this.$t( 'IssueDetails.Empty' );
+      } else if ( change.type == Change.ValueChanged ) {
+        return this.$t( 'IssueDetails.ValueChanged', [ this.$formatter.escape( this.getAttributeName( change.attributeId ) ),
+          this.formatValue( change.old, change.attributeId ), this.formatValue( change.new, change.attributeId ) ] );
+      }
     },
     formatIssueMoved( item ) {
-      return this.$t( 'IssueDetails.IssueMoved', [ this.formatLocation( item.fromProject, item.fromFolder ), this.formatLocation( item.toProject, item.toFolder ) ] );
+      return this.$t( 'IssueDetails.IssueMoved', [ this.formatLocation( item.fromFolderId ), this.formatLocation( item.toFolderId ) ] );
     },
-    formatLocation( project, folder ) {
-      if ( project != null && folder != null )
-        return '&quot;' + escape( project ) + '&quot; &mdash; &quot;' + escape( folder ) + '&quot;';
+
+    formatValue( value, attributeId = null ) {
+      return value != '' ? '&quot;' + this.convertAttributeValue( value, attributeId ) + '&quot;' : this.$t( 'IssueDetails.Empty' );
+    },
+    formatLocation( folderId ) {
+      const project = this.projects.find( p => p.folders.some( f => f.id == folderId ) );
+      if ( project != null )
+        return '&quot;' + this.$formatter.escape( project.name ) + '&quot; &mdash; &quot;' + this.$formatter.escape( project.folders.find( f => f.id == folderId ).name ) + '&quot;';
       else
         return this.$t( 'IssueDetails.UnknownFolder' );
     },
@@ -433,16 +444,5 @@ export default {
     }
     return false;
   }
-}
-
-const Entities = {
-  '<': '&lt;',
-  '>': '&gt;',
-  '"': '&quot;',
-  '&': '&amp;'
-};
-
-function escape( text ) {
-  return text.replace( /[<>"&]/g, ch => Entities[ ch ] || ch )
 }
 </script>

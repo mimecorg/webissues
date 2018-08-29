@@ -29,8 +29,9 @@ Vue.mixin( {
   }
 } );
 
-export default function makeFormatter( store ) {
+export default function makeFormatter( store, i18n ) {
   return {
+    escape,
     convertLinks,
     convertAttributeValue( value, attribute, flags = {} ) {
       return convertAttributeValue( value, attribute, flags, store.state.global.settings );
@@ -43,6 +44,9 @@ export default function makeFormatter( store ) {
     },
     formatStamp( stamp ) {
       return formatDate( new Date( stamp * 1000 ), { withTime: true }, store.state.global.settings );
+    },
+    formatFileSize( size ) {
+      return formatFileSize( size, i18n, store.state.global.settings );
     }
   }
 }
@@ -240,4 +244,16 @@ function convertUrl( url ) {
     return 'mailto:' + url;
   else
     return url;
+}
+
+function formatFileSize( size, i18n, settings ) {
+  if ( size < 1024 )
+    return i18n.t( 'FileSize.Bytes', [ convertDecimalNumber( size, 0, {}, settings ) ] );
+
+  size /= 1024;
+  if ( size < 1024 )
+    return i18n.t( 'FileSize.Kilobytes', [ convertDecimalNumber( size, 1, { stripZeros: true }, settings ) ] );
+
+  size /= 1024;
+  return i18n.t( 'FileSize.Megabytes', [ convertDecimalNumber( size, 1, { stripZeros: true }, settings ) ] );
 }

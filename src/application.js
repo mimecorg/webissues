@@ -50,7 +50,7 @@ export function startApplication( { baseURL, csrfToken, locale, ...initialState 
   const router = makeRouter();
   const store = makeStore( baseURL, initialState, ajax, router );
   const parser = makeParser( store );
-  const formatter = makeFormatter( store );
+  const formatter = makeFormatter( store, i18n );
 
   registerRoutes( router, i18n, ajax, store, formatter );
 

@@ -60,7 +60,7 @@ function makeGetters() {
       for ( let i = 0; i < state.history.length; i++ ) {
         const row = state.history[ i ];
         if ( row.type <= Change.ValueChanged && change != null ) {
-          if ( row.uid == change.changes[ 0 ].uid && ( row.ts - change.changes[ 0 ].ts ) < 180 ) {
+          if ( row.createdBy == change.changes[ 0 ].createdBy && ( row.createdDate - change.changes[ 0 ].createdDate ) < 180 ) {
             change.changes.push( row );
             continue;
           }

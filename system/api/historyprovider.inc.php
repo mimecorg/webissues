@@ -168,6 +168,48 @@ class System_Api_HistoryProvider
     }
 
     /**
+    * Return a query for extracting item details for the API.
+    * @param $itemType The type of history items.
+    */
+    public function generateApiSelectQuery( $itemType )
+    {
+        $principal = System_Api_Principal::getCurrent();
+
+        $this->arguments = array( $this->issueId, System_Const::CommentAdded, System_Const::FileAdded, $this->modifiedSince );
+
+        $query = 'SELECT ch.change_id, ch.change_type, ch.stamp_id,'
+            . ' sc.stamp_time AS created_date, sc.user_id AS created_user,'
+            . ' sm.stamp_time AS modified_date, sm.user_id AS modified_user';
+        if ( $itemType == self::AllHistory )
+            $query .= ', ch.attr_id, ch.value_old, ch.value_new, ch.from_folder_id, ch.to_folder_id';
+        if ( $itemType == self::AllHistory || $itemType == self::Comments || $itemType == self::CommentsAndFiles )
+            $query .= ', c.comment_text, c.comment_format';
+        if ( $itemType == self::AllHistory || $itemType == self::Files || $itemType == self::CommentsAndFiles )
+            $query .= ', f.file_name, f.file_size, f.file_descr';
+        $query .= ' FROM {changes} AS ch'
+            . ' JOIN {stamps} AS sc ON sc.stamp_id = ch.change_id'
+            . ' JOIN {stamps} AS sm ON sm.stamp_id = ch.stamp_id';
+        if ( $itemType == self::AllHistory || $itemType == self::Comments || $itemType == self::CommentsAndFiles ) {
+            if ( $itemType == self::AllHistory || $itemType == self::CommentsAndFiles )
+                $query .= ' LEFT OUTER';
+            $query .= ' JOIN {comments} AS c ON c.comment_id = ch.change_id AND ch.change_type = %2d';
+        }
+        if ( $itemType == self::AllHistory || $itemType == self::Files || $itemType == self::CommentsAndFiles ) {
+            if ( $itemType == self::AllHistory || $itemType == self::CommentsAndFiles )
+                $query .= ' LEFT OUTER';
+            $query .= ' JOIN {files} AS f ON f.file_id = ch.change_id AND ch.change_type = %3d';
+        }
+        $query .= ' WHERE ch.issue_id = %1d';
+        if ( $itemType == self::CommentsAndFiles )
+            $query .= ' AND ( ch.change_type = %2d OR ch.change_type = %3d )';
+        if ( $this->modifiedSince != null )
+            $query .= ' AND ch.stamp_id > %4d';
+        $query .= ' ORDER BY ch.change_id ASC';
+
+        return $query;
+    }
+
+    /**
     * Return a query for extracting item details.
     * @param $itemType The type of history items.
     */
@@ -176,7 +218,7 @@ class System_Api_HistoryProvider
         $principal = System_Api_Principal::getCurrent();
 
         $this->arguments = array( $this->issueId, System_Const::CommentAdded, System_Const::FileAdded, $principal->getUserId(),
-            $this->sinceStamp, $this->modifiedSince, $this->exceptSubscriptionId );
+            $this->sinceStamp, $this->exceptSubscriptionId );
 
         $query = 'SELECT ch.change_id, ch.change_type, ch.stamp_id,'
             . ' sc.stamp_time AS created_date, uc.user_id AS created_user, uc.user_name AS created_by,'
@@ -225,12 +267,10 @@ class System_Api_HistoryProvider
             $query .= ' AND ( ch.change_type = %2d OR ch.change_type = %3d )';
         if ( $this->sinceStamp != null )
             $query .= ' AND ch.change_id > %5d';
-        if ( $this->modifiedSince != null )
-            $query .= ' AND ch.stamp_id > %6d';
         if ( $this->exceptOwn )
             $query .= ' AND sc.user_id <> %4d';
         if ( $this->exceptSubscriptionId != null )
-            $query .= ' AND COALESCE( ch.subscription_id, 0 ) <> %7d';
+            $query .= ' AND COALESCE( ch.subscription_id, 0 ) <> %6d';
 
         return $query;
     }

@@ -52,7 +52,6 @@ class Server_Api_Issues_Load
         $issueManager = new System_Api_IssueManager();
         $issue = $issueManager->getIssue( $issueId, $flags );
 
-        $formatter = new System_Api_Formatter();
         $principal = System_Api_Principal::getCurrent();
 
         $resultDetails[ 'id' ] = $issue[ 'issue_id' ];
@@ -118,10 +117,8 @@ class Server_Api_Issues_Load
 
             $connection = System_Core_Application::getInstance()->getConnection();
 
-            $query = $historyProvider->generateSelectQuery( $filter );
-            $page = $connection->queryPageArgs( $query, $historyProvider->getOrderBy( System_Api_HistoryProvider::Ascending ), System_Const::INT_MAX, 0, $historyProvider->getQueryArguments() );
-
-            $localeHelper = new System_Web_LocaleHelper();
+            $query = $historyProvider->generateApiSelectQuery( $filter );
+            $page = $connection->queryTableArgs( $query, $historyProvider->getQueryArguments() );
 
             $result[ 'history' ] = array();
 
@@ -130,11 +127,11 @@ class Server_Api_Issues_Load
 
                 $resultItem[ 'id' ] = $item[ 'change_id' ];
                 $resultItem[ 'type' ] = $item[ 'change_type' ];
-                $resultItem[ 'createdDate' ] = $formatter->formatDateTime( $item[ 'created_date' ], System_Api_Formatter::ToLocalTimeZone );
-                $resultItem[ 'createdBy' ] = $item[ 'created_by' ];
-                if ( ( $item[ 'modified_date' ] - $item[ 'created_date' ] ) > 180 || $item[ 'modified_user' ] != $item[ 'created_user' ] ) {
-                    $resultItem[ 'modifiedDate' ] = $formatter->formatDateTime( $item[ 'modified_date' ], System_Api_Formatter::ToLocalTimeZone );
-                    $resultItem[ 'modifiedBy' ] = $item[ 'modified_by' ];
+                $resultItem[ 'createdDate' ] = $item[ 'created_date' ];
+                $resultItem[ 'createdBy' ] = $item[ 'created_user' ];
+                if ( $item[ 'stamp_id' ] != $item[ 'change_id' ] ) {
+                    $resultItem[ 'modifiedDate' ] = $item[ 'modified_date' ];
+                    $resultItem[ 'modifiedBy' ] = $item[ 'modified_user' ];
                 }
 
                 if ( $item[ 'change_type' ] == System_Const::CommentAdded )
@@ -143,36 +140,20 @@ class Server_Api_Issues_Load
                 if ( $item[ 'change_type' ] == System_Const::FileAdded ) {
                     $resultItem[ 'name' ] = $item[ 'file_name' ];
                     $resultItem[ 'description' ] = $this->convertText( $item[ 'file_descr' ], $html );
-                    $resultItem[ 'size' ] = $localeHelper->formatFileSize( $item[ 'file_size' ] );
+                    $resultItem[ 'size' ] = $item[ 'file_size' ];
                 }
 
                 if ( $item[ 'change_type' ] == System_Const::IssueMoved ) {
-                    $resultItem[ 'fromProject' ] = $item[ 'from_project_name' ];
-                    $resultItem[ 'fromFolder' ] = $item[ 'from_folder_name' ];
-                    $resultItem[ 'toProject' ] = $item[ 'to_project_name' ];
-                    $resultItem[ 'toFolder' ] = $item[ 'to_folder_name' ];
+                    $resultItem[ 'fromFolderId' ] = $item[ 'from_folder_id' ];
+                    $resultItem[ 'toFolderId' ] = $item[ 'to_folder_id' ];
                 }
 
                 if ( $item[ 'change_type' ] <= System_Const::ValueChanged ) {
-                    if ( $item[ 'change_type' ] == System_Const::ValueChanged )
-                        $resultItem[ 'name' ] = $item[ 'attr_name' ];
-
-                    $newValue = $item[ 'value_new' ];
-                    $oldValue = $item[ 'value_old' ];
-                    if ( $item[ 'attr_def' ] != null ) {
-                        $newValue = $formatter->convertAttributeValue( $item[ 'attr_def' ], $newValue );
-                        $oldValue = $formatter->convertAttributeValue( $item[ 'attr_def' ], $oldValue );
-                    }
-
-                    $resultItem[ 'new' ] = $this->convertText( $newValue, $html );
-                    $resultItem[ 'old' ] = $this->convertText( $oldValue, $html );
-
-                    $resultItem[ 'ts' ] = $item[ 'created_date' ];
-                    $resultItem[ 'uid' ] = $item[ 'created_user' ];
+                    if ( $item[ 'change_type' ] <= System_Const::ValueChanged )
+                        $resultItem[ 'attributeId' ] = $item[ 'attr_id' ];
+                    $resultItem[ 'new' ] = $item[ 'value_new' ];
+                    $resultItem[ 'old' ] = $item[ 'value_old' ];
                 }
-
-                if ( $item[ 'change_type' ] == System_Const::CommentAdded || $item[ 'change_type' ] == System_Const::FileAdded )
-                    $resultItem[ 'own' ] = $item[ 'created_user' ] == $principal->getUserId();
 
                 $result[ 'history' ][] = $resultItem;
             }
