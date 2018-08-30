@@ -20,8 +20,7 @@
 import Vue from 'vue'
 
 import { ErrorCode } from '@/constants'
-
-import { makeDateString, makeTimeString } from '@/services/formatter'
+import { invariantSettings, parseDecimalNumber, formatDecimalNumber, parseDate, formatDate, makeError } from '@/services/locale'
 
 Vue.mixin( {
   beforeCreate() {
@@ -38,17 +37,11 @@ export default function makeParser( store ) {
     normalizeString,
     parseInteger,
     checkEmailAddress,
-    normalizeDecimalNumber( value, decimal, min = null, max = null, flags = {} ) {
-      return normalizeDecimalNumber( value, decimal, min, max, flags, store.state.global.settings );
-    },
-    normalizeDate( value ) {
-      return normalizeDate( value, store.state.global.settings );
-    },
-    normalizeDateTime( value ) {
-      return normalizeDateTime( value, store.state.global.settings );
-    },
     normalizeAttributeValue( value, attribute, project = null ) {
       return normalizeAttributeValue( value, attribute, project, store.state.global.users, store.state.global.settings );
+    },
+    convertAttributeValue( value, attribute ) {
+      return convertAttributeValue( value, attribute, store.state.global.settings );
     },
     parseDate( value, flags = {} ) {
       return parseDate( value, flags, store.state.global.settings );
@@ -121,98 +114,6 @@ function checkEmailAddress( value ) {
     throw makeError( ErrorCode.InvalidEmail );
 }
 
-function normalizeDecimalNumber( value, decimal, min, max, { stripZeros = false }, { groupSeparator, decimalSeparator } ) {
-  let pattern;
-  if ( groupSeparator != '' )
-    pattern = '^(-?\\d\\d?\\d?(?:' + escape( groupSeparator ) + '\\d\\d\\d)+|-?\\d+)(?:' + escape( decimalSeparator ) + '(\\d*))?$';
-  else
-    pattern = '^(-?\\d+)(?:' + escape( decimalSeparator ) + '(\\d*))?$';
-  const parts = new RegExp( pattern ).exec( value );
-  if ( parts == null )
-    throw makeError( ErrorCode.InvalidFormat );
-
-  // strip trailing zeros
-  let fractionPart = parts[ 2 ] != null ? parts[ 2 ].replace( /0+$/, '' ) : '';
-
-  if ( fractionPart.length > decimal )
-    throw makeError( ErrorCode.TooManyDecimals );
-
-  // strip thousands separators
-  let integerPart = parts[ 1 ];
-  if ( groupSeparator != '' )
-    integerPart = integerPart.replace( new RegExp( escape( groupSeparator ), 'g' ), '' );
-
-  // strip leading zeros
-  integerPart = integerPart.replace( /\b0+\B/, '' );
-
-  // change '-0' to '0'
-  if ( integerPart == '-0' && fractionPart == '' )
-    integerPart = '0';
-
-  const number = fractionPart != '' ? Number( integerPart + '.' + fractionPart ) : Number( integerPart );
-
-  // make sure the number doesn't exceed 14 digits of precision
-  if ( Math.abs( number ) >= Math.pow( 10, 14 - decimal ) )
-    throw makeError( ErrorCode.TooManyDigits );
-
-  if ( min != null && number < Number( min ) )
-    throw makeError( ErrorCode.NumberTooLittle );
-  if ( max != null && number > Number( max ) )
-    throw makeError( ErrorCode.NumberTooGreat );
-
-  // re-add thousands separators - see https://stackoverflow.com/a/2901298
-  if ( groupSeparator != '' )
-    integerPart = integerPart.replace( /\B(?=(\d{3})+(?!\d))/g , groupSeparator );
-
-  // re-add trailing zeros if necessary
-  if ( decimal > 0 && !stripZeros )
-    fractionPart = fractionPart.padEnd( decimal, '0' );
-
-  return fractionPart != '' ? ( integerPart + decimalSeparator + fractionPart ) : integerPart;
-}
-
-function normalizeDate( value, { dateOrder, dateSeparator, padMonth, padDay } ) {
-  const pattern = '^' + makeDatePattern( dateOrder, dateSeparator ) + '$';
-
-  const parts = new RegExp( pattern ).exec( value );
-  if ( parts == null )
-    throw makeError( ErrorCode.InvalidFormat );
-
-  const { year, month, day } = getDateParts( parts, dateOrder );
-
-  if ( !isValidDate( year, month, day ) )
-    throw makeError( ErrorCode.InvalidDate );
-
-  return makeDateString( year, month, day, dateOrder, dateSeparator, padMonth, padDay );
-}
-
-function normalizeDateTime( value, { dateOrder, dateSeparator, padMonth, padDay, timeMode, timeSeparator, padHours } ) {
-  const pattern = '^' + makeDatePattern( dateOrder, dateSeparator ) + '\\s+' + makeTimePattern( timeMode, timeSeparator ) + '$';
-
-  const parts = new RegExp( pattern, 'i' ).exec( value );
-  if ( parts == null )
-    throw makeError( ErrorCode.InvalidFormat );
-
-  const { year, month, day } = getDateParts( parts, dateOrder );
-
-  if ( !isValidDate( year, month, day ) )
-    throw makeError( ErrorCode.InvalidDate );
-
-  const hours = Number( parts[ 4 ] );
-  const minutes = Number( parts[ 5 ] );
-  const amPm = timeMode == 12 ? ' ' + parts[ 6 ].toLowerCase() : '';
-
-  if ( timeMode == 12 ) {
-    if ( hours < 1 || hours > 12 || minutes > 60 )
-      throw makeError( ErrorCode.InvalidTime );
-  } else {
-    if ( hours > 23 || minutes > 60 )
-      throw makeError( ErrorCode.InvalidTime );
-  }
-
-  return makeDateString( year, month, day, dateOrder, dateSeparator, padMonth, padDay ) + ' ' + makeTimeString( hours, minutes, amPm, timeSeparator, padHours );
-}
-
 function normalizeAttributeValue( value, attribute, project, users, settings ) {
   if ( value == '' ) {
     if ( attribute.required == 1 )
@@ -267,14 +168,13 @@ function normalizeAttributeValue( value, attribute, project, users, settings ) {
       break;
 
     case 'NUMERIC':
-      value = normalizeDecimalNumber( value, attribute.decimal || 0, attribute[ 'min-value' ], attribute[ 'max-value' ], { stripZeros: attribute.strip == 1 }, settings );
+      const number = parseDecimalNumber( value, attribute.decimal || 0, attribute[ 'min-value' ], attribute[ 'max-value' ], settings );
+      value = formatDecimalNumber( number, attribute.decimal || 0, { stripZeros: attribute.strip == 1 }, settings );
       break;
 
     case 'DATETIME':
-      if ( attribute.time == 1 )
-        value = normalizeDateTime( value, settings );
-      else
-        value = normalizeDate( value, settings );
+      const date = parseDate( value, { withTime: attribute.time == 1 }, settings );
+      value = formatDate( date, { withTime: attribute.time == 1 }, settings );
       break;
 
     default:
@@ -284,41 +184,31 @@ function normalizeAttributeValue( value, attribute, project, users, settings ) {
   return value;
 }
 
-function parseDate( value, { withTime = false }, { dateOrder, dateSeparator, timeMode, timeSeparator } ) {
-  let pattern = '^\\s*' + makeDatePattern( dateOrder, dateSeparator )
-  if ( withTime )
-    pattern += '(?:\\s+' + makeTimePattern( timeMode, timeSeparator ) + ')?';
-  pattern += '\\s*$';
-  const parts = new RegExp( pattern, 'i' ).exec( value );
-  if ( parts != null ) {
-    let { year, month, day } = getDateParts( parts, dateOrder );
-    const date = new Date();
-    date.setFullYear( year, month - 1, day );
-    if ( year != 0 && date.getFullYear() == year && date.getMonth() == month - 1 && date.getDate( day ) == day ) {
-      if ( withTime && parts[ 4 ] != null ) {
-        let hours = Number( parts[ 4 ] );
-        const minutes = Number( parts[ 5 ] );
-        if ( timeMode == 12 ) {
-          if ( hours >= 1 && hours <= 12 && minutes <= 60 ) {
-            if ( hours == 12 )
-              hours = 0;
-            if ( parts[ 6 ].toLowerCase() == 'pm' )
-              hours += 12;
-            date.setHours( hours, minutes, 0, 0 );
-            return date;
-          }
-        } else {
-          if ( hours <= 23 && minutes <= 60 ) {
-            date.setHours( hours, minutes, 0, 0 );
-            return date;
-          }
-        }
-      } else {
-        return date;
-      }
-    }
+function convertAttributeValue( value, attribute, settings ) {
+  if ( value == '' )
+    return '';
+
+  switch ( attribute.type ) {
+    case 'TEXT':
+    case 'ENUM':
+    case 'USER':
+      break;
+
+    case 'NUMERIC':
+      const number = parseDecimalNumber( value, attribute.decimal || 0, null, null, settings );
+      value = formatDecimalNumber( number, attribute.decimal || 0, {}, invariantSettings );
+      break;
+
+    case 'DATETIME':
+      const date = parseDate( value, { withTime: attribute.time == 1 }, settings );
+      value = formatDate( date, { withTime: attribute.time == 1, toUTC: attribute.local == 1 }, invariantSettings );
+      break;
+
+    default:
+      throw makeError( ErrorCode.InvalidDefinition );
   }
-  return null;
+
+  return value;
 }
 
 function checkLength( value, minLength, maxLength ) {
@@ -333,56 +223,4 @@ function getUserNames( project, users ) {
     return users.filter( u => project.members.includes( u.id ) ).map( u => u.name );
   else
     return users.map( u => u.name );
-}
-
-function makeDatePattern( dateOrder, dateSeparator ) {
-  dateSeparator = escape( dateSeparator );
-  if ( dateOrder.charAt( 0 ) == 'y' )
-    return '(\\d\\d\\d\\d?)' + dateSeparator + '(\\d\\d?)' + dateSeparator + '(\\d\\d)';
-  else
-    return '(\\d\\d?)' + dateSeparator + '(\\d\\d?)' + dateSeparator + '(\\d\\d\\d\\d)';
-}
-
-function makeTimePattern( timeMode, timeSeparator ) {
-  timeSeparator = escape( timeSeparator );
-  if ( timeMode == 12 )
-    return '(\\d\\d?)' + timeSeparator + '(\\d\\d?)\\s*([ap]m)';
-  else
-    return '(\\d\\d?)' + timeSeparator + '(\\d\\d?)';
-}
-
-function getDateParts( parts, dateOrder ) {
-  let year, month, day;
-  for ( let i = 0; i < 3; i++ ) {
-    const ch = dateOrder.charAt( i );
-    const value = Number( parts[ i + 1 ] );
-    if ( ch == 'y' )
-      year = value;
-    else if ( ch == 'm' )
-      month = value;
-    else if ( ch == 'd' )
-      day = value;
-  }
-  return { year, month, day };
-}
-
-function isValidDate( year, month, day ) {
-  if ( year < 1 || year > 9999 )
-    return false;
-  const date = new Date();
-  date.setFullYear( year, month - 1, day );
-  if ( date.getFullYear() != year || date.getMonth() != month - 1 || date.getDate( day ) != day )
-    return false;
-  return true;
-}
-
-function escape( string ) {
-  return string.replace( /([.+*?=^!:${}()[\]|/\\])/g, '\\$1' );
-}
-
-function makeError( errorCode ) {
-  const error = new Error( 'Parse error: ' + errorCode );
-  error.reason = 'APIError';
-  error.errorCode = errorCode;
-  return error;
 }

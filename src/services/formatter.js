@@ -19,6 +19,9 @@
 
 import Vue from 'vue'
 
+import { ErrorCode } from '@/constants'
+import { invariantSettings, parseDecimalNumber, formatDecimalNumber, parseDate, formatDate, makeError } from '@/services/locale'
+
 Vue.mixin( {
   beforeCreate() {
     const options = this.$options;
@@ -37,7 +40,7 @@ export default function makeFormatter( store, i18n ) {
       return convertAttributeValue( value, attribute, flags, store.state.global.settings );
     },
     convertInitialValue( value, attribute ) {
-      return convertInitialValue( value, attribute, store.state.global.userName, store.state.global.settings );
+      return convertInitialValue( value, attribute, store.state.global.userName );
     },
     formatDate( date, flags = {} ) {
       return formatDate( date, flags, store.state.global.settings );
@@ -76,82 +79,39 @@ function convertLinks( text ) {
   return result;
 }
 
-function convertDecimalNumber( value, decimal, { stripZeros = false }, { groupSeparator, decimalSeparator } ) {
-  const fixed = Number.parseFloat( value ).toFixed( decimal );
-
-  let [ integerPart, fractionPart = '' ] = fixed.split( '.', 2 );
-
-  // strip trailing zeros
-  if ( decimal > 0 && stripZeros )
-    fractionPart = fractionPart.replace( /0+$/, '' );
-
-  // change '-0' to '0'
-  if ( integerPart == '-0' && fractionPart == '' )
-    integerPart = '0';
-
-  // add thousands separators - see https://stackoverflow.com/a/2901298
-  if ( groupSeparator != '' )
-    integerPart = integerPart.replace( /\B(?=(\d{3})+(?!\d))/g , groupSeparator );
-
-  return fractionPart != '' ? ( integerPart + decimalSeparator + fractionPart ) : integerPart;
-}
-
-function convertDateTime( value, { toLocalTimeZone = false }, settings ) {
-  const parts = parseDate( value );
-  if ( parts == null )
-    return '';
-
-  const year = Number( parts[ 1 ] );
-  const month = Number( parts[ 2 ] );
-  const day = Number( parts[ 3 ] );
-
-  const hours = parts[ 4 ] != null ? Number( parts[ 4 ] ) : 0;
-  const minutes = parts[ 5 ] != null ? Number( parts[ 5 ] ) : 0;
-
-  const date = toLocalTimeZone ? new Date( Date.UTC( year, month - 1, day, hours, minutes ) ) : new Date( year, month - 1, day, hours, minutes );
-
-  return formatDate( date, { withTime: true }, settings );
-}
-
-function convertDate( value, { dateOrder, dateSeparator, padMonth, padDay } ) {
-  const parts = parseDate( value );
-  if ( parts == null )
-    return '';
-
-  const year = Number( parts[ 1 ] );
-  const month = Number( parts[ 2 ] );
-  const day = Number( parts[ 3 ] );
-
-  return makeDateString( year, month, day, dateOrder, dateSeparator, padMonth, padDay );
-}
-
 function convertAttributeValue( value, attribute, { multiLine = false }, settings ) {
   if ( value == null || value == '' )
     return '';
 
   switch ( attribute.type ) {
     case 'TEXT':
-      if ( attribute[ 'multi-line' ] == 1 && multiLine )
-        return value;
-      else
-        return toSingleLine( value );
+      if ( attribute[ 'multi-line' ] != 1 || !multiLine )
+        value = toSingleLine( value );
+      break;
 
     case 'ENUM':
     case 'USER':
-        return toSingleLine( value );
+      value = toSingleLine( value );
+      break;
 
     case 'NUMERIC':
-      return convertDecimalNumber( value, attribute.decimal, { stripZeros: attribute.strip == 1 }, settings );
+      const number = parseDecimalNumber( value, null, null, null, invariantSettings );
+      value = formatDecimalNumber( number, attribute.decimal, { stripZeros: attribute.strip == 1 }, settings );
+      break;
 
     case 'DATETIME':
-      if ( attribute.time == 1 )
-        return convertDateTime( value, { toLocalTimeZone: attribute.local == 1 }, settings );
-      else
-        return convertDate( value, settings );
+      const date = parseDate( value, { withTime: true, fromUTC: attribute.local == 1 }, invariantSettings );
+      value = formatDate( date, { withTime: attribute.time == 1 }, settings );
+      break;
+
+    default:
+      throw makeError( ErrorCode.InvalidDefinition );
   }
+
+  return value;
 }
 
-function convertInitialValue( value, attribute, userName, settings ) {
+function convertInitialValue( value, attribute, userName ) {
   if ( value == null || value == '' )
     return '';
 
@@ -163,50 +123,22 @@ function convertInitialValue( value, attribute, userName, settings ) {
     const offset = value.substr( 7 );
     if ( offset != '' )
       date.setDate( date.getDate() + Number( offset ) );
-    return formatDate( date, { withTime: attribute.time == 1 }, settings );
+    return formatDate( date, { withTime: attribute.time == 1 }, invariantSettings );
   }
 
   return value;
 }
 
-function formatDate( date, { withTime = false }, { dateOrder, dateSeparator, padMonth, padDay, timeMode, timeSeparator, padHours } ) {
-  let value = makeDateString( date.getFullYear(), date.getMonth() + 1, date.getDate(), dateOrder, dateSeparator, padMonth, padDay );
-  if ( withTime )
-    value += ' ' + formatTime( date, timeMode, timeSeparator, padHours );
-  return value;
-}
+function formatFileSize( size, i18n, settings ) {
+  if ( size < 1024 )
+    return i18n.t( 'FileSize.Bytes', [ formatDecimalNumber( size, 0, {}, settings ) ] );
 
-function formatTime( date, timeMode, timeSeparator, padHours ) {
-  if ( timeMode == 12 )
-    return makeTimeString( ( date.getHours() + 11 ) % 12 + 1, date.getMinutes(), date.getHours() >= 12 ? ' pm' : ' am', timeSeparator, padHours );
-  else
-    return makeTimeString( date.getHours(), date.getMinutes(), '', timeSeparator, padHours );
-}
+  size /= 1024;
+  if ( size < 1024 )
+    return i18n.t( 'FileSize.Kilobytes', [ formatDecimalNumber( size, 1, { stripZeros: true }, settings ) ] );
 
-export function makeDateString( year, month, day, dateOrder, dateSeparator, padMonth, padDay ) {
-  if ( padMonth )
-    month = month.toString().padStart( 2, '0' );
-  if ( padDay )
-    day = day.toString().padStart( 2, '0' );
-  year = year.toString().padStart( 4, '0' );
-  const parts = [];
-  for ( let i = 0; i < 3; i++ ) {
-    const ch = dateOrder.charAt( i );
-    if ( ch == 'y' )
-      parts.push( year );
-    else if ( ch == 'm' )
-      parts.push( month );
-    else if ( ch == 'd' )
-      parts.push( day );
-  }
-  return parts.join( dateSeparator );
-}
-
-export function makeTimeString( hours, minutes, amPm, timeSeparator, padHours ) {
-  if ( padHours )
-    hours = hours.toString().padStart( 2, '0' );
-  minutes = minutes.toString().padStart( 2, '0' );
-  return hours + timeSeparator + minutes + amPm;
+  size /= 1024;
+  return i18n.t( 'FileSize.Megabytes', [ formatDecimalNumber( size, 1, { stripZeros: true }, settings ) ] );
 }
 
 function toSingleLine( string ) {
@@ -214,10 +146,6 @@ function toSingleLine( string ) {
   string = string.replace( /[ \t\n]+$/, '' );
   string = string.replace( /[ \t\n]+/g, ' ' );
   return string;
-}
-
-function parseDate( value ) {
-  return /^(\d\d\d\d)-(\d\d)-(\d\d)(?: (\d\d):(\d\d))?$/.exec( value );
 }
 
 const Entities = {
@@ -244,16 +172,4 @@ function convertUrl( url ) {
     return 'mailto:' + url;
   else
     return url;
-}
-
-function formatFileSize( size, i18n, settings ) {
-  if ( size < 1024 )
-    return i18n.t( 'FileSize.Bytes', [ convertDecimalNumber( size, 0, {}, settings ) ] );
-
-  size /= 1024;
-  if ( size < 1024 )
-    return i18n.t( 'FileSize.Kilobytes', [ convertDecimalNumber( size, 1, { stripZeros: true }, settings ) ] );
-
-  size /= 1024;
-  return i18n.t( 'FileSize.Megabytes', [ convertDecimalNumber( size, 1, { stripZeros: true }, settings ) ] );
 }
