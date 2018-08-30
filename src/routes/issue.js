@@ -63,7 +63,7 @@ export default function makeIssueRoutes( i18n, ajax, store, formatter ) {
           mode: 'edit',
           issueId,
           typeId: details.typeId,
-          initialProjectId: details.projectId,
+          initialFolderId: details.folderId,
           initialName: details.name,
           attributes
         };
@@ -82,7 +82,6 @@ export default function makeIssueRoutes( i18n, ajax, store, formatter ) {
       const folderId = folder != null ? folder.id : null;
       const attributes = type.attributes.map( attribute => ( {
         id: attribute.id,
-        name: attribute.name,
         value: formatter.convertInitialValue( attribute.default, attribute )
       } ) );
       return Promise.resolve( {
@@ -105,7 +104,6 @@ export default function makeIssueRoutes( i18n, ajax, store, formatter ) {
           mode: 'clone',
           issueId,
           typeId: details.typeId,
-          initialProjectId: details.projectId,
           initialFolderId: details.folderId,
           initialName: details.name,
           attributes,
@@ -121,7 +119,6 @@ export default function makeIssueRoutes( i18n, ajax, store, formatter ) {
           component: 'MoveIssue',
           issueId,
           typeId: details.typeId,
-          initialProjectId: details.projectId,
           initialFolderId: details.folderId,
           name: details.name
         };

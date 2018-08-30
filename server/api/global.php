@@ -94,8 +94,6 @@ class Server_Api_Global
         $viewManager = new System_Api_ViewManager();
         $views = $viewManager->getViews();
 
-        $formatter = new System_Api_Formatter();
-
         $result[ 'types' ] = array();
 
         foreach ( $types as $type ) {
@@ -122,14 +120,8 @@ class Server_Api_Global
 
                     $info = System_Api_DefinitionInfo::fromString( $attribute[ 'attr_def' ] );
                     $resultAttribute[ 'type' ] = $info->getType();
-                    foreach ( $info->getAllMetadata() as $key => $value ) {
-                        if ( $key == 'default' ) {
-                            $formatted = $formatter->convertInitialValueInfo( $info, $value, System_Api_Formatter::MultiLine );
-                            $resultAttribute[ $key ] = $formatted;
-                        } else {
-                            $resultAttribute[ $key ] = $value;
-                        }
-                    }
+                    foreach ( $info->getAllMetadata() as $key => $value )
+                        $resultAttribute[ $key ] = $value;
 
                     $resultType[ 'attributes' ][] = $resultAttribute;
                 }

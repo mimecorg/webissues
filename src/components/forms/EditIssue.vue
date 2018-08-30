@@ -28,7 +28,8 @@
       <LocationFilters ref="folderId" v-bind:typeId="typeId" v-bind:projectId.sync="projectId" v-bind:folderId.sync="folderId" folder-visible/>
     </FormGroup>
     <Panel v-if="attributes.length > 0" v-bind:title="$t( 'EditIssue.Attributes' )">
-      <FormGroup v-for="( attribute, index ) in attributes" v-bind:key="attribute.id" v-bind:id="'attribute' + attribute.id" v-bind:label="$t( 'EditIssue.AttributeLabel', [ attribute.name ] )"
+      <FormGroup v-for="( attribute, index ) in attributes" v-bind:key="attribute.id" v-bind:id="'attribute' + attribute.id"
+                 v-bind:label="$t( 'EditIssue.AttributeLabel', [ getAttributeName( attribute.id ) ] )"
                  v-bind:required="isAttributeRequired( attribute.id )" v-bind:error="$data[ 'attribute' + attribute.id + 'Error' ]">
         <ValueEditor ref="attribute" v-bind:id="'attribute' + attribute.id" v-bind:attribute="getAttribute( attribute.id )"
                      v-bind:project="project" v-model="$data[ 'attribute' + attribute.id ]"/>
@@ -83,6 +84,8 @@ export default {
       }
     };
 
+    const type = this.$store.state.global.types.find( t => t.id == this.typeId );
+
     for ( let i = 0; i < this.attributes.length; i++ ) {
       const field = {
         value: this.attributes[ i ].value,
@@ -91,10 +94,13 @@ export default {
         maxLength: MaxLength.Value
       };
       const id = this.attributes[ i ].id;
-      const attribute = this.getAttribute( id );
-      if ( attribute != null ) {
-        field.multiLine = attribute.type == 'TEXT' && attribute[ 'multi-line' ] == 1;
-        field.parse = value => this.$parser.normalizeAttributeValue( value, attribute, this.project );
+      if ( type != null ) {
+        const attribute = type.attributes.find( a => a.id == id );
+        if ( attribute != null ) {
+          field.value = this.$formatter.convertAttributeValue( field.value, attribute, { multiLine: true } );
+          field.multiLine = attribute.type == 'TEXT' && attribute[ 'multi-line' ] == 1;
+          field.parse = value => this.$parser.normalizeAttributeValue( value, attribute, this.project );
+        }
       }
       field.focus = () => this.$refs.attribute[ i ].focus();
       result[ 'attribute' + id ] = field;
@@ -105,13 +111,13 @@ export default {
 
   data() {
     return {
-      projectId: this.initialProjectId,
+      projectId: this.getInitialProjectId(),
       descriptionFormat: this.initialFormat
     };
   },
 
   computed: {
-    ...mapState( 'global', [ 'projects' ] ),
+    ...mapState( 'global', [ 'projects', 'types' ] ),
     title() {
       if ( this.mode == 'edit' )
         return this.$t( 'EditIssue.EditAttributes' );
@@ -125,14 +131,34 @@ export default {
         return this.projects.find( p => p.id == this.projectId );
       else
         return null;
+    },
+    type() {
+      return this.types.find( t => t.id == this.typeId );
     }
   },
 
   methods: {
+    getInitialProjectId() {
+      if ( this.initialProjectId != null ) {
+        return this.initialProjectId;
+      } else if ( this.initialFolderId != null ) {
+        const project = this.$store.state.global.projects.find( p => p.folders.some( f => f.id == this.initialFolderId ) );
+        if ( project != null )
+          return project.id;
+      }
+      return null;
+    },
+
     getAttribute( id ) {
-      const type = this.$store.state.global.types.find( t => t.id == this.typeId );
-      if ( type != null )
-        return type.attributes.find( a => a.id == id );
+      if ( this.type != null )
+        return this.type.attributes.find( a => a.id == id );
+      else
+        return null;
+    },
+    getAttributeName( id ) {
+      const attribute = this.getAttribute( id );
+      if ( attribute != null )
+        return attribute.name;
       else
         return null;
     },
@@ -165,8 +191,11 @@ export default {
       for ( let i = 0; i < this.attributes.length; i++ ) {
         const id = this.attributes[ i ].id;
         const value = this[ 'attribute' + id ];
-        if ( value != this.attributes[ i ].value )
-          data.values.push( { id, value } );
+        if ( value != this.attributes[ i ].value ) {
+          const attribute = this.getAttribute( id );
+          const convertedValue = this.$parser.convertAttributeValue( value, attribute );
+          data.values.push( { id, value: convertedValue } );
+        }
       }
 
       if ( ( this.mode == 'add' || this.mode == 'clone' ) && this.description != '' ) {
