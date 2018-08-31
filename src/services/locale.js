@@ -111,9 +111,11 @@ export function parseDate( value, { withTime = false, fromUTC = false }, { dateO
       throw makeError( ErrorCode.InvalidDate );
   }
 
+  let hours = 0, minutes = 0;
+
   if ( withTime && parts[ 4 ] != null ) {
-    let hours = Number( parts[ 4 ] );
-    const minutes = Number( parts[ 5 ] );
+    hours = Number( parts[ 4 ] );
+    minutes = Number( parts[ 5 ] );
 
     if ( timeMode == 12 ) {
       if ( hours < 1 || hours > 12 || minutes > 60 )
@@ -126,12 +128,12 @@ export function parseDate( value, { withTime = false, fromUTC = false }, { dateO
       if ( hours > 23 || minutes > 60 )
         throw makeError( ErrorCode.InvalidTime );
     }
-
-    if ( fromUTC )
-      date.setUTCHours( hours, minutes, 0, 0 );
-    else
-      date.setHours( hours, minutes, 0, 0 );
   }
+
+  if ( fromUTC )
+    date.setUTCHours( hours, minutes, 0, 0 );
+  else
+    date.setHours( hours, minutes, 0, 0 );
 
   return date;
 }
@@ -191,7 +193,7 @@ export function makeError( errorCode ) {
 function makeDatePattern( dateOrder, dateSeparator ) {
   dateSeparator = escape( dateSeparator );
   if ( dateOrder.charAt( 0 ) == 'y' )
-    return '(\\d\\d\\d\\d?)' + dateSeparator + '(\\d\\d?)' + dateSeparator + '(\\d\\d)';
+    return '(\\d\\d\\d\\d)' + dateSeparator + '(\\d\\d?)' + dateSeparator + '(\\d\\d?)';
   else
     return '(\\d\\d?)' + dateSeparator + '(\\d\\d?)' + dateSeparator + '(\\d\\d\\d\\d)';
 }
