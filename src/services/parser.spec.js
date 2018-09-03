@@ -17,23 +17,125 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-import chai, { expect } from 'chai'
-import chaiDatetime from 'chai-datetime'
+import { expect } from 'chai'
 
 import makeParser from '@/services/parser'
 
 import { ErrorCode } from '@/constants'
 import { invariantSettings, makeError } from '@/services/locale'
-
-import { enSettings, plSettings } from '@/services/formatter.spec'
-
-chai.use( chaiDatetime );
+import { enSettings, plSettings } from '@/test'
 
 const parser = makeParser( { state: { global: { settings: invariantSettings } } } );
 const enParser = makeParser( { state: { global: { settings: enSettings } } } );
 const plParser = makeParser( { state: { global: { settings: plSettings } } } );
 
 describe( 'parser', () => {
+  describe( 'normalizeString', () => {
+    it( 'single line', () => {
+      const value = parser.normalizeString( '  foo  bar  ' );
+      expect( value ).to.equal( 'foo bar' );
+    } );
+
+    it( 'multiple lines', () => {
+      const value = parser.normalizeString( '  foo\r\n  bar  \n\t  ', null, { multiLine: true } );
+      expect( value ).to.equal( '  foo\n  bar' );
+    } );
+
+    it( 'allow empty value', () => {
+      const value = parser.normalizeString( '  ', null, { allowEmpty: true } );
+      expect( value ).to.equal( '' );
+    } );
+
+    it( 'maximum length', () => {
+      const value = parser.normalizeString( '  foo  bar  ', 7 );
+      expect( value ).to.equal( 'foo bar' );
+    } );
+
+    describe( 'invalid values', () => {
+      it( 'empty value', () => {
+        expect( () => parser.normalizeString( '  ' ) ).to.throw( makeError( ErrorCode.EmptyValue ).message );
+      } );
+
+      it( 'empty multiline value', () => {
+        expect( () => parser.normalizeString( '  \r\n\t  ', null, { multiLine: true } ) ).to.throw( makeError( ErrorCode.EmptyValue ).message );
+      } );
+
+      it( 'value too long', () => {
+        expect( () => parser.normalizeString( '  foo  bar  ', 6 ) ).to.throw( makeError( ErrorCode.StringTooLong ).message );
+      } );
+
+      it( 'invalid characters', () => {
+        expect( () => parser.normalizeString( 'foo\nbar' ) ).to.throw( makeError( ErrorCode.InvalidString ).message );
+      } );
+
+      it( 'invalid multiline characters', () => {
+        expect( () => parser.normalizeString( 'foo\x03bar', null, { multiLine: true } ) ).to.throw( makeError( ErrorCode.InvalidString ).message );
+      } );
+    } );
+  } );
+
+  describe( 'parseInteger', () => {
+    describe( 'valid values', () => {
+      [ '0', '1', '-123', '-2147483648', '2147483647' ].forEach( value => {
+        it( value, () => {
+          const number = parser.parseInteger( value );
+          expect( number ).to.equal( Number( value ) );
+        } );
+      } );
+    } );
+
+    describe( 'range check', () => {
+      [ '1', '10', '100' ].forEach( value => {
+        it( value, () => {
+          const number = parser.parseInteger( value, 1, 100 );
+          expect( number ).to.equal( Number( value ) );
+        } );
+      } );
+    } );
+
+    describe( 'invalid values', () => {
+      [ '-', '0.0', '1e3', '0xf', 'abc' ].forEach( value => {
+        it( value, () => {
+          expect( () => parser.parseInteger( value ) ).to.throw( makeError( ErrorCode.InvalidFormat ).message );
+        } );
+      } );
+
+      it( '-2147483649', () => {
+        expect( () => parser.parseInteger( '-2147483649' ) ).to.throw( makeError( ErrorCode.NumberTooLittle ).message );
+      } );
+
+      it( '2147483648', () => {
+        expect( () => parser.parseInteger( '2147483648' ) ).to.throw( makeError( ErrorCode.NumberTooGreat ).message );
+      } );
+
+      it( 'below range', () => {
+        expect( () => parser.parseInteger( '0', 1, 100 ) ).to.throw( makeError( ErrorCode.NumberTooLittle ).message );
+      } );
+
+      it( 'above range', () => {
+        expect( () => parser.parseInteger( '101', 1, 100 ) ).to.throw( makeError( ErrorCode.NumberTooGreat ).message );
+      } );
+    } );
+  } );
+
+  describe( 'checkEmailAddress', () => {
+    describe( 'valid values', () => {
+      [ 'foo@test.org', 'foo-bar@test.pl', 'Foo.Bar@test.foo.org', 'foo+bar@test-foo.org' ].forEach( value => {
+        it( value, () => {
+          parser.checkEmailAddress( value );
+        } )
+      } );
+    } );
+
+    describe( 'invalid values', () => {
+      [ 'foo', 'foo@', '@test.org', 'foo@bar', 'foo@bar.org@test.org', 'foo!bar@test.org' ].forEach( value => {
+        it( value, () => {
+          expect( () => parser.checkEmailAddress( value ) ).to.throw( makeError( ErrorCode.InvalidEmail ).message );
+        } );
+      } );
+    } );
+  } );
+
   describe( 'parseDate', () => {
     it( 'invariant date', () => {
       const date = parser.parseDate( '2018-04-19' );

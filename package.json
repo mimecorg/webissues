@@ -19,8 +19,8 @@
     "package:linux-ia32": "node ./app/src/build/package.js linux ia32",
     "package:linux-x64": "node ./app/src/build/package.js linux x64",
     "package:server": "node ./src/build/package.js",
-    "test": "cross-env NODE_ENV=test mocha --require babel-register src/**/*.spec.js",
-    "test:watch": "cross-env NODE_ENV=test mocha --require babel-register --watch src/**/*.spec.js"
+    "test": "cross-env NODE_ENV=test mocha --require babel-register src/test.js src/**/*.spec.js",
+    "test:watch": "cross-env NODE_ENV=test mocha --require babel-register --watch src/test.js src/**/*.spec.js"
   },
   "dependencies": {
     "babel-polyfill": "^6.26.0",
