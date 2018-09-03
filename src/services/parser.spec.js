@@ -136,6 +136,85 @@ describe( 'parser', () => {
     } );
   } );
 
+  describe( 'normalizeAttributeValue', () => {
+    it( 'text', () => {
+      const value = parser.normalizeAttributeValue( 'foo', { type: 'TEXT' } );
+      expect( value ).to.equal( 'foo' );
+    } );
+
+    it( 'enum', () => {
+      const value = parser.normalizeAttributeValue( 'foo', { type: 'ENUM', items: [ 'foo', 'bar' ] } );
+      expect( value ).to.equal( 'foo' );
+    } );
+
+    it( 'multi-select', () => {
+      const value = parser.normalizeAttributeValue( 'foo,bar', { type: 'ENUM', items: [ 'foo', 'bar' ], 'multi-select': 1 } );
+      expect( value ).to.equal( 'foo, bar' );
+    } );
+
+    it( 'numeric', () => {
+      const value = enParser.normalizeAttributeValue( '-01234.56000', { type: 'NUMERIC', decimal: 3, strip: 1 } );
+      expect( value ).to.equal( '-1,234.56' );
+    } );
+
+    it( 'datetime', () => {
+      const value = enParser.normalizeAttributeValue( '04/19/1982 9:45PM', { type: 'DATETIME', time: 1 } );
+      expect( value ).to.equal( '4/19/1982 9:45 pm' );
+    } );
+
+    it( 'empty', () => {
+      expect( () => parser.normalizeAttributeValue( '', { type: 'TEXT', required: 1 } ) ).to.throw( makeError( ErrorCode.EmptyValue ).message );
+    } );
+
+    it( 'too short', () => {
+      expect( () => parser.normalizeAttributeValue( 'foo', { type: 'TEXT', 'min-length': 4 } ) ).to.throw( makeError( ErrorCode.StringTooShort ).message );
+    } );
+
+    it( 'too long', () => {
+      expect( () => parser.normalizeAttributeValue( 'foo', { type: 'TEXT', 'max-length': 2 } ) ).to.throw( makeError( ErrorCode.StringTooLong ).message );
+    } );
+
+    it( 'invalid item', () => {
+      expect( () => parser.normalizeAttributeValue( 'fooo', { type: 'ENUM', items: [ 'foo', 'bar' ] } ) ).to.throw( makeError( ErrorCode.NoMatchingItem ).message );
+    } );
+
+    it( 'duplicate items', () => {
+      expect( () => parser.normalizeAttributeValue( 'foo, foo', { type: 'ENUM', items: [ 'foo', 'bar' ], 'multi-select': 1 } ) ).to.throw( makeError( ErrorCode.DuplicateItems ).message );
+    } );
+
+    it( 'too short item', () => {
+      expect( () => parser.normalizeAttributeValue( 'foo', { type: 'ENUM', items: [ 'fooo', 'barr' ], editable: 1, 'min-length': 4 } ) ).to.throw( makeError( ErrorCode.StringTooShort ).message );
+    } );
+
+    it( 'too long item', () => {
+      expect( () => parser.normalizeAttributeValue( 'foo', { type: 'ENUM', items: [ 'fo', 'ba' ], editable: 1, 'max-length': 2 } ) ).to.throw( makeError( ErrorCode.StringTooLong ).message );
+    } );
+
+    it( 'number too little', () => {
+      expect( () => parser.normalizeAttributeValue( '2', { type: 'NUMERIC', 'min-value': 3 } ) ).to.throw( makeError( ErrorCode.NumberTooLittle ).message );
+    } );
+
+    it( 'numeric too great', () => {
+      expect( () => parser.normalizeAttributeValue( '2', { type: 'NUMERIC', 'max-value': 1 } ) ).to.throw( makeError( ErrorCode.NumberTooGreat ).message );
+    } );
+
+    it( 'numeric too many decimals', () => {
+      expect( () => parser.normalizeAttributeValue( '3.14', { type: 'NUMERIC', decimal: 1 } ) ).to.throw( makeError( ErrorCode.TooManyDecimals ).message );
+    } );
+  } );
+
+  describe( 'convertAttributeValue', () => {
+    it( 'numeric', () => {
+      const value = enParser.convertAttributeValue( '-1,234.56', { type: 'NUMERIC', decimal: 3, strip: 1 } );
+      expect( value ).to.equal( '-1234.560' );
+    } );
+
+    it( 'datetime', () => {
+      const value = enParser.convertAttributeValue( '4/19/1982 9:45 pm', { type: 'DATETIME', time: 1 } );
+      expect( value ).to.equal( '1982-04-19 21:45' );
+    } );
+  } );
+
   describe( 'parseDate', () => {
     it( 'invariant date', () => {
       const date = parser.parseDate( '2018-04-19' );

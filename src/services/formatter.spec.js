@@ -96,6 +96,46 @@ describe( 'formatter', () => {
     } );
   } );
 
+  describe( 'convertAttributeValue', () => {
+    it( 'single line', () => {
+      const value = formatter.convertAttributeValue( '  foo\n  bar', { type: 'TEXT' } );
+      expect( value ).to.equal( 'foo bar' );
+    } );
+
+    it( 'numeric', () => {
+      const value = enFormatter.convertAttributeValue( '-1234.560', { type: 'NUMERIC', decimal: 3, strip: 1 } );
+      expect( value ).to.equal( '-1,234.56' );
+    } );
+
+    it( 'datetime', () => {
+      const value = enFormatter.convertAttributeValue( '1982-04-19 21:45', { type: 'DATETIME', time: 1 } );
+      expect( value ).to.equal( '4/19/1982 9:45 pm' );
+    } );
+  } );
+
+  describe( 'convertInitialValue', () => {
+    it( 'me', () => {
+      const userFormatter = makeFormatter( { state: { global: { settings: invariantSettings, userName: 'foo bar' } } }, i18n );
+      const value = userFormatter.convertInitialValue( '[Me]', { type: 'TEXT' } );
+      expect( value ).to.equal( 'foo bar' );
+    } );
+
+    it( 'today', () => {
+      const value = enFormatter.convertInitialValue( '[Today]', { type: 'DATETIME' } );
+      const date = new Date();
+      const expected = formatter.formatDate( date );
+      expect( value ).to.equal( expected );
+    } );
+
+    it( 'today with offset', () => {
+      const value = enFormatter.convertInitialValue( '[Today]+3', { type: 'DATETIME' } );
+      const date = new Date();
+      date.setDate( date.getDate() + 3 );
+      const expected = formatter.formatDate( date );
+      expect( value ).to.equal( expected );
+    } );
+  } );
+
   describe( 'formatDate', () => {
     it( 'invariant date', () => {
       const value = formatter.formatDate( new Date( 2018, 3, 19 ) );
