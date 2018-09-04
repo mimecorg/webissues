@@ -97,7 +97,7 @@
                   </div>
                 </DropdownButton>
                 <input ref="search" type="search" class="form-control" v-bind:placeholder="searchName" v-bind:maxlength="searchLength"
-                       v-bind:value="searchText" v-on:keydown.enter="search">
+                       v-bind:value="searchText" v-on:input="setSearchText( $event.target.value )" v-on:keydown.enter="search">
                 <div class="input-group-btn">
                   <button type="button" class="btn btn-default" v-bind:title="$t( 'ApplicationToolbar.Search' )" v-on:click="search"><span class="fa fa-search" aria-hidden="true"></span></button>
                 </div>
@@ -135,8 +135,9 @@ export default {
 
   computed: {
     ...mapState( 'global', [ 'types', 'projects' ] ),
-    ...mapState( 'list', [ 'searchColumn', 'searchText', 'searchError' ] ),
+    ...mapState( 'list', [ 'searchColumn', 'searchText', 'searchValue', 'searchError' ] ),
     ...mapGetters( 'list', [ 'type', 'view', 'publicViews', 'personalViews', 'project', 'folder', 'folders' ] ),
+
     typeName() {
       if ( this.type != null )
         return this.type.name;
@@ -185,6 +186,7 @@ export default {
       else
         return this.$t( 'ApplicationToolbar.AllFolders' );
     },
+
     systemColumns() {
       return [
         { id: Column.ID, name: this.$t( 'ApplicationToolbar.ID' ) },
@@ -195,6 +197,7 @@ export default {
         { id: Column.ModifiedBy, name: this.$t( 'ApplicationToolbar.ModifiedBy' ) }
       ];
     },
+
     searchName() {
       if ( this.searchColumn > Column.UserDefined ) {
         if ( this.type != null ) {
@@ -209,11 +212,56 @@ export default {
       }
       return null;
     },
+
     searchTitle() {
       if ( this.searchName != null )
         return this.$t( 'ApplicationToolbar.SearchBy', [ this.searchName ] );
       else
         return null;
+    },
+
+    searchInfo() {
+      let attribute = null;
+
+      switch ( this.searchColumn ) {
+        case Column.ID:
+          attribute = { type: 'NUMERIC' };
+          break;
+        case Column.Name:
+        case Column.Location:
+          attribute = { type: 'TEXT' };
+          break;
+        case Column.CreatedBy:
+        case Column.ModifiedBy:
+          attribute = { type: 'USER' };
+          break;
+        case Column.CreatedDate:
+        case Column.ModifiedDate:
+          attribute = { type: 'DATETIME' };
+          break;
+        default:
+          if ( this.searchColumn > Column.UserDefined ) {
+            const id = this.searchColumn - Column.UserDefined;
+            attribute = this.type.attributes.find( a => a.id == id );
+          }
+          break;
+      }
+
+      if ( attribute == null )
+        return null;
+
+      switch ( attribute.type ) {
+        case 'TEXT':
+        case 'ENUM':
+        case 'USER':
+          return { type: 'TEXT' };
+
+        case 'NUMERIC':
+          return { type: 'NUMERIC', decimal: attribute.decimal, strip: attribute.strip };
+
+        case 'DATETIME':
+          return { type: 'DATETIME' };
+      }
     }
   },
 
@@ -268,9 +316,32 @@ export default {
       this.$refs.search.focus();
     },
 
+    setSearchText( searchText ) {
+      this.$store.commit( 'list/setSearchText', { searchText } );
+    },
+
     search() {
-      this.$store.commit( 'list/setSearchText', { searchText: this.$refs.search.value } );
-      this.$store.dispatch( 'updateList' );
+      let searchText;
+      let searchValue;
+      let searchError = false;
+      try {
+        searchText = this.$parser.normalizeString( this.searchText, MaxLength.Value, { allowEmpty: true } );
+        if ( this.searchInfo != null ) {
+          searchText = this.$parser.normalizeAttributeValue( searchText, this.searchInfo );
+          searchValue = this.$parser.convertAttributeValue( searchText, this.searchInfo );
+        } else {
+          searchValue = searchText;
+        }
+      } catch ( err ) {
+        searchError = true;
+      }
+
+      if ( !searchError ) {
+        this.$store.commit( 'list/setSearchValue', { searchText, searchValue } );
+        this.$store.dispatch( 'updateList' );
+      } else {
+        this.$store.commit( 'list/setSearchError', { searchText } );
+      }
     },
 
     reload() {
