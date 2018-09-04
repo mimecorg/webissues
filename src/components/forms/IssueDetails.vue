@@ -115,7 +115,7 @@
 
             <div v-if="isCommentAdded( item )" class="issue-comment">
               <div class="formatted-text" v-hljs="item.text"></div>
-              <div v-if="item.modifiedDate" class="last-edited">
+              <div v-if="isItemModified( item )" class="last-edited">
                 <span class="fa fa-pencil" aria-hidden="true"></span> {{ formatStamp( item.modifiedDate ) }} &mdash; {{ getUserName( item.modifiedBy ) }}
               </div>
             </div>
@@ -125,7 +125,7 @@
               <HyperLink v-else v-on:click="downloadFile( item )">{{ item.name }}</HyperLink>
               ({{ formatFileSize( item.size ) }})
               <span v-if="item.description" v-html="'&mdash; ' + item.description"></span>
-              <div v-if="item.modifiedDate" class="last-edited">
+              <div v-if="isItemModified( item )" class="last-edited">
                 <span class="fa fa-pencil" aria-hidden="true"></span> {{ formatStamp( item.modifiedDate ) }} &mdash; {{ getUserName( item.modifiedBy ) }}
               </div>
             </div>
@@ -288,6 +288,10 @@ export default {
     },
     isIssueMoved( item ) {
       return item.type == Change.IssueMoved;
+    },
+
+    isItemModified( item ) {
+      return item.modifiedDate != null && ( ( item.modifiedDate - item.createdDate ) > 180 || item.modifiedBy != item.createdBy );
     },
 
     getFilterText( filter ) {
