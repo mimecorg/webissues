@@ -275,7 +275,14 @@ export default {
 
     preview() {
       this.$refs.textarea.focus();
-      this.$ajax.post( '/server/api/issues/preview.php', { text: this.$refs.textarea.value } ).then( html => {
+      let text = this.$refs.textarea.value;
+      try {
+        text = this.$parser.normalizeString( text, this.maxlength, { multiLine: true } );
+      } catch ( error ) {
+        this.$emit( 'error', error );
+        return;
+      }
+      this.$ajax.post( '/server/api/issues/preview.php', { text } ).then( html => {
         this.previewHtml = html;
       } ).catch ( error => {
         this.$emit( 'error', error );
