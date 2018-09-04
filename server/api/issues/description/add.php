@@ -35,11 +35,11 @@ class Server_Api_Issues_Description_Add
         $issueManager = new System_Api_IssueManager();
         $issue = $issueManager->getIssue( $issueId, System_Api_IssueManager::RequireAdministratorOrOwner );
 
-        $parser = new System_Api_Parser();
+        $validator = new System_Api_Validator();
         $serverManager = new System_Api_ServerManager();
 
-        $descriptionText = $parser->normalizeString( $descriptionText, $serverManager->getSetting( 'comment_max_length' ), System_Api_Parser::MultiLine );
-        $parser->checkTextFormat( $descriptionFormat );
+        $validator->checkString( $descriptionText, $serverManager->getSetting( 'comment_max_length' ), System_Api_Validator::MultiLine );
+        $validator->checkTextFormat( $descriptionFormat );
 
         $stampId = $issueManager->addDescription( $issue, $descriptionText, $descriptionFormat );
 

@@ -32,8 +32,8 @@ class Server_Api_Projects_Folders_Add
 
     public function run( $projectId, $name, $typeId )
     {
-        $parser = new System_Api_Parser();
-        $name = $parser->normalizeString( $name, System_Const::NameMaxLength );
+        $validator = new System_Api_Validator();
+        $validator->checkString( $name, System_Const::NameMaxLength );
 
         $projectManager = new System_Api_ProjectManager();
         $project = $projectManager->getProject( $projectId, System_Api_ProjectManager::RequireAdministrator );
