@@ -192,6 +192,30 @@ function makeClientAPI() {
 
         ipcRenderer.send( 'save-attachment', filePath, name );
       } );
+    },
+
+    loadIssue( serverUUID, issueId ) {
+      return new Promise( ( resolve, reject ) => {
+        ipcRenderer.once( 'load-issue-result', ( event, errorMessage, data ) => {
+          if ( errorMessage != null )
+            return reject( new Error( errorMessage ) );
+          resolve( data );
+        } );
+
+        ipcRenderer.send( 'load-issue', serverUUID, issueId );
+      } );
+    },
+
+    saveIssue( serverUUID, issueId, data ) {
+      return new Promise( ( resolve, reject ) => {
+        ipcRenderer.once( 'save-issue-result', ( event, errorMessage ) => {
+          if ( errorMessage != null )
+            return reject( new Error( errorMessage ) );
+          resolve();
+        } );
+
+        ipcRenderer.send( 'save-issue', serverUUID, issueId, data );
+      } );
     }
   };
 }
