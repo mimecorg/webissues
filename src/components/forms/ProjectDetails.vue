@@ -39,9 +39,9 @@
     </FormSection>
     <div v-if="description != null" class="description-panel">
       <div class="formatted-text" v-hljs="description.text"></div>
-      <div v-if="description.modifiedDate" class="last-edited">
-        <span class="fa fa-pencil" aria-hidden="true"></span> {{ description.modifiedDate }} &mdash; {{ description.modifiedBy }}
-      </div>
+        <div class="last-edited">
+          <span class="fa fa-pencil" aria-hidden="true"></span> {{ descriptionModifiedDate }} &mdash; {{ descriptionModifiedByName }}
+        </div>
     </div>
     <div v-else class="alert alert-info">
       {{ $t( 'ProjectDetails.NoDescription' ) }}
@@ -78,10 +78,24 @@ export default {
   },
 
   computed: {
-    ...mapState( 'global', [ 'types' ] ),
+    ...mapState( 'global', [ 'types', 'users' ] ),
     ...mapGetters( 'global', [ 'isAdministrator' ] ),
     isProjectAdministrator() {
       return this.access == Access.AdministratorAccess;
+    },
+    descriptionModifiedByName() {
+      if ( this.description != null ) {
+        const user = this.users.find( u => u.id == this.description.modifiedBy );
+        if ( user != null )
+          return user.name;
+      }
+      return null;
+    },
+    descriptionModifiedDate() {
+      if ( this.description != null )
+        return this.$formatter.formatStamp( this.description.modifiedDate );
+      else
+        return null;
     },
     columnNames() {
       return [
