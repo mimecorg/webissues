@@ -326,7 +326,10 @@ export default {
       let searchError = false;
       try {
         searchText = this.$parser.normalizeString( this.searchText, MaxLength.Value, { allowEmpty: true } );
-        if ( this.searchInfo != null ) {
+        if ( this.searchColumn == Column.ID ) {
+          searchValue = this.$parser.parseInteger( searchText.replace( /^#/, '' ), 1 ).toString();
+          searchText = '#' + searchValue;
+        } else if ( this.searchInfo != null ) {
           searchText = this.$parser.normalizeAttributeValue( searchText, this.searchInfo );
           searchValue = this.$parser.convertAttributeValue( searchText, this.searchInfo );
         } else {
