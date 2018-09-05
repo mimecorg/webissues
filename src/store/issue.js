@@ -110,7 +110,8 @@ function makeMutations() {
     },
     setData( state, { details, description, attributes, history, stubs } ) {
       state.details = details;
-      state.description = description;
+      if ( description !== true )
+        state.description = description;
       state.attributes = attributes;
       if ( process.env.TARGET == 'web' && state.modifiedSince > 0 )
         mergeHistory( state.history, history, stubs, state.modifiedSince );
@@ -151,8 +152,10 @@ function makeActions( ajax ) {
           return ajax.post( '/server/api/issues/load.php', query ).then( loadedData => {
             if ( cachedData == null || cachedData.stamp != loadedData.details.stamp ) {
               if ( cachedData == null ) {
-                cachedData = { history: loadedData.history, stamp: loadedData.details.stamp };
+                cachedData = { description: loadedData.description, history: loadedData.history, stamp: loadedData.details.stamp };
               } else {
+                if ( loadedData.description !== true )
+                  cachedData.description = loadedData.description;
                 mergeHistory( cachedData.history, loadedData.history, loadedData.stubs, cachedData.stamp );
                 cachedData.stamp = loadedData.details.stamp;
               }
@@ -162,7 +165,7 @@ function makeActions( ajax ) {
             }
 
             function prepareData() {
-              const data = { ...loadedData, history: cachedData.history };
+              const data = { ...loadedData, description: cachedData.description, history: cachedData.history };
               if ( filter != History.AllHistory ) {
                 const includeComments = ( filter == History.Comments || filter == History.CommentsAndFiles );
                 const includeFiles = ( filter == History.Files || filter == History.CommentsAndFiles );

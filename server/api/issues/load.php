@@ -71,14 +71,18 @@ class Server_Api_Issues_Load
 
         if ( $description ) {
             if ( $issue[ 'descr_id' ] != null ) {
-                $descr = $issueManager->getDescription( $issue );
+                if ( $issue[ 'descr_id' ] > $modifiedSince ) {
+                    $descr = $issueManager->getDescription( $issue );
 
-                $resultDescription[ 'modifiedBy' ] = $descr[ 'modified_user' ];
-                $resultDescription[ 'modifiedDate' ] = $descr[ 'modified_date' ];
-                $resultDescription[ 'text' ] = $this->convertText( $descr[ 'descr_text' ], $html, $descr[ 'descr_format' ] );
-                $resultDescription[ 'format' ] = $descr[ 'descr_format' ];
+                    $resultDescription[ 'modifiedBy' ] = $descr[ 'modified_user' ];
+                    $resultDescription[ 'modifiedDate' ] = $descr[ 'modified_date' ];
+                    $resultDescription[ 'text' ] = $this->convertText( $descr[ 'descr_text' ], $html, $descr[ 'descr_format' ] );
+                    $resultDescription[ 'format' ] = $descr[ 'descr_format' ];
 
-                $result[ 'description' ] = $resultDescription;
+                    $result[ 'description' ] = $resultDescription;
+                } else {
+                    $result[ 'description' ] = true;
+                }
             } else {
                 $result[ 'description' ] = null;
             }
