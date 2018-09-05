@@ -32,13 +32,13 @@ class Server_Api_Projects_Add
 
     public function run( $name, $description, $descriptionFormat )
     {
-        $parser = new System_Api_Parser();
-        $name = $parser->normalizeString( $name, System_Const::NameMaxLength );
+        $validator = new System_Api_Validator();
+        $validator->checkString( $name, System_Const::NameMaxLength );
 
         if ( $description != null ) {
             $serverManager = new System_Api_ServerManager();
-            $description = $parser->normalizeString( $description, $serverManager->getSetting( 'comment_max_length' ), System_Api_Parser::AllowEmpty | System_Api_Parser::MultiLine );
-            $parser->checkTextFormat( $descriptionFormat );
+            $validator->checkString( $description, $serverManager->getSetting( 'comment_max_length' ), System_Api_Validator::AllowEmpty | System_Api_Validator::MultiLine );
+            $validator->checkTextFormat( $descriptionFormat );
         }
 
         $projectManager = new System_Api_ProjectManager();

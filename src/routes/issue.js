@@ -21,7 +21,7 @@ import Vue from 'vue'
 
 import { TextFormat, ErrorCode } from '@/constants'
 
-export default function makeIssueRoutes( i18n, ajax, store, parser ) {
+export default function makeIssueRoutes( i18n, ajax, store, formatter ) {
   return function issueRoutes( route ) {
     function loadIssueDetails( issueId ) {
       if ( store.state.issue.issueId != issueId ) {
@@ -63,7 +63,7 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
           mode: 'edit',
           issueId,
           typeId: details.typeId,
-          initialProjectId: details.projectId,
+          initialFolderId: details.folderId,
           initialName: details.name,
           attributes
         };
@@ -82,8 +82,7 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
       const folderId = folder != null ? folder.id : null;
       const attributes = type.attributes.map( attribute => ( {
         id: attribute.id,
-        name: attribute.name,
-        value: parser.convertInitialValue( attribute.default, attribute )
+        value: formatter.convertInitialValue( attribute.default, attribute )
       } ) );
       return Promise.resolve( {
         component: 'EditIssue',
@@ -105,7 +104,6 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
           mode: 'clone',
           issueId,
           typeId: details.typeId,
-          initialProjectId: details.projectId,
           initialFolderId: details.folderId,
           initialName: details.name,
           attributes,
@@ -121,7 +119,6 @@ export default function makeIssueRoutes( i18n, ajax, store, parser ) {
           component: 'MoveIssue',
           issueId,
           typeId: details.typeId,
-          initialProjectId: details.projectId,
           initialFolderId: details.folderId,
           name: details.name
         };

@@ -17,26 +17,37 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-import staticRoutes from '@/routes/static'
-import makeIssueRoutes from '@/routes/issue'
-import makeAdminRoutes from '@/routes/admin'
-import makeUserRoutes from '@/routes/user'
+import chai from 'chai'
+import chaiDatetime from 'chai-datetime'
 
-export default function registerRoutes( router, i18n, ajax, store, formatter ) {
-  function makeRoutes() {
-    return [
-      staticRoutes,
-      makeIssueRoutes( i18n, ajax, store, formatter ),
-      makeAdminRoutes( ajax, store ),
-      makeUserRoutes()
-    ];
+chai.use( chaiDatetime );
+
+export const enSettings = {
+  groupSeparator: ',',
+  decimalSeparator: '.',
+  dateOrder: 'mdy',
+  dateSeparator: '/',
+  padMonth: false,
+  padDay: false,
+  timeMode: 12,
+  timeSeparator: ':',
+  padHours: false
+};
+
+export const plSettings = {
+  groupSeparator: ' ',
+  decimalSeparator: ',',
+  dateOrder: 'dmy',
+  dateSeparator: '.',
+  padMonth: true,
+  padDay: true,
+  timeMode: 24,
+  timeSeparator: ':',
+  padHours: true
+};
+
+export const i18n = {
+  t( string, [ value ] ) {
+    return value + ' ' + string;
   }
-
-  router.register( makeRoutes() );
-
-  if ( process.env.NODE_ENV != 'production' && module.hot != null ) {
-    module.hot.accept( [ '@/routes/static', '@/routes/issue', '@/routes/admin', '@/routes/user' ], () => {
-      router.hotUpdate( makeRoutes() );
-    } );
-  }
-}
+};

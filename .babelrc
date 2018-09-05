@@ -9,5 +9,25 @@
     } ]
   ],
   "plugins": [ "transform-object-rest-spread" ],
-  "comments": false
+  "comments": false,
+  "env": {
+    "test": {
+      "presets": [
+        [ "env", {
+          "targets": {
+            "node": 8
+          },
+          "modules": "commonjs",
+          "useBuiltIns": true
+        } ]
+      ],
+      "plugins": [
+        [ "module-resolver", {
+          "alias": {
+            "@": "./src"
+          }
+        } ]
+      ]
+    }
+  }
 }

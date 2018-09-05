@@ -32,11 +32,11 @@ class Server_Api_Login
 
     public function run( $login, $password, $newPassword )
     {
-        $parser = new System_Api_Parser();
-        $login = $parser->normalizeString( $login, System_Const::NameMaxLength );
-        $password = $parser->normalizeString( $password, System_Const::PasswordMaxLength );
+        $validator = new System_Api_Validator();
+        $validator->checkString( $login, System_Const::NameMaxLength );
+        $validator->checkString( $password, System_Const::PasswordMaxLength );
         if ( $newPassword != null )
-            $newPassword = $parser->normalizeString( $newPassword, System_Const::PasswordMaxLength );
+            $validator->checkString( $newPassword, System_Const::PasswordMaxLength );
 
         $sessionManager = new System_Api_SessionManager();
         $user = $sessionManager->login( $login, $password, $newPassword );

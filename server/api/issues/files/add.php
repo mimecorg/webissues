@@ -42,10 +42,10 @@ class Server_Api_Issues_Files_Add
         $issueManager = new System_Api_IssueManager();
         $issue = $issueManager->getIssue( $issueId );
 
-        $parser = new System_Api_Parser();
+        $validator = new System_Api_Validator();
 
-        $name = $parser->normalizeString( $name, System_Const::FileNameMaxLength );
-        $description = $parser->normalizeString( $description, System_Const::DescriptionMaxLength, System_Api_Parser::AllowEmpty );
+        $validator->checkString( $name, System_Const::FileNameMaxLength );
+        $validator->checkString( $description, System_Const::DescriptionMaxLength, System_Api_Validator::AllowEmpty );
 
         $stampId = $issueManager->addFile( $issue, $attachment, $name, $description );
 

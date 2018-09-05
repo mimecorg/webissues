@@ -24,6 +24,7 @@ const url = require( 'url' );
 
 const { config, loadConfiguraton, saveConfiguration, adjustPosition } = require( './lib/config' );
 const { initializeAttachments } = require( './lib/attachments' );
+const { initializeIssues } = require( './lib/issues' );
 const { makeContextMenuHandler, makeDarwinMenu } = require( './lib/menus' );
 
 let configSaved = false;
@@ -33,7 +34,9 @@ let mainWindow = null;
 app.on( 'ready', () => {
   loadConfiguraton( () => {
     initializeAttachments( () => {
-      createWindow();
+      initializeIssues( () => {
+        createWindow();
+      } );
     } );
   } );
 } );

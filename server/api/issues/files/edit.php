@@ -35,10 +35,10 @@ class Server_Api_Issues_Files_Edit
         $issueManager = new System_Api_IssueManager();
         $file = $issueManager->getFile( $fileId, System_Api_IssueManager::RequireAdministratorOrOwner );
 
-        $parser = new System_Api_Parser();
+        $validator = new System_Api_Validator();
 
-        $name = $parser->normalizeString( $name, System_Const::FileNameMaxLength );
-        $description = $parser->normalizeString( $description, System_Const::DescriptionMaxLength, System_Api_Parser::AllowEmpty );
+        $validator->checkString( $name, System_Const::FileNameMaxLength );
+        $validator->checkString( $description, System_Const::DescriptionMaxLength, System_Api_Validator::AllowEmpty );
 
         $stampId = $issueManager->editFile( $file, $name, $description );
 

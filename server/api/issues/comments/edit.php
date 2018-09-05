@@ -35,11 +35,11 @@ class Server_Api_Issues_Comments_Edit
         $issueManager = new System_Api_IssueManager();
         $comment = $issueManager->getComment( $commentId, System_Api_IssueManager::RequireAdministratorOrOwner );
 
-        $parser = new System_Api_Parser();
+        $validator = new System_Api_Validator();
         $serverManager = new System_Api_ServerManager();
 
-        $commentText = $parser->normalizeString( $commentText, $serverManager->getSetting( 'comment_max_length' ), System_Api_Parser::MultiLine );
-        $parser->checkTextFormat( $commentFormat );
+        $validator->checkString( $commentText, $serverManager->getSetting( 'comment_max_length' ), System_Api_Validator::MultiLine );
+        $validator->checkTextFormat( $commentFormat );
 
         $stampId = $issueManager->editComment( $comment, $commentText, $commentFormat );
 

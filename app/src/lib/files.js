@@ -21,6 +21,7 @@ const { app } = require( 'electron' );
 
 const fs = require( 'fs' );
 const path = require( 'path' );
+const zlib = require( 'zlib' );
 
 const dataPath = initializeDataPath();
 
@@ -44,6 +45,31 @@ function saveJSON( filePath, data, callback ) {
   const text = JSON.stringify( data, null, 2 );
 
   writeFileSafe( filePath, text, 'utf8', callback );
+}
+
+function packJSON( data, callback ) {
+  const text = JSON.stringify( data );
+  const buffer = Buffer.from( text, 'utf8' );
+
+  zlib.gzip( buffer, callback );
+}
+
+function unpackJSON( buffer, callback ) {
+  zlib.gunzip( buffer, ( error, unpacked ) => {
+    if ( error != null )
+      return callback( error, null );
+
+    const text = unpacked.toString( 'utf8' );
+
+    let result;
+    try {
+      result = JSON.parse( text );
+    } catch ( error ) {
+      return callback( error, null );
+    }
+
+    callback( null, result );
+  } );
 }
 
 function writeFileSafe( filePath, data, options, callback ) {
@@ -82,5 +108,7 @@ module.exports = {
   dataPath,
   loadJSON,
   saveJSON,
+  packJSON,
+  unpackJSON,
   writeFileSafe
 };

@@ -42,20 +42,20 @@
           <div class="issue-details-title">{{ $t( 'IssueDetails.ID' ) }}</div>
           <div class="issue-details-value">#{{ details.id }}</div>
           <div class="issue-details-title">{{ $t( 'IssueDetails.Type' ) }}</div>
-          <div class="issue-details-value">{{ details.type }}</div>
+          <div class="issue-details-value">{{ typeName }}</div>
           <div class="issue-details-title">{{ $t( 'IssueDetails.Location' ) }}</div>
-          <div class="issue-details-value">{{ details.project }} &mdash; {{ details.folder }}</div>
+          <div class="issue-details-value">{{ projectName }} &mdash; {{ folderName }}</div>
           <div class="issue-details-title">{{ $t( 'IssueDetails.Created' ) }}</div>
-          <div class="issue-details-value">{{ details.createdDate }} &mdash; {{ details.createdBy }}</div>
+          <div class="issue-details-value">{{ createdDate }} &mdash; {{ createdByName }}</div>
           <div class="issue-details-title">{{ $t( 'IssueDetails.LastModified' ) }}</div>
-          <div class="issue-details-value">{{ details.modifiedDate }} &mdash; {{ details.modifiedBy }}</div>
+          <div class="issue-details-value">{{ modifiedDate }} &mdash; {{ modifiedByName }}</div>
         </div>
 
         <div v-if="filteredAttributes.length > 0" class="issue-details">
           <div class="issue-header">{{ $t( 'IssueDetails.Attributes' ) }}</div>
           <template v-for="attribute in filteredAttributes">
-            <div class="issue-details-title">{{ attribute.name }}</div>
-            <div class="issue-details-value" v-html="attribute.value"></div>
+            <div class="issue-details-title">{{ getAttributeName( attribute.id ) }}</div>
+            <div class="issue-details-value" v-html="convertAttributeValue( attribute.value, attribute.id, { multiLine: true } )"></div>
           </template>
         </div>
 
@@ -73,10 +73,10 @@
           </button>
         </FormSection>
 
-        <div v-if="description" class="description-panel">
+        <div v-if="description != null" class="description-panel">
           <div class="formatted-text" v-hljs="description.text"></div>
-          <div v-if="description.modifiedDate" class="last-edited">
-            <span class="fa fa-pencil" aria-hidden="true"></span> {{ description.modifiedDate }} &mdash; {{ description.modifiedBy }}
+          <div v-if="isDescriptionModified" class="last-edited">
+            <span class="fa fa-pencil" aria-hidden="true"></span> {{ descriptionModifiedDate }} &mdash; {{ descriptionModifiedByName }}
           </div>
         </div>
         <div v-else class="alert alert-info">
@@ -100,7 +100,7 @@
 
             <div v-if="isCommentAdded( item ) || isFileAdded( item )" class="issue-group">
               <div class="issue-element issue-element-wide">
-                <div class="issue-history-title">{{ item.createdDate }} &mdash; {{ item.createdBy }}</div>
+                <div class="issue-history-title">{{ formatStamp( item.createdDate ) }} &mdash; {{ getUserName( item.createdBy ) }}</div>
               </div>
               <div class="issue-element">
                 <a class="issue-history-id" v-bind:href="'#/items/' + item.id">#{{ item.id }}</a>
@@ -111,22 +111,22 @@
                 </DropdownButton>
               </div>
             </div>
-            <div v-else class="issue-history-title">{{ item.createdDate }} &mdash; {{ item.createdBy }}</div>
+            <div v-else class="issue-history-title">{{ formatStamp( item.createdDate ) }} &mdash; {{ getUserName( item.createdBy ) }}</div>
 
             <div v-if="isCommentAdded( item )" class="issue-comment">
               <div class="formatted-text" v-hljs="item.text"></div>
-              <div v-if="item.modifiedDate" class="last-edited">
-                <span class="fa fa-pencil" aria-hidden="true"></span> {{ item.modifiedDate }} &mdash; {{ item.modifiedBy }}
+              <div v-if="isItemModified( item )" class="last-edited">
+                <span class="fa fa-pencil" aria-hidden="true"></span> {{ formatStamp( item.modifiedDate ) }} &mdash; {{ getUserName( item.modifiedBy ) }}
               </div>
             </div>
             <div v-else-if="isFileAdded( item )" class="issue-attachment">
               <span class="fa fa-paperclip" aria-hidden="true"></span>
               <a v-if="isWeb" v-bind:href="getFileURL( item.id )" target="_blank">{{ item.name }}</a>
               <HyperLink v-else v-on:click="downloadFile( item )">{{ item.name }}</HyperLink>
-              ({{ item.size }})
+              ({{ formatFileSize( item.size ) }})
               <span v-if="item.description" v-html="'&mdash; ' + item.description"></span>
-              <div v-if="item.modifiedDate" class="last-edited">
-                <span class="fa fa-pencil" aria-hidden="true"></span> {{ item.modifiedDate }} &mdash; {{ item.modifiedBy }}
+              <div v-if="isItemModified( item )" class="last-edited">
+                <span class="fa fa-pencil" aria-hidden="true"></span> {{ formatStamp( item.modifiedDate ) }} &mdash; {{ getUserName( item.modifiedBy ) }}
               </div>
             </div>
             <ul v-else-if="isChangeList( item )" class="issue-history-list">
@@ -153,15 +153,78 @@ import { Access, Change, History, KeyCode } from '@/constants'
 
 export default {
   computed: {
-    ...mapState( 'global', [ 'baseURL' ] ),
+    ...mapState( 'global', [ 'baseURL', 'userId', 'projects', 'types', 'users' ] ),
     ...mapGetters( 'global', [ 'isAuthenticated' ] ),
     ...mapState( 'issue', [ 'issueId', 'filter', 'unread', 'details', 'description' ] ),
     ...mapGetters( 'issue', [ 'filteredAttributes', 'isItemInHistory', 'processedHistory' ] ),
+    type() {
+      return this.types.find( t => t.id == this.details.typeId );
+    },
+    typeName() {
+      if ( this.type != null )
+        return this.type.name;
+      else
+        return this.$t( 'IssueDetails.UnknownType' );
+    },
+    project() {
+      return this.projects.find( p => p.folders.some( f => f.id == this.details.folderId ) );
+    },
+    projectName() {
+      if ( this.project != null )
+        return this.project.name;
+      else
+        return this.$t( 'IssueDetails.UnknownProject' );
+    },
+    folder() {
+      if ( this.project != null )
+        return this.project.folders.find( f => f.id == this.details.folderId );
+      else
+        return null;
+    },
+    folderName() {
+      if ( this.folder != null )
+        return this.folder.name;
+      else
+        return this.$t( 'IssueDetails.UnknownFolder' );
+    },
+    createdByName() {
+      return this.getUserName( this.details.createdBy );
+    },
+    modifiedByName() {
+      return this.getUserName( this.details.modifiedBy );
+    },
+    createdDate() {
+      return this.$formatter.formatStamp( this.details.createdDate );
+    },
+    modifiedDate() {
+      return this.$formatter.formatStamp( this.details.modifiedDate );
+    },
+    access() {
+      if ( this.project != null )
+        return this.project.access;
+      else
+        return Access.NoAccess;
+    },
     canMoveDelete() {
-      return this.details.access == Access.AdministratorAccess;
+      return this.access == Access.AdministratorAccess;
     },
     canEditDescription() {
-      return this.details.access == Access.AdministratorAccess || this.details.own;
+      return this.access == Access.AdministratorAccess || this.details.createdBy == this.userId;
+    },
+    isDescriptionModified() {
+      return this.description != null && ( ( this.description.modifiedDate - this.details.createdDate ) > 180 || this.description.modifiedBy != this.details.createdBy );
+    },
+    descriptionModifiedByName() {
+      if ( this.description != null )
+        return this.getUserName( this.description.modifiedBy );
+      else
+        return null;
+    },
+    descriptionModifiedDate() {
+      if ( this.description != null )
+        return this.$formatter.formatStamp( this.description.modifiedDate );
+      else
+        return null;
     },
     allFilters() {
       return [
@@ -177,8 +240,38 @@ export default {
   },
 
   methods: {
+    getAttributeName( attributeId ) {
+      const attribute = this.type.attributes.find( a => a.id == attributeId );
+      if ( attribute != null )
+        return attribute.name;
+      else
+        return this.$t( 'IssueDetails.UnknownAttribute' );
+    },
+    getUserName( userId ) {
+      const user = this.users.find( u => u.id == userId );
+      if ( user != null )
+        return user.name;
+      else
+        return this.$t( 'IssueDetails.UnknownUser' );
+    },
+
+    formatStamp( stamp ) {
+      return this.$formatter.formatStamp( stamp );
+    },
+    formatFileSize( size ) {
+      return this.$formatter.formatFileSize( size );
+    },
+
+    convertAttributeValue( value, attributeId, flags = {} ) {
+      let attribute = attributeId != null ? this.type.attributes.find( a => a.id == attributeId ) : null;
+      if ( attribute == null )
+        attribute = { type: 'TEXT' };
+      value = this.$formatter.convertAttributeValue( value, attribute, flags );
+      return this.$formatter.convertLinks( value );
+    },
+
     canEditItem( item ) {
-      return this.details.access == Access.AdministratorAccess || item.own;
+      return this.access == Access.AdministratorAccess || item.createdBy == this.userId;
     },
     canReply( item ) {
       return this.isAuthenticated && item.type == Change.CommentAdded;
@@ -195,6 +288,10 @@ export default {
     },
     isIssueMoved( item ) {
       return item.type == Change.IssueMoved;
+    },
+
+    isItemModified( item ) {
+      return item.modifiedDate != null && ( ( item.modifiedDate - item.createdDate ) > 180 || item.modifiedBy != item.createdBy );
     },
 
     getFilterText( filter ) {
@@ -221,22 +318,26 @@ export default {
     },
 
     formatChange( change ) {
-      if ( change.type == Change.IssueCreated )
+      if ( change.type == Change.IssueCreated ) {
         return this.$t( 'IssueDetails.IssueCreated', [ this.formatValue( change.new ) ] );
-      else if ( change.type == Change.IssueRenamed )
+      } else if ( change.type == Change.IssueRenamed ) {
         return this.$t( 'IssueDetails.IssueRenamed', [ this.formatValue( change.old ), this.formatValue( change.new ) ] );
-      else if ( change.type == Change.ValueChanged )
-        return this.$t( 'IssueDetails.ValueChanged', [ escape( change.name ), this.formatValue( change.old ), this.formatValue( change.new ) ] );
-    },
-    formatValue( value ) {
-      return value ? '&quot;' + value + '&quot;' : this.$t( 'IssueDetails.Empty' );
+      } else if ( change.type == Change.ValueChanged ) {
+        return this.$t( 'IssueDetails.ValueChanged', [ this.$formatter.escape( this.getAttributeName( change.attributeId ) ),
+          this.formatValue( change.old, change.attributeId ), this.formatValue( change.new, change.attributeId ) ] );
+      }
     },
     formatIssueMoved( item ) {
-      return this.$t( 'IssueDetails.IssueMoved', [ this.formatLocation( item.fromProject, item.fromFolder ), this.formatLocation( item.toProject, item.toFolder ) ] );
+      return this.$t( 'IssueDetails.IssueMoved', [ this.formatLocation( item.fromFolderId ), this.formatLocation( item.toFolderId ) ] );
     },
-    formatLocation( project, folder ) {
-      if ( project != null && folder != null )
-        return '&quot;' + escape( project ) + '&quot; &mdash; &quot;' + escape( folder ) + '&quot;';
+
+    formatValue( value, attributeId = null ) {
+      return value != '' ? '&quot;' + this.convertAttributeValue( value, attributeId ) + '&quot;' : this.$t( 'IssueDetails.Empty' );
+    },
+    formatLocation( folderId ) {
+      const project = this.projects.find( p => p.folders.some( f => f.id == folderId ) );
+      if ( project != null )
+        return '&quot;' + this.$formatter.escape( project.name ) + '&quot; &mdash; &quot;' + this.$formatter.escape( project.folders.find( f => f.id == folderId ).name ) + '&quot;';
       else
         return this.$t( 'IssueDetails.UnknownFolder' );
     },
@@ -347,16 +448,5 @@ export default {
     }
     return false;
   }
-}
-
-const Entities = {
-  '<': '&lt;',
-  '>': '&gt;',
-  '"': '&quot;',
-  '&': '&amp;'
-};
-
-function escape( text ) {
-  return text.replace( /[<>"&]/g, ch => Entities[ ch ] || ch )
 }
 </script>

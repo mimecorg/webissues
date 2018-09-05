@@ -31,9 +31,9 @@ class Server_Api_Issues_Preview
     public function run( $text )
     {
         $serverManager = new System_Api_ServerManager();
-        $parser = new System_Api_Parser();
+        $validator = new System_Api_Validator();
 
-        $text = $parser->normalizeString( $text, $serverManager->getSetting( 'comment_max_length' ), System_Api_Parser::MultiLine | System_Api_Parser::AllowEmpty );
+        $validator->checkString( $text, $serverManager->getSetting( 'comment_max_length' ), System_Api_Validator::MultiLine | System_Api_Validator::AllowEmpty );
 
         System_Web_Base::setLinkMode( System_Web_Base::RouteLinks );
 

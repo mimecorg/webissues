@@ -17,6 +17,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
+import Vue from 'vue'
+
 import { Change, History } from '@/constants'
 
 export default function makeIssueModule( ajax ) {
@@ -60,7 +62,7 @@ function makeGetters() {
       for ( let i = 0; i < state.history.length; i++ ) {
         const row = state.history[ i ];
         if ( row.type <= Change.ValueChanged && change != null ) {
-          if ( row.uid == change.changes[ 0 ].uid && ( row.ts - change.changes[ 0 ].ts ) < 180 ) {
+          if ( row.createdBy == change.changes[ 0 ].createdBy && ( row.createdDate - change.changes[ 0 ].createdDate ) < 180 ) {
             change.changes.push( row );
             continue;
           }
@@ -108,28 +110,13 @@ function makeMutations() {
     },
     setData( state, { details, description, attributes, history, stubs } ) {
       state.details = details;
-      state.description = description;
+      if ( description !== true )
+        state.description = description;
       state.attributes = attributes;
-      if ( state.modifiedSince > 0 ) {
-        history.forEach( item => {
-          if ( item.id <= state.modifiedSince ) {
-            const index = state.history.findIndex( i => i.id == item.id );
-            if ( index >= 0 )
-              state.history.splice( index, 1, item );
-          } else {
-            state.history.push( item );
-          }
-        } );
-        if ( stubs != null ) {
-          stubs.forEach( id => {
-            const index = state.history.findIndex( i => i.id == id );
-            if ( index >= 0 )
-              state.history.splice( index, 1 );
-          } );
-        }
-      } else {
+      if ( process.env.TARGET == 'web' && state.modifiedSince > 0 )
+        mergeHistory( state.history, history, stubs, state.modifiedSince );
+      else
         state.history = history;
-      }
       state.modifiedSince = details.stamp;
     },
     setLastPromise( state, value ) {
@@ -140,7 +127,7 @@ function makeMutations() {
 
 function makeActions( ajax ) {
   return {
-    load( { state, commit } ) {
+    load( { state, rootState, commit } ) {
       const query = {
         issueId: state.issueId,
         description: true,
@@ -151,8 +138,53 @@ function makeActions( ajax ) {
         html: true,
         unread: state.unread
       };
-      const promise = ajax.post( '/server/api/issues/load.php', query );
+
+      let promise;
+      if ( process.env.TARGET == 'web' ) {
+        promise = ajax.post( '/server/api/issues/load.php', query );
+      } else {
+        promise = Vue.prototype.$client.loadIssue( rootState.global.serverUUID, state.issueId ).then( cachedData => {
+          const filter = query.filter;
+
+          query.filter = History.AllHistory;
+          query.modifiedSince = cachedData != null ? cachedData.stamp : 0;
+
+          return ajax.post( '/server/api/issues/load.php', query ).then( loadedData => {
+            if ( cachedData == null || cachedData.stamp != loadedData.details.stamp ) {
+              if ( cachedData == null ) {
+                cachedData = { description: loadedData.description, history: loadedData.history, stamp: loadedData.details.stamp };
+              } else {
+                if ( loadedData.description !== true )
+                  cachedData.description = loadedData.description;
+                mergeHistory( cachedData.history, loadedData.history, loadedData.stubs, cachedData.stamp );
+                cachedData.stamp = loadedData.details.stamp;
+              }
+              return Vue.prototype.$client.saveIssue( rootState.global.serverUUID, state.issueId, cachedData ).then( prepareData );
+            } else {
+              return prepareData();
+            }
+
+            function prepareData() {
+              const data = { ...loadedData, description: cachedData.description, history: cachedData.history };
+
+              if ( filter != History.AllHistory ) {
+                const includeComments = ( filter == History.Comments || filter == History.CommentsAndFiles );
+                const includeFiles = ( filter == History.Files || filter == History.CommentsAndFiles );
+                data.history = data.history.filter( item => item.type == Change.CommentAdded && includeComments || item.type == Change.FileAdded && includeFiles );
+              }
+
+              const type = rootState.global.types.find( t => t.id == data.details.typeId );
+              if ( type != null )
+                data.history = data.history.filter( item => item.type != Change.ValueChanged || type.attributes.some( a => a.id == item.attributeId ) );
+
+              return data;
+            }
+          } );
+        } );
+      }
+
       commit( 'setLastPromise', promise );
+
       return new Promise( ( resolve, reject ) => {
         promise.then( data => {
           if ( promise == state.lastPromise ) {
@@ -170,4 +202,23 @@ function makeActions( ajax ) {
       } );
     }
   };
+}
+
+function mergeHistory( target, history, stubs, modifiedSince ) {
+  history.forEach( item => {
+    if ( item.id <= modifiedSince ) {
+      const index = target.findIndex( i => i.id == item.id );
+      if ( index >= 0 )
+        target.splice( index, 1, item );
+    } else {
+      target.push( item );
+    }
+  } );
+  if ( stubs != null ) {
+    stubs.forEach( id => {
+      const index = target.findIndex( i => i.id == id );
+      if ( index >= 0 )
+        target.splice( index, 1 );
+    } );
+  }
 }

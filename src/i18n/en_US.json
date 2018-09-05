@@ -30,6 +30,11 @@
     "November": "November",
     "December": "December"
   },
+  "FileSize": {
+    "Bytes": "{0} bytes",
+    "Kilobytes": "{0} kB",
+    "Megabytes": "{0} MB"
+  },
   "LocationFilters": {
     "SelectProject": "Select Project",
     "SelectFolder": "Select Folder",
@@ -287,7 +292,11 @@
     "ValueChanged": "{0}: {1} &raquo; {2}",
     "Empty": "empty",
     "IssueMoved": "Issue moved from {0} to {1}",
-    "UnknownFolder": "Unknown Folder"
+    "UnknownType": "Unknown Type",
+    "UnknownAttribute": "Unknown Attribute",
+    "UnknownProject": "Unknown Project",
+    "UnknownFolder": "Unknown Folder",
+    "UnknownUser": "Unknown User"
   },
   "ManageProjects": {
     "Projects": "Projects",

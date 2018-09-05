@@ -36,7 +36,7 @@ class Server_Api_Issues_Edit
     public function run( $issueId, $folderId, $name, $values, $description, $descriptionFormat )
     {
         $helper = new Server_Api_Issues_Helper();
-        $values = $helper->checkValues( $values );
+        $values = $helper->extractValues( $values );
 
         $issueManager = new System_Api_IssueManager();
         $issue = $issueManager->getIssue( $issueId );
@@ -46,15 +46,15 @@ class Server_Api_Issues_Edit
         if ( $issue[ 'type_id' ] != $folder[ 'type_id' ] )
             throw new System_Api_Error( System_Api_Error::UnknownFolder );
 
-        $parser = new System_Api_Parser();
-        $parser->setProjectId( $folder[ 'project_id' ] );
+        $validator = new System_Api_Validator();
+        $validator->setProjectId( $folder[ 'project_id' ] );
 
-        $name = $parser->normalizeString( $name, System_Const::ValueMaxLength );
+        $validator->checkString( $name, System_Const::ValueMaxLength );
 
         if ( $description != null ) {
             $serverManager = new System_Api_ServerManager();
-            $description = $parser->normalizeString( $description, $serverManager->getSetting( 'comment_max_length' ), System_Api_Parser::AllowEmpty | System_Api_Parser::MultiLine );
-            $parser->checkTextFormat( $descriptionFormat );
+            $validator->checkString( $description, $serverManager->getSetting( 'comment_max_length' ), System_Api_Validator::AllowEmpty | System_Api_Validator::MultiLine );
+            $validator->checkTextFormat( $descriptionFormat );
         }
 
         $typeManager = new System_Api_TypeManager();
@@ -71,12 +71,12 @@ class Server_Api_Issues_Edit
         foreach ( $rows as $row )
             $oldValues[ $row[ 'attr_id' ] ] = $row[ 'attr_value' ];
 
-        $values = $helper->convertValues( $values, $attributes, $parser );
+        $helper->checkValues( $values, $attributes, $validator );
 
         foreach ( $oldValues as $id => $oldValue ) {
             if ( !isset( $values[ $id ] ) ) {
                 $attribute = $attributes[ $id ];
-                $parser->checkAttributeValue( $attribute[ 'attr_def' ], $oldValue );
+                $validator->checkAttributeValue( $attribute[ 'attr_def' ], $oldValue );
 
                 if ( $oldValue != $initialValues[ $id ] )
                     $values[ $id ] = $oldValue;

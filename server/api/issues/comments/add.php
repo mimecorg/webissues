@@ -35,11 +35,11 @@ class Server_Api_Issues_Comments_Add
         $issueManager = new System_Api_IssueManager();
         $issue = $issueManager->getIssue( $issueId );
 
-        $parser = new System_Api_Parser();
+        $validator = new System_Api_Validator();
         $serverManager = new System_Api_ServerManager();
 
-        $commentText = $parser->normalizeString( $commentText, $serverManager->getSetting( 'comment_max_length' ), System_Api_Parser::MultiLine );
-        $parser->checkTextFormat( $commentFormat );
+        $validator->checkString( $commentText, $serverManager->getSetting( 'comment_max_length' ), System_Api_Validator::MultiLine );
+        $validator->checkTextFormat( $commentFormat );
 
         $stampId = $issueManager->addComment( $issue, $commentText, $commentFormat );
 

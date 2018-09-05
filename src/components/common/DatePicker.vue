@@ -450,13 +450,13 @@ export default {
     /* change the value of the input control based on selected date */
     updateText() {
       if ( this.selectedDate != null )
-        this.text = this.$parser.formatDate( this.selectedDate, { withTime: this.withTime } );
+        this.text = this.$formatter.formatDate( this.selectedDate, { withTime: this.withTime } );
     },
 
     /* update selected date based on user input */
     updateDate() {
       if ( this.text != null ) {
-        const date = this.$parser.parseDate( this.text, { withTime: this.withTime } );
+        const date = this.parseDate( this.text );
         if ( date != null ) {
           this.selectedDate = date;
           this.currentDate = this.createDate( date.getFullYear(), date.getMonth(), 1 );
@@ -483,12 +483,22 @@ export default {
       date.setFullYear( year, month, day );
       date.setHours( hours, minutes, 0, 0 );
       return date;
+    },
+
+    /* convert text to Date */
+    parseDate( value ) {
+      try {
+        value = this.$parser.normalizeString( value );
+        return this.$parser.parseDate( value, { withTime: this.withTime } );
+      } catch ( err ) {
+        return null;
+      }
     }
   },
 
   mounted() {
     if ( this.value != null ) {
-      const date = this.$parser.parseDate( this.value, { withTime: this.withTime } );
+      const date = this.parseDate( this.value );
       if ( date != null )
         this.selectedDate = date;
     }

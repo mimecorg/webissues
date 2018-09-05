@@ -30,14 +30,14 @@ class Server_Api_Issues_List
         'projectId' => 'int',
         'folderId' => 'int',
         'searchColumn' => array( 'type' => 'int', 'default' => System_Api_Column::Name ),
-        'searchText' => 'string',
+        'searchValue' => 'string',
         'sortColumn' => 'int',
         'sortAscending' => array( 'type' => 'bool', 'default' => true ),
         'offset' => array( 'type' => 'int', 'default' => 0 ),
         'limit' => array( 'type' => 'int', 'required' => true )
     );
 
-    public function run( $typeId, $viewId, $projectId, $folderId, $searchColumn, $searchText, $sortColumn, $sortAscending, $offset, $limit )
+    public function run( $typeId, $viewId, $projectId, $folderId, $searchColumn, $searchValue, $sortColumn, $sortAscending, $offset, $limit )
     {
         if ( $typeId == null && $viewId == null && $folderId == null )
             throw new Server_Error( Server_Error::InvalidArguments );
@@ -94,25 +94,17 @@ class Server_Api_Issues_List
         if ( $definition != null )
             $queryGenerator->setViewDefinition( $definition );
 
-        $searchError = false;
+        if ( $searchValue != null ) {
+            $validator = new System_Api_Validator();
 
-        $parser = new System_Api_Parser();
-        $formatter = new System_Api_Formatter();
+            $validator->checkString( $searchValue, System_Const::ValueMaxLength );
 
-        try {
-            $searchText = $parser->normalizeString( $searchText, System_Const::ValueMaxLength, System_Api_Parser::AllowEmpty );
+            $info = $this->getSearchValueInfo( $searchColumn );
+            $definition = $info->toString();
 
-            if ( $searchText != '' ) {
-                $info = $this->getSearchValueInfo( $searchColumn );
-                $definition = $info->toString();
+            $validator->checkAttributeValue( $definition, $searchValue );
 
-                $value = $parser->convertAttributeValue( $definition, $searchText );
-                $searchText = $formatter->convertAttributeValue( $definition, $value );
-
-                $queryGenerator->setSearchValue( $searchColumn, $info->getType(), $value );
-            }
-        } catch ( System_Api_Error $exception ) {
-            $searchError = true;
+            $queryGenerator->setSearchValue( $searchColumn, $info->getType(), $searchValue );
         }
 
         if ( $sortColumn !== null ) {
@@ -123,9 +115,6 @@ class Server_Api_Issues_List
             $sortAscending = ( $queryGenerator->getSortOrder() == System_Const::Ascending );
             $orderBy = $queryGenerator->getOrderBy();
         }
-
-        $result[ 'searchText' ] = $searchText;
-        $result[ 'searchError' ] = $searchError;
 
         $result[ 'sortColumn' ] = $sortColumn;
         $result[ 'sortAscending' ] = $sortAscending;
@@ -146,17 +135,16 @@ class Server_Api_Issues_List
             $result[ 'columns' ][] = $resultColumn;
         }
 
-        $result[ 'issues' ] = array();
-
-        if ( $searchError )
-            return $result;
-
         System_Web_Base::setLinkMode( System_Web_Base::RouteLinks );
+
+        $formatter = new System_Api_Formatter();
 
         $connection = System_Core_Application::getInstance()->getConnection();
 
         $query = $queryGenerator->generateSelectQuery();
         $page = $connection->queryPageArgs( $query, $orderBy, $limit, $offset, $queryGenerator->getQueryArguments() );
+
+        $result[ 'issues' ] = array();
 
         foreach( $page as $row ) {
             $resultIssue = array();

@@ -41,6 +41,7 @@ function makeState() {
     folderId: null,
     searchColumn: Column.Name,
     searchText: '',
+    searchValue: '',
     searchError: false,
     sortColumn: null,
     sortAscending: false,
@@ -141,6 +142,7 @@ function makeMutations() {
       state.folderId = null;
       state.searchColumn = Column.Name;
       state.searchText = '';
+      state.searchValue = '';
       state.searchError = false;
       state.sortColumn = null;
       state.sortAscending = false;
@@ -164,10 +166,19 @@ function makeMutations() {
     setSearchColumn( state, { searchColumn } ) {
       state.searchColumn = searchColumn;
       state.searchText = '';
+      state.searchValue = '';
       state.searchError = false;
     },
     setSearchText( state, { searchText } ) {
       state.searchText = searchText;
+    },
+    setSearchError( state, { searchText } ) {
+      state.searchText = searchText;
+      state.searchError = true;
+    },
+    setSearchValue( state, { searchText, searchValue } ) {
+      state.searchText = searchText;
+      state.searchValue = searchValue;
       state.searchError = false;
       state.offset = 0;
     },
@@ -190,9 +201,7 @@ function makeMutations() {
       if ( issue != null )
         issue.read = stamp;
     },
-    setData( state, { searchText, searchError, sortColumn, sortAscending, columns, issues, totalCount } ) {
-      state.searchText = searchText;
-      state.searchError = searchError;
+    setData( state, { sortColumn, sortAscending, columns, issues, totalCount } ) {
       state.sortColumn = sortColumn;
       state.sortAscending = sortAscending;
       state.columns = columns;
@@ -219,7 +228,7 @@ function makeActions( ajax ) {
         projectId: state.projectId,
         folderId: state.folderId,
         searchColumn: state.searchColumn,
-        searchText: state.searchText,
+        searchValue: state.searchValue,
         sortColumn: state.sortColumn,
         sortAscending: state.sortAscending,
         offset: state.offset,

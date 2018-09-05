@@ -33,7 +33,6 @@ export default {
   props: {
     issueId: Number,
     typeId: Number,
-    initialProjectId: Number,
     initialFolderId: Number,
     name: String
   },
@@ -51,11 +50,20 @@ export default {
 
   data() {
     return {
-      projectId: this.initialProjectId
+      projectId: this.getInitialProjectId()
     };
   },
 
   methods: {
+    getInitialProjectId() {
+      if ( this.initialFolderId != null ) {
+        const project = this.$store.state.global.projects.find( p => p.folders.some( f => f.id == this.initialFolderId ) );
+        if ( project != null )
+          return project.id;
+      }
+      return null;
+    },
+
     submit() {
       if ( !this.$fields.validate() )
         return;

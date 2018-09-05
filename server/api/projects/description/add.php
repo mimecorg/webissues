@@ -35,11 +35,11 @@ class Server_Api_Projects_Description_Add
         $projectManager = new System_Api_ProjectManager();
         $project = $projectManager->getProject( $projectId, System_Api_ProjectManager::RequireAdministrator );
 
-        $parser = new System_Api_Parser();
+        $validator = new System_Api_Validator();
         $serverManager = new System_Api_ServerManager();
 
-        $descriptionText = $parser->normalizeString( $descriptionText, $serverManager->getSetting( 'comment_max_length' ), System_Api_Parser::MultiLine );
-        $parser->checkTextFormat( $descriptionFormat );
+        $validator->checkString( $descriptionText, $serverManager->getSetting( 'comment_max_length' ), System_Api_Validator::MultiLine );
+        $validator->checkTextFormat( $descriptionFormat );
 
         $stampId = $projectManager->addProjectDescription( $project, $descriptionText, $descriptionFormat );
 

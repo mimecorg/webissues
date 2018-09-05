@@ -32,20 +32,17 @@ class Server_Api_Issues_Edit
 
     public function run( $issueId, $name, $values )
     {
-        $principal = System_Api_Principal::getCurrent();
-        $principal->checkAuthenticated();
-
         $helper = new Server_Api_Issues_Helper();
-        $values = $helper->checkValues( $values );
+        $values = $helper->extractValues( $values );
 
         $issueManager = new System_Api_IssueManager();
         $issue = $issueManager->getIssue( $issueId );
 
-        $parser = new System_Api_Parser();
-        $parser->setProjectId( $issue[ 'project_id' ] );
+        $validator = new System_Api_Validator();
+        $validator->setProjectId( $issue[ 'project_id' ] );
 
         if ( $name != null )
-            $name = $parser->normalizeString( $name, System_Const::ValueMaxLength );
+            $validator->checkString( $name, System_Const::ValueMaxLength );
 
         $typeManager = new System_Api_TypeManager();
         $type = $typeManager->getIssueTypeForIssue( $issue );
@@ -59,12 +56,12 @@ class Server_Api_Issues_Edit
         foreach ( $rows as $row )
             $oldValues[ $row[ 'attr_id' ] ] = $row[ 'attr_value' ];
 
-        $values = $helper->convertValues( $values, $attributes, $parser );
+        $helper->checkValues( $values, $attributes, $validator );
 
         foreach ( $oldValues as $id => $oldValue ) {
             if ( !isset( $values[ $id ] ) ) {
                 $attribute = $attributes[ $id ];
-                $parser->checkAttributeValue( $attribute[ 'attr_def' ], $oldValue );
+                $validator->checkAttributeValue( $attribute[ 'attr_def' ], $oldValue );
             }
         }
 

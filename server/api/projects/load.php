@@ -44,8 +44,6 @@ class Server_Api_Projects_Load
         $projectManager = new System_Api_ProjectManager();
         $project = $projectManager->getProject( $projectId, $flags );
 
-        $formatter = new System_Api_Formatter();
-
         $resultDetails[ 'id' ] = $project[ 'project_id' ];
         $resultDetails[ 'name' ] = $project[ 'project_name' ];
         $resultDetails[ 'access' ] = (int)$project[ 'project_access' ];
@@ -60,8 +58,8 @@ class Server_Api_Projects_Load
             if ( $project[ 'descr_id' ] != null ) {
                 $descr = $projectManager->getProjectDescription( $project );
 
-                $resultDescription[ 'modifiedBy' ] = $descr[ 'modified_by' ];
-                $resultDescription[ 'modifiedDate' ] = $formatter->formatDateTime( $descr[ 'modified_date' ], System_Api_Formatter::ToLocalTimeZone );
+                $resultDescription[ 'modifiedBy' ] = $descr[ 'modified_user' ];
+                $resultDescription[ 'modifiedDate' ] = $descr[ 'modified_date' ];
 
                 $resultDescription[ 'text' ] = $this->convertText( $descr[ 'descr_text' ], $html, $descr[ 'descr_format' ] );
                 $resultDescription[ 'format' ] = $descr[ 'descr_format' ];

@@ -22,7 +22,7 @@ if ( !defined( 'WI_VERSION' ) ) die( -1 );
 
 class Server_Api_Issues_Helper
 {
-    public function checkValues( $values )
+    public function extractValues( $values )
     {
         $result = array();
 
@@ -57,10 +57,8 @@ class Server_Api_Issues_Helper
         return $initialValues;
     }
 
-    public function convertValues( $values, $attributes, $parser )
+    public function checkValues( $values, $attributes, $validator )
     {
-        $convertedValues = array();
-
         foreach ( $values as $id => $value ) {
             if ( !isset( $attributes[ $id ] ) )
                 throw new System_Api_Error( System_Api_Error::UnknownAttribute );
@@ -68,15 +66,13 @@ class Server_Api_Issues_Helper
             $attribute = $attributes[ $id ];
             $info = System_Api_DefinitionInfo::fromString( $attribute[ 'attr_def' ] );
 
-            $flags = System_Api_Parser::AllowEmpty;
+            $flags = System_Api_Validator::AllowEmpty;
             if ( $info->getType() == 'TEXT' && $info->getMetadata( 'multi-line', 0 ) )
-                $flags |= System_Api_Parser::MultiLine;
-            $value = $parser->normalizeString( $value, System_Const::ValueMaxLength, $flags );
+                $flags |= System_Api_Validator::MultiLine;
+            $validator->checkString( $value, System_Const::ValueMaxLength, $flags );
 
-            $convertedValues[ $id ] = $parser->convertAttributeValue( $attribute[ 'attr_def' ], $value );
+            $validator->checkAttributeValue( $attribute[ 'attr_def' ], $value );
         }
-
-        return $convertedValues;
     }
 
     public function getOrderedValues( $values, $type )
