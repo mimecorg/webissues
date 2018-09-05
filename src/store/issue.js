@@ -166,11 +166,17 @@ function makeActions( ajax ) {
 
             function prepareData() {
               const data = { ...loadedData, description: cachedData.description, history: cachedData.history };
+
               if ( filter != History.AllHistory ) {
                 const includeComments = ( filter == History.Comments || filter == History.CommentsAndFiles );
                 const includeFiles = ( filter == History.Files || filter == History.CommentsAndFiles );
                 data.history = data.history.filter( item => item.type == Change.CommentAdded && includeComments || item.type == Change.FileAdded && includeFiles );
               }
+
+              const type = rootState.global.types.find( t => t.id == data.details.typeId );
+              if ( type != null )
+                data.history = data.history.filter( item => item.type != Change.ValueChanged || type.attributes.some( a => a.id == item.attributeId ) );
+
               return data;
             }
           } );
