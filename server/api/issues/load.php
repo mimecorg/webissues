@@ -113,63 +113,65 @@ class Server_Api_Issues_Load
                 $stateManager->setIssueRead( $issue, $unread ? 0 : $issue[ 'stamp_id' ] );
             }
 
-            $historyProvider = new System_Api_HistoryProvider();
-            $historyProvider->setIssueId( $issueId );
-
-            if ( $modifiedSince > 0 )
-                $historyProvider->setModifiedSince( $modifiedSince );
-
-            $connection = System_Core_Application::getInstance()->getConnection();
-
-            $query = $historyProvider->generateApiSelectQuery( $filter );
-            $page = $connection->queryTableArgs( $query, $historyProvider->getQueryArguments() );
-
             $result[ 'history' ] = array();
 
-            foreach ( $page as $item ) {
-                $resultItem = array();
+            if ( $issue[ 'stamp_id' ] > $modifiedSince ) {
+                $historyProvider = new System_Api_HistoryProvider();
+                $historyProvider->setIssueId( $issueId );
 
-                $resultItem[ 'id' ] = $item[ 'change_id' ];
-                $resultItem[ 'type' ] = $item[ 'change_type' ];
-                $resultItem[ 'createdDate' ] = $item[ 'created_date' ];
-                $resultItem[ 'createdBy' ] = $item[ 'created_user' ];
-                if ( $item[ 'stamp_id' ] != $item[ 'change_id' ] ) {
-                    $resultItem[ 'modifiedDate' ] = $item[ 'modified_date' ];
-                    $resultItem[ 'modifiedBy' ] = $item[ 'modified_user' ];
+                if ( $modifiedSince > 0 )
+                    $historyProvider->setModifiedSince( $modifiedSince );
+
+                $connection = System_Core_Application::getInstance()->getConnection();
+
+                $query = $historyProvider->generateApiSelectQuery( $filter );
+                $page = $connection->queryTableArgs( $query, $historyProvider->getQueryArguments() );
+
+                foreach ( $page as $item ) {
+                    $resultItem = array();
+
+                    $resultItem[ 'id' ] = $item[ 'change_id' ];
+                    $resultItem[ 'type' ] = $item[ 'change_type' ];
+                    $resultItem[ 'createdDate' ] = $item[ 'created_date' ];
+                    $resultItem[ 'createdBy' ] = $item[ 'created_user' ];
+                    if ( $item[ 'stamp_id' ] != $item[ 'change_id' ] ) {
+                        $resultItem[ 'modifiedDate' ] = $item[ 'modified_date' ];
+                        $resultItem[ 'modifiedBy' ] = $item[ 'modified_user' ];
+                    }
+
+                    if ( $item[ 'change_type' ] == System_Const::CommentAdded )
+                        $resultItem[ 'text' ] = $this->convertText( $item[ 'comment_text' ], $html, $item[ 'comment_format' ] );
+
+                    if ( $item[ 'change_type' ] == System_Const::FileAdded ) {
+                        $resultItem[ 'name' ] = $item[ 'file_name' ];
+                        $resultItem[ 'description' ] = $this->convertText( $item[ 'file_descr' ], $html );
+                        $resultItem[ 'size' ] = $item[ 'file_size' ];
+                    }
+
+                    if ( $item[ 'change_type' ] == System_Const::IssueMoved ) {
+                        $resultItem[ 'fromFolderId' ] = $item[ 'from_folder_id' ];
+                        $resultItem[ 'toFolderId' ] = $item[ 'to_folder_id' ];
+                    }
+
+                    if ( $item[ 'change_type' ] <= System_Const::ValueChanged ) {
+                        if ( $item[ 'change_type' ] == System_Const::ValueChanged )
+                            $resultItem[ 'attributeId' ] = $item[ 'attr_id' ];
+                        $resultItem[ 'new' ] = $item[ 'value_new' ];
+                        $resultItem[ 'old' ] = $item[ 'value_old' ];
+                    }
+
+                    $result[ 'history' ][] = $resultItem;
                 }
 
-                if ( $item[ 'change_type' ] == System_Const::CommentAdded )
-                    $resultItem[ 'text' ] = $this->convertText( $item[ 'comment_text' ], $html, $item[ 'comment_format' ] );
+                if ( $modifiedSince > 0 ) {
+                    $stubs = $issueManager->getChangeStubs( $issue, $modifiedSince );
 
-                if ( $item[ 'change_type' ] == System_Const::FileAdded ) {
-                    $resultItem[ 'name' ] = $item[ 'file_name' ];
-                    $resultItem[ 'description' ] = $this->convertText( $item[ 'file_descr' ], $html );
-                    $resultItem[ 'size' ] = $item[ 'file_size' ];
-                }
+                    if ( !empty( $stubs ) ) {
+                        $result[ 'stubs' ] = array();
 
-                if ( $item[ 'change_type' ] == System_Const::IssueMoved ) {
-                    $resultItem[ 'fromFolderId' ] = $item[ 'from_folder_id' ];
-                    $resultItem[ 'toFolderId' ] = $item[ 'to_folder_id' ];
-                }
-
-                if ( $item[ 'change_type' ] <= System_Const::ValueChanged ) {
-                    if ( $item[ 'change_type' ] <= System_Const::ValueChanged )
-                        $resultItem[ 'attributeId' ] = $item[ 'attr_id' ];
-                    $resultItem[ 'new' ] = $item[ 'value_new' ];
-                    $resultItem[ 'old' ] = $item[ 'value_old' ];
-                }
-
-                $result[ 'history' ][] = $resultItem;
-            }
-
-            if ( $modifiedSince > 0 ) {
-                $stubs = $issueManager->getChangeStubs( $issue, $modifiedSince );
-
-                if ( !empty( $stubs ) ) {
-                    $result[ 'stubs' ] = array();
-
-                    foreach( $stubs as $stub )
-                        $result[ 'stubs' ][] = $stub[ 'change_id' ];
+                        foreach( $stubs as $stub )
+                            $result[ 'stubs' ][] = $stub[ 'change_id' ];
+                    }
                 }
             }
         }
