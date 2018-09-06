@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import { ErrorCode } from '@/constants'
+import { ErrorCode, Reason } from '@/constants'
 
 export default {
   props: {
@@ -67,7 +67,7 @@ export default {
         this.$store.commit( 'global/setDirty' );
         this.$router.push( 'ManageProjects' );
       } ).catch( error => {
-        if ( error.reason == 'APIError' && error.errorCode == ErrorCode.CannotDeleteProject ) {
+        if ( error.reason == Reason.APIError && error.errorCode == ErrorCode.CannotDeleteProject ) {
           this.$emit( 'unblock' );
           this.force = true;
         } else {

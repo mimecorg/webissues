@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import { ErrorCode } from '@/constants'
+import { ErrorCode, Reason } from '@/constants'
 
 export default {
   props: {
@@ -68,7 +68,7 @@ export default {
           this.$store.commit( 'global/setDirty' );
         this.returnToDetails();
       } ).catch( error => {
-        if ( error.reason == 'APIError' && error.errorCode == ErrorCode.FolderAlreadyExists ) {
+        if ( error.reason == Reason.APIError && error.errorCode == ErrorCode.FolderAlreadyExists ) {
           this.$emit( 'unblock' );
           this.projectIdError = this.$t( 'ErrorCode.' + error.errorCode );
           this.$nextTick( () => {

@@ -20,6 +20,7 @@
 import Vue from 'vue'
 
 import { TextFormat, ErrorCode } from '@/constants'
+import { makeError } from '@/utils/errors'
 
 export default function makeIssueRoutes( i18n, ajax, store, formatter ) {
   return function issueRoutes( route ) {
@@ -305,11 +306,4 @@ export default function makeIssueRoutes( i18n, ajax, store, formatter ) {
       } );
     }
   }
-}
-
-function makeError( errorCode ) {
-  const error = new Error( 'Route error: ' + errorCode );
-  error.reason = 'APIError';
-  error.errorCode = errorCode;
-  return error;
 }

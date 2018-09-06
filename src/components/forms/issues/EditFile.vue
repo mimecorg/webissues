@@ -38,6 +38,7 @@
 import { mapState } from 'vuex'
 
 import { MaxLength } from '@/constants'
+import { makeParseError } from '@/utils/errors'
 
 export default {
   props: {
@@ -140,7 +141,7 @@ export default {
 
     parseName( value ) {
       if ( value.charAt( 0 ) == '.' || /[\\/:*?"<>|]/.test( value ) )
-        throw this.$fields.makeError( this.$t( 'EditFile.InvalidFileName' ) );
+        throw makeParseError( this.$t( 'EditFile.InvalidFileName' ) );
       return value;
     },
 

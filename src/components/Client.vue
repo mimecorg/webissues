@@ -29,6 +29,8 @@
 import ClientNavbar from '@/components/ClientNavbar'
 import ClientWindow from '@/components/ClientWindow'
 
+import { makeVersionError } from '@/utils/errors'
+
 export default {
   components: {
     ClientNavbar,
@@ -100,11 +102,8 @@ export default {
     this.busy = true;
 
     this.$ajax.post( '/server/api/info.php' ).then( ( { serverName, serverVersion, settings } ) => {
-      if ( !this.$client.isSupportedVersion( serverVersion ) ) {
-        const error = new Error( 'Unsupported server version: ' + serverVersion );
-        error.reason = 'UnsupportedVersion';
-        throw error;
-      }
+      if ( !this.$client.isSupportedVersion( serverVersion ) )
+        throw makeVersionError( serverVersion );
 
       this.$client.settings.serverName = serverName;
       this.$client.settings.serverVersion = serverVersion;

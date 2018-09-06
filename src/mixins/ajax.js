@@ -19,6 +19,9 @@
 
 import Vue from 'vue'
 
+import { Reason } from '@/constants'
+import { makeServerError, makeHttpError } from '@/utils/errors'
+
 Vue.mixin( {
   beforeCreate() {
     const options = this.$options;
@@ -53,7 +56,7 @@ export default function makeAjax( baseURL, csrfToken ) {
         } ).then( response => {
           response.json().then( ( { result, errorCode, errorMessage } ) => {
             if ( errorCode != null )
-              reject( makeError( errorCode, errorMessage, response ) );
+              reject( makeServerError( errorCode, errorMessage, response ) );
             else if ( !response.ok )
               reject( makeHttpError( response ) );
             else
@@ -63,12 +66,12 @@ export default function makeAjax( baseURL, csrfToken ) {
               reject( makeHttpError( response ) );
             } else {
               error.response = response;
-              error.reason = 'InvalidResponse';
+              error.reason = Reason.InvalidResponse;
               reject( error );
             }
           } );
         } ).catch( error => {
-          error.reason = 'NetworkError';
+          error.reason = Reason.NetworkError;
           reject( error );
         } );
       } );
@@ -77,28 +80,4 @@ export default function makeAjax( baseURL, csrfToken ) {
       return makeAjax( baseURL, null );
     }
   };
-}
-
-function makeError( errorCode, errorMessage, response ) {
-  const error = new Error( 'Server returned an error: ' + errorCode + ' (' + errorMessage + ')' );
-  if ( errorCode >= 500 )
-    error.reason = 'ServerError';
-  else if ( errorCode >= 400 )
-    error.reason = 'BadRequest';
-  else
-    error.reason = 'APIError';
-  error.errorCode = errorCode;
-  error.errorMessage = errorMessage;
-  error.response = response;
-  return error;
-}
-
-function makeHttpError( response ) {
-  const error = new Error( 'HTTP error: ' + response.status + ' (' + response.statusText + ')' );
-  if ( response.status >= 500 )
-    error.reason = 'ServerError';
-  else
-    error.reason = 'BadRequest';
-  error.response = response;
-  return error;
 }

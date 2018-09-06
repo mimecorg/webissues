@@ -22,7 +22,8 @@ import { expect } from 'chai'
 import makeParser from '@/mixins/parser'
 
 import { ErrorCode } from '@/constants'
-import { invariantSettings, makeError } from '@/utils/locale'
+import { makeError } from '@/utils/errors'
+import { invariantSettings } from '@/utils/locale'
 import { enSettings, plSettings } from '@/test'
 
 const parser = makeParser( { state: { global: { settings: invariantSettings } } } );

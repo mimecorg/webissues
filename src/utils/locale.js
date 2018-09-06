@@ -18,6 +18,7 @@
 **************************************************************************/
 
 import { ErrorCode } from '@/constants'
+import { makeError } from '@/utils/errors'
 
 export const invariantSettings = {
   groupSeparator: '',
@@ -181,13 +182,6 @@ export function formatDate( date, { withTime = false, toUTC = false }, { dateOrd
   }
 
   return value;
-}
-
-export function makeError( errorCode ) {
-  const error = new Error( 'Parse error: ' + errorCode );
-  error.reason = 'APIError';
-  error.errorCode = errorCode;
-  return error;
 }
 
 function makeDatePattern( dateOrder, dateSeparator ) {

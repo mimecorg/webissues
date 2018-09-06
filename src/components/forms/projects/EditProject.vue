@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import { MaxLength, ErrorCode } from '@/constants'
+import { MaxLength, ErrorCode, Reason } from '@/constants'
 
 export default {
   props: {
@@ -99,7 +99,7 @@ export default {
           this.$store.commit( 'global/setDirty' );
         this.returnToDetails( projectId );
       } ).catch( error => {
-        if ( error.reason == 'APIError' && error.errorCode == ErrorCode.ProjectAlreadyExists ) {
+        if ( error.reason == Reason.APIError && error.errorCode == ErrorCode.ProjectAlreadyExists ) {
           this.$emit( 'unblock' );
           this.nameError = this.$t( 'ErrorCode.' + error.errorCode );
           this.$nextTick( () => {

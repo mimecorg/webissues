@@ -29,6 +29,9 @@
 </template>
 
 <script>
+import { Reason } from '@/constants'
+import { makeParseError, makeVersionError } from '@/utils/errors'
+
 export default {
   fields() {
     return {
@@ -63,11 +66,8 @@ export default {
       this.$emit( 'block' );
 
       this.$ajax.withBaseURL( baseURL ).post( '/server/api/info.php' ).then( ( { serverName, serverVersion } ) => {
-        if ( !this.$client.isSupportedVersion( serverVersion ) ) {
-          const error = new Error( 'Unsupported server version: ' + serverVersion );
-          error.reason = 'UnsupportedVersion';
-          throw error;
-        }
+        if ( !this.$client.isSupportedVersion( serverVersion ) )
+          throw makeVersionError( serverVersion );
 
         this.$client.settings.baseURL = baseURL;
         this.$client.settings.serverName = serverName;
@@ -93,7 +93,7 @@ export default {
     parseURL( value ) {
       const matches = /^(https?:\/\/)?[a-z0-9]+([\-\.][a-z0-9]+)*(:[0-9]{1,5})?(\/.*)?$/i.exec( value );
       if ( matches == null )
-        throw this.$fields.makeError( this.$t( 'ClientSettings.InvalidURL' ) );
+        throw makeParseError( this.$t( 'ClientSettings.InvalidURL' ) );
       if ( matches[ 1 ] == null )
         value = 'http://' + value;
       value = value.replace( /\/+(client\/)?(index\.php)?$/, '' );
@@ -102,19 +102,19 @@ export default {
 
     errorMessage( error ) {
       switch ( error.reason ) {
-        case 'NetworkError':
+        case Reason.NetworkError:
           return this.$t( 'ErrorMessage.NetworkError' );
-        case 'APIError':
-        case 'InvalidResponse':
+        case Reason.APIError:
+        case Reason.InvalidResponse:
           return this.$t( 'ErrorMessage.InvalidResponse' );
-        case 'ServerError':
+        case Reason.ServerError:
           if ( error.errorCode == 501 || error.errorCode == 502 )
             return this.$t( 'ErrorMessage.ServerNotConfigured' );
           else
             return this.$t( 'ErrorMessage.ServerError' );
-        case 'BadRequest':
+        case Reason.BadRequest:
           return this.$t( 'ErrorMessage.BadRequest' );
-        case 'UnsupportedVersion':
+        case Reason.UnsupportedVersion:
           return this.$t( 'ErrorMessage.UnsupportedVersion' );
         default:
           return this.$t( 'ErrorMessage.UnknownError' );

@@ -131,6 +131,17 @@ export const ErrorCode = {
   SubscriptionAlreadyExists: 365,
 };
 
+export const Reason = {
+  APIError: 'APIError',
+  ParseError: 'ParseError',
+  PageNotFound: 'PageNotFound',
+  ServerError: 'ServerError',
+  BadRequest: 'BadRequest',
+  InvalidResponse: 'InvalidResponse',
+  NetworkError: 'NetworkError',
+  UnsupportedVersion: 'UnsupportedVersion'
+};
+
 export const KeyCode = {
   Tab: 9,
   Enter: 13,

@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import { ErrorCode } from '@/constants'
+import { ErrorCode, Reason } from '@/constants'
 
 export default {
   fields() {
@@ -60,7 +60,7 @@ export default {
         else
           this.$router.push( 'IssueItem', { issueId, itemId: this.itemId } );
       } ).catch( error => {
-        if ( error.reason == 'APIError' && error.errorCode == ErrorCode.ItemNotFound ) {
+        if ( error.reason == Reason.APIError && error.errorCode == ErrorCode.ItemNotFound ) {
           this.$emit( 'unblock' );
           this.itemError = this.$t( 'ErrorCode.' + error.errorCode );
           this.$nextTick( () => {

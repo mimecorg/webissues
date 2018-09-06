@@ -46,7 +46,8 @@
 </template>
 
 <script>
-import { MaxLength, ErrorCode } from '@/constants'
+import { MaxLength, ErrorCode, Reason } from '@/constants'
+import { makeParseError } from '@/utils/errors'
 
 export default {
   props: {
@@ -103,20 +104,20 @@ export default {
       this.$ajax.post( '/server/api/login.php', data ).then( ( { userId, userName, userAccess, csrfToken } ) => {
         this.$client.startApplication( { userId, userName, userAccess, csrfToken } );
       } ).catch( error => {
-        if ( error.reason == 'APIError' && error.errorCode == ErrorCode.IncorrectLogin ) {
+        if ( error.reason == Reason.APIError && error.errorCode == ErrorCode.IncorrectLogin ) {
           this.$emit( 'unblock' );
           this.changePassword = false;
           this.passwordError = this.$t( 'ErrorCode.' + error.errorCode );
           this.$nextTick( () => {
             this.$refs.password.focus();
           } );
-        } else if ( error.reason == 'APIError' && error.errorCode == ErrorCode.MustChangePassword ) {
+        } else if ( error.reason == Reason.APIError && error.errorCode == ErrorCode.MustChangePassword ) {
           this.$emit( 'unblock' );
           this.changePassword = true;
           this.$nextTick( () => {
             this.$refs.newPassword.focus();
           } );
-        } else if ( error.reason == 'APIError' && error.errorCode == ErrorCode.CannotReusePassword ) {
+        } else if ( error.reason == Reason.APIError && error.errorCode == ErrorCode.CannotReusePassword ) {
           this.$emit( 'unblock' );
           this.newPasswordError = this.$t( 'ErrorCode.' + error.errorCode );
           this.$nextTick( () => {
@@ -146,7 +147,7 @@ export default {
 
     comparePassword( value ) {
       if ( this.newPassword != '' && this.newPassword != value )
-        throw this.$fields.makeError( this.$t( 'ErrorCode.' + ErrorCode.PasswordNotMatching ) );
+        throw makeParseError( this.$t( 'ErrorCode.' + ErrorCode.PasswordNotMatching ) );
       return value;
     }
   },

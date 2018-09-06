@@ -19,6 +19,8 @@
 
 import Vue from 'vue'
 
+import { makeRouteError } from '@/utils/errors'
+
 const LoadingState = {
   Idle: 0,
   GlobalUpdate: 1,
@@ -65,7 +67,7 @@ function makeActions( router ) {
     initialize( { commit, dispatch } ) {
       const route = router.route;
       if ( route == null ) {
-        dispatch( 'showError', makeRouteError( router ) );
+        dispatch( 'showError', makeRouteError( router.path ) );
       } else {
         if ( route.handler == null ) {
           commit( 'setMainRoute', route );
@@ -81,7 +83,7 @@ function makeActions( router ) {
 
     navigate( { state, getters, commit, dispatch }, route ) {
       if ( route == null ) {
-        dispatch( 'showError', makeRouteError( router ) );
+        dispatch( 'showError', makeRouteError( router.path ) );
       } else if ( route.handler == null ) {
         commit( 'setMainRoute', route );
         commit( 'window/clear' );
@@ -177,10 +179,4 @@ function makeActions( router ) {
         router.redirect( state.global.baseURL + url );
     }
   };
-}
-
-function makeRouteError( router ) {
-  const error = new Error( 'No matching route for path: ' + router.path );
-  error.reason = 'PageNotFound';
-  return error;
 }

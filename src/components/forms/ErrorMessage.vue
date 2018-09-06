@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import { ErrorCode } from '@/constants'
+import { ErrorCode, Reason } from '@/constants'
 
 export default {
   props: {
@@ -38,11 +38,11 @@ export default {
   computed: {
     title() {
       switch ( this.error.reason ) {
-        case 'PageNotFound':
+        case Reason.PageNotFound:
           return this.$t( 'Error.PageNotFound' );
-        case 'NetworkError':
+        case Reason.NetworkError:
           return this.$t( 'Error.NetworkError' );
-        case 'APIError':
+        case Reason.APIError:
           if ( this.error.errorCode == ErrorCode.LoginRequired ) {
             if ( this.isAuthenticated )
               return this.$t( 'Error.SessionExpired' );
@@ -53,7 +53,7 @@ export default {
           } else {
             return this.$t( 'Error.UnexpectedError' );
           }
-        case 'UnsupportedVersion':
+        case Reason.UnsupportedVersion:
           return this.$t( 'Error.UnsupportedVersion' );
         default:
           return this.$t( 'Error.UnexpectedError' );
@@ -61,11 +61,11 @@ export default {
     },
     message() {
       switch ( this.error.reason ) {
-        case 'PageNotFound':
+        case Reason.PageNotFound:
           return this.$t( 'ErrorMessage.PageNotFound' );
-        case 'NetworkError':
+        case Reason.NetworkError:
           return this.$t( 'ErrorMessage.NetworkError' );
-        case 'APIError':
+        case Reason.APIError:
           if ( this.error.errorCode == ErrorCode.LoginRequired ) {
             if ( this.isAuthenticated )
               return this.$t( 'ErrorMessage.SessionExpired' );
@@ -78,19 +78,19 @@ export default {
           } else {
             return this.$t( 'ErrorMessage.UnknownError' );
           }
-        case 'InvalidResponse':
+        case Reason.InvalidResponse:
           return this.$t( 'ErrorMessage.InvalidResponse' );
-        case 'ServerError':
+        case Reason.ServerError:
           if ( this.error.errorCode == 501 || this.error.errorCode == 502 )
             return this.$t( 'ErrorMessage.ServerNotConfigured' );
           else
             return this.$t( 'ErrorMessage.ServerError' );
-        case 'BadRequest':
+        case Reason.BadRequest:
           if ( this.error.errorCode == 403 )
             return this.$t( 'ErrorMessage.UploadError' );
           else
             return this.$t( 'ErrorMessage.BadRequest' );
-        case 'UnsupportedVersion':
+        case Reason.UnsupportedVersion:
           return this.$t( 'ErrorMessage.UnsupportedVersion' );
         default:
           return this.$t( 'ErrorMessage.UnknownError' );

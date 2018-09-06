@@ -18,6 +18,7 @@
 **************************************************************************/
 
 import { Access, ErrorCode } from '@/constants'
+import { makeError } from '@/utils/errors'
 
 export default function makeAdminRoutes( ajax, store ) {
   return function adminRoutes( route ) {
@@ -246,11 +247,4 @@ export default function makeAdminRoutes( ajax, store ) {
       } );
     } );
   }
-}
-
-function makeError( errorCode ) {
-  const error = new Error( 'Route error: ' + errorCode );
-  error.reason = 'APIError';
-  error.errorCode = errorCode;
-  return error;
 }
