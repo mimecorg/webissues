@@ -24,7 +24,7 @@ import '@/styles/global.less'
 
 let expanded = false;
 
-export function onPageLoad() {
+export function initializePage() {
   const toggleButton = document.getElementById( 'toggle-button' );
   if ( toggleButton != null )
     toggleButton.addEventListener( 'click', toggle );
