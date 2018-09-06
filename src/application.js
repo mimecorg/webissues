@@ -23,13 +23,13 @@ import '@/components/common'
 
 import Application from '@/components/Application'
 
-import makeAjax from '@/services/ajax'
-import makeParser from '@/services/parser'
-import makeFormatter from '@/services/formatter'
-import makeRouter from '@/services/router'
+import makeAjax from '@/mixins/ajax'
+import makeParser from '@/mixins/parser'
+import makeFormatter from '@/mixins/formatter'
+import makeRouter from '@/mixins/router'
+import '@/mixins/fields'
 
-import '@/services/fields'
-import '@/services/hljs'
+import '@/directives/hljs'
 
 import makeI18n from '@/i18n'
 import makeStore from '@/store'

@@ -29,10 +29,9 @@ import '@/components/common'
 
 import Client from '@/components/Client'
 
-import makeAjax from '@/services/ajax'
-import { makeClientParser } from '@/services/parser'
-
-import '@/services/fields'
+import makeAjax from '@/mixins/ajax'
+import { makeClientParser } from '@/mixins/parser'
+import '@/mixins/fields'
 
 import makeI18n from '@/i18n'
 

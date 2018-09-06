@@ -20,7 +20,7 @@
 import Vue from 'vue'
 
 import { ErrorCode } from '@/constants'
-import { invariantSettings, parseDecimalNumber, formatDecimalNumber, parseDate, formatDate, makeError } from '@/services/locale'
+import { invariantSettings, parseDecimalNumber, formatDecimalNumber, parseDate, formatDate, makeError } from '@/utils/locale'
 
 Vue.mixin( {
   beforeCreate() {

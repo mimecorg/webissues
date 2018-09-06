@@ -19,9 +19,9 @@
 
 import { expect } from 'chai'
 
-import makeFormatter from '@/services/formatter'
+import makeFormatter from '@/mixins/formatter'
 
-import { invariantSettings } from '@/services/locale'
+import { invariantSettings } from '@/utils/locale'
 import { enSettings, plSettings, i18n } from '@/test'
 
 const formatter = makeFormatter( { state: { global: { settings: invariantSettings } } }, i18n );

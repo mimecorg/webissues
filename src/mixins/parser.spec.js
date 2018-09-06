@@ -19,10 +19,10 @@
 
 import { expect } from 'chai'
 
-import makeParser from '@/services/parser'
+import makeParser from '@/mixins/parser'
 
 import { ErrorCode } from '@/constants'
-import { invariantSettings, makeError } from '@/services/locale'
+import { invariantSettings, makeError } from '@/utils/locale'
 import { enSettings, plSettings } from '@/test'
 
 const parser = makeParser( { state: { global: { settings: invariantSettings } } } );
