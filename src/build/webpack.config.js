@@ -99,6 +99,9 @@ module.exports = function( { electron, production } = {} ) {
         TARGET: electron ? 'electron' : 'web'
       } )
     ],
+    optimization: {
+      splitChunks: false
+    },
     devServer: {
       headers: {
         'Access-Control-Allow-Origin': '*'

@@ -25,14 +25,16 @@ import url from 'url'
 
 import Vue from 'vue'
 
+import '@/components/common'
+
 import Client from '@/components/Client'
 
 import makeAjax from '@/services/ajax'
 import { makeClientParser } from '@/services/parser'
 
-import makeI18n from '@/i18n'
+import '@/services/fields'
 
-import { startApplication, destroyApplication } from '@/application';
+import makeI18n from '@/i18n'
 
 if ( process.env.NODE_ENV == 'production' )
   __webpack_public_path__ = './assets/';
@@ -65,6 +67,9 @@ ipcRenderer.on( 'start-client', ( event, arg ) => {
 } );
 
 function makeClientAPI() {
+  let startApplication = null;
+  let destroyApplication = null;
+
   let sessionData = null;
 
   let progressHandler = null;
@@ -80,20 +85,25 @@ function makeClientAPI() {
     },
 
     startApplication( { userId, userName, userAccess, csrfToken } ) {
-      client.$destroy();
-      client = null;
+      import( /* webpackChunkName: "application" */ '@/application' ).then( application => {
+        startApplication = application.startApplication;
+        destroyApplication = application.destroyApplication;
 
-      sessionData = { userId, userName, userAccess, csrfToken };
+        client.$destroy();
+        client = null;
 
-      startApplication( {
-        baseURL: settings.baseURL,
-        csrfToken,
-        locale: 'en_US',
-        serverName: settings.serverName,
-        serverVersion: settings.serverVersion,
-        userId,
-        userName,
-        userAccess
+        sessionData = { userId, userName, userAccess, csrfToken };
+
+        startApplication( {
+          baseURL: settings.baseURL,
+          csrfToken,
+          locale: 'en_US',
+          serverName: settings.serverName,
+          serverVersion: settings.serverVersion,
+          userId,
+          userName,
+          userAccess
+        } );
       } );
     },
 
