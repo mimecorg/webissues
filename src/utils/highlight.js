@@ -17,35 +17,13 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-import Vue from 'vue'
+import hljs from 'highlight.js/lib/highlight'
 
-let highlightBlock = null;
+const context = require.context( 'highlight.js/lib/languages', false, /\/(bash|cpp|cs|css|java|javascript|perl|php|python|ruby|sql|vbnet|xml)\.js$/ );
 
-Vue.directive( 'hljs', {
-  bind( element, binding ) {
-    update( element, binding.value );
-  },
-  componentUpdated( element, binding ) {
-    update( element, binding.value );
-  }
+context.keys().forEach( key => {
+  const name = key.replace( /^\.\//, '' ).replace( /\.js$/, '' );
+  hljs.registerLanguage( name, context( key ) );
 } );
 
-function update( element, value ) {
-  element.innerHTML = value;
-  const blocks = element.querySelectorAll( 'pre.hljs' );
-  if ( blocks.length > 0 ) {
-    if ( highlightBlock == null ) {
-      import( /* webpackChunkName: "highlight" */ '@/utils/highlight' ).then( hljs => {
-        highlightBlock = hljs.highlightBlock;
-        highlightAllBlocks( blocks );
-      } );
-    } else {
-      highlightAllBlocks( blocks );
-    }
-  }
-}
-
-function highlightAllBlocks( blocks ) {
-  for ( let i = 0; i < blocks.length; i++ )
-    highlightBlock( blocks[ i ] );
-}
+export const highlightBlock = hljs.highlightBlock;
