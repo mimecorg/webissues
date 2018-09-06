@@ -29,7 +29,7 @@ export default function makeIssueRoutes( i18n, ajax, store, formatter ) {
         store.commit( 'issue/setIssueId', issueId );
       }
       return store.dispatch( 'issue/load' ).then( () => {
-        return { component: 'IssueDetails', size: 'large' };
+        return { form: 'issues/IssueDetails', size: 'large' };
       } );
     }
 
@@ -42,7 +42,7 @@ export default function makeIssueRoutes( i18n, ajax, store, formatter ) {
     } );
 
     route( 'GoToItem', '/items/goto', () => {
-      return Promise.resolve( { component: 'GoToItem' } );
+      return Promise.resolve( { form: 'issues/GoToItem' } );
     } );
 
     route( 'Item', '/items/:itemId', ( { itemId } ) => {
@@ -59,7 +59,7 @@ export default function makeIssueRoutes( i18n, ajax, store, formatter ) {
         return Promise.reject( makeError( ErrorCode.LoginRequired ) );
       return ajax.post( '/server/api/issues/load.php', { issueId, attributes: true } ).then( ( { details, attributes } ) => {
         return {
-          component: 'EditIssue',
+          form: 'issues/EditIssue',
           mode: 'edit',
           issueId,
           typeId: details.typeId,
@@ -85,7 +85,7 @@ export default function makeIssueRoutes( i18n, ajax, store, formatter ) {
         value: formatter.convertInitialValue( attribute.default, attribute )
       } ) );
       return Promise.resolve( {
-        component: 'EditIssue',
+        form: 'issues/EditIssue',
         mode: 'add',
         typeId,
         initialProjectId: projectId,
@@ -100,7 +100,7 @@ export default function makeIssueRoutes( i18n, ajax, store, formatter ) {
         return Promise.reject( makeError( ErrorCode.LoginRequired ) );
       return ajax.post( '/server/api/issues/load.php', { issueId, description: true, attributes: true } ).then( ( { details, description, attributes } ) => {
         return {
-          component: 'EditIssue',
+          form: 'issues/EditIssue',
           mode: 'clone',
           issueId,
           typeId: details.typeId,
@@ -116,7 +116,7 @@ export default function makeIssueRoutes( i18n, ajax, store, formatter ) {
     route( 'MoveIssue', '/issues/:issueId/move', ( { issueId } ) => {
       return ajax.post( '/server/api/issues/load.php', { issueId, access: 'admin' } ).then( ( { details } ) => {
         return {
-          component: 'MoveIssue',
+          form: 'issues/MoveIssue',
           issueId,
           typeId: details.typeId,
           initialFolderId: details.folderId,
@@ -128,7 +128,7 @@ export default function makeIssueRoutes( i18n, ajax, store, formatter ) {
     route( 'DeleteIssue', '/issues/:issueId/delete', ( { issueId } ) => {
       return ajax.post( '/server/api/issues/load.php', { issueId, access: 'admin' } ).then( ( { details } ) => {
         return {
-          component: 'DeleteIssue',
+          form: 'issues/DeleteIssue',
           issueId,
           name: details.name
         };
@@ -140,7 +140,7 @@ export default function makeIssueRoutes( i18n, ajax, store, formatter ) {
         if ( description != null )
           return Promise.reject( makeError( ErrorCode.DescriptionAlreadyExists ) );
         return {
-          component: 'EditDescription',
+          form: 'issues/EditDescription',
           mode: 'add',
           issueId,
           issueName: details.name,
@@ -156,7 +156,7 @@ export default function makeIssueRoutes( i18n, ajax, store, formatter ) {
         if ( description == null )
           return Promise.reject( makeError( ErrorCode.UnknownDescription ) );
         return {
-          component: 'EditComment',
+          form: 'issues/EditComment',
           mode: 'add',
           issueId,
           issueName: details.name,
@@ -171,7 +171,7 @@ export default function makeIssueRoutes( i18n, ajax, store, formatter ) {
         if ( description == null )
           return Promise.reject( makeError( ErrorCode.UnknownDescription ) );
         return {
-          component: 'EditDescription',
+          form: 'issues/EditDescription',
           mode: 'edit',
           issueId,
           issueName: details.name,
@@ -186,7 +186,7 @@ export default function makeIssueRoutes( i18n, ajax, store, formatter ) {
         if ( description == null )
           return Promise.reject( makeError( ErrorCode.UnknownDescription ) );
         return {
-          component: 'DeleteDescription',
+          form: 'issues/DeleteDescription',
           size: 'small',
           issueId,
           issueName: details.name
@@ -199,7 +199,7 @@ export default function makeIssueRoutes( i18n, ajax, store, formatter ) {
         return Promise.reject( makeError( ErrorCode.LoginRequired ) );
       return ajax.post( '/server/api/issues/load.php', { issueId } ).then( ( { details } ) => {
         return {
-          component: 'EditComment',
+          form: 'issues/EditComment',
           mode: 'add',
           issueId,
           issueName: details.name,
@@ -214,7 +214,7 @@ export default function makeIssueRoutes( i18n, ajax, store, formatter ) {
       return ajax.post( '/server/api/issues/load.php', { issueId } ).then( ( { details } ) => {
         return ajax.post( '/server/api/issues/comments/load.php', { issueId, commentId } ).then( ( { text } ) => {
           return {
-            component: 'EditComment',
+            form: 'issues/EditComment',
             mode: 'add',
             issueId,
             issueName: details.name,
@@ -228,7 +228,7 @@ export default function makeIssueRoutes( i18n, ajax, store, formatter ) {
     route( 'EditComment', '/issues/:issueId/comments/:commentId/edit', ( { issueId, commentId } ) => {
       return ajax.post( '/server/api/issues/comments/load.php', { issueId, commentId, access: 'adminOrOwner' } ).then( ( { text, format } ) => {
         return {
-          component: 'EditComment',
+          form: 'issues/EditComment',
           mode: 'edit',
           issueId,
           commentId,
@@ -241,7 +241,7 @@ export default function makeIssueRoutes( i18n, ajax, store, formatter ) {
     route( 'DeleteComment', '/issues/:issueId/comments/:commentId/delete', ( { issueId, commentId } ) => {
       return ajax.post( '/server/api/issues/comments/load.php', { issueId, commentId, access: 'adminOrOwner' } ).then( () => {
         return {
-          component: 'DeleteComment',
+          form: 'issues/DeleteComment',
           size: 'small',
           issueId,
           commentId
@@ -254,7 +254,7 @@ export default function makeIssueRoutes( i18n, ajax, store, formatter ) {
         return Promise.reject( makeError( ErrorCode.LoginRequired ) );
       return ajax.post( '/server/api/issues/load.php', { issueId } ).then( ( { details } ) => {
         return {
-          component: 'EditFile',
+          form: 'issues/EditFile',
           mode: 'add',
           issueId,
           issueName: details.name
@@ -265,7 +265,7 @@ export default function makeIssueRoutes( i18n, ajax, store, formatter ) {
     route( 'EditFile', '/issues/:issueId/files/:fileId/edit', ( { issueId, fileId } ) => {
       return ajax.post( '/server/api/issues/files/load.php', { issueId, fileId, access: 'adminOrOwner' } ).then( ( { name, description } ) => {
         return {
-          component: 'EditFile',
+          form: 'issues/EditFile',
           mode: 'edit',
           issueId,
           fileId,
@@ -278,7 +278,7 @@ export default function makeIssueRoutes( i18n, ajax, store, formatter ) {
     route( 'DeleteFile', '/issues/:issueId/files/:fileId/delete', ( { issueId, fileId } ) => {
       return ajax.post( '/server/api/issues/files/load.php', { issueId, fileId, access: 'adminOrOwner' } ).then( ( { name } ) => {
         return {
-          component: 'DeleteFile',
+          form: 'issues/DeleteFile',
           size: 'small',
           issueId,
           fileId,
@@ -292,7 +292,7 @@ export default function makeIssueRoutes( i18n, ajax, store, formatter ) {
         return ajax.post( '/server/api/issues/files/load.php', { issueId, fileId } ).then( ( { name, total, size } ) => {
           return Vue.prototype.$client.findAttachment( store.state.global.serverUUID, fileId ).then( filePath => {
             return {
-              component: 'ClientDownload',
+              form: 'issues/ClientDownload',
               issueId,
               fileId,
               name,

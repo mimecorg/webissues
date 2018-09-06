@@ -20,6 +20,7 @@
 import Vue from 'vue'
 
 import { ErrorCode } from '@/constants'
+import { loadForm } from '@/components/forms'
 
 export default function makeWindowModule( router ) {
   return {
@@ -34,7 +35,7 @@ export default function makeWindowModule( router ) {
 function makeState() {
   return {
     route: null,
-    childComponent: null,
+    childForm: null,
     childProps: null,
     size: 'small',
     busy: true,
@@ -57,7 +58,7 @@ function makeMutations() {
   return {
     clear( state ) {
       state.route = null;
-      state.childComponent = null;
+      state.childForm = null;
       state.childProps = null;
       state.size = 'small';
       state.busy = true;
@@ -69,8 +70,8 @@ function makeMutations() {
     setRoute( state, value ) {
       state.route = value;
     },
-    setComponent( state, { component, props, size } ) {
-      state.childComponent = component;
+    setForm( state, { form, props, size } ) {
+      state.childForm = form;
       state.childProps = props;
       state.size = size;
     },
@@ -85,14 +86,19 @@ function makeActions( router ) {
     handleRoute( { state, rootGetters, commit, dispatch }, route ) {
       commit( 'setRoute', route );
       if ( route.name != 'error' ) {
-        const promise = route.handler( route.params );
+        const promise = route.handler( route.params ).then( result => {
+          if ( result.replace == null )
+            return loadForm( result.form ).then( () => result );
+          else
+            return result;
+        } );
         commit( 'setLastPromise', promise );
-        promise.then( ( { component, size = 'normal', replace, ...props } ) => {
+        promise.then( ( { form, size = 'normal', replace, ...props } ) => {
           if ( promise == state.lastPromise ) {
             if ( replace != null ) {
               router.replace( replace, props );
             } else {
-              commit( 'setComponent', { component, props, size } );
+              commit( 'setForm', { form, props, size } );
               commit( 'setBusy', false );
             }
             commit( 'setLastPromise', null );
@@ -104,7 +110,7 @@ function makeActions( router ) {
           }
         } );
       } else {
-        commit( 'setComponent', { component: 'ErrorMessage', props: { error: route.error, isAuthenticated: rootGetters[ 'global/isAuthenticated' ] }, size: 'small' } );
+        commit( 'setForm', { form: 'ErrorMessage', props: { error: route.error, isAuthenticated: rootGetters[ 'global/isAuthenticated' ] }, size: 'small' } );
         commit( 'setBusy', false );
       }
     },

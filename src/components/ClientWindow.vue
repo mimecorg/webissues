@@ -19,24 +19,23 @@
 
 <template>
   <div id="window" v-bind:class="'window-' + size">
-    <component v-if="childComponent != null" v-bind:is="childComponent" v-bind="childProps" v-on="$listeners"/>
+    <component v-if="childForm != null" v-bind:is="getForm( childForm )" v-bind="childProps" v-on="$listeners"/>
     <BusyOverlay v-if="busy"/>
   </div>
 </template>
 
 <script>
-import forms from '@/components/forms'
+import { getForm } from '@/components/forms'
 
 export default {
-  components: {
-    ...forms
-  },
-
   props: {
-    childComponent: String,
+    childForm: String,
     childProps: Object,
     size: String,
     busy: Boolean
+  },
+  methods: {
+    getForm
   }
 }
 </script>

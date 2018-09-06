@@ -20,7 +20,7 @@
 <template>
   <div ref="overlay" id="window-overlay" tabindex="-1" v-bind:class="{ 'window-busy': busy }" v-on:click.self="close">
     <div id="window" v-bind:class="'window-' + size">
-      <component v-if="childComponent != null" v-bind:is="childComponent" v-bind="childProps"
+      <component v-if="childForm != null" v-bind:is="getForm( childForm )" v-bind="childProps"
                  v-on:close="close" v-on:block="block" v-on:unblock="unblock" v-on:scrollToAnchor="scrollToAnchor" v-on:error="error"/>
       <BusyOverlay v-if="busy"/>
     </div>
@@ -30,13 +30,9 @@
 <script>
 import { mapState } from 'vuex'
 
-import forms from '@/components/forms'
+import { getForm } from '@/components/forms'
 
 export default {
-  components: {
-    ...forms
-  },
-
   data() {
     return {
       top: 0
@@ -44,7 +40,7 @@ export default {
   },
 
   computed: {
-    ...mapState( 'window', [ 'childComponent', 'childProps', 'size', 'busy' ] )
+    ...mapState( 'window', [ 'childForm', 'childProps', 'size', 'busy' ] )
   },
 
   watch: {
@@ -63,6 +59,8 @@ export default {
   },
 
   methods: {
+    getForm,
+
     close() {
       this.$store.dispatch( 'window/close' );
     },

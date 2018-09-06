@@ -24,7 +24,7 @@ export default function makeAdminRoutes( ajax, store ) {
     route( 'ManageProjects', '/admin/projects', () => {
       return ajax.post( '/server/api/projects/list.php' ).then( ( { projects } ) => {
         return {
-          component: 'ManageProjects',
+          form: 'projects/ManageProjects',
           projects
         };
       } );
@@ -34,7 +34,7 @@ export default function makeAdminRoutes( ajax, store ) {
       if ( store.state.global.userAccess != Access.AdministratorAccess )
         return Promise.reject( makeError( ErrorCode.AccessDenied ) );
       return Promise.resolve( {
-        component: 'EditProject',
+        form: 'projects/EditProject',
         mode: 'add',
         initialFormat: store.state.global.settings.defaultFormat
       } );
@@ -43,7 +43,7 @@ export default function makeAdminRoutes( ajax, store ) {
     route( 'ProjectDetails', '/admin/projects/:projectId', ( { projectId } ) => {
       return ajax.post( '/server/api/projects/load.php', { projectId, description: true, folders: true, html: true } ).then( ( { details, description, folders } ) => {
         return {
-          component: 'ProjectDetails',
+          form: 'projects/ProjectDetails',
           projectId,
           name: details.name,
           access: details.access,
@@ -58,7 +58,7 @@ export default function makeAdminRoutes( ajax, store ) {
         return Promise.reject( makeError( ErrorCode.AccessDenied ) );
       return ajax.post( '/server/api/projects/load.php', { projectId } ).then( ( { details } ) => {
         return {
-          component: 'EditProject',
+          form: 'projects/EditProject',
           mode: 'rename',
           projectId,
           initialName: details.name
@@ -71,7 +71,7 @@ export default function makeAdminRoutes( ajax, store ) {
         return Promise.reject( makeError( ErrorCode.AccessDenied ) );
       return ajax.post( '/server/api/projects/load.php', { projectId } ).then( ( { details } ) => {
         return {
-          component: 'DeleteProject',
+          form: 'projects/DeleteProject',
           size: 'small',
           mode: 'archive',
           projectId,
@@ -85,7 +85,7 @@ export default function makeAdminRoutes( ajax, store ) {
         return Promise.reject( makeError( ErrorCode.AccessDenied ) );
       return ajax.post( '/server/api/projects/load.php', { projectId, folders: true } ).then( ( { details, folders } ) => {
         return {
-          component: 'DeleteProject',
+          form: 'projects/DeleteProject',
           size: 'small',
           mode: 'delete',
           projectId,
@@ -100,7 +100,7 @@ export default function makeAdminRoutes( ajax, store ) {
         if ( description != null )
           return Promise.reject( makeError( ErrorCode.DescriptionAlreadyExists ) );
         return {
-          component: 'EditProjectDescription',
+          form: 'projects/EditProjectDescription',
           mode: 'add',
           projectId,
           projectName: details.name,
@@ -114,7 +114,7 @@ export default function makeAdminRoutes( ajax, store ) {
         if ( description == null )
           return Promise.reject( makeError( ErrorCode.UnknownDescription ) );
         return {
-          component: 'EditProjectDescription',
+          form: 'projects/EditProjectDescription',
           mode: 'edit',
           projectId,
           projectName: details.name,
@@ -129,7 +129,7 @@ export default function makeAdminRoutes( ajax, store ) {
         if ( description == null )
           return Promise.reject( makeError( ErrorCode.UnknownDescription ) );
         return {
-          component: 'DeleteProjectDescription',
+          form: 'projects/DeleteProjectDescription',
           size: 'small',
           projectId,
           projectName: details.name
@@ -140,7 +140,7 @@ export default function makeAdminRoutes( ajax, store ) {
     route( 'AddFolder', '/admin/projects/:projectId/folders/add', ( { projectId } ) => {
       return ajax.post( '/server/api/projects/load.php', { projectId, access: 'admin' } ).then( ( { details } ) => {
         return {
-          component: 'EditFolder',
+          form: 'projects/EditFolder',
           mode: 'add',
           projectId,
           projectName: details.name
@@ -151,7 +151,7 @@ export default function makeAdminRoutes( ajax, store ) {
     route( 'RenameFolder', '/admin/projects/:projectId/folders/:folderId/rename', ( { projectId, folderId } ) => {
       return ajax.post( '/server/api/projects/folders/load.php', { projectId, folderId, access: 'admin' } ).then( ( { name } ) => {
         return {
-          component: 'EditFolder',
+          form: 'projects/EditFolder',
           mode: 'rename',
           projectId,
           folderId,
@@ -163,7 +163,7 @@ export default function makeAdminRoutes( ajax, store ) {
     route( 'MoveFolder', '/admin/projects/:projectId/folders/:folderId/move', ( { projectId, folderId } ) => {
       return ajax.post( '/server/api/projects/folders/load.php', { projectId, folderId, access: 'admin' } ).then( ( { name } ) => {
         return {
-          component: 'MoveFolder',
+          form: 'projects/MoveFolder',
           initialProjectId: projectId,
           folderId,
           name
@@ -174,7 +174,7 @@ export default function makeAdminRoutes( ajax, store ) {
     route( 'DeleteFolder', '/admin/projects/:projectId/folders/:folderId/delete', ( { projectId, folderId } ) => {
       return ajax.post( '/server/api/projects/folders/load.php', { projectId, folderId, access: 'admin' } ).then( ( { name, empty } ) => {
         return {
-          component: 'DeleteFolder',
+          form: 'projects/DeleteFolder',
           projectId,
           folderId,
           name,
@@ -186,7 +186,7 @@ export default function makeAdminRoutes( ajax, store ) {
     route( 'ProjectPermissions', '/admin/projects/:projectId/permissions', ( { projectId } ) => {
       return ajax.post( '/server/api/projects/load.php', { projectId, members: true, access: 'admin' } ).then( ( { details, members } ) => {
         return {
-          component: 'ProjectPermissions',
+          form: 'projects/ProjectPermissions',
           projectId,
           name: details.name,
           public: details.public,
@@ -198,7 +198,7 @@ export default function makeAdminRoutes( ajax, store ) {
     route( 'EditProjectAccess', '/admin/projects/:projectId/permissions/edit', ( { projectId } ) => {
       return ajax.post( '/server/api/projects/load.php', { projectId, access: 'admin' } ).then( ( { details } ) => {
         return {
-          component: 'EditProjectAccess',
+          form: 'projects/EditProjectAccess',
           projectId,
           name: details.name,
           initialPublic: details.public
@@ -209,7 +209,7 @@ export default function makeAdminRoutes( ajax, store ) {
     route( 'AddMembers', '/admin/projects/:projectId/members/add', ( { projectId } ) => {
       return ajax.post( '/server/api/projects/load.php', { projectId, members: true, access: 'admin' } ).then( ( { details, members } ) => {
         return {
-          component: 'EditMember',
+          form: 'projects/EditMember',
           mode: 'add',
           projectId,
           projectName: details.name,
@@ -222,7 +222,7 @@ export default function makeAdminRoutes( ajax, store ) {
     route( 'EditMember', '/admin/projects/:projectId/members/:userId/edit', ( { projectId, userId } ) => {
       return ajax.post( '/server/api/projects/members/load.php', { projectId, userId } ).then( ( { projectName, userName, access } ) => {
         return {
-          component: 'EditMember',
+          form: 'projects/EditMember',
           mode: 'edit',
           projectId,
           userId,
@@ -236,7 +236,7 @@ export default function makeAdminRoutes( ajax, store ) {
     route( 'RemoveMember', '/admin/projects/:projectId/members/:userId/remove', ( { projectId, userId } ) => {
       return ajax.post( '/server/api/projects/members/load.php', { projectId, userId } ).then( ( { projectName, userName } ) => {
         return {
-          component: 'RemoveMember',
+          form: 'projects/RemoveMember',
           size: 'small',
           projectId,
           userId,

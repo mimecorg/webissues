@@ -8,8 +8,8 @@
       "useBuiltIns": true
     } ]
   ],
-  "plugins": [ "transform-object-rest-spread" ],
-  "comments": false,
+  "plugins": [ "transform-object-rest-spread", "syntax-dynamic-import" ],
+  "comments": true,
   "env": {
     "test": {
       "presets": [

@@ -21,7 +21,7 @@ export default function makeUserRoutes() {
   return function userRoutes( route ) {
     if ( process.env.TARGET == 'electron' ) {
       route( 'ClientSettings', '/settings', () => {
-        return Promise.resolve( { component: 'ClientSettings' } );
+        return Promise.resolve( { form: 'client/ClientSettings' } );
       } );
     }
   }

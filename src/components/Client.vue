@@ -20,7 +20,7 @@
 <template>
   <div id="application">
     <ClientNavbar v-bind:server-name="serverName" v-bind:server-version="serverVersion" v-on:client-settings="clientSettings"/>
-    <ClientWindow v-bind:child-component="childComponent" v-bind:child-props="childProps" v-bind:size="size" v-bind:busy="busy"
+    <ClientWindow v-bind:child-form="childForm" v-bind:child-props="childProps" v-bind:size="size" v-bind:busy="busy"
                   v-on:close="close" v-on:block="block" v-on:unblock="unblock" v-on:error="error"/>
   </div>
 </template>
@@ -40,7 +40,7 @@ export default {
       serverName: null,
       serverVersion: null,
       settings: {},
-      childComponent: null,
+      childForm: null,
       childProps: null,
       size: 'small',
       busy: false,
@@ -50,7 +50,7 @@ export default {
 
   methods: {
     close() {
-      if ( this.childComponent == 'ErrorMessage' || !this.loaded )
+      if ( this.childForm == 'ErrorMessage' || !this.loaded )
         this.$client.restartClient();
       else
         this.clientLogin();
@@ -65,7 +65,7 @@ export default {
 
     clientLogin() {
       if ( !this.busy ) {
-        this.childComponent = 'ClientLogin';
+        this.childForm = 'client/ClientLogin';
         this.childProps = { anonymousAccess: this.settings.anonymousAccess, selfRegister: this.settings.selfRegister };
         this.size = 'small';
       }
@@ -73,14 +73,14 @@ export default {
 
     clientSettings() {
       if ( !this.busy ) {
-        this.childComponent = 'ClientSettings';
+        this.childForm = 'client/ClientSettings';
         this.childProps = {};
         this.size = 'normal';
       }
     },
 
     error( error ) {
-      this.childComponent = 'ErrorMessage';
+      this.childForm = 'ErrorMessage';
       this.childProps = { error, isAuthenticated: false };
       this.size = 'small';
       this.busy = false;

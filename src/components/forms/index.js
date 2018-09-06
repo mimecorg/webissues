@@ -17,13 +17,43 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-const context = require.context( '.', false, /\.vue$/ );
+import ErrorMessage from '@/components/forms/ErrorMessage'
 
-const index = {};
+const loadedForms = {
+  ErrorMessage
+};
 
-context.keys().forEach( key => {
-  const name = key.replace( /^\.\//, '' ).replace( /\.vue$/, '' );
-  index[ name ] = context( key ).default;
-} );
+if ( process.env.TARGET == 'electron' ) {
+  const context = require.context( './client', false, /\.vue$/ );
 
-export default index;
+  context.keys().forEach( key => {
+    const name = key.replace( /^\.\//, '' ).replace( /\.vue$/, '' );
+    loadedForms[ `client/${name}` ] = context( key ).default;
+  } );
+}
+
+const formModules = {
+  issues( name ) {
+    return import( /* webpackMode: "lazy-once", webpackChunkName: "forms-issues" */ `@/components/forms/issues/${name}` ).then( form => {
+      loadedForms[ `issues/${name}` ] = form.default;
+    } );
+  },
+  projects( name ) {
+    return import( /* webpackMode: "lazy-once", webpackChunkName: "forms-projects" */ `@/components/forms/projects/${name}` ).then( form => {
+      loadedForms[ `projects/${name}` ] = form.default;
+    } );
+  }
+};
+
+export function loadForm( name ) {
+  if ( loadedForms[ name ] != null )
+    return Promise.resolve();
+
+  const [ moduleName, formName ] = name.split( '/' );
+
+  return formModules[ moduleName ]( formName );
+}
+
+export function getForm( name ) {
+  return loadedForms[ name ];
+}
