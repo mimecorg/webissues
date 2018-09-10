@@ -74,3 +74,6 @@ export function destroyApplication()
   app.$options.router.destroy();
   app = null;
 }
+
+if ( process.env.TARGET == 'web' )
+  window.WebIssues = Object.assign( window.WebIssues || {}, { startApplication } );

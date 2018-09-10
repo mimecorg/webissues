@@ -24,7 +24,7 @@ import '@/styles/global.less'
 
 let expanded = false;
 
-export function initializePage() {
+function initializePage() {
   const toggleButton = document.getElementById( 'toggle-button' );
   if ( toggleButton != null )
     toggleButton.addEventListener( 'click', toggle );
@@ -83,3 +83,5 @@ function displayBusyOverlay() {
   if ( overlayDivs.length > 0 )
     overlayDivs[ 0 ].style.display = 'block';
 }
+
+window.WebIssues = Object.assign( window.WebIssues || {}, { initializePage } );

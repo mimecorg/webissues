@@ -49,8 +49,7 @@ module.exports = function( { electron, production } = {} ) {
     output: {
       path: path.resolve( __dirname, electron ? '../../app/assets' : '../../assets' ),
       publicPath: production ? '../' : 'http://localhost:8080/',
-      filename: production ? 'js/[name].min.js?[chunkhash]' : 'js/[name].js',
-      libraryTarget: electron ? 'var' : 'window'
+      filename: production ? 'js/[name].min.js?[chunkhash]' : 'js/[name].js'
     },
     module: {
       rules: [
