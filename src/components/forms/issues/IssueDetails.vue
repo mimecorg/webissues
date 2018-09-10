@@ -318,28 +318,34 @@ export default {
     },
 
     formatChange( change ) {
-      if ( change.type == Change.IssueCreated ) {
-        return this.$t( 'IssueDetails.IssueCreated', [ this.formatValue( change.new ) ] );
-      } else if ( change.type == Change.IssueRenamed ) {
-        return this.$t( 'IssueDetails.IssueRenamed', [ this.formatValue( change.old ), this.formatValue( change.new ) ] );
-      } else if ( change.type == Change.ValueChanged ) {
-        return this.$t( 'IssueDetails.ValueChanged', [ this.$formatter.escape( this.getAttributeName( change.attributeId ) ),
-          this.formatValue( change.old, change.attributeId ), this.formatValue( change.new, change.attributeId ) ] );
-      }
+      let label;
+      if ( change.type == Change.ValueChanged )
+        label = this.$t( 'IssueDetails.AttributeLabel', [ this.$formatter.escape( this.getAttributeName( change.attributeId ) ) ] );
+      else
+        label = this.$t( 'IssueDetails.Name' );
+      label = '<span class="issue-history-label">' + label + '</span>';
+      if ( change.type == Change.IssueCreated || change.old == '' )
+        return label + ' ' + this.formatValue( change.new, change.attributeId );
+      else
+        return label + ' ' + this.formatValue( change.old, change.attributeId ) + ' &rarr; ' + this.formatValue( change.new, change.attributeId );
     },
     formatIssueMoved( item ) {
-      return this.$t( 'IssueDetails.IssueMoved', [ this.formatLocation( item.fromFolderId ), this.formatLocation( item.toFolderId ) ] );
+      const label = '<span class="issue-history-label">' + this.$t( 'IssueDetails.LocationLabel' ) + '</span>';
+      return label + ' ' + this.formatLocation( item.fromFolderId ) + ' &rarr; ' + this.formatLocation( item.toFolderId );
     },
 
     formatValue( value, attributeId = null ) {
-      return value != '' ? '&quot;' + this.convertAttributeValue( value, attributeId ) + '&quot;' : this.$t( 'IssueDetails.Empty' );
+      if ( value != '' )
+        return '<span class="issue-history-value">' + this.convertAttributeValue( value, attributeId ) + '</span>'
+      else
+        return this.$t( 'IssueDetails.Empty' );
     },
     formatLocation( folderId ) {
       const project = this.projects.find( p => p.folders.some( f => f.id == folderId ) );
       if ( project != null )
-        return '&quot;' + this.$formatter.escape( project.name ) + '&quot; &mdash; &quot;' + this.$formatter.escape( project.folders.find( f => f.id == folderId ).name ) + '&quot;';
+        return '<span class="issue-history-value">' + this.$formatter.escape( project.name ) + ' &mdash; ' + this.$formatter.escape( project.folders.find( f => f.id == folderId ).name ) + '</span>';
       else
-        return this.$t( 'IssueDetails.UnknownFolder' );
+        return this.$t( 'IssueDetails.Unknown' );
     },
 
     getFileURL( id ) {
