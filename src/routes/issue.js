@@ -293,7 +293,7 @@ export default function makeIssueRoutes( i18n, ajax, store, formatter ) {
         return ajax.post( '/server/api/issues/files/load.php', { issueId, fileId } ).then( ( { name, total, size } ) => {
           return Vue.prototype.$client.findAttachment( store.state.global.serverUUID, fileId ).then( filePath => {
             return {
-              form: 'issues/ClientDownload',
+              form: 'client/ClientDownload',
               issueId,
               fileId,
               name,
