@@ -20,21 +20,21 @@
 <template>
   <div class="container-fluid">
     <FormHeader v-bind:title="name" v-on:close="close">
-      <button type="button" class="btn btn-default" v-bind:title="$t( 'ProjectDetails.Return' )" v-on:click="returnToList"><span class="fa fa-arrow-left" aria-hidden="true"></span></button>
-      <button v-if="isProjectAdministrator" type="button" class="btn btn-default" v-on:click="projectPermissions"><span class="fa fa-unlock-alt" aria-hidden="true"></span> {{ $t( 'ProjectDetails.Permissions' ) }}</button>
-      <DropdownButton v-if="isAdministrator" fa-class="fa-ellipsis-v" menu-class="dropdown-menu-right" v-bind:title="$t( 'ProjectDetails.More' )">
-        <li><HyperLink v-on:click="renameProject"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'ProjectDetails.RenameProject' ) }}</HyperLink></li>
-        <li><HyperLink v-on:click="archiveProject"><span class="fa fa-clock-o" aria-hidden="true"></span> {{ $t( 'ProjectDetails.ArchiveProject' ) }}</HyperLink></li>
-        <li><HyperLink v-on:click="deleteProject"><span class="fa fa-trash" aria-hidden="true"></span> {{ $t( 'ProjectDetails.DeleteProject' ) }}</HyperLink></li>
+      <button type="button" class="btn btn-default" v-bind:title="$t( 'cmd.Return' )" v-on:click="returnToList"><span class="fa fa-arrow-left" aria-hidden="true"></span></button>
+      <button v-if="isProjectAdministrator" type="button" class="btn btn-default" v-on:click="projectPermissions"><span class="fa fa-unlock-alt" aria-hidden="true"></span> {{ $t( 'title.Permissions' ) }}</button>
+      <DropdownButton v-if="isAdministrator" fa-class="fa-ellipsis-v" menu-class="dropdown-menu-right" v-bind:title="$t( 'title.More' )">
+        <li><HyperLink v-on:click="renameProject"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'cmd.RenameProject' ) }}</HyperLink></li>
+        <li><HyperLink v-on:click="archiveProject"><span class="fa fa-clock-o" aria-hidden="true"></span> {{ $t( 'cmd.ArchiveProject' ) }}</HyperLink></li>
+        <li><HyperLink v-on:click="deleteProject"><span class="fa fa-trash" aria-hidden="true"></span> {{ $t( 'cmd.DeleteProject' ) }}</HyperLink></li>
       </DropdownButton>
     </FormHeader>
-    <FormSection v-bind:title="$t( 'ProjectDetails.Description' )">
-      <DropdownButton v-if="isProjectAdministrator && description != null" fa-class="fa-ellipsis-v" menu-class="dropdown-menu-right" v-bind:title="$t( 'ProjectDetails.Menu' )">
-        <li><HyperLink v-on:click="editDescription"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'ProjectDetails.Edit' ) }}</HyperLink></li>
-        <li><HyperLink v-on:click="deleteDescription"><span class="fa fa-trash" aria-hidden="true"></span> {{ $t( 'ProjectDetails.Delete' ) }}</HyperLink></li>
+    <FormSection v-bind:title="$t( 'title.Description' )">
+      <DropdownButton v-if="isProjectAdministrator && description != null" fa-class="fa-ellipsis-v" menu-class="dropdown-menu-right" v-bind:title="$t( 'title.Menu' )">
+        <li><HyperLink v-on:click="editDescription"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'cmd.Edit' ) }}</HyperLink></li>
+        <li><HyperLink v-on:click="deleteDescription"><span class="fa fa-trash" aria-hidden="true"></span> {{ $t( 'cmd.Delete' ) }}</HyperLink></li>
       </DropdownButton>
-      <button v-else-if="isProjectAdministrator" type="button" class="btn btn-default" v-on:click="addDescription">
-        <span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'ProjectDetails.Add' ) }}
+      <button v-else-if="isProjectAdministrator" type="button" class="btn btn-default" v-bind:title="$t( 'cmd.AddDescription' )" v-on:click="addDescription">
+        <span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'cmd.Add' ) }}
       </button>
     </FormSection>
     <div v-if="description != null" class="description-panel">
@@ -44,11 +44,11 @@
         </div>
     </div>
     <div v-else class="alert alert-info">
-      {{ $t( 'ProjectDetails.NoDescription' ) }}
+      {{ $t( 'info.NoProjectDescription' ) }}
     </div>
-    <FormSection v-bind:title="$t( 'ProjectDetails.Folders' )">
-      <button v-if="isProjectAdministrator" type="button" class="btn btn-success" v-on:click="addFolder">
-        <span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'ProjectDetails.Add' ) }}
+    <FormSection v-bind:title="$t( 'title.Folders' )">
+      <button v-if="isProjectAdministrator" type="button" class="btn btn-success" v-bind:title="$t( 'cmd.AddFolder' )" v-on:click="addFolder">
+        <span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'cmd.Add' ) }}
       </button>
     </FormSection>
     <Grid v-if="folders.length > 0" v-bind:items="folders" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-wide', null ]"
@@ -58,7 +58,7 @@
       </template>
     </Grid>
     <div v-else class="alert alert-info">
-      {{ $t( 'ProjectDetails.NoFolders' ) }}
+      {{ $t( 'info.NoFolders' ) }}
     </div>
   </div>
 </template>
@@ -99,8 +99,8 @@ export default {
     },
     columnNames() {
       return [
-        this.$t( 'ProjectDetails.Name' ),
-        this.$t( 'ProjectDetails.Type' )
+        this.$t( 'title.Name' ),
+        this.$t( 'title.Type' )
       ];
     }
   },

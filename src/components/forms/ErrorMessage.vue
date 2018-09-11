@@ -39,61 +39,61 @@ export default {
     title() {
       switch ( this.error.reason ) {
         case Reason.PageNotFound:
-          return this.$t( 'Error.PageNotFound' );
+          return this.$t( 'title.PageNotFound' );
         case Reason.NetworkError:
-          return this.$t( 'Error.NetworkError' );
+          return this.$t( 'title.NetworkError' );
         case Reason.APIError:
           if ( this.error.errorCode == ErrorCode.LoginRequired ) {
             if ( this.isAuthenticated )
-              return this.$t( 'Error.SessionExpired' );
+              return this.$t( 'title.SessionExpired' );
             else
-              return this.$t( 'Error.LoginRequired' );
+              return this.$t( 'title.LoginRequired' );
           } else if ( this.error.errorCode == ErrorCode.AccessDenied ) {
-            return this.$t( 'Error.AccessDenied' );
+            return this.$t( 'title.AccessDenied' );
           } else {
-            return this.$t( 'Error.UnexpectedError' );
+            return this.$t( 'title.UnexpectedError' );
           }
         case Reason.UnsupportedVersion:
-          return this.$t( 'Error.UnsupportedVersion' );
+          return this.$t( 'title.UnsupportedVersion' );
         default:
-          return this.$t( 'Error.UnexpectedError' );
+          return this.$t( 'title.UnexpectedError' );
       }
     },
     message() {
       switch ( this.error.reason ) {
         case Reason.PageNotFound:
-          return this.$t( 'ErrorMessage.PageNotFound' );
+          return this.$t( 'error.PageNotFound' );
         case Reason.NetworkError:
-          return this.$t( 'ErrorMessage.NetworkError' );
+          return this.$t( 'error.NetworkError' );
         case Reason.APIError:
           if ( this.error.errorCode == ErrorCode.LoginRequired ) {
             if ( this.isAuthenticated )
-              return this.$t( 'ErrorMessage.SessionExpired' );
+              return this.$t( 'error.SessionExpired' );
             else
-              return this.$t( 'ErrorMessage.LoginRequired' );
+              return this.$t( 'error.LoginRequired' );
           } else if ( this.error.errorCode == ErrorCode.AccessDenied ) {
-            return this.$t( 'ErrorMessage.AccessDenied' );
+            return this.$t( 'error.AccessDenied' );
           } else if ( this.$te( 'ErrorCode.' + this.error.errorCode ) ) {
             return this.$t( 'ErrorCode.' + this.error.errorCode );
           } else {
-            return this.$t( 'ErrorMessage.UnknownError' );
+            return this.$t( 'error.UnknownError' );
           }
         case Reason.InvalidResponse:
-          return this.$t( 'ErrorMessage.InvalidResponse' );
+          return this.$t( 'error.InvalidResponse' );
         case Reason.ServerError:
           if ( this.error.errorCode == 501 || this.error.errorCode == 502 )
-            return this.$t( 'ErrorMessage.ServerNotConfigured' );
+            return this.$t( 'error.ServerNotConfigured' );
           else
-            return this.$t( 'ErrorMessage.ServerError' );
+            return this.$t( 'error.ServerError' );
         case Reason.BadRequest:
           if ( this.error.errorCode == 403 )
-            return this.$t( 'ErrorMessage.UploadError' );
+            return this.$t( 'error.UploadError' );
           else
-            return this.$t( 'ErrorMessage.BadRequest' );
+            return this.$t( 'error.BadRequest' );
         case Reason.UnsupportedVersion:
-          return this.$t( 'ErrorMessage.UnsupportedVersion' );
+          return this.$t( 'error.UnsupportedVersion' );
         default:
-          return this.$t( 'ErrorMessage.UnknownError' );
+          return this.$t( 'error.UnknownError' );
       }
     }
   },

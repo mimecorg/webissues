@@ -53,10 +53,10 @@
       <div class="container-fluid">
         <div class="grid-footer-group">
           <div class="grid-footer-element">
-            <button type="button" class="btn btn-default btn-sm" v-bind:disabled="!previousEnabled" v-bind:title="$t( 'Common.Previous' )" v-on:click="previous">
+            <button type="button" class="btn btn-default btn-sm" v-bind:disabled="!previousEnabled" v-bind:title="$t( 'cmd.Previous' )" v-on:click="previous">
               <span class="fa fa-chevron-left" aria-hidden="true"></span>
             </button>
-            <button type="button" class="btn btn-default btn-sm" v-bind:disabled="!nextEnabled" v-bind:title="$t( 'Common.Next' )" v-on:click="next">
+            <button type="button" class="btn btn-default btn-sm" v-bind:disabled="!nextEnabled" v-bind:title="$t( 'cmd.Next' )" v-on:click="next">
               <span class="fa fa-chevron-right" aria-hidden="true"></span>
             </button>
           </div>

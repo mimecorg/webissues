@@ -20,10 +20,10 @@
 <template>
   <div class="container-fluid">
     <FormHeader v-bind:title="title" v-on:close="close"/>
-    <Prompt v-if="mode == 'rename'" path="EditProject.RenameProjectPrompt"><strong>{{ initialName }}</strong></Prompt>
-    <Prompt v-else-if="mode == 'add'" path="EditProject.AddProjectPrompt"></Prompt>
-    <FormInput ref="name" id="name" v-bind:label="$t( 'EditProject.Name' )" v-bind="$field( 'name' )" v-model="name"/>
-    <MarkupEditor v-if="mode == 'add'" ref="description" id="description" v-bind:label="$t( 'EditProject.Description' )" v-bind="$field( 'description' )"
+    <Prompt v-if="mode == 'rename'" path="prompt.RenameProject"><strong>{{ initialName }}</strong></Prompt>
+    <Prompt v-else-if="mode == 'add'" path="prompt.AddProject"></Prompt>
+    <FormInput ref="name" id="name" v-bind:label="$t( 'label.Name' )" v-bind="$field( 'name' )" v-model="name"/>
+    <MarkupEditor v-if="mode == 'add'" ref="description" id="description" v-bind:label="$t( 'label.Description' )" v-bind="$field( 'description' )"
                   v-bind:format.sync="descriptionFormat" v-model="description" v-on:error="error"/>
     <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
   </div>
@@ -67,9 +67,9 @@ export default {
   computed: {
     title() {
       if ( this.mode == 'rename' )
-        return this.$t( 'EditProject.RenameProject' );
+        return this.$t( 'cmd.RenameProject' );
       else if ( this.mode == 'add' )
-        return this.$t( 'EditProject.AddProject' );
+        return this.$t( 'cmd.AddProject' );
     }
   },
 

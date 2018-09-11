@@ -19,9 +19,9 @@
 
 <template>
   <div class="container-fluid">
-    <FormHeader v-bind:title="$t( 'DeleteIssue.DeleteIssue' )" v-on:close="close"/>
-    <Prompt path="DeleteIssue.DeleteIssuePrompt"><strong>{{ name }}</strong></Prompt>
-    <Prompt path="DeleteIssue.DeleteIssueWarning" alert-class="alert-danger"><strong>{{ $t( 'DeleteIssue.Warning' ) }}</strong></Prompt>
+    <FormHeader v-bind:title="$t( 'cmd.DeleteIssue' )" v-on:close="close"/>
+    <Prompt path="prompt.DeleteIssue"><strong>{{ name }}</strong></Prompt>
+    <Prompt path="prompt.WarningDeleteIssue" alert-class="alert-danger"><strong>{{ $t( 'label.Warning' ) }}</strong></Prompt>
     <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
   </div>
 </template>

@@ -63,11 +63,11 @@ export default {
     },
     statusText() {
       if ( this.totalCount == 0 )
-        return this.$t( 'ApplicationGrid.NoIssues' );
+        return this.$t( 'text.NoIssues' );
       else if ( this.firstIndex == 1 && this.lastIndex == this.totalCount )
-        return this.$t( 'ApplicationGrid.IssuesCount', [ this.totalCount ] );
+        return this.$t( 'text.IssuesCount', [ this.totalCount ] );
       else
-        return this.$t( 'ApplicationGrid.IssuesCountOf', [ this.firstIndex, this.lastIndex, this.totalCount ] );
+        return this.$t( 'text.IssuesCountOf', [ this.firstIndex, this.lastIndex, this.totalCount ] );
     }
   },
 

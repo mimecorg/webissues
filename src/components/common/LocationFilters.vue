@@ -22,7 +22,7 @@
     <DropdownButton ref="project" fa-class="fa-object-group" v-bind:text="projectName" v-bind:title="projectTitle">
       <div class="dropdown-menu-scroll">
         <li v-bind:class="{ active: project == null }">
-          <HyperLink v-on:click="selectProject( null )">{{ $t( 'LocationFilters.SelectProject' ) }}</HyperLink>
+          <HyperLink v-on:click="selectProject( null )">{{ $t( 'text.SelectProject' ) }}</HyperLink>
         </li>
         <template v-if="availableProjects.length > 0">
           <li role="separator" class="divider"></li>
@@ -35,7 +35,7 @@
     <DropdownButton v-if="folderVisible" ref="folder" fa-class="fa-folder-open-o" v-bind:text="folderName" v-bind:title="folderTitle">
       <div class="dropdown-menu-scroll">
         <li v-bind:class="{ active: folder == null }">
-          <HyperLink v-on:click="selectFolder( null )">{{ $t( 'LocationFilters.SelectFolder' ) }}</HyperLink>
+          <HyperLink v-on:click="selectFolder( null )">{{ $t( 'text.SelectFolder' ) }}</HyperLink>
         </li>
         <template v-if="availableFolders.length > 0">
           <li role="separator" class="divider"></li>
@@ -92,25 +92,25 @@ export default {
       if ( this.project != null )
         return this.project.name;
       else
-        return this.$t( 'LocationFilters.SelectProject' );
+        return this.$t( 'text.SelectProject' );
     },
     projectTitle() {
       if ( this.project != null )
-        return this.$t( 'LocationFilters.ProjectTitle', [ this.projectName ] );
+        return this.$t( 'text.Project', [ this.projectName ] );
       else
-        return this.$t( 'LocationFilters.SelectProject' );
+        return this.$t( 'text.SelectProject' );
     },
     folderName() {
       if ( this.folder != null )
         return this.folder.name;
       else
-        return this.$t( 'LocationFilters.SelectFolder' );
+        return this.$t( 'text.SelectFolder' );
     },
     folderTitle() {
       if ( this.folder != null )
-        return this.$t( 'LocationFilters.FolderTitle', [ this.folderName ] );
+        return this.$t( 'text.Folder', [ this.folderName ] );
       else
-        return this.$t( 'LocationFilters.SelectFolder' );
+        return this.$t( 'text.SelectFolder' );
     }
   },
 

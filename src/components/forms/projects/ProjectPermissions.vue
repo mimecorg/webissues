@@ -19,18 +19,18 @@
 
 <template>
   <div class="container-fluid">
-    <FormHeader v-bind:title="$t( 'ProjectPermissions.ProjectPermissions' )" v-on:close="close">
-      <button type="button" class="btn btn-default" v-bind:title="$t( 'ProjectDetails.Return' )" v-on:click="returnToDetails"><span class="fa fa-arrow-left" aria-hidden="true"></span></button>
+    <FormHeader v-bind:title="$t( 'title.ProjectPermissions' )" v-on:close="close">
+      <button type="button" class="btn btn-default" v-bind:title="$t( 'cmd.Return' )" v-on:click="returnToDetails"><span class="fa fa-arrow-left" aria-hidden="true"></span></button>
     </FormHeader>
-    <Prompt path="ProjectPermissions.ProjectPermissionsPrompt"><strong>{{ name }}</strong></Prompt>
-    <FormSection v-bind:title="$t( 'ProjectPermissions.GlobalAccess' )">
-      <button type="button" class="btn btn-default" v-on:click="editAccess"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'ProjectPermissions.Edit' ) }}</button>
+    <Prompt path="prompt.EditProjectPermissions"><strong>{{ name }}</strong></Prompt>
+    <FormSection v-bind:title="$t( 'title.GlobalAccess' )">
+      <button type="button" class="btn btn-default" v-on:click="editAccess"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'cmd.Edit' ) }}</button>
     </FormSection>
     <div class="description-panel">
       {{ globalAccess }}
     </div>
-    <FormSection v-bind:title="$t( 'ProjectPermissions.Members' )">
-      <button type="button" class="btn btn-success" v-on:click="addMembers"><span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'ProjectPermissions.Add' ) }}</button>
+    <FormSection v-bind:title="$t( 'title.Members' )">
+      <button type="button" class="btn btn-success" v-on:click="addMembers"><span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'cmd.Add' ) }}</button>
     </FormSection>
     <Grid v-if="sortedMembers.length > 0" v-bind:items="sortedMembers" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-wide', null ]" v-on:row-click="rowClick">
       <template slot-scope="{ item, columnIndex, columnClass }">
@@ -38,7 +38,7 @@
       </template>
     </Grid>
     <div v-else class="alert alert-info">
-      {{ $t( 'ProjectPermissions.NoMembers' ) }}
+      {{ $t( 'info.NoMembers' ) }}
     </div>
   </div>
 </template>
@@ -59,15 +59,15 @@ export default {
   computed: {
     ...mapState( 'global', [ 'users' ] ),
     globalAccess() {
-      return this.public ? this.$t( 'ProjectPermissions.PublicProject' ) : this.$t( 'ProjectPermissions.RegularProject' );
+      return this.public ? this.$t( 'text.PublicProject' ) : this.$t( 'text.RegularProject' );
     },
     sortedMembers() {
       return this.users.map( u => this.members.find( m => m.id == u.id ) ).filter( m => m != null );
     },
     columnNames() {
       return [
-        this.$t( 'ProjectPermissions.Name' ),
-        this.$t( 'ProjectPermissions.Access' )
+        this.$t( 'title.Name' ),
+        this.$t( 'title.Access' )
       ];
     }
   },
@@ -81,9 +81,9 @@ export default {
             return user.name;
         case 1:
           if ( member.access == Access.NormalAccess )
-            return this.$t( 'ProjectPermissions.RegularMember' );
+            return this.$t( 'text.RegularMember' );
           else if ( member.access == Access.AdministratorAccess )
-            return this.$t( 'ProjectPermissions.ProjectAdministrator' );
+            return this.$t( 'text.ProjectAdministrator' );
           break;
       }
     },

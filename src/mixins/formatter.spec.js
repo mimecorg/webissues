@@ -228,17 +228,17 @@ describe( 'formatter', () => {
   describe( 'formatFileSize', () => {
     it( 'bytes', () => {
       const value = formatter.formatFileSize( 123 );
-      expect( value ).to.equal( '123 FileSize.Bytes' );
+      expect( value ).to.equal( '123 text.bytes' );
     } );
 
     it( 'kilobytes', () => {
       const value = formatter.formatFileSize( 1024 );
-      expect( value ).to.equal( '1 FileSize.Kilobytes' );
+      expect( value ).to.equal( '1 text.kB' );
     } );
 
     it( 'megabytes', () => {
       const value = formatter.formatFileSize( 5000000 );
-      expect( value ).to.equal( '4.8 FileSize.Megabytes' );
+      expect( value ).to.equal( '4.8 text.MB' );
     } );
   } );
 } );

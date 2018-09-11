@@ -20,10 +20,10 @@
 <template>
   <div class="container-fluid">
     <FormHeader v-bind:title="title" v-on:close="close"/>
-    <Prompt v-if="mode == 'archive'" path="DeleteProject.ArchiveProjectPrompt"><strong>{{ name }}</strong></Prompt>
-    <Prompt v-else-if="mode == 'delete'" path="DeleteProject.DeleteProjectPrompt"><strong>{{ name }}</strong></Prompt>
-    <Prompt v-if="mode == 'archive'" path="DeleteProject.DeleteProjectArchiveNote" alert-class="alert-success"><strong>{{ $t( 'DeleteProject.Note' ) }}</strong></Prompt>
-    <Prompt v-else-if="mode == 'delete' && force" path="DeleteProject.DeleteProjectWarning" alert-class="alert-danger"><strong>{{ $t( 'DeleteProject.Warning' ) }}</strong></Prompt>
+    <Prompt v-if="mode == 'archive'" path="prompt.ArchiveProject"><strong>{{ name }}</strong></Prompt>
+    <Prompt v-else-if="mode == 'delete'" path="prompt.DeleteProject"><strong>{{ name }}</strong></Prompt>
+    <Prompt v-if="mode == 'archive'" path="prompt.NoteArchiveProject" alert-class="alert-success"><strong>{{ $t( 'label.Note' ) }}</strong></Prompt>
+    <Prompt v-else-if="mode == 'delete' && force" path="prompt.WarningDeleteProject" alert-class="alert-danger"><strong>{{ $t( 'label.Warning' ) }}</strong></Prompt>
     <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
   </div>
 </template>
@@ -48,9 +48,9 @@ export default {
   computed: {
     title() {
       if ( this.mode == 'archive' )
-        return this.$t( 'DeleteProject.ArchiveProject' );
+        return this.$t( 'cmd.ArchiveProject' );
       else if ( this.mode == 'delete' )
-        return this.$t( 'DeleteProject.DeleteProject' );
+        return this.$t( 'cmd.DeleteProject' );
     }
   },
 

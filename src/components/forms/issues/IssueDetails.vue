@@ -21,16 +21,16 @@
   <div class="container-fluid">
 
     <FormHeader v-bind:title="details.name" v-on:close="close">
-      <button v-if="isAuthenticated" type="button" class="btn btn-primary" v-on:click="editIssue"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'IssueDetails.Edit' ) }}</button>
-      <DropdownButton v-if="isAuthenticated" fa-class="fa-ellipsis-v" menu-class="dropdown-menu-right" v-bind:title="$t( 'IssueDetails.More' )">
-        <li><HyperLink v-on:click="cloneIssue"><span class="fa fa-clone" aria-hidden="true"></span> {{ $t( 'IssueDetails.CloneIssue' ) }}</HyperLink></li>
-        <li v-if="canMoveDelete"><HyperLink v-on:click="moveIssue"><span class="fa fa-exchange" aria-hidden="true"></span> {{ $t( 'IssueDetails.MoveIssue' ) }}</HyperLink></li>
-        <li v-if="canMoveDelete"><HyperLink v-on:click="deleteIssue"><span class="fa fa-trash" aria-hidden="true"></span> {{ $t( 'IssueDetails.DeleteIssue' ) }}</HyperLink></li>
+      <button v-if="isAuthenticated" type="button" class="btn btn-primary" v-on:click="editIssue"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'cmd.Edit' ) }}</button>
+      <DropdownButton v-if="isAuthenticated" fa-class="fa-ellipsis-v" menu-class="dropdown-menu-right" v-bind:title="$t( 'title.More' )">
+        <li><HyperLink v-on:click="cloneIssue"><span class="fa fa-clone" aria-hidden="true"></span> {{ $t( 'cmd.CloneIssue' ) }}</HyperLink></li>
+        <li v-if="canMoveDelete"><HyperLink v-on:click="moveIssue"><span class="fa fa-exchange" aria-hidden="true"></span> {{ $t( 'cmd.MoveIssue' ) }}</HyperLink></li>
+        <li v-if="canMoveDelete"><HyperLink v-on:click="deleteIssue"><span class="fa fa-trash" aria-hidden="true"></span> {{ $t( 'cmd.DeleteIssue' ) }}</HyperLink></li>
         <li role="separator" class="divider"></li>
-        <li v-if="unread"><HyperLink v-on:click="setUnread( false )"><span class="fa fa-check-circle-o" aria-hidden="true"></span> {{ $t( 'IssueDetails.MarkAsRead' ) }}</HyperLink></li>
-        <li v-if="!unread"><HyperLink v-on:click="setUnread( true )"><span class="fa fa-check-circle" aria-hidden="true"></span> {{ $t( 'IssueDetails.MarkAsUnread' ) }}</HyperLink></li>
+        <li v-if="unread"><HyperLink v-on:click="setUnread( false )"><span class="fa fa-check-circle-o" aria-hidden="true"></span> {{ $t( 'cmd.MarkAsRead' ) }}</HyperLink></li>
+        <li v-if="!unread"><HyperLink v-on:click="setUnread( true )"><span class="fa fa-check-circle" aria-hidden="true"></span> {{ $t( 'cmd.MarkAsUnread' ) }}</HyperLink></li>
         <li role="separator" class="divider"></li>
-        <li><HyperLink><span class="fa fa-envelope" aria-hidden="true"></span> {{ $t( 'IssueDetails.Subscribe' ) }}</HyperLink></li>
+        <li><HyperLink><span class="fa fa-envelope" aria-hidden="true"></span> {{ $t( 'cmd.Subscribe' ) }}</HyperLink></li>
       </DropdownButton>
     </FormHeader>
 
@@ -38,21 +38,21 @@
       <div class="col-sm-4 col-sm-push-8">
 
         <div class="issue-details">
-          <div class="issue-header">{{ $t( 'IssueDetails.Properties' ) }}</div>
-          <div class="issue-details-title">{{ $t( 'IssueDetails.ID' ) }}</div>
+          <div class="issue-header">{{ $t( 'title.Properties' ) }}</div>
+          <div class="issue-details-title">{{ $t( 'title.ID' ) }}</div>
           <div class="issue-details-value">#{{ details.id }}</div>
-          <div class="issue-details-title">{{ $t( 'IssueDetails.Type' ) }}</div>
+          <div class="issue-details-title">{{ $t( 'title.Type' ) }}</div>
           <div class="issue-details-value">{{ typeName }}</div>
-          <div class="issue-details-title">{{ $t( 'IssueDetails.Location' ) }}</div>
+          <div class="issue-details-title">{{ $t( 'title.Location' ) }}</div>
           <div class="issue-details-value">{{ projectName }} &mdash; {{ folderName }}</div>
-          <div class="issue-details-title">{{ $t( 'IssueDetails.Created' ) }}</div>
+          <div class="issue-details-title">{{ $t( 'title.Created' ) }}</div>
           <div class="issue-details-value">{{ createdDate }} &mdash; {{ createdByName }}</div>
-          <div class="issue-details-title">{{ $t( 'IssueDetails.LastModified' ) }}</div>
+          <div class="issue-details-title">{{ $t( 'title.LastModified' ) }}</div>
           <div class="issue-details-value">{{ modifiedDate }} &mdash; {{ modifiedByName }}</div>
         </div>
 
         <div v-if="filteredAttributes.length > 0" class="issue-details">
-          <div class="issue-header">{{ $t( 'IssueDetails.Attributes' ) }}</div>
+          <div class="issue-header">{{ $t( 'title.Attributes' ) }}</div>
           <template v-for="attribute in filteredAttributes">
             <div class="issue-details-title">{{ getAttributeName( attribute.id ) }}</div>
             <div class="issue-details-value" v-html="convertAttributeValue( attribute.value, attribute.id, { multiLine: true } )"></div>
@@ -62,14 +62,14 @@
       </div>
       <div class="col-sm-8 col-sm-pull-4">
 
-        <FormSection v-bind:title="$t( 'IssueDetails.Description' )">
-          <DropdownButton v-if="isAuthenticated && description != null" fa-class="fa-ellipsis-v" menu-class="dropdown-menu-right" v-bind:title="$t( 'IssueDetails.Menu' )">
-            <li><HyperLink v-on:click="replyDescription"><span class="fa fa-reply" aria-hidden="true"></span> {{ $t( 'IssueDetails.Reply' ) }}</HyperLink></li>
-            <li v-if="canEditDescription"><HyperLink v-on:click="editDescription"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'IssueDetails.Edit' ) }}</HyperLink></li>
-            <li v-if="canEditDescription"><HyperLink v-on:click="deleteDescription"><span class="fa fa-trash" aria-hidden="true"></span> {{ $t( 'IssueDetails.Delete' ) }}</HyperLink></li>
+        <FormSection v-bind:title="$t( 'title.Description' )">
+          <DropdownButton v-if="isAuthenticated && description != null" fa-class="fa-ellipsis-v" menu-class="dropdown-menu-right" v-bind:title="$t( 'title.Menu' )">
+            <li><HyperLink v-on:click="replyDescription"><span class="fa fa-reply" aria-hidden="true"></span> {{ $t( 'cmd.Reply' ) }}</HyperLink></li>
+            <li v-if="canEditDescription"><HyperLink v-on:click="editDescription"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'cmd.Edit' ) }}</HyperLink></li>
+            <li v-if="canEditDescription"><HyperLink v-on:click="deleteDescription"><span class="fa fa-trash" aria-hidden="true"></span> {{ $t( 'cmd.Delete' ) }}</HyperLink></li>
           </DropdownButton>
-          <button v-else-if="canEditDescription" type="button" class="btn btn-default" v-on:click="addDescription">
-            <span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'IssueDetails.Add' ) }}
+          <button v-else-if="canEditDescription" type="button" class="btn btn-default" v-bind:title="$t( 'cmd.AddDescription' )" v-on:click="addDescription">
+            <span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'cmd.Add' ) }}
           </button>
         </FormSection>
 
@@ -80,17 +80,17 @@
           </div>
         </div>
         <div v-else class="alert alert-info">
-          {{ $t( 'IssueDetails.NoDescription' ) }}
+          {{ $t( 'info.NoDescription' ) }}
         </div>
 
         <FormSection v-bind:title="getFilterText( filter )">
-          <button v-if="isAuthenticated" type="button" class="btn btn-success" v-on:click="addComment">
-            <span class="fa fa-comment" aria-hidden="true"></span> {{ $t( 'IssueDetails.Add' ) }}
+          <button v-if="isAuthenticated" type="button" class="btn btn-success" v-bind:title="$t( 'cmd.AddComment' )" v-on:click="addComment">
+            <span class="fa fa-comment" aria-hidden="true"></span> {{ $t( 'cmd.Add' ) }}
           </button>
-          <button v-if="isAuthenticated" type="button" class="btn btn-default" v-on:click="addFile">
-            <span class="fa fa-paperclip" aria-hidden="true"></span> <span class="hidden-xs auto-tooltip">{{ $t( 'IssueDetails.Attach' ) }}</span>
+          <button v-if="isAuthenticated" type="button" class="btn btn-default" v-bind:title="$t( 'cmd.AttachFile' )" v-on:click="addFile">
+            <span class="fa fa-paperclip" aria-hidden="true"></span> <span class="hidden-xs auto-tooltip">{{ $t( 'cmd.Attach' ) }}</span>
           </button>
-          <DropdownButton fa-class="fa-cog" menu-class="dropdown-menu-right" v-bind:title="$t( 'IssueDetails.Filter' )">
+          <DropdownButton fa-class="fa-cog" menu-class="dropdown-menu-right" v-bind:title="$t( 'title.Filter' )">
             <li v-for="item in allFilters" v-bind:class="{ active: filter == item }"><HyperLink v-on:click="setFilter( item )">{{ getFilterText( item ) }}</HyperLink></li>
           </DropdownButton>
         </FormSection>
@@ -104,10 +104,10 @@
               </div>
               <div class="issue-element">
                 <a class="issue-history-id" v-bind:href="'#/items/' + item.id">#{{ item.id }}</a>
-                <DropdownButton v-if="canReply( item ) || canEditItem( item )" fa-class="fa-ellipsis-v" menu-class="dropdown-menu-right" v-bind:title="$t( 'IssueDetails.Menu' )">
-                  <li v-if="canReply( item )"><HyperLink v-on:click="replyComment( item )"><span class="fa fa-reply" aria-hidden="true"></span> {{ $t( 'IssueDetails.Reply' ) }}</HyperLink></li>
-                  <li v-if="canEditItem( item )"><HyperLink v-on:click="editItem( item )"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'IssueDetails.Edit' ) }}</HyperLink></li>
-                  <li v-if="canEditItem( item )"><HyperLink v-on:click="deleteItem( item )"><span class="fa fa-trash" aria-hidden="true"></span> {{ $t( 'IssueDetails.Delete' ) }}</HyperLink></li>
+                <DropdownButton v-if="canReply( item ) || canEditItem( item )" fa-class="fa-ellipsis-v" menu-class="dropdown-menu-right" v-bind:title="$t( 'title.Menu' )">
+                  <li v-if="canReply( item )"><HyperLink v-on:click="replyComment( item )"><span class="fa fa-reply" aria-hidden="true"></span> {{ $t( 'cmd.Reply' ) }}</HyperLink></li>
+                  <li v-if="canEditItem( item )"><HyperLink v-on:click="editItem( item )"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'cmd.Edit' ) }}</HyperLink></li>
+                  <li v-if="canEditItem( item )"><HyperLink v-on:click="deleteItem( item )"><span class="fa fa-trash" aria-hidden="true"></span> {{ $t( 'cmd.Delete' ) }}</HyperLink></li>
                 </DropdownButton>
               </div>
             </div>
@@ -164,7 +164,7 @@ export default {
       if ( this.type != null )
         return this.type.name;
       else
-        return this.$t( 'IssueDetails.UnknownType' );
+        return this.$t( 'text.UnknownType' );
     },
     project() {
       return this.projects.find( p => p.folders.some( f => f.id == this.details.folderId ) );
@@ -173,7 +173,7 @@ export default {
       if ( this.project != null )
         return this.project.name;
       else
-        return this.$t( 'IssueDetails.UnknownProject' );
+        return this.$t( 'text.UnknownProject' );
     },
     folder() {
       if ( this.project != null )
@@ -185,7 +185,7 @@ export default {
       if ( this.folder != null )
         return this.folder.name;
       else
-        return this.$t( 'IssueDetails.UnknownFolder' );
+        return this.$t( 'text.UnknownFolder' );
     },
     createdByName() {
       return this.getUserName( this.details.createdBy );
@@ -245,14 +245,14 @@ export default {
       if ( attribute != null )
         return attribute.name;
       else
-        return this.$t( 'IssueDetails.UnknownAttribute' );
+        return this.$t( 'text.UnknownAttribute' );
     },
     getUserName( userId ) {
       const user = this.users.find( u => u.id == userId );
       if ( user != null )
         return user.name;
       else
-        return this.$t( 'IssueDetails.UnknownUser' );
+        return this.$t( 'text.UnknownUser' );
     },
 
     formatStamp( stamp ) {
@@ -297,32 +297,32 @@ export default {
     getFilterText( filter ) {
       switch( filter ) {
         case History.AllHistory:
-          return this.$t( 'IssueDetails.History' );
+          return this.$t( 'text.History' );
         case History.Comments:
-          return this.$t( 'IssueDetails.Comments' );
+          return this.$t( 'text.Comments' );
         case History.Files:
-          return this.$t( 'IssueDetails.Files' );
+          return this.$t( 'text.Files' );
         case History.CommentsAndFiles:
-          return this.$t( 'IssueDetails.CommentsAndFiles' );
+          return this.$t( 'text.CommentsAndFiles' );
       }
     },
     getNoItemsText( filter ) {
       switch( filter ) {
         case History.Comments:
-          return this.$t( 'IssueDetails.NoComments' );
+          return this.$t( 'info.NoComments' );
         case History.Files:
-          return this.$t( 'IssueDetails.NoFiles' );
+          return this.$t( 'info.NoFiles' );
         case History.CommentsAndFiles:
-          return this.$t( 'IssueDetails.NoCommentsOrFiles' );
+          return this.$t( 'info.NoCommentsOrFiles' );
       }
     },
 
     formatChange( change ) {
       let label;
       if ( change.type == Change.ValueChanged )
-        label = this.$t( 'IssueDetails.AttributeLabel', [ this.$formatter.escape( this.getAttributeName( change.attributeId ) ) ] );
+        label = this.$t( 'label.Attribute', [ this.$formatter.escape( this.getAttributeName( change.attributeId ) ) ] );
       else
-        label = this.$t( 'IssueDetails.Name' );
+        label = this.$t( 'label.Name' );
       label = '<span class="issue-history-label">' + label + '</span>';
       if ( change.type == Change.IssueCreated || change.old == '' )
         return label + ' ' + this.formatValue( change.new, change.attributeId );
@@ -330,7 +330,7 @@ export default {
         return label + ' ' + this.formatValue( change.old, change.attributeId ) + ' &rarr; ' + this.formatValue( change.new, change.attributeId );
     },
     formatIssueMoved( item ) {
-      const label = '<span class="issue-history-label">' + this.$t( 'IssueDetails.LocationLabel' ) + '</span>';
+      const label = '<span class="issue-history-label">' + this.$t( 'label.Location' ) + '</span>';
       return label + ' ' + this.formatLocation( item.fromFolderId ) + ' &rarr; ' + this.formatLocation( item.toFolderId );
     },
 
@@ -338,14 +338,14 @@ export default {
       if ( value != '' )
         return '<span class="issue-history-value">' + this.convertAttributeValue( value, attributeId ) + '</span>'
       else
-        return this.$t( 'IssueDetails.Empty' );
+        return this.$t( 'text.empty' );
     },
     formatLocation( folderId ) {
       const project = this.projects.find( p => p.folders.some( f => f.id == folderId ) );
       if ( project != null )
         return '<span class="issue-history-value">' + this.$formatter.escape( project.name ) + ' &mdash; ' + this.$formatter.escape( project.folders.find( f => f.id == folderId ).name ) + '</span>';
       else
-        return this.$t( 'IssueDetails.Unknown' );
+        return this.$t( 'text.unknown' );
     },
 
     getFileURL( id ) {

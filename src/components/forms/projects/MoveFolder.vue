@@ -19,9 +19,9 @@
 
 <template>
   <div class="container-fluid">
-    <FormHeader v-bind:title="$t( 'MoveFolder.MoveFolder' )" v-on:close="close"/>
-    <Prompt path="MoveFolder.MoveFolderPrompt"><strong>{{ name }}</strong></Prompt>
-    <FormGroup v-bind:label="$t( 'MoveFolder.Project' )" v-bind="$field( 'projectId' )">
+    <FormHeader v-bind:title="$t( 'cmd.MoveFolder' )" v-on:close="close"/>
+    <Prompt path="prompt.MoveFolder"><strong>{{ name }}</strong></Prompt>
+    <FormGroup v-bind:label="$t( 'label.Project' )" v-bind="$field( 'projectId' )">
       <LocationFilters ref="projectId" v-bind:projectId.sync="projectId" require-admin/>
     </FormGroup>
     <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
@@ -44,7 +44,7 @@ export default {
         value: this.initialProjectId,
         type: Number,
         required: true,
-        requiredError: this.$t( 'MoveFolder.NoProjectSelected' )
+        requiredError: this.$t( 'error.NoProjectSelected' )
       }
     };
   },

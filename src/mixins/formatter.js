@@ -132,14 +132,14 @@ function convertInitialValue( value, attribute, userName ) {
 
 function formatFileSize( size, i18n, settings ) {
   if ( size < 1024 )
-    return i18n.t( 'FileSize.Bytes', [ formatDecimalNumber( size, 0, {}, settings ) ] );
+    return i18n.t( 'text.bytes', [ formatDecimalNumber( size, 0, {}, settings ) ] );
 
   size /= 1024;
   if ( size < 1024 )
-    return i18n.t( 'FileSize.Kilobytes', [ formatDecimalNumber( size, 1, { stripZeros: true }, settings ) ] );
+    return i18n.t( 'text.kB', [ formatDecimalNumber( size, 1, { stripZeros: true }, settings ) ] );
 
   size /= 1024;
-  return i18n.t( 'FileSize.Megabytes', [ formatDecimalNumber( size, 1, { stripZeros: true }, settings ) ] );
+  return i18n.t( 'text.MB', [ formatDecimalNumber( size, 1, { stripZeros: true }, settings ) ] );
 }
 
 function toSingleLine( string ) {

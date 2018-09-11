@@ -19,8 +19,8 @@
 
 <template>
   <div class="container-fluid">
-    <FormHeader v-bind:title="$t( 'RemoveMember.RemoveMember' )" v-on:close="close"/>
-    <Prompt path="RemoveMember.RemoveMemberPrompt"><strong>{{ userName }}</strong><strong>{{ projectName }}</strong></Prompt>
+    <FormHeader v-bind:title="$t( 'cmd.RemoveMember' )" v-on:close="close"/>
+    <Prompt path="prompt.RemoveMember"><strong>{{ userName }}</strong><strong>{{ projectName }}</strong></Prompt>
     <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
   </div>
 </template>

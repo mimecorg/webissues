@@ -19,9 +19,9 @@
 
 <template>
   <div class="container-fluid">
-    <FormHeader v-bind:title="$t( 'GoToItem.Title' )" v-on:close="close"/>
-    <Prompt path="GoToItem.Prompt"/>
-    <FormInput ref="item" id="item" v-bind:label="$t( 'GoToItem.ID' )" v-bind="$field( 'item' )" v-model="item" v-on:keydown.enter="submit"/>
+    <FormHeader v-bind:title="$t( 'cmd.GoToItem' )" v-on:close="close"/>
+    <Prompt path="prompt.GoToItem"/>
+    <FormInput ref="item" id="item" v-bind:label="$t( 'label.ID' )" v-bind="$field( 'item' )" v-model="item" v-on:keydown.enter="submit"/>
     <FormButtons v-on:ok="submit" v-on:cancel="close"/>
   </div>
 </template>

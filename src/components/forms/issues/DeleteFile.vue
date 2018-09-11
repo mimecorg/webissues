@@ -19,8 +19,8 @@
 
 <template>
   <div class="container-fluid">
-    <FormHeader v-bind:title="$t( 'DeleteFile.DeleteFile' )" v-on:close="close"/>
-    <Prompt path="DeleteFile.DeleteFilePrompt"><strong>{{ name }}</strong></Prompt>
+    <FormHeader v-bind:title="$t( 'cmd.DeleteFile' )" v-on:close="close"/>
+    <Prompt path="prompt.DeleteFile"><strong>{{ name }}</strong></Prompt>
     <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
   </div>
 </template>

@@ -19,11 +19,11 @@
 
 <template>
   <div class="container-fluid">
-    <FormHeader v-if="isConfigured" v-bind:title="$t( 'ClientSettings.WebIssuesSettings' )" v-on:close="close"/>
+    <FormHeader v-if="isConfigured" v-bind:title="$t( 'title.WebIssuesSettings' )" v-on:close="close"/>
     <div v-else class="form-header">
-      <h1>{{ $t( 'ClientSettings.WebIssuesSettings' ) }}</h1>
+      <h1>{{ $t( 'title.WebIssuesSettings' ) }}</h1>
     </div>
-    <FormInput ref="baseURL" id="baseURL" v-bind:label="$t( 'ClientSettings.ServerURL' )" v-bind="$field( 'baseURL' )" v-model="baseURL"/>
+    <FormInput ref="baseURL" id="baseURL" v-bind:label="$t( 'label.ServerURL' )" v-bind="$field( 'baseURL' )" v-model="baseURL"/>
     <FormButtons v-bind:cancel-hidden="!isConfigured" v-on:ok="submit" v-on:cancel="cancel"/>
   </div>
 </template>
@@ -93,7 +93,7 @@ export default {
     parseURL( value ) {
       const matches = /^(https?:\/\/)?[a-z0-9]+([\-\.][a-z0-9]+)*(:[0-9]{1,5})?(\/.*)?$/i.exec( value );
       if ( matches == null )
-        throw makeParseError( this.$t( 'ClientSettings.InvalidURL' ) );
+        throw makeParseError( this.$t( 'error.InvalidURL' ) );
       if ( matches[ 1 ] == null )
         value = 'http://' + value;
       value = value.replace( /\/+(client\/)?(index\.php)?$/, '' );
@@ -103,21 +103,21 @@ export default {
     errorMessage( error ) {
       switch ( error.reason ) {
         case Reason.NetworkError:
-          return this.$t( 'ErrorMessage.NetworkError' );
+          return this.$t( 'error.NetworkError' );
         case Reason.APIError:
         case Reason.InvalidResponse:
-          return this.$t( 'ErrorMessage.InvalidResponse' );
+          return this.$t( 'error.InvalidResponse' );
         case Reason.ServerError:
           if ( error.errorCode == 501 || error.errorCode == 502 )
-            return this.$t( 'ErrorMessage.ServerNotConfigured' );
+            return this.$t( 'error.ServerNotConfigured' );
           else
-            return this.$t( 'ErrorMessage.ServerError' );
+            return this.$t( 'error.ServerError' );
         case Reason.BadRequest:
-          return this.$t( 'ErrorMessage.BadRequest' );
+          return this.$t( 'error.BadRequest' );
         case Reason.UnsupportedVersion:
-          return this.$t( 'ErrorMessage.UnsupportedVersion' );
+          return this.$t( 'error.UnsupportedVersion' );
         default:
-          return this.$t( 'ErrorMessage.UnknownError' );
+          return this.$t( 'error.UnknownError' );
       }
     }
   },

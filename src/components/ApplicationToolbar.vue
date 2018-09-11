@@ -32,18 +32,18 @@
           <DropdownButton v-if="type != null" fa-class="fa-filter" v-bind:text="viewName" v-bind:title="viewTitle">
             <div class="dropdown-menu-scroll">
               <li v-bind:class="{ active: view == null }">
-                <HyperLink v-on:click="selectView( null )">{{ $t( 'ApplicationToolbar.AllIssues' ) }}</HyperLink>
+                <HyperLink v-on:click="selectView( null )">{{ $t( 'text.AllIssues' ) }}</HyperLink>
               </li>
               <template v-if="personalViews.length > 0">
                 <li role="separator" class="divider"></li>
-                <li class="dropdown-header">{{ $t( 'ApplicationToolbar.PersonalViews' ) }}</li>
+                <li class="dropdown-header">{{ $t( 'title.PersonalViews' ) }}</li>
                 <li v-for="v in personalViews" v-bind:key="v.id" v-bind:class="{ active: view != null && v.id == view.id }">
                   <HyperLink v-on:click="selectView( v )">{{ v.name }}</HyperLink>
                 </li>
               </template>
               <template v-if="publicViews.length > 0">
                 <li role="separator" class="divider"></li>
-                <li class="dropdown-header">{{ $t( 'ApplicationToolbar.PublicViews' ) }}</li>
+                <li class="dropdown-header">{{ $t( 'title.PublicViews' ) }}</li>
                 <li v-for="v in publicViews" v-bind:key="v.id" v-bind:class="{ active: view != null && v.id == view.id }">
                   <HyperLink v-on:click="selectView( v )">{{ v.name }}</HyperLink>
                 </li>
@@ -55,7 +55,7 @@
           <DropdownButton fa-class="fa-object-group" v-bind:text="projectName" v-bind:title="projectTitle">
             <div class="dropdown-menu-scroll">
               <li v-bind:class="{ active: project == null }">
-                <HyperLink v-on:click="selectProject( null )">{{ $t( 'ApplicationToolbar.AllProjects' ) }}</HyperLink>
+                <HyperLink v-on:click="selectProject( null )">{{ $t( 'text.AllProjects' ) }}</HyperLink>
               </li>
               <template v-if="projects.length > 0">
                 <li role="separator" class="divider"></li>
@@ -68,7 +68,7 @@
           <DropdownButton fa-class="fa-folder-open-o" v-bind:text="folderName" v-bind:title="folderTitle">
             <div class="dropdown-menu-scroll">
               <li v-bind:class="{ active: folder == null }">
-                <HyperLink v-on:click="selectFolder( null )">{{ $t( 'ApplicationToolbar.AllFolders' ) }}</HyperLink>
+                <HyperLink v-on:click="selectFolder( null )">{{ $t( 'text.AllFolders' ) }}</HyperLink>
               </li>
               <template v-if="folders.length > 0">
                 <li role="separator" class="divider"></li>
@@ -99,19 +99,19 @@
                 <input ref="search" type="search" class="form-control" v-bind:placeholder="searchName" v-bind:maxlength="searchLength"
                        v-bind:value="searchText" v-on:input="setSearchText( $event.target.value )" v-on:keydown.enter="search">
                 <div class="input-group-btn">
-                  <button type="button" class="btn btn-default" v-bind:title="$t( 'ApplicationToolbar.Search' )" v-on:click="search"><span class="fa fa-search" aria-hidden="true"></span></button>
+                  <button type="button" class="btn btn-default" v-bind:title="$t( 'cmd.Search' )" v-on:click="search"><span class="fa fa-search" aria-hidden="true"></span></button>
                 </div>
               </div>
             </div>
             <div class="toolbar-element">
-              <button type="button" class="btn btn-default" v-bind:title="$t( 'ApplicationToolbar.Reload' )" v-on:click="reload"><span class="fa fa-refresh" aria-hidden="true"></span></button>
-              <DropdownButton fa-class="fa-ellipsis-v" menu-class="dropdown-menu-right" v-bind:title="$t( 'ApplicationToolbar.More' )">
-                <li><HyperLink><span class="fa fa-check-circle-o" aria-hidden="true"></span> {{ $t( 'ApplicationToolbar.MarkAllAsRead' ) }}</HyperLink></li>
-                <li><HyperLink><span class="fa fa-check-circle" aria-hidden="true"></span> {{ $t( 'ApplicationToolbar.MarkAllAsUnread' ) }}</HyperLink></li>
+              <button type="button" class="btn btn-default" v-bind:title="$t( 'cmd.Reload' )" v-on:click="reload"><span class="fa fa-refresh" aria-hidden="true"></span></button>
+              <DropdownButton fa-class="fa-ellipsis-v" menu-class="dropdown-menu-right" v-bind:title="$t( 'title.More' )">
+                <li><HyperLink><span class="fa fa-check-circle-o" aria-hidden="true"></span> {{ $t( 'cmd.MarkAllAsRead' ) }}</HyperLink></li>
+                <li><HyperLink><span class="fa fa-check-circle" aria-hidden="true"></span> {{ $t( 'cmd.MarkAllAsUnread' ) }}</HyperLink></li>
                 <li role="separator" class="divider"></li>
-                <li><HyperLink><span class="fa fa-pencil-square-o" aria-hidden="true"></span> {{ $t( 'ApplicationToolbar.ProjectDescription' ) }}</HyperLink></li>
+                <li><HyperLink><span class="fa fa-pencil-square-o" aria-hidden="true"></span> {{ $t( 'title.ProjectDescription' ) }}</HyperLink></li>
                 <li role="separator" class="divider"></li>
-                <li><HyperLink><span class="fa fa-file-text-o" aria-hidden="true"></span> {{ $t( 'ApplicationToolbar.ExportToCSV' ) }}</HyperLink></li>
+                <li><HyperLink><span class="fa fa-file-text-o" aria-hidden="true"></span> {{ $t( 'cmd.ExportToCSV' ) }}</HyperLink></li>
               </DropdownButton>
             </div>
           </div>
@@ -142,59 +142,59 @@ export default {
       if ( this.type != null )
         return this.type.name;
       else
-        return this.$t( 'ApplicationToolbar.SelectType' );
+        return this.$t( 'text.SelectType' );
     },
     typeTitle() {
       if ( this.type != null )
-        return this.$t( 'ApplicationToolbar.TypeTitle', [ this.type.name ] );
+        return this.$t( 'text.Type', [ this.type.name ] );
       else
-        return this.$t( 'ApplicationToolbar.SelectType' );
+        return this.$t( 'text.SelectType' );
     },
     viewName() {
       if ( this.view != null )
         return this.view.name;
       else
-        return this.$t( 'ApplicationToolbar.AllIssues' );
+        return this.$t( 'text.AllIssues' );
     },
     viewTitle() {
       if ( this.view != null )
-        return this.$t( 'ApplicationToolbar.ViewTitle', [ this.viewName ] );
+        return this.$t( 'text.View', [ this.viewName ] );
       else
-        return this.$t( 'ApplicationToolbar.AllIssues' );
+        return this.$t( 'text.AllIssues' );
     },
     projectName() {
       if ( this.project != null )
         return this.project.name;
       else
-        return this.$t( 'ApplicationToolbar.AllProjects' );
+        return this.$t( 'text.AllProjects' );
     },
     projectTitle() {
       if ( this.project != null )
-        return this.$t( 'ApplicationToolbar.ProjectTitle', [ this.projectName ] );
+        return this.$t( 'text.Project', [ this.projectName ] );
       else
-        return this.$t( 'ApplicationToolbar.AllProjects' );
+        return this.$t( 'text.AllProjects' );
     },
     folderName() {
       if ( this.folder != null )
         return this.folder.name;
       else
-        return this.$t( 'ApplicationToolbar.AllFolders' );
+        return this.$t( 'text.AllFolders' );
     },
     folderTitle() {
       if ( this.folder != null )
-        return this.$t( 'ApplicationToolbar.FolderTitle', [ this.folderName ] );
+        return this.$t( 'text.Folder', [ this.folderName ] );
       else
-        return this.$t( 'ApplicationToolbar.AllFolders' );
+        return this.$t( 'text.AllFolders' );
     },
 
     systemColumns() {
       return [
-        { id: Column.ID, name: this.$t( 'ApplicationToolbar.ID' ) },
-        { id: Column.Name, name: this.$t( 'ApplicationToolbar.Name' ) },
-        { id: Column.CreatedDate, name: this.$t( 'ApplicationToolbar.CreatedDate' ) },
-        { id: Column.CreatedBy, name: this.$t( 'ApplicationToolbar.CreatedBy' ) },
-        { id: Column.ModifiedDate, name: this.$t( 'ApplicationToolbar.ModifiedDate' ) },
-        { id: Column.ModifiedBy, name: this.$t( 'ApplicationToolbar.ModifiedBy' ) }
+        { id: Column.ID, name: this.$t( 'title.ID' ) },
+        { id: Column.Name, name: this.$t( 'title.Name' ) },
+        { id: Column.CreatedDate, name: this.$t( 'title.CreatedDate' ) },
+        { id: Column.CreatedBy, name: this.$t( 'title.CreatedBy' ) },
+        { id: Column.ModifiedDate, name: this.$t( 'title.ModifiedDate' ) },
+        { id: Column.ModifiedBy, name: this.$t( 'title.ModifiedBy' ) }
       ];
     },
 
@@ -215,7 +215,7 @@ export default {
 
     searchTitle() {
       if ( this.searchName != null )
-        return this.$t( 'ApplicationToolbar.SearchBy', [ this.searchName ] );
+        return this.$t( 'text.SearchBy', [ this.searchName ] );
       else
         return null;
     },

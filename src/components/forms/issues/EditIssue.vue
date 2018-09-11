@@ -20,22 +20,22 @@
 <template>
   <div class="container-fluid">
     <FormHeader v-bind:title="title" v-on:close="close"/>
-    <Prompt v-if="mode == 'edit'" path="EditIssue.EditAttributesPrompt"><strong>{{ initialName }}</strong></Prompt>
-    <Prompt v-else-if="mode == 'add'" path="EditIssue.AddIssuePrompt"/>
-    <Prompt v-else-if="mode == 'clone'" path="EditIssue.CloneIssuePrompt"><strong>{{ initialName }}</strong></Prompt>
-    <FormInput ref="name" id="name" v-bind:label="$t( 'EditIssue.Name' )" v-bind="$field( 'name' )" v-model="name"/>
-    <FormGroup v-if="mode == 'add' || mode == 'clone'" v-bind:label="$t( 'EditIssue.Location' )" v-bind="$field( 'folderId' )">
+    <Prompt v-if="mode == 'edit'" path="prompt.EditAttributes"><strong>{{ initialName }}</strong></Prompt>
+    <Prompt v-else-if="mode == 'add'" path="prompt.AddIssue"/>
+    <Prompt v-else-if="mode == 'clone'" path="prompt.CloneIssue"><strong>{{ initialName }}</strong></Prompt>
+    <FormInput ref="name" id="name" v-bind:label="$t( 'label.Name' )" v-bind="$field( 'name' )" v-model="name"/>
+    <FormGroup v-if="mode == 'add' || mode == 'clone'" v-bind:label="$t( 'label.Location' )" v-bind="$field( 'folderId' )">
       <LocationFilters ref="folderId" v-bind:typeId="typeId" v-bind:projectId.sync="projectId" v-bind:folderId.sync="folderId" folder-visible/>
     </FormGroup>
-    <Panel v-if="attributes.length > 0" v-bind:title="$t( 'EditIssue.Attributes' )">
+    <Panel v-if="attributes.length > 0" v-bind:title="$t( 'title.Attributes' )">
       <FormGroup v-for="( attribute, index ) in attributes" v-bind:key="attribute.id" v-bind:id="'attribute' + attribute.id"
-                 v-bind:label="$t( 'EditIssue.AttributeLabel', [ getAttributeName( attribute.id ) ] )"
+                 v-bind:label="$t( 'label.Attribute', [ getAttributeName( attribute.id ) ] )"
                  v-bind:required="isAttributeRequired( attribute.id )" v-bind:error="$data[ 'attribute' + attribute.id + 'Error' ]">
         <ValueEditor ref="attribute" v-bind:id="'attribute' + attribute.id" v-bind:attribute="getAttribute( attribute.id )"
                      v-bind:project="project" v-model="$data[ 'attribute' + attribute.id ]"/>
       </FormGroup>
     </Panel>
-    <MarkupEditor v-if="mode == 'add' || mode == 'clone'" ref="description" id="description" v-bind:label="$t( 'EditIssue.Description' )" v-bind="$field( 'description' )"
+    <MarkupEditor v-if="mode == 'add' || mode == 'clone'" ref="description" id="description" v-bind:label="$t( 'label.Description' )" v-bind="$field( 'description' )"
                   v-bind:format.sync="descriptionFormat" v-model="description" v-on:error="error"/>
     <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
   </div>
@@ -72,7 +72,7 @@ export default {
         value: this.initialFolderId,
         type: Number,
         required: true,
-        requiredError: this.$t( 'EditIssue.NoFolderSelected' )
+        requiredError: this.$t( 'error.NoFolderSelected' )
       },
       description: {
         condition: this.mode == 'add' || this.mode == 'clone',
@@ -120,11 +120,11 @@ export default {
     ...mapState( 'global', [ 'projects', 'types' ] ),
     title() {
       if ( this.mode == 'edit' )
-        return this.$t( 'EditIssue.EditAttributes' );
+        return this.$t( 'cmd.EditAttributes' );
       else if ( this.mode == 'add' )
-        return this.$t( 'EditIssue.AddIssue' );
+        return this.$t( 'cmd.AddIssue' );
       else if ( this.mode == 'clone' )
-        return this.$t( 'EditIssue.CloneIssue' );
+        return this.$t( 'cmd.CloneIssue' );
     },
     project() {
       if ( this.projectId != null )

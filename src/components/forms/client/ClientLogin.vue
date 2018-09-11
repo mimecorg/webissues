@@ -20,26 +20,26 @@
 <template>
   <div class="container-fluid">
     <div class="form-header">
-      <h1>{{ $t( 'ClientLogin.LogInToWebIssues' ) }}</h1>
+      <h1>{{ $t( 'title.LogInToWebIssues' ) }}</h1>
     </div>
     <template v-if="!changePassword">
-      <FormInput ref="login" id="login" v-bind:label="$t( 'ClientLogin.Login' )" v-bind="$field( 'login' )" v-model="login" v-on:keydown.enter="submit"/>
-      <FormInput ref="password" id="password" type="password" v-bind:label="$t( 'ClientLogin.Password' )" v-bind="$field( 'password' )" v-model="password" v-on:keydown.enter="submit"/>
+      <FormInput ref="login" id="login" v-bind:label="$t( 'label.Login' )" v-bind="$field( 'login' )" v-model="login" v-on:keydown.enter="submit"/>
+      <FormInput ref="password" id="password" type="password" v-bind:label="$t( 'label.Password' )" v-bind="$field( 'password' )" v-model="password" v-on:keydown.enter="submit"/>
       <div class="front-login-buttons">
-        <button class="btn btn-primary" v-on:click="submit"><span class="fa fa-sign-in" aria-hidden="true"></span> {{ $t( 'ClientLogin.LogIn' ) }}</button>
+        <button class="btn btn-primary" v-on:click="submit"><span class="fa fa-sign-in" aria-hidden="true"></span> {{ $t( 'cmd.LogIn' ) }}</button>
         <template v-if="anonymousAccess">
-          <p>{{ $t( 'ClientLogin.OR' ) }}</p>
-          <button class="btn btn-default" v-on:click="startAnonymous"><span class="fa fa-user-o" aria-hidden="true"></span> {{ $t( 'ClientLogin.AnonymousAccess' ) }}</button>
+          <p>{{ $t( 'text.OR' ) }}</p>
+          <button class="btn btn-default" v-on:click="startAnonymous"><span class="fa fa-user-o" aria-hidden="true"></span> {{ $t( 'cmd.AnonymousAccess' ) }}</button>
         </template>
       </div>
       <div v-if="selfRegister" class="form-options">
-        <p><HyperLink v-on:click="openRegister"><span class="fa fa-user-plus" aria-hidden="true"></span> {{ $t( 'ClientLogin.RegisterNewAccount' ) }}</HyperLink></p>
+        <p><HyperLink v-on:click="openRegister"><span class="fa fa-user-plus" aria-hidden="true"></span> {{ $t( 'cmd.RegisterNewAccount' ) }}</HyperLink></p>
       </div>
     </template>
     <template v-else>
-      <Prompt path="ClientLogin.NewPasswordPrompt"/>
-      <FormInput ref="newPassword" id="newPassword" type="password" v-bind:label="$t( 'ClientLogin.NewPassword' )" v-bind="$field( 'newPassword' )" v-model="newPassword"/>
-      <FormInput ref="confirmPassword" id="confirmPassword" type="password" v-bind:label="$t( 'ClientLogin.ConfirmPassword' )" v-bind="$field( 'confirmPassword' )" v-model="confirmPassword"/>
+      <Prompt path="prompt.EnterNewPassword"/>
+      <FormInput ref="newPassword" id="newPassword" type="password" v-bind:label="$t( 'label.NewPassword' )" v-bind="$field( 'newPassword' )" v-model="newPassword"/>
+      <FormInput ref="confirmPassword" id="confirmPassword" type="password" v-bind:label="$t( 'label.ConfirmPassword' )" v-bind="$field( 'confirmPassword' )" v-model="confirmPassword"/>
       <FormButtons v-on:ok="submit" v-on:cancel="cancelPassword"/>
     </template>
   </div>

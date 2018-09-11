@@ -21,15 +21,15 @@
   <div class="container-fluid">
     <FormHeader v-bind:title="title" v-on:close="close">
       <button v-if="mode == 'edit' && canEdit" type="button" class="btn btn-default" v-on:click="removeMember">
-        <span class="fa fa-ban" aria-hidden="true"></span> {{ $t( 'EditMember.Remove' ) }}
+        <span class="fa fa-ban" aria-hidden="true"></span> {{ $t( 'cmd.Remove' ) }}
       </button>
     </FormHeader>
-    <Prompt v-if="mode == 'edit'" path="EditMember.EditMemberPrompt"><strong>{{ projectName }}</strong><strong>{{ userName }}</strong></Prompt>
-    <Prompt v-else-if="mode == 'add'" path="EditMember.AddMembersPrompt"><strong>{{ projectName }}</strong></Prompt>
-    <Panel v-if="mode == 'add' && availableUsers.length > 0" v-bind:title="$t( 'EditMember.Users' )">
+    <Prompt v-if="mode == 'edit'" path="prompt.EditMember"><strong>{{ projectName }}</strong><strong>{{ userName }}</strong></Prompt>
+    <Prompt v-else-if="mode == 'add'" path="prompt.AddMembers"><strong>{{ projectName }}</strong></Prompt>
+    <Panel v-if="mode == 'add' && availableUsers.length > 0" v-bind:title="$t( 'title.Users' )">
       <div slot="heading" class="panel-links">
-        <HyperLink v-on:click="selectAll( true )">{{ $t( 'EditMember.SelectAll' ) }}</HyperLink>
-        <HyperLink v-on:click="selectAll( false )">{{ $t( 'EditMember.UnselectAll' ) }}</HyperLink>
+        <HyperLink v-on:click="selectAll( true )">{{ $t( 'cmd.SelectAll' ) }}</HyperLink>
+        <HyperLink v-on:click="selectAll( false )">{{ $t( 'cmd.UnselectAll' ) }}</HyperLink>
       </div>
       <div class="row checkbox-group">
         <div v-for="( u, index ) in availableUsers" v-bind:key="u.id" class="col-xs-12 col-md-4">
@@ -39,16 +39,16 @@
         </div>
       </div>
     </Panel>
-    <Prompt v-else-if="mode == 'add'" path="EditMember.NoAvailableUsers" alert-class="alert-warning"/>
-    <FormGroup v-if="canEdit" v-bind:label="$t( 'EditMember.Access' )" required>
+    <Prompt v-else-if="mode == 'add'" path="info.NoAvailableUsers" alert-class="alert-warning"/>
+    <FormGroup v-if="canEdit" v-bind:label="$t( 'title.Access' )" required>
       <div class="radio">
-        <label><input type="radio" v-model="access" v-bind:value="normalAccess"> {{ $t( 'EditMember.RegularMember' ) }}</label>
+        <label><input type="radio" v-model="access" v-bind:value="normalAccess"> {{ $t( 'text.RegularMember' ) }}</label>
       </div>
       <div class="radio">
-        <label><input type="radio" v-model="access" v-bind:value="administratorAccess"> {{ $t( 'EditMember.ProjectAdministrator' ) }}</label>
+        <label><input type="radio" v-model="access" v-bind:value="administratorAccess"> {{ $t( 'text.ProjectAdministrator' ) }}</label>
       </div>
     </FormGroup>
-    <Prompt v-else path="EditMember.CannotEditOwnAcess" alert-class="alert-warning"/>
+    <Prompt v-else path="error.CannotEditOwnAcess" alert-class="alert-warning"/>
     <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
   </div>
 </template>
@@ -82,9 +82,9 @@ export default {
     ...mapState( 'global', [ 'users' ] ),
     title() {
       if ( this.mode == 'edit' )
-        return this.$t( 'EditMember.EditMember' );
+        return this.$t( 'cmd.EditMember' );
       else if ( this.mode == 'add' )
-        return this.$t( 'EditMember.AddMembers' );
+        return this.$t( 'cmd.AddMembers' );
     },
     canEdit() {
       return this.mode == 'add' || this.$store.state.global.userAccess == Access.AdministratorAccess || this.userId != this.$store.state.global.userId;

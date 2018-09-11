@@ -19,14 +19,14 @@
 
 <template>
   <div class="container-fluid">
-    <FormHeader v-bind:title="$t( 'EditProjectAccess.EditProjectAccess' )" v-on:close="close"/>
-    <Prompt path="EditProjectAccess.EditProjectAccessPrompt"><strong>{{ name }}</strong></Prompt>
-    <FormGroup v-bind:label="$t( 'EditProjectAccess.Access' )" required>
+    <FormHeader v-bind:title="$t( 'title.GlobalAccess' )" v-on:close="close"/>
+    <Prompt path="prompt.EditProjectAccess"><strong>{{ name }}</strong></Prompt>
+    <FormGroup v-bind:label="$t( 'label.Access' )" required>
       <div class="radio">
-        <label><input type="radio" v-model="public" v-bind:value="false"> {{ $t( 'EditProjectAccess.RegularProject' ) }}</label>
+        <label><input type="radio" v-model="public" v-bind:value="false"> {{ $t( 'text.RegularProject' ) }}</label>
       </div>
       <div class="radio">
-        <label><input type="radio" v-model="public" v-bind:value="true"> {{ $t( 'EditProjectAccess.PublicProject' ) }}</label>
+        <label><input type="radio" v-model="public" v-bind:value="true"> {{ $t( 'text.PublicProject' ) }}</label>
       </div>
     </FormGroup>
     <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>

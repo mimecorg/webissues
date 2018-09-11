@@ -57,7 +57,7 @@
                 </tr>
                 <tr>
                   <td colspan="2"></td>
-                  <td class="datepicker-btn" colspan="3" v-on:click="selectToday()">{{ $t( 'Common.Today' ) }}</td>
+                  <td class="datepicker-btn" colspan="3" v-on:click="selectToday()">{{ $t( 'cmd.Today' ) }}</td>
                   <td colspan="2"></td>
                 </tr>
               </tbody>
@@ -196,10 +196,10 @@ export default {
   computed: {
     ...mapState( 'global', [ 'settings' ] ),
     weekdays() {
-      return [ 'Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa' ].map( d => this.$t( 'WeekDay.' + d ) );
+      return [ 'Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa' ].map( d => this.$t( 'calendar.weekday.' + d ) );
     },
     months() {
-      return [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ].map( m => this.$t( 'Month.' + m ) );
+      return [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ].map( m => this.$t( 'calendar.month.' + m ) );
     },
     isTimeMode12() {
       return this.settings.timeMode == 12;

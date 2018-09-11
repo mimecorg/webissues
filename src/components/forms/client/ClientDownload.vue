@@ -19,19 +19,19 @@
 
 <template>
   <div class="container-fluid">
-    <FormHeader v-bind:title="$t( 'ClientDownload.DownloadFile' )" v-on:close="close"/>
-    <Prompt path="ClientDownload.DownloadFilePrompt"><strong>{{ name }}</strong></Prompt>
+    <FormHeader v-bind:title="$t( 'title.DownloadFile' )" v-on:close="close"/>
+    <Prompt path="prompt.DownloadFile"><strong>{{ name }}</strong></Prompt>
     <div class="progress">
       <div v-bind:class="[ 'progress-bar', error != null ? 'progress-bar-danger' : 'progress-bar-success' ]" v-bind:style="{ width: receivedPercent }"></div>
     </div>
     <div v-bind:class="[ 'progress-message', { 'has-error': error != null } ]">
       <p v-if="error != null" class="help-block">{{ error }}</p>
-      <p v-else class="help-block">{{ $t( 'ClientDownload.Downloaded', [ receivedPercent, fileSize ] ) }}</p>
+      <p v-else class="help-block">{{ $t( 'info.Downloaded', [ receivedPercent, fileSize ] ) }}</p>
     </div>
     <div class="form-buttons">
-      <button v-if="path != null" class="btn btn-primary" v-on:click="open">{{ $t( 'ClientDownload.Open' ) }}</button>
-      <button v-if="path != null" class="btn btn-primary" v-on:click="saveAs">{{ $t( 'ClientDownload.SaveAs' ) }}</button>
-      <button class="btn btn-default" v-on:click="cancel">{{ $t( 'Common.Cancel' ) }}</button>
+      <button v-if="path != null" class="btn btn-primary" v-on:click="open">{{ $t( 'cmd.Open' ) }}</button>
+      <button v-if="path != null" class="btn btn-primary" v-on:click="saveAs">{{ $t( 'cmd.SaveAs' ) }}</button>
+      <button class="btn btn-default" v-on:click="cancel">{{ $t( 'cmd.Cancel' ) }}</button>
     </div>
   </div>
 </template>
@@ -83,7 +83,7 @@ export default {
       } ).catch( error => {
         console.error( error );
         this.$emit( 'unblock' );
-        this.error = this.$t( 'ClientDownload.SaveError' );
+        this.error = this.$t( 'error.SaveError' );
       } );
     },
 
@@ -106,7 +106,7 @@ export default {
     done( error, filePath ) {
       if ( error != null ) {
         console.error( error );
-        this.error = this.$t( 'ClientDownload.DownloadError' );
+        this.error = this.$t( 'error.DownloadError' );
       } else {
         this.path = filePath;
         this.received = this.total;

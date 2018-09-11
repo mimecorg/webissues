@@ -19,9 +19,9 @@
 
 <template>
   <div class="container-fluid">
-    <FormHeader v-bind:title="$t( 'MoveIssue.MoveIssue' )" v-on:close="close"/>
-    <Prompt path="MoveIssue.MoveIssuePrompt"><strong>{{ name }}</strong></Prompt>
-    <FormGroup v-bind:label="$t( 'MoveIssue.Location' )" v-bind="$field( 'folderId' )">
+    <FormHeader v-bind:title="$t( 'cmd.MoveIssue' )" v-on:close="close"/>
+    <Prompt path="prompt.MoveIssue"><strong>{{ name }}</strong></Prompt>
+    <FormGroup v-bind:label="$t( 'label.Location' )" v-bind="$field( 'folderId' )">
       <LocationFilters ref="folderId" v-bind:typeId="typeId" v-bind:projectId.sync="projectId" v-bind:folderId.sync="folderId" require-admin folder-visible/>
     </FormGroup>
     <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
@@ -43,7 +43,7 @@ export default {
         value: this.initialFolderId,
         type: Number,
         required: true,
-        requiredError: this.$t( 'MoveIssue.NoFolderSelected' )
+        requiredError: this.$t( 'error.NoFolderSelected' )
       }
     };
   },

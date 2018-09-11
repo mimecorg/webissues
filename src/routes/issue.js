@@ -161,7 +161,7 @@ export default function makeIssueRoutes( i18n, ajax, store, formatter ) {
           mode: 'add',
           issueId,
           issueName: details.name,
-          initialComment: '[quote ' + i18n.t( 'EditComment.DescriptionQuote' ) + ']\n' + description.text + '\n[/quote]\n\n',
+          initialComment: '[quote ' + i18n.t( 'text.Description' ) + ']\n' + description.text + '\n[/quote]\n\n',
           initialFormat: TextFormat.TextWithMarkup
         };
       } );
@@ -219,7 +219,7 @@ export default function makeIssueRoutes( i18n, ajax, store, formatter ) {
             mode: 'add',
             issueId,
             issueName: details.name,
-            initialComment: '[quote ' + i18n.t( 'EditComment.CommentQuote', [ '#' + commentId ] ) + ']\n' + text + '\n[/quote]\n\n',
+            initialComment: '[quote ' + i18n.t( 'text.Comment', [ '#' + commentId ] ) + ']\n' + text + '\n[/quote]\n\n',
             initialFormat: TextFormat.TextWithMarkup
           };
         } );

@@ -38,53 +38,53 @@
           </div>
         </div>
         <div id="navbar-element-collapse" v-bind:class="[ 'navbar-element', 'collapse', { 'in' : expanded } ]" v-bind:aria-expanded="expanded ? 'true' : 'false'">
-          <button v-if="type != null && isAuthenticated" type="button" class="btn btn-success hidden-xs" v-bind:title="$t( 'ApplicationNavbar.AddIssue' )" v-on:click="addIssue">
-            <span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'ApplicationNavbar.Add' ) }}
+          <button v-if="type != null && isAuthenticated" type="button" class="btn btn-success hidden-xs" v-bind:title="$t( 'cmd.AddIssue' )" v-on:click="addIssue">
+            <span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'cmd.Add' ) }}
           </button>
-          <button type="button" class="btn btn-default" v-bind:title="$t( 'ApplicationNavbar.GoToItem' )" v-on:click="goToItem">
-            <span class="fa fa-arrow-right" aria-hidden="true"></span> <span class="hidden-sm hidden-md">{{ $t( 'ApplicationNavbar.GoTo' ) }}</span>
+          <button type="button" class="btn btn-default" v-bind:title="$t( 'cmd.GoToItem' )" v-on:click="goToItem">
+            <span class="fa fa-arrow-right" aria-hidden="true"></span> <span class="hidden-sm hidden-md">{{ $t( 'cmd.GoTo' ) }}</span>
           </button>
-          <DropdownButton v-if="canManageProjects" fa-class="fa-cog" v-bind:text="$t( 'ApplicationNavbar.Administration' )"
-                          text-class="hidden-sm hidden-md" v-bind:title="$t( 'ApplicationNavbar.AdministrationMenu' )">
-            <li><HyperLink v-on:click="manageProjects"><span class="fa fa-object-group" aria-hidden="true"></span> {{ $t( 'ApplicationNavbar.Projects' ) }}</HyperLink></li>
-            <li><HyperLink><span class="fa fa-bell-o" aria-hidden="true"></span> {{ $t( 'ApplicationNavbar.PublicAlerts' ) }}</HyperLink></li>
+          <DropdownButton v-if="canManageProjects" fa-class="fa-cog" v-bind:text="$t( 'title.Administration' )"
+                          text-class="hidden-sm hidden-md" v-bind:title="$t( 'title.AdministrationMenu' )">
+            <li><HyperLink v-on:click="manageProjects"><span class="fa fa-object-group" aria-hidden="true"></span> {{ $t( 'title.Projects' ) }}</HyperLink></li>
+            <li><HyperLink><span class="fa fa-bell-o" aria-hidden="true"></span> {{ $t( 'title.PublicAlerts' ) }}</HyperLink></li>
             <template v-if="isAdministrator">
-              <li><HyperLink><span class="fa fa-users" aria-hidden="true"></span> {{ $t( 'ApplicationNavbar.UserAccounts' ) }}</HyperLink></li>
-              <li><HyperLink><span class="fa fa-user-circle-o" aria-hidden="true"></span> {{ $t( 'ApplicationNavbar.RegistrationRequests' ) }}</HyperLink></li>
-              <li><HyperLink><span class="fa fa-list" aria-hidden="true"></span> {{ $t( 'ApplicationNavbar.IssueTypes' ) }}</HyperLink></li>
-              <li><HyperLink><span class="fa fa-clock-o" aria-hidden="true"></span> {{ $t( 'ApplicationNavbar.ArchivedProjects' ) }}</HyperLink></li>
+              <li><HyperLink><span class="fa fa-users" aria-hidden="true"></span> {{ $t( 'title.UserAccounts' ) }}</HyperLink></li>
+              <li><HyperLink><span class="fa fa-user-circle-o" aria-hidden="true"></span> {{ $t( 'title.RegistrationRequests' ) }}</HyperLink></li>
+              <li><HyperLink><span class="fa fa-list" aria-hidden="true"></span> {{ $t( 'title.IssueTypes' ) }}</HyperLink></li>
+              <li><HyperLink><span class="fa fa-clock-o" aria-hidden="true"></span> {{ $t( 'title.ArchivedProjects' ) }}</HyperLink></li>
               <li role="separator" class="divider"></li>
-              <li><HyperLink><span class="fa fa-wrench" aria-hidden="true"></span> {{ $t( 'ApplicationNavbar.GeneralSettings' ) }}</HyperLink></li>
-              <li><HyperLink><span class="fa fa-lock" aria-hidden="true"></span> {{ $t( 'ApplicationNavbar.AccessSettings' ) }}</HyperLink></li>
-              <li><HyperLink><span class="fa fa-envelope-o" aria-hidden="true"></span> {{ $t( 'ApplicationNavbar.EmailSettings' ) }}</HyperLink></li>
-              <li><HyperLink><span class="fa fa-inbox" aria-hidden="true"></span> {{ $t( 'ApplicationNavbar.InboxSettings' ) }}</HyperLink></li>
-              <li><HyperLink><span class="fa fa-cogs" aria-hidden="true"></span> {{ $t( 'ApplicationNavbar.AdvancedSettings' ) }}</HyperLink></li>
+              <li><HyperLink><span class="fa fa-wrench" aria-hidden="true"></span> {{ $t( 'title.GeneralSettings' ) }}</HyperLink></li>
+              <li><HyperLink><span class="fa fa-lock" aria-hidden="true"></span> {{ $t( 'title.AccessSettings' ) }}</HyperLink></li>
+              <li><HyperLink><span class="fa fa-envelope-o" aria-hidden="true"></span> {{ $t( 'title.EmailSettings' ) }}</HyperLink></li>
+              <li><HyperLink><span class="fa fa-inbox" aria-hidden="true"></span> {{ $t( 'title.InboxSettings' ) }}</HyperLink></li>
+              <li><HyperLink><span class="fa fa-cogs" aria-hidden="true"></span> {{ $t( 'title.AdvancedSettings' ) }}</HyperLink></li>
               <li role="separator" class="divider"></li>
-              <li><HyperLink><span class="fa fa-info" aria-hidden="true"></span> {{ $t( 'ApplicationNavbar.StatusReport' ) }}</HyperLink></li>
-              <li><HyperLink><span class="fa fa-book" aria-hidden="true"></span> {{ $t( 'ApplicationNavbar.EventLog' ) }}</HyperLink></li>
+              <li><HyperLink><span class="fa fa-info" aria-hidden="true"></span> {{ $t( 'title.StatusReport' ) }}</HyperLink></li>
+              <li><HyperLink><span class="fa fa-book" aria-hidden="true"></span> {{ $t( 'title.EventLog' ) }}</HyperLink></li>
             </template>
           </DropdownButton>
           <button v-else class="btn btn-default" v-on:click="manageProjects">
-            <span class="fa fa-object-group" aria-hidden="true"></span> <span class="hidden-sm hidden-md">{{ $t( 'ApplicationNavbar.Projects' ) }}</span>
+            <span class="fa fa-object-group" aria-hidden="true"></span> <span class="hidden-sm hidden-md">{{ $t( 'title.Projects' ) }}</span>
           </button>
           <DropdownButton fa-class="fa-user" v-bind:text="userName" text-class="hidden-sm hidden-md" v-bind:title="userTitle">
             <template v-if="isAuthenticated">
-              <li><HyperLink><span class="fa fa-filter" aria-hidden="true"></span> {{ $t( 'ApplicationNavbar.PersonalViews' ) }}</HyperLink></li>
-              <li><HyperLink><span class="fa fa-bell-o" aria-hidden="true"></span> {{ $t( 'ApplicationNavbar.PersonalAlerts' ) }}</HyperLink></li>
+              <li><HyperLink><span class="fa fa-filter" aria-hidden="true"></span> {{ $t( 'title.PersonalViews' ) }}</HyperLink></li>
+              <li><HyperLink><span class="fa fa-bell-o" aria-hidden="true"></span> {{ $t( 'title.PersonalAlerts' ) }}</HyperLink></li>
               <li role="separator" class="divider"></li>
-              <li><HyperLink><span class="fa fa-sliders" aria-hidden="true"></span> {{ $t( 'ApplicationNavbar.UserPreferences' ) }}</HyperLink></li>
-              <li><HyperLink><span class="fa fa-unlock-alt" aria-hidden="true"></span> {{ $t( 'ApplicationNavbar.ChangePassword' ) }}</HyperLink></li>
+              <li><HyperLink><span class="fa fa-sliders" aria-hidden="true"></span> {{ $t( 'title.UserPreferences' ) }}</HyperLink></li>
+              <li><HyperLink><span class="fa fa-unlock-alt" aria-hidden="true"></span> {{ $t( 'cmd.ChangePassword' ) }}</HyperLink></li>
               <li role="separator" class="divider"></li>
-              <li v-if="isWeb"><a v-bind:href="baseURL + '/index.php'"><span class="fa fa-sign-out" aria-hidden="true"></span> {{ $t( 'ApplicationNavbar.LogOut' ) }}</a></li>
-              <li v-else><HyperLink v-on:click="restartClient"><span class="fa fa-sign-out" aria-hidden="true"></span> {{ $t( 'ApplicationNavbar.LogOut' ) }}</HyperLink></li>
+              <li v-if="isWeb"><a v-bind:href="baseURL + '/index.php'"><span class="fa fa-sign-out" aria-hidden="true"></span> {{ $t( 'cmd.LogOut' ) }}</a></li>
+              <li v-else><HyperLink v-on:click="restartClient"><span class="fa fa-sign-out" aria-hidden="true"></span> {{ $t( 'cmd.LogOut' ) }}</HyperLink></li>
             </template>
             <template v-else-if="isWeb">
-              <li><a v-bind:href="baseURL + '/index.php'"><span class="fa fa-sign-in" aria-hidden="true"></span> {{ $t( 'ApplicationNavbar.LogIn' ) }}</a></li>
-              <li v-if="selfRegister"><a v-bind:href="baseURL + '/users/register.php'"><span class="fa fa-user-plus" aria-hidden="true"></span> {{ $t( 'ApplicationNavbar.Register' ) }}</a></li>
+              <li><a v-bind:href="baseURL + '/index.php'"><span class="fa fa-sign-in" aria-hidden="true"></span> {{ $t( 'cmd.LogIn' ) }}</a></li>
+              <li v-if="selfRegister"><a v-bind:href="baseURL + '/users/register.php'"><span class="fa fa-user-plus" aria-hidden="true"></span> {{ $t( 'cmd.Register' ) }}</a></li>
             </template>
-            <template v-else="isWeb">
-              <li><HyperLink v-on:click="restartClient"><span class="fa fa-sign-in" aria-hidden="true"></span> {{ $t( 'ApplicationNavbar.LogIn' ) }}</HyperLink></li>
-              <li v-if="selfRegister"><HyperLink v-on:click="openRegister"><span class="fa fa-user-plus" aria-hidden="true"></span> {{ $t( 'ApplicationNavbar.Register' ) }}</HyperLink></li>
+            <template v-else>
+              <li><HyperLink v-on:click="restartClient"><span class="fa fa-sign-in" aria-hidden="true"></span> {{ $t( 'cmd.LogIn' ) }}</HyperLink></li>
+              <li v-if="selfRegister"><HyperLink v-on:click="openRegister"><span class="fa fa-user-plus" aria-hidden="true"></span> {{ $t( 'cmd.Register' ) }}</HyperLink></li>
             </template>
           </DropdownButton>
           <div class="navbar-sub-group">
@@ -92,24 +92,24 @@
               <div class="navbar-version">WebIssues {{ serverVersion }}</div>
             </div>
             <div class="navbar-sub-element">
-              <button v-if="!isWeb" type="button" class="btn btn-default" v-bind:title="$t( 'ApplicationNavbar.WebIssuesSettings' )" v-on:click="clientSettings">
+              <button v-if="!isWeb" type="button" class="btn btn-default" v-bind:title="$t( 'title.WebIssuesSettings' )" v-on:click="clientSettings">
                 <span class="fa fa-wrench" aria-hidden="true"></span>
               </button>
-              <button type="button" class="btn btn-default" v-bind:title="$t( 'ApplicationNavbar.AboutWebIssues' )"><span class="fa fa-info-circle" aria-hidden="true"></span></button>
-              <a v-if="isWeb" type="button" class="btn btn-default" v-bind:title="$t( 'ApplicationNavbar.WebIssuesManual' )" v-bind:href="manualURL" target="_blank">
+              <button type="button" class="btn btn-default" v-bind:title="$t( 'title.AboutWebIssues' )"><span class="fa fa-info-circle" aria-hidden="true"></span></button>
+              <a v-if="isWeb" type="button" class="btn btn-default" v-bind:title="$t( 'title.WebIssuesManual' )" v-bind:href="manualURL" target="_blank">
                 <span class="fa fa-question-circle" aria-hidden="true"></span>
               </a>
-              <button v-else type="button" class="btn btn-default" v-bind:title="$t( 'ApplicationNavbar.WebIssuesManual' )" v-on:click="openManual">
+              <button v-else type="button" class="btn btn-default" v-bind:title="$t( 'title.WebIssuesManual' )" v-on:click="openManual">
                 <span class="fa fa-question-circle" aria-hidden="true"></span>
               </button>
             </div>
           </div>
         </div>
         <div id="navbar-element-toggle" class="navbar-element">
-          <button v-if="type != null" type="button" class="btn btn-success" v-bind:title="$t( 'ApplicationNavbar.AddIssue' )" v-on:click="addIssue">
-            <span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'ApplicationNavbar.Add' ) }}
+          <button v-if="type != null" type="button" class="btn btn-success" v-bind:title="$t( 'cmd.AddIssue' )" v-on:click="addIssue">
+            <span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'cmd.Add' ) }}
           </button>
-          <button type="button" class="btn btn-default" v-bind:title="$t( 'ApplicationNavbar.ToggleNavigation' )" v-on:click="toggle">
+          <button type="button" class="btn btn-default" v-bind:title="$t( 'cmd.ToggleNavigation' )" v-on:click="toggle">
             <span class="fa fa-bars" aria-hidden="true"></span>
           </button>
         </div>
@@ -134,9 +134,9 @@ export default {
     ...mapGetters( 'list', [ 'type' ] ),
     userTitle() {
       if ( this.isAuthenticated )
-        return this.$t( 'ApplicationNavbar.UserTitle', [ this.userName ] );
+        return this.$t( 'text.User', [ this.userName ] );
       else
-        return this.$t( 'ApplicationNavbar.AnonymousUser' );
+        return this.$t( 'text.AnonymousUser' );
     },
     manualURL() {
       return 'http://doc.mimec.org/webissues/1.1/en/index.html';

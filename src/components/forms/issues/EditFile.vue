@@ -20,16 +20,16 @@
 <template>
   <div class="container-fluid">
     <FormHeader v-bind:title="title" v-on:close="close"/>
-    <Prompt v-if="mode == 'edit'" path="EditFile.EditFilePrompt"><strong>{{ initialName }}</strong></Prompt>
-    <Prompt v-else-if="mode == 'add'" path="EditFile.AddFilePrompt"><strong>{{ issueName }}</strong></Prompt>
+    <Prompt v-if="mode == 'edit'" path="prompt.EditFile"><strong>{{ initialName }}</strong></Prompt>
+    <Prompt v-else-if="mode == 'add'" path="prompt.AttachFile"><strong>{{ issueName }}</strong></Prompt>
     <FormGroup v-if="mode == 'add'" v-bind:error="fileError">
       <div v-bind:class="[ 'form-upload', { 'drag-over': dragOver } ]">
         <input ref="file" id="file" type="file" class="form-control" v-on:change="fileChange">
         <p>{{ filePrompt }}</p>
       </div>
     </FormGroup>
-    <FormInput ref="name" id="name" v-bind:label="$t( 'EditFile.FileName' )" v-bind="$field( 'name' )" v-model="name"/>
-    <FormInput ref="description" id="description" v-bind:label="$t( 'EditFile.Description' )" v-bind="$field( 'description' )" v-model="description"/>
+    <FormInput ref="name" id="name" v-bind:label="$t( 'label.FileName' )" v-bind="$field( 'name' )" v-model="name"/>
+    <FormInput ref="description" id="description" v-bind:label="$t( 'label.Description' )" v-bind="$field( 'description' )" v-model="description"/>
     <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
   </div>
 </template>
@@ -70,7 +70,7 @@ export default {
 
   data() {
     return {
-      filePrompt: this.$t( 'EditFile.FilePrompt' ),
+      filePrompt: this.$t( 'prompt.DragFileHere' ),
       fileError: null,
       dragOver: false
     };
@@ -80,9 +80,9 @@ export default {
     ...mapState( 'global', [ 'settings' ] ),
     title() {
       if ( this.mode == 'edit' )
-        return this.$t( 'EditFile.EditFile' );
+        return this.$t( 'cmd.EditFile' );
       else if ( this.mode == 'add' )
-        return this.$t( 'EditFile.AddFile' );
+        return this.$t( 'cmd.AttachFile' );
     }
   },
 
@@ -94,11 +94,11 @@ export default {
 
       if ( this.mode == 'add' ) {
         if ( this.$refs.file.files.length == 0 ) {
-          this.fileError = this.$t( 'EditFile.NoFileSelected' );
+          this.fileError = this.$t( 'error.NoFileSelected' );
         } else {
           file = this.$refs.file.files[ 0 ];
           if ( file.size > this.settings.fileMaxSize )
-            this.fileError = this.$t( 'EditFile.FileTooLarge' );
+            this.fileError = this.$t( 'error.FileTooLarge' );
         }
       }
 
@@ -141,7 +141,7 @@ export default {
 
     parseName( value ) {
       if ( value.charAt( 0 ) == '.' || /[\\/:*?"<>|]/.test( value ) )
-        throw makeParseError( this.$t( 'EditFile.InvalidFileName' ) );
+        throw makeParseError( this.$t( 'error.InvalidFileName' ) );
       return value;
     },
 

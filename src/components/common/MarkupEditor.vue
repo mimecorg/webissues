@@ -22,21 +22,21 @@
     <FormGroup v-bind:id="id" v-bind:label="label" v-bind:required="required" v-bind:error="error">
       <div v-if="isMarkup" class="btn-toolbar">
         <div class="btn-group btn-group-sm">
-          <button type="button" class="btn btn-default" v-bind:title="$t( 'MarkupEditor.Bold' ) + ' (Ctrl+B)'" v-on:click="markupBold"><span class="fa fa-bold"></span></button>
-          <button type="button" class="btn btn-default" v-bind:title="$t( 'MarkupEditor.Italic' ) + ' (Ctrl+I)'" v-on:click="markupItalic"><span class="fa fa-italic"></span></button>
-          <button type="button" class="btn btn-default" v-bind:title="$t( 'MarkupEditor.Monospace' )" v-on:click="markupMonospace"><span class="fa fa-code"></span></button>
+          <button type="button" class="btn btn-default" v-bind:title="$t( 'cmd.Bold' ) + ' (Ctrl+B)'" v-on:click="markupBold"><span class="fa fa-bold"></span></button>
+          <button type="button" class="btn btn-default" v-bind:title="$t( 'cmd.Italic' ) + ' (Ctrl+I)'" v-on:click="markupItalic"><span class="fa fa-italic"></span></button>
+          <button type="button" class="btn btn-default" v-bind:title="$t( 'cmd.Monospace' )" v-on:click="markupMonospace"><span class="fa fa-code"></span></button>
         </div>
         <div class="btn-group btn-group-sm">
-          <button type="button" class="btn btn-default" v-bind:title="$t( 'MarkupEditor.Hyperlink' ) + ' (Ctrl+K)'" v-on:click="markupLink"><span class="fa fa-link"></span></button>
+          <button type="button" class="btn btn-default" v-bind:title="$t( 'cmd.Hyperlink' ) + ' (Ctrl+K)'" v-on:click="markupLink"><span class="fa fa-link"></span></button>
         </div>
         <div class="btn-group btn-group-sm">
-          <button type="button" class="btn btn-default" v-bind:title="$t( 'MarkupEditor.BulletList' )" v-on:click="markupList"><span class="fa fa-list-ul"></span></button>
-          <button type="button" class="btn btn-default" v-bind:title="$t( 'MarkupEditor.QuoteBlock' )" v-on:click="markupQuote"><span class="fa fa-quote-right"></span></button>
-          <button type="button" class="btn btn-default" v-bind:title="$t( 'MarkupEditor.CodeBlock' )" v-on:click="markupCode"><span class="fa fa-file-code-o"></span></button>
-          <button type="button" class="btn btn-default" v-bind:title="$t( 'MarkupEditor.RightToLeftText' )" v-on:click="markupRTL"><span class="fa fa-long-arrow-left"></span></button>
+          <button type="button" class="btn btn-default" v-bind:title="$t( 'cmd.BulletList' )" v-on:click="markupList"><span class="fa fa-list-ul"></span></button>
+          <button type="button" class="btn btn-default" v-bind:title="$t( 'cmd.QuoteBlock' )" v-on:click="markupQuote"><span class="fa fa-quote-right"></span></button>
+          <button type="button" class="btn btn-default" v-bind:title="$t( 'cmd.CodeBlock' )" v-on:click="markupCode"><span class="fa fa-file-code-o"></span></button>
+          <button type="button" class="btn btn-default" v-bind:title="$t( 'cmd.RightToLeftText' )" v-on:click="markupRTL"><span class="fa fa-long-arrow-left"></span></button>
         </div>
         <div class="btn-group btn-group-sm">
-          <button type="button" class="btn btn-default" v-bind:title="$t( 'MarkupEditor.Preview' )" v-on:click="preview"><span class="fa fa-search"></span></button>
+          <button type="button" class="btn btn-default" v-bind:title="$t( 'cmd.Preview' )" v-on:click="preview"><span class="fa fa-search"></span></button>
         </div>
       </div>
       <textarea ref="textarea" v-bind:id="id" class="form-control" rows="10" v-bind:value="value" v-bind:maxlength="maxlength"
@@ -45,11 +45,11 @@
         <div class="formatted-text" v-hljs="previewHtml"></div>
       </div>
     </FormGroup>
-    <FormGroup v-bind:label="$t( 'MarkupEditor.TextFormat' )" required>
+    <FormGroup v-bind:label="$t( 'label.TextFormat' )" required>
       <div class="dropdown-select">
         <DropdownButton v-bind:text="formatName">
-          <li v-bind:class="{ active: !isMarkup }"><HyperLink v-on:click="selectMarkup( false )">{{ $t( 'MarkupEditor.PlainText' ) }}</HyperLink></li>
-          <li v-bind:class="{ active: isMarkup }"><HyperLink v-on:click="selectMarkup( true )">{{ $t( 'MarkupEditor.TextWithMarkup' ) }}</HyperLink></li>
+          <li v-bind:class="{ active: !isMarkup }"><HyperLink v-on:click="selectMarkup( false )">{{ $t( 'text.PlainText' ) }}</HyperLink></li>
+          <li v-bind:class="{ active: isMarkup }"><HyperLink v-on:click="selectMarkup( true )">{{ $t( 'text.TextWithMarkup' ) }}</HyperLink></li>
         </DropdownButton>
       </div>
     </FormGroup>
@@ -82,9 +82,9 @@ export default {
     },
     formatName() {
       if ( this.isMarkup )
-        return this.$t( 'MarkupEditor.TextWithMarkup' );
+        return this.$t( 'text.TextWithMarkup' );
       else
-        return this.$t( 'MarkupEditor.PlainText' );
+        return this.$t( 'text.PlainText' );
     }
   },
 

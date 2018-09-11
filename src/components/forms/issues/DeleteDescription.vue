@@ -19,8 +19,8 @@
 
 <template>
   <div class="container-fluid">
-    <FormHeader v-bind:title="$t( 'DeleteDescription.DeleteDescription' )" v-on:close="close"/>
-    <Prompt path="DeleteDescription.DeleteDescriptionPrompt"><strong>{{ issueName }}</strong></Prompt>
+    <FormHeader v-bind:title="$t( 'cmd.DeleteDescription' )" v-on:close="close"/>
+    <Prompt path="prompt.DeleteDescription"><strong>{{ issueName }}</strong></Prompt>
     <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
   </div>
 </template>

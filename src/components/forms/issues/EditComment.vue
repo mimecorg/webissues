@@ -20,9 +20,9 @@
 <template>
   <div class="container-fluid">
     <FormHeader v-bind:title="title" v-on:close="close"/>
-    <Prompt v-if="mode == 'edit'" path="EditComment.EditCommentPrompt"><strong>{{ '#' + commentId }}</strong></Prompt>
-    <Prompt v-else-if="mode == 'add'" path="EditComment.AddCommentPrompt"><strong>{{ issueName }}</strong></Prompt>
-    <MarkupEditor ref="comment" id="comment" v-bind:label="$t( 'EditComment.Comment' )" v-bind="$field( 'comment' )"
+    <Prompt v-if="mode == 'edit'" path="prompt.EditComment"><strong>{{ '#' + commentId }}</strong></Prompt>
+    <Prompt v-else-if="mode == 'add'" path="prompt.AddComment"><strong>{{ issueName }}</strong></Prompt>
+    <MarkupEditor ref="comment" id="comment" v-bind:label="$t( 'label.Comment' )" v-bind="$field( 'comment' )"
                   v-bind:format.sync="commentFormat" v-model="comment" v-on:error="error"/>
     <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
   </div>
@@ -60,9 +60,9 @@ export default {
   computed: {
     title() {
       if ( this.mode == 'edit' )
-        return this.$t( 'EditComment.EditComment' );
+        return this.$t( 'cmd.EditComment' );
       else if ( this.mode == 'add' )
-        return this.$t( 'EditComment.AddComment' );
+        return this.$t( 'cmd.AddComment' );
     }
   },
 

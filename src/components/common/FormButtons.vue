@@ -19,8 +19,8 @@
 
 <template>
   <div class="form-buttons">
-    <button v-if="!okHidden" class="btn btn-primary" v-on:click="ok">{{ $t( 'Common.OK' ) }}</button>
-    <button v-if="!cancelHidden" class="btn btn-default" v-on:click="cancel">{{ $t( 'Common.Cancel' ) }}</button>
+    <button v-if="!okHidden" class="btn btn-primary" v-on:click="ok">{{ $t( 'cmd.OK' ) }}</button>
+    <button v-if="!cancelHidden" class="btn btn-default" v-on:click="cancel">{{ $t( 'cmd.Cancel' ) }}</button>
   </div>
 </template>
 

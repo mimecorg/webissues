@@ -20,20 +20,20 @@
 <template>
   <div class="container-fluid">
     <FormHeader v-bind:title="title" v-on:close="close">
-      <DropdownButton v-if="mode == 'rename'" fa-class="fa-ellipsis-v" menu-class="dropdown-menu-right" v-bind:title="$t( 'EditFolder.More' )">
-        <li><HyperLink v-on:click="moveFolder"><span class="fa fa-exchange" aria-hidden="true"></span> {{ $t( 'EditFolder.MoveFolder' ) }}</HyperLink></li>
-        <li><HyperLink v-on:click="deleteFolder"><span class="fa fa-trash" aria-hidden="true"></span> {{ $t( 'EditFolder.DeleteFolder' ) }}</HyperLink></li>
+      <DropdownButton v-if="mode == 'rename'" fa-class="fa-ellipsis-v" menu-class="dropdown-menu-right" v-bind:title="$t( 'title.More' )">
+        <li><HyperLink v-on:click="moveFolder"><span class="fa fa-exchange" aria-hidden="true"></span> {{ $t( 'cmd.MoveFolder' ) }}</HyperLink></li>
+        <li><HyperLink v-on:click="deleteFolder"><span class="fa fa-trash" aria-hidden="true"></span> {{ $t( 'cmd.DeleteFolder' ) }}</HyperLink></li>
       </DropdownButton>
     </FormHeader>
-    <Prompt v-if="mode == 'rename'" path="EditFolder.RenameFolderPrompt"><strong>{{ initialName }}</strong></Prompt>
-    <Prompt v-else-if="mode == 'add'" path="EditFolder.AddFolderPrompt"><strong>{{ projectName }}</strong></Prompt>
-    <FormInput ref="name" id="name" v-bind:label="$t( 'EditFolder.Name' )" v-bind="$field( 'name' )" v-model="name"/>
-    <FormGroup v-if="mode == 'add'" v-bind:label="$t( 'EditFolder.Type' )" v-bind="$field( 'typeId' )">
+    <Prompt v-if="mode == 'rename'" path="prompt.RenameFolder"><strong>{{ initialName }}</strong></Prompt>
+    <Prompt v-else-if="mode == 'add'" path="prompt.AddFolder"><strong>{{ projectName }}</strong></Prompt>
+    <FormInput ref="name" id="name" v-bind:label="$t( 'label.Name' )" v-bind="$field( 'name' )" v-model="name"/>
+    <FormGroup v-if="mode == 'add'" v-bind:label="$t( 'label.Type' )" v-bind="$field( 'typeId' )">
       <div class="dropdown-filters">
         <DropdownButton ref="type" fa-class="fa-list" v-bind:text="typeName" v-bind:title="typeTitle">
           <div class="dropdown-menu-scroll">
             <li v-bind:class="{ active: type == null }">
-              <HyperLink v-on:click="selectType( null )">{{ $t( 'EditFolder.SelectType' ) }}</HyperLink>
+              <HyperLink v-on:click="selectType( null )">{{ $t( 'text.SelectType' ) }}</HyperLink>
             </li>
             <template v-if="types.length > 0">
               <li role="separator" class="divider"></li>
@@ -75,7 +75,7 @@ export default {
         condition: this.mode == 'add',
         type: Number,
         required: true,
-        requiredError: this.$t( 'EditFolder.NoTypeSelected' )
+        requiredError: this.$t( 'error.NoTypeSelected' )
       }
     };
   },
@@ -84,9 +84,9 @@ export default {
     ...mapState( 'global', [ 'types' ] ),
     title() {
       if ( this.mode == 'rename' )
-        return this.$t( 'EditFolder.RenameFolder' );
+        return this.$t( 'cmd.RenameFolder' );
       else if ( this.mode == 'add' )
-        return this.$t( 'EditFolder.AddFolder' );
+        return this.$t( 'cmd.AddFolder' );
     },
     type() {
       if ( this.typeId != null )
@@ -98,13 +98,13 @@ export default {
       if ( this.type != null )
         return this.type.name;
       else
-        return this.$t( 'EditFolder.SelectType' );
+        return this.$t( 'text.SelectType' );
     },
     typeTitle() {
       if ( this.type != null )
-        return this.$t( 'EditFolder.TypeTitle', [ this.typeName ] );
+        return this.$t( 'text.Type', [ this.typeName ] );
       else
-        return this.$t( 'EditFolder.SelectType' );
+        return this.$t( 'text.SelectType' );
     }
   },
 

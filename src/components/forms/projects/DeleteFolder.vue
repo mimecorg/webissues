@@ -19,9 +19,9 @@
 
 <template>
   <div class="container-fluid">
-    <FormHeader v-bind:title="$t( 'DeleteFolder.DeleteFolder' )" v-on:close="close"/>
-    <Prompt path="DeleteFolder.DeleteFolderPrompt"><strong>{{ name }}</strong></Prompt>
-    <Prompt v-if="force" path="DeleteFolder.DeleteFolderWarning" alert-class="alert-danger"><strong>{{ $t( 'DeleteFolder.Warning' ) }}</strong></Prompt>
+    <FormHeader v-bind:title="$t( 'cmd.DeleteFolder' )" v-on:close="close"/>
+    <Prompt path="prompt.DeleteFolder"><strong>{{ name }}</strong></Prompt>
+    <Prompt v-if="force" path="prompt.WarningDeleteFolder" alert-class="alert-danger"><strong>{{ $t( 'label.Warning' ) }}</strong></Prompt>
     <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
   </div>
 </template>

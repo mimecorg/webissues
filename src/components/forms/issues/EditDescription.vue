@@ -20,9 +20,9 @@
 <template>
   <div class="container-fluid">
     <FormHeader v-bind:title="title" v-on:close="close"/>
-    <Prompt v-if="mode == 'edit'" path="EditDescription.EditDescriptionPrompt"><strong>{{ issueName }}</strong></Prompt>
-    <Prompt v-else-if="mode == 'add'" path="EditDescription.AddDescriptionPrompt"><strong>{{ issueName }}</strong></Prompt>
-    <MarkupEditor ref="description" id="description" v-bind:label="$t( 'EditDescription.Description' )" v-bind="$field( 'description' )"
+    <Prompt v-if="mode == 'edit'" path="prompt.EditDescription"><strong>{{ issueName }}</strong></Prompt>
+    <Prompt v-else-if="mode == 'add'" path="prompt.AddDescription"><strong>{{ issueName }}</strong></Prompt>
+    <MarkupEditor ref="description" id="description" v-bind:label="$t( 'label.Description' )" v-bind="$field( 'description' )"
                   v-bind:format.sync="descriptionFormat" v-model="description" v-on:error="error"/>
     <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
   </div>
@@ -59,9 +59,9 @@ export default {
   computed: {
     title() {
       if ( this.mode == 'edit' )
-        return this.$t( 'EditDescription.EditDescription' );
+        return this.$t( 'cmd.EditDescription' );
       else if ( this.mode == 'add' )
-        return this.$t( 'EditDescription.AddDescription' );
+        return this.$t( 'cmd.AddDescription' );
     }
   },
 
