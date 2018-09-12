@@ -50,18 +50,19 @@ ipcRenderer.on( 'start-client', ( event, arg ) => {
 
   settings = arg;
 
-  const i18n = makeI18n( 'en_US' );
-  const ajax = makeAjax( settings.baseURL, null );
-  const parser = makeClientParser();
+  makeI18n( 'en_US' ).then( i18n => {
+    const ajax = makeAjax( settings.baseURL, null );
+    const parser = makeClientParser();
 
-  client = new Vue( {
-    i18n,
-    ajax,
-    parser,
-    el: '#application',
-    render( createElement ) {
-      return createElement( Client );
-    }
+    client = new Vue( {
+      i18n,
+      ajax,
+      parser,
+      el: '#application',
+      render( createElement ) {
+        return createElement( Client );
+      }
+    } );
   } );
 } );
 
@@ -83,7 +84,7 @@ function makeClientAPI() {
       ipcRenderer.send( 'save-settings', settings );
     },
 
-    startApplication( { userId, userName, userAccess, csrfToken } ) {
+    startApplication( { userId, userName, userAccess, csrfToken, locale } ) {
       import( /* webpackChunkName: "application" */ '@/application' ).then( application => {
         startApplication = application.startApplication;
         destroyApplication = application.destroyApplication;
@@ -91,17 +92,13 @@ function makeClientAPI() {
         client.$destroy();
         client = null;
 
-        sessionData = { userId, userName, userAccess, csrfToken };
+        sessionData = { userId, userName, userAccess, csrfToken, locale };
 
         startApplication( {
           baseURL: settings.baseURL,
-          csrfToken,
-          locale: 'en_US',
           serverName: settings.serverName,
           serverVersion: settings.serverVersion,
-          userId,
-          userName,
-          userAccess
+          ...sessionData
         } );
       } );
     },
@@ -112,7 +109,6 @@ function makeClientAPI() {
 
       startApplication( {
         baseURL: settings.baseURL,
-        locale: 'en_US',
         serverName: settings.serverName,
         serverVersion: settings.serverVersion,
         ...sessionData

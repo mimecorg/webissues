@@ -101,8 +101,8 @@ export default {
 
       this.$emit( 'block' );
 
-      this.$ajax.post( '/server/api/login.php', data ).then( ( { userId, userName, userAccess, csrfToken } ) => {
-        this.$client.startApplication( { userId, userName, userAccess, csrfToken } );
+      this.$ajax.post( '/server/api/login.php', data ).then( ( { userId, userName, userAccess, csrfToken, locale } ) => {
+        this.$client.startApplication( { userId, userName, userAccess, csrfToken, locale } );
       } ).catch( error => {
         if ( error.reason == Reason.APIError && error.errorCode == ErrorCode.IncorrectLogin ) {
           this.$emit( 'unblock' );

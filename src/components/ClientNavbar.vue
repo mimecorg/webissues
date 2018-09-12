@@ -37,18 +37,18 @@
               <div v-if="serverVersion != null" class="navbar-version">WebIssues {{ serverVersion }}</div>
             </div>
             <div class="navbar-sub-element">
-              <button v-if="serverName != null" type="button" class="btn btn-default" v-bind:title="$t( 'ClientNavbar.WebIssuesSettings' )" v-on:click="clientSettings">
+              <button v-if="serverName != null" type="button" class="btn btn-default" v-bind:title="$t( 'title.WebIssuesSettings' )" v-on:click="clientSettings">
                 <span class="fa fa-wrench" aria-hidden="true"></span>
               </button>
-              <button v-if="serverName != null" type="button" class="btn btn-default" v-bind:title="$t( 'ClientNavbar.AboutWebIssues' )"><span class="fa fa-info-circle" aria-hidden="true"></span></button>
-              <button type="button" class="btn btn-default" v-bind:title="$t( 'ClientNavbar.WebIssuesManual' )" v-on:click="openManual">
+              <button v-if="serverName != null" type="button" class="btn btn-default" v-bind:title="$t( 'title.AboutWebIssues' )"><span class="fa fa-info-circle" aria-hidden="true"></span></button>
+              <button type="button" class="btn btn-default" v-bind:title="$t( 'title.WebIssuesManual' )" v-on:click="openManual">
                 <span class="fa fa-question-circle" aria-hidden="true"></span>
               </button>
             </div>
           </div>
         </div>
         <div id="navbar-element-toggle" class="navbar-element">
-          <button type="button" class="btn btn-default" v-bind:title="$t( 'ClientNavbar.ToggleNavigation' )" v-on:click="toggle">
+          <button type="button" class="btn btn-default" v-bind:title="$t( 'cmd.ToggleNavigation' )" v-on:click="toggle">
             <span class="fa fa-bars" aria-hidden="true"></span>
           </button>
         </div>

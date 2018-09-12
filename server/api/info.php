@@ -36,6 +36,7 @@ class Server_Api_Info
 
         $serverManager = new System_Api_ServerManager();
 
+        $settings[ 'locale' ] = $serverManager->getSetting( 'language' );
         $settings[ 'anonymousAccess' ] = $serverManager->getSetting( 'anonymous_access' ) == 1;
         $settings[ 'selfRegister' ] = $serverManager->getSetting( 'self_register' ) == 1 && $serverManager->getSetting( 'email_engine' ) != null;
 

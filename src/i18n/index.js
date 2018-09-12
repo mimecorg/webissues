@@ -30,6 +30,12 @@ const translationModules = {
   pl: () => import( /* webpackChunkName: "i18n-pl" */ '@/i18n/pl' )
 };
 
+VueI18n.prototype.setLocale = function( locale ) {
+  return loadTranslation( this, locale ).then( () => {
+    this.locale = locale;
+  } );
+};
+
 export default function makeI18n( locale ) {
   const i18n = new VueI18n( {
     locale,

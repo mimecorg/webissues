@@ -109,13 +109,15 @@ export default {
       this.$client.settings.serverVersion = serverVersion;
       this.$client.saveSettings();
 
-      this.serverName = serverName;
-      this.serverVersion = serverVersion;
-      this.settings = settings;
-      this.busy = false;
-      this.loaded = true;
+      this.$i18n.setLocale( settings.locale ).then( () => {
+        this.serverName = serverName;
+        this.serverVersion = serverVersion;
+        this.settings = settings;
+        this.busy = false;
+        this.loaded = true;
 
-      this.clientLogin();
+        this.clientLogin();
+      } );
     } ).catch( error => {
       this.error( error );
     } );

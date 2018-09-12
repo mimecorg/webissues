@@ -53,6 +53,11 @@ class Server_Api_Login
 
         $result[ 'csrfToken' ] = $csrfToken;
 
+        $sessionManager->initializePrincipal();
+
+        $preferencesManager = new System_Api_PreferencesManager();
+        $result[ 'locale' ] = $preferencesManager->getPreferenceOrSetting( 'language' );
+
         return $result;
     }
 }
