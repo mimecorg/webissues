@@ -21,6 +21,7 @@ import Vue from 'vue'
 import VueI18n from 'vue-i18n'
 
 import en_US from '@/i18n/en_US'
+import pl from '@/i18n/pl'
 
 import { ErrorCode } from '@/constants'
 
@@ -31,24 +32,28 @@ export default function makeI18n( locale ) {
     locale,
     fallbackLocale: 'en_US',
     messages: {
-      en_US: convertErrorCodeMessages( en_US )
+      en_US: convertErrorCodes( en_US ),
+      pl: convertErrorCodes( pl )
     }
   } );
 
   if ( process.env.NODE_ENV != 'production' && module.hot != null ) {
-    module.hot.accept( '@/i18n/en_US', () => {
-      i18n.setLocaleMessage( 'en_US', convertErrorCodeMessages( en_US ) );
+    module.hot.accept( [ '@/i18n/en_US', '@/i18n/pl' ], () => {
+      i18n.setLocaleMessage( 'en_US', convertErrorCodes( en_US ) );
+      i18n.setLocaleMessage( 'pl', convertErrorCodes( pl ) );
+    } );
+  }
     } );
   }
 
   return i18n;
 }
 
-function convertErrorCodeMessages( dict ) {
+function convertErrorCodes( dict ) {
   if ( dict.ErrorCode != null ) {
     const converted = {};
     for ( const code in dict.ErrorCode ) {
-      if ( dict.ErrorCode.hasOwnProperty( code ) && ErrorCode[ code ] != null )
+      if ( ErrorCode[ code ] != null )
         converted[ ErrorCode[ code ] ] = dict.ErrorCode[ code ];
     }
     dict = { ...dict, ErrorCode: converted };
