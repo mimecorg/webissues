@@ -45,26 +45,27 @@ export function startApplication( { baseURL, csrfToken, locale, ...initialState 
   if ( process.env.NODE_ENV == 'production' && process.env.TARGET == 'web' )
     __webpack_public_path__ = baseURL + '/assets/';
 
-  const i18n = makeI18n( locale );
-  const ajax = makeAjax( baseURL, csrfToken );
-  const router = makeRouter();
-  const store = makeStore( baseURL, initialState, ajax, router );
-  const parser = makeParser( store );
-  const formatter = makeFormatter( store, i18n );
+  makeI18n( locale ).then( i18n => {
+    const ajax = makeAjax( baseURL, csrfToken );
+    const router = makeRouter();
+    const store = makeStore( baseURL, initialState, ajax, router );
+    const parser = makeParser( store );
+    const formatter = makeFormatter( store, i18n );
 
-  registerRoutes( router, i18n, ajax, store, formatter );
+    registerRoutes( router, i18n, ajax, store, formatter );
 
-  app = new Vue( {
-    i18n,
-    ajax,
-    router,
-    parser,
-    formatter,
-    store,
-    el: '#application',
-    render( createElement ) {
-      return createElement( Application );
-    }
+    app = new Vue( {
+      i18n,
+      ajax,
+      router,
+      parser,
+      formatter,
+      store,
+      el: '#application',
+      render( createElement ) {
+        return createElement( Application );
+      }
+    } );
   } );
 }
 

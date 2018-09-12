@@ -21,32 +21,50 @@ import Vue from 'vue'
 import VueI18n from 'vue-i18n'
 
 import en_US from '@/i18n/en_US'
-import pl from '@/i18n/pl'
 
 import { ErrorCode } from '@/constants'
 
 Vue.use( VueI18n );
+
+const translationModules = {
+  pl: () => import( /* webpackChunkName: "i18n-pl" */ '@/i18n/pl' )
+};
 
 export default function makeI18n( locale ) {
   const i18n = new VueI18n( {
     locale,
     fallbackLocale: 'en_US',
     messages: {
-      en_US: convertErrorCodes( en_US ),
-      pl: convertErrorCodes( pl )
+      en_US: convertErrorCodes( en_US )
     }
   } );
 
   if ( process.env.NODE_ENV != 'production' && module.hot != null ) {
-    module.hot.accept( [ '@/i18n/en_US', '@/i18n/pl' ], () => {
+    module.hot.accept( '@/i18n/en_US', () => {
       i18n.setLocaleMessage( 'en_US', convertErrorCodes( en_US ) );
-      i18n.setLocaleMessage( 'pl', convertErrorCodes( pl ) );
-    } );
-  }
     } );
   }
 
-  return i18n;
+  return loadTranslation( i18n, locale ).then( () => i18n );
+}
+
+function loadTranslation( i18n, locale ) {
+  if ( i18n.messages[ locale ] != null || translationModules[ locale ] == null )
+    return Promise.resolve();
+
+  if ( process.env.NODE_ENV != 'production' && module.hot != null ) {
+    module.hot.accept( './src/i18n/' + locale + '.json', () => {
+      updateTranslation( i18n, locale );
+    } );
+  }
+
+  return updateTranslation( i18n, locale );
+}
+
+function updateTranslation( i18n, locale ) {
+  return translationModules[ locale ]().then( translation => {
+    i18n.setLocaleMessage( locale, convertErrorCodes( translation.default ) );
+  } );
 }
 
 function convertErrorCodes( dict ) {
