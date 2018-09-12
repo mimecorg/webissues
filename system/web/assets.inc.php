@@ -25,6 +25,8 @@ if ( !defined( 'WI_VERSION' ) ) die( -1 );
 */
 class System_Web_Assets extends System_Web_Base
 {
+    const ProductionOnly = 1;
+
     private $devMode;
     private $devUrl;
 
@@ -49,7 +51,7 @@ class System_Web_Assets extends System_Web_Base
         }
     }
 
-    public function add( $name )
+    public function add( $name, $flags = 0 )
     {
         if ( !$this->devMode ) {
             if ( isset( $this->assets[ $name ][ 'js' ] ) )
@@ -57,7 +59,7 @@ class System_Web_Assets extends System_Web_Base
 
             if ( isset( $this->assets[ $name ][ 'css' ] ) )
                 $this->stylesheets[] = '/assets/' . $this->assets[ $name ][ 'css' ];
-        } else {
+        } else if ( ( $flags & self::ProductionOnly ) == 0 ) {
             $this->scripts[] = $this->devUrl . 'js/' . $name . '.js';
         }
     }

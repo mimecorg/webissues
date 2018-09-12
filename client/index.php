@@ -52,14 +52,17 @@ class Client_Index extends System_Web_Component
 
         $this->icon = '/common/images/webissues.ico';
 
+        $locale = $this->translator->getLanguage( System_Core_Translator::UserLanguage );
+
         $this->assets = new System_Web_Assets();
         $this->assets->add( 'common' );
         $this->assets->add( 'application' );
+        $this->assets->add( 'i18n-' . $locale, System_Web_Assets::ProductionOnly );
 
         $options[ 'baseURL' ] = WI_BASE_URL;
         $options[ 'csrfToken' ] = $csrfToken;
 
-        $options[ 'locale' ] = $this->translator->getLanguage( System_Core_Translator::UserLanguage );
+        $options[ 'locale' ] = $locale;
 
         $options[ 'serverName' ] = $server[ 'server_name' ];
         $options[ 'serverVersion' ] = $server[ 'server_version' ];
