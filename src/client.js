@@ -33,7 +33,7 @@ import makeAjax from '@/mixins/ajax'
 import { makeClientParser } from '@/mixins/parser'
 import '@/mixins/fields'
 
-import makeI18n from '@/i18n'
+import makeI18n, { fromSystemLocale } from '@/i18n'
 
 if ( process.env.NODE_ENV == 'production' )
   __webpack_public_path__ = './assets/';
@@ -44,13 +44,15 @@ let settings = null;
 
 let client = null;
 
-ipcRenderer.on( 'start-client', ( event, arg ) => {
+ipcRenderer.on( 'start-client', ( event, initialSettings, sytemLocale ) => {
   if ( client != null )
     throw new Error( 'Client already started' );
 
-  settings = arg;
+  settings = initialSettings;
 
-  makeI18n( 'en_US' ).then( i18n => {
+  const locale = fromSystemLocale( sytemLocale );
+
+  makeI18n( locale ).then( i18n => {
     const ajax = makeAjax( settings.baseURL, null );
     const parser = makeClientParser();
 

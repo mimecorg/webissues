@@ -62,16 +62,16 @@ app.on( 'activate', () => {
     createWindow();
 } );
 
-ipcMain.on( 'save-settings', ( event, arg ) => {
-  config.settings = arg;
+ipcMain.on( 'save-settings', ( event, settings ) => {
+  config.settings = settings;
   saveConfiguration( () => {} );
 } );
 
-ipcMain.on( 'restart-client', ( event, arg ) => {
-  config.settings = arg;
+ipcMain.on( 'restart-client', ( event, settings ) => {
+  config.settings = settings;
   saveConfiguration( () => {
     event.sender.session.clearStorageData( { storages: [ 'cookies' ] }, () => {
-      event.sender.send( 'start-client', config.settings );
+      event.sender.send( 'start-client', config.settings, app.getLocale() );
     } );
   } );
 } );
@@ -116,7 +116,7 @@ function createWindow() {
   mainWindow.loadURL( url.format( { pathname, protocol: 'file:', slashes: true } ) );
 
   mainWindow.webContents.on( 'did-finish-load', () => {
-    mainWindow.webContents.send( 'start-client', config.settings );
+    mainWindow.webContents.send( 'start-client', config.settings, app.getLocale() );
   } );
 
   mainWindow.webContents.on( 'will-navigate', handleLink );

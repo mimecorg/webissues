@@ -54,6 +54,17 @@ export default function makeI18n( locale ) {
   return loadTranslation( i18n, locale ).then( () => i18n );
 }
 
+export function fromSystemLocale( systemLocale ) {
+  const [ country, language ] = systemLocale.split( '-' );
+
+  if ( translationModules[ country + '_' + language ] != null )
+    return country + '_' + language;
+  else if ( translationModules[ country ] != null )
+    return country;
+  else
+    return 'en_US';
+}
+
 function loadTranslation( i18n, locale ) {
   if ( i18n.messages[ locale ] != null || translationModules[ locale ] == null )
     return Promise.resolve();
