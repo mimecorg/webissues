@@ -33,16 +33,8 @@ if ( process.env.TARGET == 'electron' ) {
 }
 
 const formModules = {
-  issues( name ) {
-    return import( /* webpackMode: "lazy-once", webpackChunkName: "forms-issues" */ `@/components/forms/issues/${name}` ).then( form => {
-      loadedForms[ `issues/${name}` ] = form.default;
-    } );
-  },
-  projects( name ) {
-    return import( /* webpackMode: "lazy-once", webpackChunkName: "forms-projects" */ `@/components/forms/projects/${name}` ).then( form => {
-      loadedForms[ `projects/${name}` ] = form.default;
-    } );
-  }
+  issues: name => import( /* webpackMode: "lazy-once", webpackChunkName: "forms-issues" */ `@/components/forms/issues/${name}` ),
+  projects: name => import( /* webpackMode: "lazy-once", webpackChunkName: "forms-projects" */ `@/components/forms/projects/${name}` )
 };
 
 export function loadForm( name ) {
@@ -51,7 +43,9 @@ export function loadForm( name ) {
 
   const [ moduleName, formName ] = name.split( '/' );
 
-  return formModules[ moduleName ]( formName );
+  return formModules[ moduleName ]( formName ).then( form => {
+    loadedForms[ name ] = form.default;
+  } );
 }
 
 export function getForm( name ) {
