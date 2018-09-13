@@ -94,6 +94,8 @@ export default function makeRouter() {
           addRoute( routes, name, path, handler );
         } );
       } );
+      lastPath = null;
+      onHashChange();
     },
     addHandler( handler ) {
       handlers.push( handler );
