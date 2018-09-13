@@ -81,7 +81,7 @@ export default {
     },
 
     cancel() {
-      this.$router.push( 'RenameFolder', { projectId: this.initialProjectId, folderId: this.folderId } );
+      this.returnToDetails();
     },
 
     returnToDetails() {

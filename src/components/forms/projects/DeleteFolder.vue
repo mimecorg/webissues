@@ -63,7 +63,7 @@ export default {
     },
 
     cancel() {
-      this.$router.push( 'RenameFolder', { projectId: this.projectId, folderId: this.folderId } );
+      this.returnToDetails();
     },
 
     returnToDetails() {
