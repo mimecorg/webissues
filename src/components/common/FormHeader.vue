@@ -28,15 +28,25 @@
         <button type="button" class="btn btn-default" v-bind:title="$t( 'cmd.Close' )" v-on:click="close"><span class="fa fa-remove" aria-hidden="true"></span></button>
       </div>
     </div>
+    <div v-if="breadcrumbs != null" class="form-header-breadcrumbs">
+      <template v-for="( breadcrumb, index ) in breadcrumbs">
+        <span v-bind:key="index" class="fa fa-chevron-left" aria-hidden="true"></span>
+        <HyperLink v-bind:key="index" v-on:click="breadcrumbClicked( breadcrumb )">{{ breadcrumb.label }}</HyperLink>
+      </template>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
   props: {
-    title: String
+    title: String,
+    breadcrumbs: Array
   },
   methods: {
+    breadcrumbClicked( breadcrumb ) {
+      this.$router.push( breadcrumb.route, breadcrumb.params );
+    },
     close() {
       this.$emit( 'close' );
     }

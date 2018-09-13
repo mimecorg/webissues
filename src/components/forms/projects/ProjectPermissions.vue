@@ -19,10 +19,7 @@
 
 <template>
   <div class="container-fluid">
-    <FormHeader v-bind:title="$t( 'title.ProjectPermissions' )" v-on:close="close">
-      <button type="button" class="btn btn-default" v-bind:title="$t( 'cmd.Return' )" v-on:click="returnToDetails"><span class="fa fa-arrow-left" aria-hidden="true"></span></button>
-    </FormHeader>
-    <Prompt path="prompt.EditProjectPermissions"><strong>{{ name }}</strong></Prompt>
+    <FormHeader v-bind:title="$t( 'title.ProjectPermissions' )" v-bind:breadcrumbs="breadcrumbs" v-on:close="close"/>
     <FormSection v-bind:title="$t( 'title.GlobalAccess' )">
       <button type="button" class="btn btn-default" v-on:click="editAccess"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'cmd.Edit' ) }}</button>
     </FormSection>
@@ -58,6 +55,12 @@ export default {
 
   computed: {
     ...mapState( 'global', [ 'users' ] ),
+    breadcrumbs() {
+      return [
+        { label: this.$t( 'title.Projects' ), route: 'ManageProjects' },
+        { label: this.name, route: 'ProjectDetails', params: { projectId: this.projectId } },
+      ];
+    },
     globalAccess() {
       return this.public ? this.$t( 'text.PublicProject' ) : this.$t( 'text.RegularProject' );
     },
@@ -98,10 +101,6 @@ export default {
 
     rowClick( rowIndex ) {
       this.$router.push( 'EditMember', { projectId: this.projectId, userId: this.sortedMembers[ rowIndex ].id } );
-    },
-
-    returnToDetails() {
-      this.$router.push( 'ProjectDetails', { projectId: this.projectId } );
     },
 
     close() {

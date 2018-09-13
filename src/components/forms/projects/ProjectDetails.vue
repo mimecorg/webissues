@@ -19,8 +19,7 @@
 
 <template>
   <div class="container-fluid">
-    <FormHeader v-bind:title="name" v-on:close="close">
-      <button type="button" class="btn btn-default" v-bind:title="$t( 'cmd.Return' )" v-on:click="returnToList"><span class="fa fa-arrow-left" aria-hidden="true"></span></button>
+    <FormHeader v-bind:title="name" v-bind:breadcrumbs="breadcrumbs" v-on:close="close">
       <button v-if="isProjectAdministrator" type="button" class="btn btn-default" v-on:click="projectPermissions"><span class="fa fa-unlock-alt" aria-hidden="true"></span> {{ $t( 'title.Permissions' ) }}</button>
       <DropdownButton v-if="isAdministrator" fa-class="fa-ellipsis-v" menu-class="dropdown-menu-right" v-bind:title="$t( 'title.More' )">
         <li><HyperLink v-on:click="renameProject"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'cmd.RenameProject' ) }}</HyperLink></li>
@@ -80,6 +79,11 @@ export default {
   computed: {
     ...mapState( 'global', [ 'types', 'users' ] ),
     ...mapGetters( 'global', [ 'isAdministrator' ] ),
+    breadcrumbs() {
+      return [
+        { label: this.$t( 'title.Projects' ), route: 'ManageProjects' }
+      ];
+    },
     isProjectAdministrator() {
       return this.access == Access.AdministratorAccess;
     },
@@ -147,10 +151,6 @@ export default {
 
     rowClick( rowIndex ) {
       this.$router.push( 'RenameFolder', { projectId: this.projectId, folderId: this.folders[ rowIndex ].id } );
-    },
-
-    returnToList() {
-      this.$router.push( 'ManageProjects' );
     },
 
     close() {
