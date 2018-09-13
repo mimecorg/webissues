@@ -43,7 +43,7 @@ export default function makeIssueRoutes( i18n, ajax, store, formatter ) {
     } );
 
     route( 'GoToItem', '/items/goto', () => {
-      return Promise.resolve( { form: 'issues/GoToItem' } );
+      return Promise.resolve( { form: 'issues/GoToItem', size: 'small' } );
     } );
 
     route( 'Item', '/items/:itemId', ( { itemId } ) => {
@@ -118,6 +118,7 @@ export default function makeIssueRoutes( i18n, ajax, store, formatter ) {
       return ajax.post( '/server/api/issues/load.php', { issueId, access: 'admin' } ).then( ( { details } ) => {
         return {
           form: 'issues/MoveIssue',
+          size: 'small',
           issueId,
           typeId: details.typeId,
           initialFolderId: details.folderId,
@@ -130,6 +131,7 @@ export default function makeIssueRoutes( i18n, ajax, store, formatter ) {
       return ajax.post( '/server/api/issues/load.php', { issueId, access: 'admin' } ).then( ( { details } ) => {
         return {
           form: 'issues/DeleteIssue',
+          size: 'small',
           issueId,
           name: details.name
         };

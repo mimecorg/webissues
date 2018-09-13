@@ -60,6 +60,7 @@ export default function makeAdminRoutes( ajax, store ) {
       return ajax.post( '/server/api/projects/load.php', { projectId } ).then( ( { details } ) => {
         return {
           form: 'projects/EditProject',
+          size: 'small',
           mode: 'rename',
           projectId,
           initialName: details.name
@@ -142,6 +143,7 @@ export default function makeAdminRoutes( ajax, store ) {
       return ajax.post( '/server/api/projects/load.php', { projectId, access: 'admin' } ).then( ( { details } ) => {
         return {
           form: 'projects/EditFolder',
+          size: 'small',
           mode: 'add',
           projectId,
           projectName: details.name
@@ -153,6 +155,7 @@ export default function makeAdminRoutes( ajax, store ) {
       return ajax.post( '/server/api/projects/folders/load.php', { projectId, folderId, access: 'admin' } ).then( ( { name } ) => {
         return {
           form: 'projects/EditFolder',
+          size: 'small',
           mode: 'rename',
           projectId,
           folderId,
@@ -165,6 +168,7 @@ export default function makeAdminRoutes( ajax, store ) {
       return ajax.post( '/server/api/projects/folders/load.php', { projectId, folderId, access: 'admin' } ).then( ( { name } ) => {
         return {
           form: 'projects/MoveFolder',
+          size: 'small',
           initialProjectId: projectId,
           folderId,
           name
@@ -176,6 +180,7 @@ export default function makeAdminRoutes( ajax, store ) {
       return ajax.post( '/server/api/projects/folders/load.php', { projectId, folderId, access: 'admin' } ).then( ( { name, empty } ) => {
         return {
           form: 'projects/DeleteFolder',
+          size: 'small',
           projectId,
           folderId,
           name,
@@ -200,6 +205,7 @@ export default function makeAdminRoutes( ajax, store ) {
       return ajax.post( '/server/api/projects/load.php', { projectId, access: 'admin' } ).then( ( { details } ) => {
         return {
           form: 'projects/EditProjectAccess',
+          size: 'small',
           projectId,
           name: details.name,
           initialPublic: details.public
@@ -224,6 +230,7 @@ export default function makeAdminRoutes( ajax, store ) {
       return ajax.post( '/server/api/projects/members/load.php', { projectId, userId } ).then( ( { projectName, userName, access } ) => {
         return {
           form: 'projects/EditMember',
+          size: 'small',
           mode: 'edit',
           projectId,
           userId,

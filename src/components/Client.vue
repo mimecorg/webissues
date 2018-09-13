@@ -77,7 +77,7 @@ export default {
       if ( !this.busy ) {
         this.childForm = 'client/ClientSettings';
         this.childProps = {};
-        this.size = 'normal';
+        this.size = 'small';
       }
     },
 

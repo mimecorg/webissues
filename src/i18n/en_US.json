@@ -246,7 +246,7 @@
     "EditProjectDescription": "Edit description of project {0}.",
     "EditProjectPermissions": "Edit permissions of project {0}.",
     "EnterNewPassword": "You have to enter a new password in order to log in.",
-    "GoToItem": "Enter the identifier of an issue, comment or attachment.",
+    "GoToItem": "Enter the identifier of an issue, comment or file.",
     "MoveFolder": "Move folder {0} to another project.",
     "MoveIssue": "Move issue {0} to another folder of the same type.",
     "NoteArchiveProject": "{0} You can unarchive the project later by selecting Archived Projects in the Administration menu.",
