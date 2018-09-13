@@ -30,8 +30,7 @@ const version = require( '../../package' ).version;
 const rootPath = path.resolve( __dirname, '../..' );
 
 const out = path.resolve( __dirname, '../../packages' );
-const dirPath = path.join( out, 'webissues' );
-const zipPath = path.join( out, 'WebIssues-Server-v' + version + '.zip' );
+const dirPath = path.join( out, 'webissues-server-' + version );
 
 if ( fs.existsSync( dirPath ) )
   rimraf.sync( dirPath );
@@ -54,9 +53,9 @@ mkdirp.sync( dirPath );
 mkdirp.sync( path.join( dirPath, 'data' ) );
 fs.copyFileSync( path.join( rootPath, 'data/.htaccess' ), path.join( dirPath, 'data/.htaccess' ) );
 
-const output = fs.createWriteStream( zipPath );
+const output = fs.createWriteStream( dirPath + '.zip' );
 const archive = archiver( 'zip', { zlib: { level: 9 } } );
 
 archive.pipe( output );
-archive.glob( 'webissues/**', { cwd: out, dot: true } );
+archive.glob( 'webissues-server-' + version + '/**', { cwd: out, dot: true } );
 archive.finalize();

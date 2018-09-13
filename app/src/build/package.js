@@ -22,6 +22,7 @@ const path = require( 'path' );
 
 const packager = require( 'electron-packager' );
 const archiver = require( 'archiver' );
+const rimraf = require( 'rimraf' );
 
 const version = require( '../../../package' ).version;
 
@@ -68,13 +69,18 @@ packager( {
     }
   ],
 } ).then( () => {
-  const dirName = 'WebIssues-' + platform + '-' + arch;
-  const zipName = 'WebIssues-v' + version + '-' + platform + '-' + arch + '.zip';
+  const dirName = 'webissues-' + version + '-' + platform + '-' + arch;
+  const dirPath = path.join( out, dirName );
 
-  const output = fs.createWriteStream( path.join( out, zipName ) );
+  if ( fs.existsSync( dirPath ) )
+    rimraf.sync( dirPath );
+
+  fs.renameSync( path.join( out, 'WebIssues-' + platform + '-' + arch ), dirPath );
+
+  const output = fs.createWriteStream( dirPath + '.zip' );
   const archive = archiver( 'zip', { zlib: { level: 9 } } );
 
   archive.pipe( output );
-  archive.directory( path.join( out, dirName ), false );
+  archive.directory( dirPath, false );
   archive.finalize();
 } );
