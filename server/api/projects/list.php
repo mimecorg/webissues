@@ -24,7 +24,7 @@ class Server_Api_Projects_List
 {
     public $access = 'anonymous';
 
-    public $arguments = array();
+    public $params = array();
 
     public function run()
     {
