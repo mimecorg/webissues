@@ -93,7 +93,7 @@ class System_Api_Error extends System_Core_Exception
     const DescriptionAlreadyExists = '362 Description Already Exists';
     const InvalidTextFormat = '363 Invalid Text Format';
     const UnknownSubscription = '364 Unknown Subscription';
-    const SubscriptionAlreadyExists = '365 SubscriptionAlreadyExists';
+    const SubscriptionAlreadyExists = '365 Subscription Already Exists';
 
     public function __construct( $message, $wrappedException = null )
     {

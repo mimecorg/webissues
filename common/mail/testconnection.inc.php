@@ -34,9 +34,6 @@ class Common_Mail_TestConnection extends System_Web_Component
     protected function execute()
     {
         $this->view->setDecoratorClass( 'Common_Mail_Layout' );
-        $this->view->setSlot( 'subject', $this->tr( 'Test message from WebIssues Server' ) );
-
-        $this->smtpServer = $this->settings[ 'smtp_server' ];
-        $this->smtpPort = $this->settings[ 'smtp_port' ];
+        $this->view->setSlot( 'subject', $this->t( 'subject.TestMessage' ) );
     }
 }

@@ -70,7 +70,7 @@ class Common_Mail_Notification extends System_Web_Component
             $this->viewName = $view[ 'view_name' ];
         } else {
             $definition = $viewManager->getViewSetting( $type, 'default_view' );
-            $this->viewName = $this->tr( 'All Issues' );
+            $this->viewName = $this->t( 'text.AllIssues' );
         }
 
         $initial = $viewManager->getViewSetting( $type, 'initial_view' );
@@ -216,7 +216,7 @@ class Common_Mail_Notification extends System_Web_Component
                 if ( $issue[ 'stamp_id' ] > $sinceStamp ) {
                     $historyProvider->setIssueId( $issueId );
                     $historyProvider->setSinceStamp( $sinceStamp );
-                    
+
                     $filter = $preferencesManager->getPreferenceOrSetting( 'history_filter' );
                     $order = $preferencesManager->getPreferenceOrSetting( 'history_order' );
 

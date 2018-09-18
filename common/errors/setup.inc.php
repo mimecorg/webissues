@@ -37,25 +37,25 @@ class Common_Errors_Setup extends System_Web_Component
 
         switch ( $error->getCode() ) {
             case System_Core_SetupException::SiteConfigNotFound:
-                $this->view->setSlot( 'page_title', $this->tr( 'Welcome to WebIssues' ) );
-                $this->infoMessage = $this->tr( 'Your WebIssues Server is almost ready. We just need to set up the database.' );
+                $this->view->setSlot( 'page_title', $this->t( 'title.WelcomeToWebIssues' ) );
+                $this->infoMessage = $this->t( 'prompt.WelcomeToWebIssues' );
                 $this->alertClass = 'info';
                 $this->linkUrl = '/setup/install.php';
-                $this->linkName = $this->tr( 'Configure Database' );
+                $this->linkName = $this->t( 'cmd.ConfigureDatabase' );
                 break;
 
             case System_Core_SetupException::DatabaseNotCompatible:
-                $this->view->setSlot( 'page_title', $this->tr( 'Incompatible Database' ) );
-                $this->infoMessage = $this->tr( 'The database is not compatible with this version of WebIssues.' );
+                $this->view->setSlot( 'page_title', $this->t( 'title.IncompatibleDatabase' ) );
+                $this->infoMessage = $this->t( 'error.IncompatibleDatabase' );
                 $this->alertClass = 'danger';
                 break;
 
             case System_Core_SetupException::DatabaseNotUpdated:
-                $this->view->setSlot( 'page_title', $this->tr( 'Update Required' ) );
-                $this->infoMessage = $this->tr( 'The database must be updated to the current version of WebIssues.' );
+                $this->view->setSlot( 'page_title', $this->t( 'title.UpdateRequired' ) );
+                $this->infoMessage = $this->t( 'prompt.UpdateRequired' );
                 $this->alertClass = 'info';
                 $this->linkUrl = '/setup/update.php';
-                $this->linkName = $this->tr( 'Update Database' );
+                $this->linkName = $this->t( 'cmd.UpdateDatabase' );
                 break;
         }
    }

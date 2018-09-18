@@ -8,9 +8,9 @@ case 'register': ?>
 <div class="alert alert-info">
 <p>
 <?php
-    echo $this->tr( 'Fill the information below to begin registration.' );
+    echo $this->t( 'prompt.RegisterNewAccount' );
     if ( !$autoApprove ):
-        echo ' ' . $this->tr( 'Note that administrator\'s approval is required before you can log in.' );
+        echo ' ' . $this->t( 'prompt.RegisterAdministratorApproval' );
     endif
 ?>
 </p>
@@ -18,81 +18,81 @@ case 'register': ?>
 
 <div class="panel panel-default">
 <div class="panel-heading">
-<h2 class="panel-title"><?php echo $this->tr( 'User Name' ) ?></h2>
+<h2 class="panel-title"><?php echo $this->t( 'title.UserName' ) ?></h2>
 </div>
 <div class="panel-body">
 
-<p><?php echo $this->tr( 'Enter the user name that will be visible to other users.' ) ?></p>
+<p><?php echo $this->t( 'prompt.UserName' ) ?></p>
 
-<?php $form->renderText( $this->tr( 'Name:' ), 'userName', array( 'size' => 40 ) ); ?>
+<?php $form->renderText( $this->t( 'label.Name' ), 'userName' ); ?>
 
 </div>
 </div>
 
 <div class="panel panel-default">
 <div class="panel-heading">
-<h2 class="panel-title"><?php echo $this->tr( 'Credentials' ) ?></h2>
+<h2 class="panel-title"><?php echo $this->t( 'Credentials' ) ?></h2>
 </div>
 <div class="panel-body">
 
-<p><?php echo $this->tr( 'Enter login and password for your new account.' ) ?></p>
+<p><?php echo $this->t( 'prompt.Credentials' ) ?></p>
 
-<?php $form->renderText( $this->tr( 'Login:' ), 'login', array( 'size' => 40 ) ); ?>
-<?php $form->renderPassword( $this->tr( 'Password:' ), 'password', array( 'size' => 40 ) ) ?>
-<?php $form->renderPassword( $this->tr( 'Confirm password:' ), 'passwordConfirm', array( 'size' => 40 ) ) ?>
+<?php $form->renderText( $this->t( 'label.Login' ), 'login' ); ?>
+<?php $form->renderPassword( $this->t( 'label.Password' ), 'password' ) ?>
+<?php $form->renderPassword( $this->t( 'label.ConfirmPassword' ), 'passwordConfirm' ) ?>
 
 </div>
 </div>
 
 <div class="panel panel-default">
 <div class="panel-heading">
-<h2 class="panel-title"><?php echo $this->tr( 'Email Address' ) ?></h2>
+<h2 class="panel-title"><?php echo $this->t( 'title.EmailAddress' ) ?></h2>
 </div>
 <div class="panel-body">
 
-<?php $form->renderText( $this->tr( 'Email address:' ), 'email', array( 'size' => 40 ) ); ?>
+<p><?php echo $this->t( 'prompt.EmailAddress' ) ?></p>
 
-<p><?php echo $this->tr( 'This address will only be visible to the system administrator. An activation email will be sent to this address.' ) ?></p>
+<?php $form->renderText( $this->t( 'label.EmailAddress' ), 'email' ); ?>
 
 </div>
 </div>
 
 <div class="form-buttons">
-<?php $form->renderSubmit( $this->tr( 'Register' ), 'register', array( 'class' => 'btn btn-primary' ) ) ?>
-<?php $form->renderSubmit( $this->tr( 'Cancel' ), 'cancel' ) ?>
+<?php $form->renderSubmit( $this->t( 'cmd.Register' ), 'register', array( 'class' => 'btn btn-primary' ) ) ?>
+<?php $form->renderSubmit( $this->t( 'cmd.Cancel' ), 'cancel' ) ?>
 </div>
 
 <?php break;
 case 'registered': ?>
 
 <div class="alert alert-info">
-<p><?php echo $this->tr( 'Thank you for registering. You will receive an activation email shortly with instructions how to complete registration.' ) ?></p>
+<p><?php echo $this->t( 'prompt.RegistrationComplete' ) ?></p>
 </div>
 
 <div class="form-buttons">
-<?php $form->renderSubmit( $this->tr( 'OK' ), 'ok', array( 'class' => 'btn btn-primary' ) ) ?>
+<?php $form->renderSubmit( $this->t( 'cmd.OK' ), 'ok', array( 'class' => 'btn btn-primary' ) ) ?>
 </div>
 
 <?php break;
 case 'activated': ?>
 
 <div class="alert alert-info">
-<p><?php echo $this->tr( 'Your registration request was activated. You will receive a notification email when the administrator approves your request.' ) ?></p>
+<p><?php echo $this->t( 'prompt.RegistrationVerified' ) ?></p>
 </div>
 
 <div class="form-buttons">
-<?php $form->renderSubmit( $this->tr( 'OK' ), 'ok', array( 'class' => 'btn btn-primary' ) ) ?>
+<?php $form->renderSubmit( $this->t( 'cmd.OK' ), 'ok', array( 'class' => 'btn btn-primary' ) ) ?>
 </div>
 
 <?php break;
 case 'approved': ?>
 
 <div class="alert alert-info">
-<p><?php echo $this->tr( 'Your registration request was activated. You can now log in to the server using your login and password.' ) ?></p>
+<p><?php echo $this->t( 'prompt.RegistrationAutoApproved' ) ?></p>
 </div>
 
 <div class="form-buttons">
-<?php $form->renderSubmit( $this->tr( 'OK' ), 'ok', array( 'class' => 'btn btn-primary' ) ) ?>
+<?php $form->renderSubmit( $this->t( 'cmd.OK' ), 'ok', array( 'class' => 'btn btn-primary' ) ) ?>
 </div>
 
 <?php break;

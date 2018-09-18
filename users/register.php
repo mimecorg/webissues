@@ -38,7 +38,7 @@ class Users_Register extends System_Web_Component
         $this->autoApprove = $serverManager->getSetting( 'register_auto_approve' ) == 1;
 
         $this->view->setDecoratorClass( 'Common_Window' );
-        $this->view->setSlot( 'page_title', $this->tr( 'Register New Account' ) );
+        $this->view->setSlot( 'page_title', $this->t( 'cmd.RegisterNewAccount' ) );
 
         if ( System_Api_Principal::getCurrent()->isAuthenticated() ) {
             $sessionManager = new System_Api_SessionManager();

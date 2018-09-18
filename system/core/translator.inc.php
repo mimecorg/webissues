@@ -23,19 +23,6 @@ if ( !defined( 'WI_VERSION' ) ) die( -1 );
 /**
 * Mechanism for translating user visible strings.
 *
-* This class can load translations created using the linguistphp package
-* which is compatible with the Qt Linguist.
-*
-* Translations can be divided into separate modules, which allows to reduce
-* the overhead by loading only those modules which are needed. Also language
-* variants are supported. For example if language is set to 'en_US' and
-* 'common' and 'client' modules are enabled, translations are searched
-* in the following files (in order of precedence):
-*  - common_en_US.phm
-*  - client_en_US.phm
-*  - common_en.phm
-*  - client_en.phm
-*
 * An instance of this class is accessible through the System_Core_Application
 * object. In most cases System_Web_Base::tr() should be used instead of
 * directly accessing this object.
@@ -43,11 +30,8 @@ if ( !defined( 'WI_VERSION' ) ) die( -1 );
 class System_Core_Translator
 {
     private $language = array();
-    private $modules = array();
 
-    private $files = array();
-
-    private $data = array();
+    private $messages = array();
 
     /**
     * @name Translator Modes
@@ -83,49 +67,35 @@ class System_Core_Translator
     }
 
     /**
-    * Add a module to the list of enabled modules.
-    * @param $module The name of the module to enable.
-    */
-    public function addModule( $module )
-    {
-        if ( !in_array( $module, $this->modules ) ) {
-            $this->modules[] = $module;
-            $this->files = array();
-        }
-    }
-
-    /**
-    * Return a translated version of the source string.
-    * The original string is returned if no translation is available.
+    * Return a translated string with the given key.
+    * The key is returned if no translation is available.
     * @param $mode Mode of the translator.
-    * @param $context The name of the context, usually the class where the string
-    * is used.
-    * @param $args Array containing the source string to translate, an optional
-    * comment explaining the use of the string and optional arguments which replace
-    * placeholders (%%1, %%2, etc.).
+    * @param $key The key of the translation.
+    * @param $args Array containing optional arguments which replace placeholders ({0}, {1}, etc.).
     */
-    public function translate( $mode, $context, $args )
+    public function translate( $mode, $key, $args )
     {
-        if ( !isset( $this->language[ $mode ] ) )
-            $mode = self::SystemLanguage;
+        $translated = $this->getTranslation( $mode, $key );
 
-        if ( isset( $this->language[ $mode ] ) )
-            $translated = $this->lookupTranslation( $this->language[ $mode ], $context, $args[ 0 ], isset( $args[ 1 ] ) ? $args[ 1 ] : null );
-        else
-            $translated = $args[ 0 ];
+        if ( $translated == null ) {
+            $debug = System_Core_Application::getInstance()->getDebug();
+            if ( $debug->checkLevel( DEBUG_ERRORS ) )
+                $debug->write( '*** Warning: Missing translation for key: ', $key, "\n" );
 
-        if ( count( $args ) > 2 ) {
-            // replace %1, %2, %3, etc. with additional function arguments
-            $parts = preg_split( '/%(\d+)/', $translated, -1, PREG_SPLIT_DELIM_CAPTURE );
+            $translated = $key;
+        }
+
+        if ( !empty( $args ) ) {
+            $parts = preg_split( '/\{(\d+)\}/', $translated, -1, PREG_SPLIT_DELIM_CAPTURE );
 
             $result = array( $parts[ 0 ] );
 
             for ( $i = 1; $i < count( $parts ); $i += 2 ) {
                 $index = (int)$parts[ $i ];
-                if ( $index > 0 && $index < count( $args ) - 1 )
-                    $result[] = $args[ $index + 1 ];
+                if ( $index < count( $args ) )
+                    $result[] = $args[ $index ];
                 else
-                    $result[] = '%' . $index;
+                    $result[] = '{' . $index . '}';
 
                 $result[] = $parts[ $i + 1 ];
             }
@@ -136,77 +106,67 @@ class System_Core_Translator
         return $translated;
     }
 
-    private function lookupTranslation( $language, $context, $source, $comment )
+    /**
+    * Return @c true if a translated string with the given key exists.
+    * @param $mode Mode of the translator.
+    * @param $key The key of the transloation.
+    */
+    public function translationExists( $mode, $key )
     {
-        // rebuild list of message files if a module was added or language was changed
-        if ( !isset( $this->files[ $language ] ) )
-            $this->loadMessageFiles( $language );
+        $translated = $this->getTranslation( $mode, $key );
 
-        if ( !empty( $this->files[ $language ] ) ) {
-
-            // use CRC as hash value
-            $crc = crc32( $source );
-            if ( $context != null )
-                $crc ^= crc32( $context );
-            if ( $comment != null )
-                $crc ^= crc32( $comment );
-
-            // workaround for https://bugs.php.net/bug.php?id=39062
-            if ( $crc > System_Const::INT_MAX )
-                $crc = $crc - 2 * System_Const::INT_MAX - 2;
-
-            foreach ( $this->files[ $language ] as $file ) {
-                $contexts =& $this->data[ $file ][ 'contexts' ];
-                $messages =& $this->data[ $file ][ 'messages' ];
-
-                // find a matching string in the bucket for given hash
-                // buckets have the following form: { contextId, source, comment, translation, contextId2, ... }
-                if ( isset( $messages[ $crc ] ) ) {
-                    $bucket =& $messages[ $crc ];
-                    for ( $i = 0; $i < count( $bucket ); $i += 4 ) {
-                        if ( $bucket[ $i + 1 ] == $source && $bucket[ $i + 2 ] == $comment
-                             && ( $bucket[ $i ] === null ? $context == null : $contexts[ $bucket[ $i ] ] == $context ) ) {
-                            return $bucket[ $i + 3 ];
-                        }
-                    }
-                }
-            }
-        }
-
-        return $source;
+        return $translated != null;
     }
 
-    private function loadMessageFiles( $language )
+    private function getTranslation( $mode, $key )
     {
-        $this->files[ $language ] = array();
+        if ( !isset( $this->language[ $mode ] ) )
+            $mode = self::SystemLanguage;
 
-        foreach ( $this->modules as $module ) {
-            $suffix = '_' . $language;
+        if ( isset( $this->language[ $mode ] ) )
+            $language = $this->language[ $mode ];
+        else
+            $language = 'en_US';
 
-            while ( $suffix != '' ) {
-                $file = $module . $suffix;
+        $translated = $this->lookupTranslation( $language, $key );
 
-                if ( !isset( $this->data[ $file ] ) ) {
-                    $path = WI_ROOT_DIR . '/data/translations/' . $file . '.phm';
-                    if ( file_exists( $path ) ) {
-                        $this->data[ $file ] = unserialize( file_get_contents( $path ) );
-                    } else {
-                        $path = WI_ROOT_DIR . '/common/data/translations/' . $file . '.phm';
-                        if ( file_exists( $path ) )
-                            $this->data[ $file ] = unserialize( file_get_contents( $path ) );
-                        else
-                            $this->data[ $file ] = false;
-                    }
-                }
+        if ( $translated == null && $language != 'en_US' )
+            $translated = $this->lookupTranslation( 'en_US', $key );
 
-                if ( $this->data[ $file ] !== false ) {
-                    $this->files[ $language ][] = $file;
-                    break;
-                }
+        return $translated;
+    }
 
-                // strip last component from the suffix, e.g. '_pt_BR' becomes '_pt'
-                $suffix = substr( $suffix, 0, strrpos( $suffix, '_' ) );
+    private function lookupTranslation( $language, $key )
+    {
+        if ( !isset( $this->messages[ $language ] ) )
+            $this->loadMessages( $language );
+
+        if ( !empty( $this->messages[ $language ] ) ) {
+            $current = $this->messages[ $language ];
+
+            $parts = explode( '.', $key );
+
+            foreach ( $parts as $part ) {
+                if ( is_array( $current ) && isset( $current[ $part ] ) )
+                    $current = $current[ $part ];
+                else
+                    return null;
             }
+
+            if ( is_string( $current ) )
+                return $current;
         }
+
+        return null;
+    }
+
+    private function loadMessages( $language )
+    {
+        $this->messages[ $language ] = array();
+
+        $path = WI_ROOT_DIR . '/common/i18n/' . $language . '.json';
+
+        if ( file_exists( $path ) )
+            $this->messages[ $language ] = json_decode( file_get_contents( $path ), true );
     }
 }

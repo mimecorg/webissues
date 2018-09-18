@@ -60,22 +60,14 @@ class System_Web_Base
         $this->translator = $application->getTranslator();
     }
 
-    /**
-    * Return a translated version of the source string.
-    * The original string is returned if no translation is available.
-    * Parameter placeholders (%%1, %%2, etc.) are replaced with additional
-    * arguments passed to this function.
-    * This method calls System_Core_Translator::translate() with appropriate
-    * context based on the class name. Note that this mechanism only works when
-    * the class calling tr() isn't itself inherited by another class.
-    * @param $source The source string to translate.
-    * @param $comment An optional comment explaining the use of the string
-    * to the translators.
-    */
-    protected function tr( $source, $comment = null )
+    protected function t( $key, $args = null )
     {
-        $args = func_get_args();
-		return $this->translator->translate( System_Core_Translator::UserLanguage, get_class( $this ), $args );
+		return $this->translator->translate( System_Core_Translator::UserLanguage, $key, $args );
+    }
+
+    protected function te( $key )
+    {
+		return $this->translator->translationExists( System_Core_Translator::UserLanguage, $key );
     }
 
     /**

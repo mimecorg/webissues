@@ -31,7 +31,7 @@ class Common_Errors_General extends System_Web_Component
     {
         $this->view->setDecoratorClass( 'Common_Window' );
         $this->view->setSlot( 'window_size', 'small' );
-        $this->view->setSlot( 'page_title', $this->tr( 'Unexpected Error' ) );
+        $this->view->setSlot( 'page_title', $this->t( 'title.UnexpectedError' ) );
 
         $exception = System_Core_Application::getInstance()->getFatalError();
         if ( is_a( $exception, 'System_Api_Error' ) ) {

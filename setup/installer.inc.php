@@ -306,7 +306,7 @@ class Setup_Installer extends System_Web_Base
         $hash = $passwordHash->hashPassword( $adminPassword );
 
         $query = 'INSERT INTO {users} ( user_login, user_name, user_passwd, user_access, passwd_temp ) VALUES ( %s, %s, %s, %d, 0 )';
-        $this->connection->execute( $query, 'admin', $this->tr( 'Administrator' ), $hash, System_Const::AdministratorAccess );
+        $this->connection->execute( $query, 'admin', $this->t( 'installer.Administrator' ), $hash, System_Const::AdministratorAccess );
 
         $language = $this->translator->getLanguage( System_Core_Translator::SystemLanguage );
 
@@ -339,40 +339,40 @@ class Setup_Installer extends System_Web_Base
     {
         $types = array(
             array(
-                $this->tr( 'Forum' ),
+                $this->t( 'installer.Forum' ),
                 array(),
                 array(),
                 array()
             ),
             array(
-                $this->tr( 'Bugs' ),
+                $this->t( 'installer.Bugs' ),
                 array(
                     'assigned-to' => array(
-                        $this->tr( 'Assigned To', 'bug' ),
+                        $this->t( 'installer.bug.AssignedTo' ),
                         'USER',
                         array(
                             'members' => 1
                         )
                     ),
                     'status' => array(
-                        $this->tr( 'Status', 'bug' ),
+                        $this->t( 'installer.bug.Status' ),
                         'ENUM',
                         array(
-                            'items' => array( $this->tr( 'Active', 'bug' ), $this->tr( 'Resolved', 'bug' ), $this->tr( 'Closed', 'bug' ) ),
+                            'items' => array( $this->t( 'installer.bug.Active' ), $this->t( 'installer.bug.Resolved' ), $this->t( 'installer.bug.Closed' ) ),
                             'required' => 1,
-                            'default' => $this->tr( 'Active', 'bug' )
+                            'default' => $this->t( 'installer.bug.Active' )
                         )
                     ),
                     'reason' => array(
-                        $this->tr( 'Reason' ),
+                        $this->t( 'installer.bug.Reason' ),
                         'ENUM',
                         array(
-                            'items' => array( $this->tr( 'Fixed' ), $this->tr( 'Obsolete' ), $this->tr( 'Duplicate' ),
-                                $this->tr( 'As Designed' ), $this->tr( 'Unable To Reproduce' ), $this->tr( 'Test Failed' ) )
+                            'items' => array( $this->t( 'installer.bug.Fixed' ), $this->t( 'installer.bug.Obsolete' ), $this->t( 'installer.bug.Duplicate' ),
+                                $this->t( 'installer.bug.AsDesigned' ), $this->t( 'installer.bug.UnableToReproduce' ), $this->t( 'installer.bug.TestFailed' ) )
                         )
                     ),
                     'severity' => array(
-                        $this->tr( 'Severity', 'bug' ),
+                        $this->t( 'installer.bug.Severity' ),
                         'NUMERIC',
                         array(
                             'min-value' => '1',
@@ -382,7 +382,7 @@ class Setup_Installer extends System_Web_Base
                         )
                     ),
                     'version' => array(
-                        $this->tr( 'Version' ),
+                        $this->t( 'installer.bug.Version' ),
                         'TEXT',
                         array()
                     )
@@ -390,65 +390,65 @@ class Setup_Installer extends System_Web_Base
                 array( 'assigned-to', 'status', 'severity' ),
                 array(
                     array(
-                        $this->tr( 'Created By Me', 'bug' ),
+                        $this->t( 'installer.bug.CreatedByMe' ),
                         array( 'assigned-to', 'status', 'severity' ),
                         array(
                             System_Api_Column::CreatedBy, 'EQ', '[Me]'
                         )
                     ),
                     array(
-                        $this->tr( 'Active Bugs' ),
+                        $this->t( 'installer.bug.ActiveBugs' ),
                         array( 'assigned-to', 'severity' ),
                         array(
-                            'status', 'EQ', $this->tr( 'Active', 'bug' )
+                            'status', 'EQ', $this->t( 'installer.bug.Active' )
                         )
                     ),
                     array(
-                        $this->tr( 'My Active Bugs' ),
+                        $this->t( 'installer.bug.MyActiveBugs' ),
                         array( System_Api_Column::CreatedDate, System_Api_Column::CreatedBy, 'severity' ),
                         array(
                             'assigned-to', 'EQ', '[Me]',
-                            'status', 'EQ', $this->tr( 'Active', 'bug' )
+                            'status', 'EQ', $this->t( 'installer.bug.Active' )
                         )
                     ),
                     array(
-                        $this->tr( 'Unassigned Bugs' ),
+                        $this->t( 'installer.bug.UnassignedBugs' ),
                         array( System_Api_Column::CreatedDate, System_Api_Column::CreatedBy, 'severity' ),
                         array(
                             'assigned-to', 'EQ', '',
-                            'status', 'EQ', $this->tr( 'Active', 'bug' )
+                            'status', 'EQ', $this->t( 'installer.bug.Active' )
                         )
                     ),
                     array(
-                        $this->tr( 'Resolved Bugs' ),
+                        $this->t( 'installer.bug.ResolvedBugs' ),
                         array( 'assigned-to', 'reason', 'severity' ),
                         array(
-                            'status', 'EQ', $this->tr( 'Resolved', 'bug' )
+                            'status', 'EQ', $this->t( 'installer.bug.Resolved' )
                         )
                     )
                 )
             ),
             array(
-                $this->tr( 'Tasks' ),
+                $this->t( 'installer.Tasks' ),
                 array(
                     'assigned-to' => array(
-                        $this->tr( 'Assigned To', 'task' ),
+                        $this->t( 'installer.task.AssignedTo' ),
                         'USER',
                         array(
                             'members' => 1
                         )
                     ),
                     'status' => array(
-                        $this->tr( 'Status', 'task' ),
+                        $this->t( 'installer.task.Status' ),
                         'ENUM',
                         array(
-                            'items' => array( $this->tr( 'Active', 'task' ), $this->tr( 'Completed', 'task' ), $this->tr( 'Closed', 'task' ) ),
+                            'items' => array( $this->t( 'installer.task.Active' ), $this->t( 'installer.task.Completed' ), $this->t( 'installer.task.Closed' ) ),
                             'required' => 1,
-                            'default' => $this->tr( 'Active', 'task' )
+                            'default' => $this->t( 'installer.task.Active' )
                         )
                     ),
                     'priority' => array(
-                        $this->tr( 'Priority', 'task' ),
+                        $this->t( 'installer.task.Priority' ),
                         'NUMERIC',
                         array(
                             'min-value' => '1',
@@ -458,7 +458,7 @@ class Setup_Installer extends System_Web_Base
                         )
                     ),
                     'progress' => array(
-                        $this->tr( 'Progress' ),
+                        $this->t( 'installer.task.Progress' ),
                         'NUMERIC',
                         array(
                             'min-value' => '0',
@@ -466,7 +466,7 @@ class Setup_Installer extends System_Web_Base
                         )
                     ),
                     'due-date' => array(
-                        $this->tr( 'Due Date' ),
+                        $this->t( 'installer.task.DueDate' ),
                         'DATETIME',
                         array()
                     )
@@ -474,40 +474,40 @@ class Setup_Installer extends System_Web_Base
                 array( 'assigned-to', 'status', 'priority' ),
                 array(
                     array(
-                        $this->tr( 'Created By Me', 'task' ),
+                        $this->t( 'installer.task.CreatedByMe' ),
                         array( 'assigned-to', 'status', 'priority' ),
                         array(
                             System_Api_Column::CreatedBy, 'EQ', '[Me]'
                         )
                     ),
                     array(
-                        $this->tr( 'Active Tasks' ),
+                        $this->t( 'installer.task.ActiveTasks' ),
                         array( 'assigned-to', 'priority', 'progress', 'due-date' ),
                         array(
-                            'status', 'EQ', $this->tr( 'Active', 'task' )
+                            'status', 'EQ', $this->t( 'installer.task.Active' )
                         )
                     ),
                     array(
-                        $this->tr( 'My Active Tasks' ),
+                        $this->t( 'installer.task.MyActiveTasks' ),
                         array( 'priority', 'progress', 'due-date' ),
                         array(
                             'assigned-to', 'EQ', '[Me]',
-                            'status', 'EQ', $this->tr( 'Active', 'task' )
+                            'status', 'EQ', $this->t( 'installer.task.Active' )
                         )
                     ),
                     array(
-                        $this->tr( 'Unassigned Tasks' ),
+                        $this->t( 'installer.task.UnassignedTasks' ),
                         array( 'priority', 'due-date' ),
                         array(
                             'assigned-to', 'EQ', '',
-                            'status', 'EQ', $this->tr( 'Active', 'task' )
+                            'status', 'EQ', $this->t( 'installer.task.Active' )
                         )
                     ),
                     array(
-                        $this->tr( 'Completed Tasks' ),
+                        $this->t( 'installer.task.CompletedTasks' ),
                         array( 'assigned-to', 'priority' ),
                         array(
-                            'status', 'EQ', $this->tr( 'Completed', 'task' )
+                            'status', 'EQ', $this->t( 'installer.task.Completed' )
                         )
                     )
                 )

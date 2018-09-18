@@ -755,8 +755,7 @@ class System_Api_IssueManager extends System_Api_Base
         }
 
         $eventLog = new System_Api_EventLog( $this );
-        $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information,
-            $eventLog->tr( 'Deleted issue "%1" from folder "%2"', null, $issue[ 'issue_name' ], $issue[ 'folder_name' ] ) );
+        $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information, $eventLog->t( 'log.IssueDeleted', array( $issue[ 'issue_name' ], $issue[ 'folder_name' ] ) ) );
 
         $this->deleteFiles( $files );
 

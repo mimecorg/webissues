@@ -32,7 +32,7 @@ class Users_Login extends System_Web_Component
     protected function execute()
     {
         $this->view->setDecoratorClass( 'Common_Window' );
-        $this->view->setSlot( 'page_title', $this->tr( 'Log in to WebIssues' ) );
+        $this->view->setSlot( 'page_title', $this->t( 'title.LogInToWebIssues' ) );
         $this->view->setSlot( 'window_size', 'small' );
 
         if ( System_Api_Principal::getCurrent()->isAuthenticated() ) {

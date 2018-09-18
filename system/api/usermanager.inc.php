@@ -355,8 +355,7 @@ class System_Api_UserManager extends System_Api_Base
         }
 
         $eventLog = new System_Api_EventLog( $this );
-        $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information,
-            $eventLog->tr( 'Added user "%1"', null, $name ) );
+        $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information, $eventLog->t( 'log.UserAdded', array( $name ) ) );
 
         return $userId;
     }
@@ -385,8 +384,7 @@ class System_Api_UserManager extends System_Api_Base
         $this->connection->execute( $query, $newHash, $isTemp, $userId );
 
         $eventLog = new System_Api_EventLog( $this );
-        $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information,
-            $eventLog->tr( 'Changed password for user "%1"', null, $user[ 'user_name' ] ) );
+        $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information, $eventLog->t( 'log.UserPasswordChanged', array( $user[ 'user_name' ] ) ) );
 
         return true;
     }
@@ -429,9 +427,10 @@ class System_Api_UserManager extends System_Api_Base
             throw $ex;
         }
 
+        $name = System_Api_Principal::getCurrent()->getUserName();
+
         $eventLog = new System_Api_EventLog( $this );
-        $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information,
-            $eventLog->tr( 'User "%1" changed own password', null, System_Api_Principal::getCurrent()->getUserName() ) );
+        $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information, $eventLog->t( 'log.UserOwnPasswordChanged', array( $name ) ) );
 
         return true;
     }
@@ -468,8 +467,7 @@ class System_Api_UserManager extends System_Api_Base
         }
 
         $eventLog = new System_Api_EventLog( $this );
-        $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information,
-            $eventLog->tr( 'Renamed user "%1" to "%2"', null, $oldName, $newName ) );
+        $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information, $eventLog->t( 'log.UserRenamed', array( $oldName, $newName ) ) );
 
         return true;
     }
@@ -500,16 +498,13 @@ class System_Api_UserManager extends System_Api_Base
         $eventLog = new System_Api_EventLog( $this );
         switch ( $newAccess ) {
             case System_Const::NoAccess:
-                $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information,
-                    $eventLog->tr( 'Disabled access for user "%1"', null, $user[ 'user_name' ] ) );
+                $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information, $eventLog->t( 'log.UserAccessDisabled', array( $user[ 'user_name' ] ) ) );
                 break;
             case System_Const::NormalAccess:
-                $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information,
-                    $eventLog->tr( 'Granted regular access for user "%1"', null, $user[ 'user_name' ] ) );
+                $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information, $eventLog->t( 'log.UserAccessRegular', array( $user[ 'user_name' ] ) ) );
                 break;
             case System_Const::AdministratorAccess:
-                $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information,
-                    $eventLog->tr( 'Granted system administrator access for user "%1"', null, $user[ 'user_name' ] ) );
+                $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information, $eventLog->t( 'log.UserAccessAdministrator', array( $user[ 'user_name' ] ) ) );
                 break;
         }
 
@@ -564,15 +559,15 @@ class System_Api_UserManager extends System_Api_Base
         switch ( $newAccess ) {
             case System_Const::NoAccess:
                 $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information,
-                    $eventLog->tr( 'Removed user "%1" from project "%2"', null, $user[ 'user_name' ], $project[ 'project_name' ] ) );
+                    $eventLog->t( 'log.MemberRemoved', array( $user[ 'user_name' ], $project[ 'project_name' ] ) ) );
                 break;
             case System_Const::NormalAccess:
                 $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information,
-                    $eventLog->tr( 'Granted regular access for user "%1" to project "%2"', null, $user[ 'user_name' ], $project[ 'project_name' ] ) );
+                    $eventLog->t( 'log.MemberRegular', array( $user[ 'user_name' ], $project[ 'project_name' ] ) ) );
                 break;
             case System_Const::AdministratorAccess:
                 $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information,
-                    $eventLog->tr( 'Granted project administrator access for user "%1" to project "%2"', null, $user[ 'user_name' ], $project[ 'project_name' ] ) );
+                    $eventLog->t( 'log.MemberAdministrator', array( $user[ 'user_name' ], $project[ 'project_name' ] ) ) );
                 break;
         }
 

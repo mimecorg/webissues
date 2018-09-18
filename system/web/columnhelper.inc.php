@@ -39,13 +39,13 @@ class System_Web_ColumnHelper extends System_Web_Base
     public function getColumnHeaders()
     {
         return array(
-            System_Api_Column::ID => $this->tr( 'ID' ),
-            System_Api_Column::Name => $this->tr( 'Name' ),
-            System_Api_Column::CreatedDate => $this->tr( 'Created Date' ),
-            System_Api_Column::CreatedBy => $this->tr( 'Created By' ),
-            System_Api_Column::ModifiedDate => $this->tr( 'Modified Date' ),
-            System_Api_Column::ModifiedBy => $this->tr( 'Modified By' ),
-            System_Api_Column::Location => $this->tr( 'Location' )
+            System_Api_Column::ID => $this->t( 'title.ID' ),
+            System_Api_Column::Name => $this->t( 'title.Name' ),
+            System_Api_Column::CreatedDate => $this->t( 'title.CreatedDate' ),
+            System_Api_Column::CreatedBy => $this->t( 'title.CreatedBy' ),
+            System_Api_Column::ModifiedDate => $this->t( 'title.ModifiedDate' ),
+            System_Api_Column::ModifiedBy => $this->t( 'title.ModifiedBy' ),
+            System_Api_Column::Location => $this->t( 'title.Location' )
         );
     }
 

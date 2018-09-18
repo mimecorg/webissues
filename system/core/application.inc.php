@@ -342,8 +342,6 @@ abstract class System_Core_Application
     */
     public function initializeServer()
     {
-        $this->translator->addModule( 'webissues' );
-
         $serverManager = new System_Api_ServerManager();
         $language = $serverManager->getSetting( 'language' );
 

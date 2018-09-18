@@ -174,17 +174,9 @@ class System_Api_EventLog extends System_Api_Base
         $this->connection->execute( $query, time() - $lifetime );
     }
 
-    /**
-    * Return a translated version of the source string.
-    * The system default language is used unlike in other tr() methods.
-    * @param $source The source string to translate.
-    * @param $comment An optional comment explaining the use of the string
-    * to the translators.
-    */
-    public function tr( $source, $comment = null )
+    public function t( $key, $args = null )
     {
         $translator = System_Core_Application::getInstance()->getTranslator();
-        $args = func_get_args();
-        return $translator->translate( System_Core_Translator::SystemLanguage, $this->ownerClass, $args );
+        return $translator->translate( System_Core_Translator::SystemLanguage, $key, $args );
     }
 }

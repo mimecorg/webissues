@@ -33,7 +33,7 @@ class Common_Errors_Handle401 extends System_Web_Component
 
         $this->view->setDecoratorClass( 'Common_Window' );
         $this->view->setSlot( 'window_size', 'small' );
-        $this->view->setSlot( 'page_title', $this->tr( 'Unauthorized' ) );
+        $this->view->setSlot( 'page_title', $this->t( 'title.Unauthorized' ) );
 
         if ( System_Core_Application::getInstance()->isLoggingEnabled() ) {
             $helper = new Common_Errors_Helper();
@@ -41,8 +41,7 @@ class Common_Errors_Handle401 extends System_Web_Component
 
             if ( $url != null ) {
                 $eventLog = new System_Api_EventLog( $this );
-                $eventLog->addEvent( System_Api_EventLog::Access, System_Api_EventLog::Error,
-                    $eventLog->tr( 'Unauthorized: %1', null, $url ) );
+                $eventLog->addEvent( System_Api_EventLog::Access, System_Api_EventLog::Error, $eventLog->t( 'event.Unauthorized', array( $url ) ) );
             }
         }
     }

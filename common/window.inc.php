@@ -31,7 +31,7 @@ class Common_Window extends System_Web_Component
     {
         $this->view->setDecoratorClass( 'Common_PageLayout' );
 
-        $this->header = $this->view->getSlot( 'header', $this->view->getSlot( 'page_title', $this->tr( 'Untitled block' ) ) );
+        $this->header = $this->view->getSlot( 'page_title' );
 
         $this->size = $this->view->getSlot( 'window_size', 'normal' );
     }

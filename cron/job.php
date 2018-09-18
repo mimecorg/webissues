@@ -53,7 +53,7 @@ class Cron_Job extends System_Core_Application
             if ( time() - $current < 10800 )
                 return;
 
-            $eventLog->addEvent( System_Api_EventLog::Cron, System_Api_EventLog::Warning, $eventLog->tr( 'Previous cron job timed out' ) );
+            $eventLog->addEvent( System_Api_EventLog::Cron, System_Api_EventLog::Warning, $eventLog->t( 'log.CronTimeout' ) );
         }
 
         $this->last = $serverManager->getSetting( 'cron_last' );
@@ -61,7 +61,7 @@ class Cron_Job extends System_Core_Application
         $this->current = time();
         $serverManager->setSetting( 'cron_current', $this->current );
 
-        $eventLog->addEvent( System_Api_EventLog::Cron, System_Api_EventLog::Information, $eventLog->tr( 'Cron job started' ) );
+        $eventLog->addEvent( System_Api_EventLog::Cron, System_Api_EventLog::Information, $eventLog->t( 'log.CronStarted' ) );
 
         $divisor = $serverManager->getSetting( 'gc_divisor' );
         if ( $divisor == 0 )
@@ -93,11 +93,11 @@ class Cron_Job extends System_Core_Application
         if ( $this->isLoggingEnabled() ) {
             $eventLog = new System_Api_EventLog( $this );
             if ( $this->getFatalError() != null )
-                $eventLog->addEvent( System_Api_EventLog::Cron, System_Api_EventLog::Error, $eventLog->tr( 'Cron job finished with error' ) );
+                $eventLog->addEvent( System_Api_EventLog::Cron, System_Api_EventLog::Error, $eventLog->t( 'log.CronError' ) );
             else if ( $this->current == null )
-                $eventLog->addEvent( System_Api_EventLog::Cron, System_Api_EventLog::Warning, $eventLog->tr( 'Previous cron job is still running' ) );
+                $eventLog->addEvent( System_Api_EventLog::Cron, System_Api_EventLog::Warning, $eventLog->t( 'log.CronRunning' ) );
             else
-                $eventLog->addEvent( System_Api_EventLog::Cron, System_Api_EventLog::Information, $eventLog->tr( 'Cron job finished' ) );
+                $eventLog->addEvent( System_Api_EventLog::Cron, System_Api_EventLog::Information, $eventLog->t( 'log.CronFinished' ) );
         }
     }
 
@@ -318,7 +318,7 @@ class Cron_Job extends System_Core_Application
 
         if ( $sent > 0 ) {
             $eventLog = new System_Api_EventLog( $this );
-            $eventLog->addEvent( System_Api_EventLog::Cron, System_Api_EventLog::Information, $eventLog->tr( 'Sent %1 notification emails', null, $sent ) );
+            $eventLog->addEvent( System_Api_EventLog::Cron, System_Api_EventLog::Information, $eventLog->t( 'log.NotificationsSent', array( $sent ) ) );
         }
     }
 
@@ -381,7 +381,7 @@ class Cron_Job extends System_Core_Application
             $fromEmail = $headers[ 'from' ][ 'email' ];
 
             if ( $this->mailEngine != null && mb_strtoupper( $fromEmail ) == mb_strtoupper( $serverEmail ) ) {
-                $eventLog->addEvent( System_Api_EventLog::Cron, System_Api_EventLog::Warning, $eventLog->tr( 'Ignored inbox email from "%1"', null, $fromEmail ) );
+                $eventLog->addEvent( System_Api_EventLog::Cron, System_Api_EventLog::Warning, $eventLog->t( 'log.EmailIgnored', array( $fromEmail ) ) );
                 $ignore = true;
             }
 
@@ -393,7 +393,7 @@ class Cron_Job extends System_Core_Application
                 }
 
                 if ( $user == null && $allowExternal != 1 ) {
-                    $eventLog->addEvent( System_Api_EventLog::Cron, System_Api_EventLog::Warning, $eventLog->tr( 'Ignored inbox email from unknown address "%1"', null, $fromEmail ) );
+                    $eventLog->addEvent( System_Api_EventLog::Cron, System_Api_EventLog::Warning, $eventLog->t( 'log.EmailUnknownAddress', array( $fromEmail ) ) );
                     $ignore = true;
                 }
             }
@@ -412,7 +412,7 @@ class Cron_Job extends System_Core_Application
                     try {
                         $issue = $issueManager->getIssue( $issueId );
                     } catch ( System_Api_Error $e ) {
-                        $eventLog->addEvent( System_Api_EventLog::Cron, System_Api_EventLog::Warning, $eventLog->tr( 'Ignored inbox email from "%1" because issue %2 is inaccessible', null, $fromEmail, '#' . $issueId ) );
+                        $eventLog->addEvent( System_Api_EventLog::Cron, System_Api_EventLog::Warning, $eventLog->t( 'log.EmailIssueIncaccessible', array( $fromEmail, '#' . $issueId ) ) );
                     }
                 } else {
                     $folderId = null;
@@ -431,9 +431,9 @@ class Cron_Job extends System_Core_Application
                             if ( count( $matching ) == 1 ) {
                                 $folderId = $matching[ 0 ];
                             } else if ( count( $matching ) > 1 ) {
-                                $eventLog->addEvent( System_Api_EventLog::Cron, System_Api_EventLog::Warning, $eventLog->tr( 'Ambiguous folder for inbox email address "%1"', null, $toEmail ) );
+                                $eventLog->addEvent( System_Api_EventLog::Cron, System_Api_EventLog::Warning, $eventLog->t( 'log.EmailAmbiguousFolder', array( $toEmail ) ) );
                             } else {
-                                $eventLog->addEvent( System_Api_EventLog::Cron, System_Api_EventLog::Warning, $eventLog->tr( 'No matching folder for inbox email address "%1"', null, $toEmail ) );
+                                $eventLog->addEvent( System_Api_EventLog::Cron, System_Api_EventLog::Warning, $eventLog->t( 'log.EmailNoMatchigFolder', array( $toEmail ) ) );
                             }
                         }
                     }
@@ -442,16 +442,16 @@ class Cron_Job extends System_Core_Application
                         try {
                             $folder = $projectManager->getFolder( $folderId );
                         } catch ( System_Api_Error $e ) {
-                            $eventLog->addEvent( System_Api_EventLog::Cron, System_Api_EventLog::Warning, $eventLog->tr( 'Ignored inbox email from "%1" to "%2" because folder is inaccessible', null, $fromEmail, $toEmail ) );
+                            $eventLog->addEvent( System_Api_EventLog::Cron, System_Api_EventLog::Warning, $eventLog->t( 'log.EmailFolderInaccessible', array( $fromEmail, $toEmail ) ) );
                         }
                     } else if ( $defaultFolderId != null ) {
                         try {
                             $folder = $projectManager->getFolder( $defaultFolderId );
                         } catch ( System_Api_Error $e ) {
-                            $eventLog->addEvent( System_Api_EventLog::Cron, System_Api_EventLog::Warning, $eventLog->tr( 'Ignored inbox email from "%1" because default folder is inaccessible', null, $fromEmail ) );
+                            $eventLog->addEvent( System_Api_EventLog::Cron, System_Api_EventLog::Warning, $eventLog->t( 'log.EmailDefaultFolderInaccessible', array( $fromEmail ) ) );
                         }
                     } else {
-                        $eventLog->addEvent( System_Api_EventLog::Cron, System_Api_EventLog::Warning, $eventLog->tr( 'Ignored inbox email from "%1" because folder cannot be mapped', null, $fromEmail ) );
+                        $eventLog->addEvent( System_Api_EventLog::Cron, System_Api_EventLog::Warning, $eventLog->t( 'log.EmailCannotMapFolder', array( $fromEmail ) ) );
                     }
                 }
 
@@ -459,7 +459,7 @@ class Cron_Job extends System_Core_Application
 
                 if ( $issue != null || $folder != null ) {
                     $parts = $this->inboxEngine->getStructure( $msgno );
-                    
+
                     try {
                         $text = $this->formatHeaders( $headers );
 
@@ -492,7 +492,7 @@ class Cron_Job extends System_Core_Application
                             if ( mb_strlen( $name ) > System_Const::ValueMaxLength )
                                 $name = mb_substr( $name, 0, System_Const::ValueMaxLength - 3 ) . '...';
                             if ( $name == '' )
-                                $name = $this->tr( 'No subject' );
+                                $name = $this->t( 'text.NoSubject' );
 
                             $values = $typeManager->getDefaultAttributeValuesForFolder( $folder );
 
@@ -531,17 +531,17 @@ class Cron_Job extends System_Core_Application
                                 $size = strlen( $part[ 'body' ] );
 
                                 if ( $size > $serverManager->getSetting( 'file_max_size' ) ) {
-                                    $eventLog->addEvent( System_Api_EventLog::Cron, System_Api_EventLog::Warning, $eventLog->tr( 'Attachment for message %1 from "%2" exceeded maximum size', null, $emailId, $fromEmail ) );
+                                    $eventLog->addEvent( System_Api_EventLog::Cron, System_Api_EventLog::Warning, $eventLog->t( 'log.EmailAttachmentTooLarge', array( $emailId, $fromEmail ) ) );
                                     continue;
                                 }
 
                                 if ( $part[ 'type' ] == 'html' ) {
                                     $name = 'message.html';
-                                    $description = $this->tr( 'HTML message for email %1', null, $emailId );
+                                    $description = $this->t( 'text.HTMLMessageForEmail', array( $emailId ) );
                                 } else {
                                     $name = $part[ 'name' ];
                                     $parser->checkString( $name, System_Const::FileNameMaxLength );
-                                    $description = $this->tr( 'Attachment for email %1', null, $emailId );
+                                    $description = $this->t( 'text.AttachmentForEmail', array( $emailId ) );
                                 }
 
                                 $attachment = new System_Core_Attachment( $part[ 'body' ], $size, $name );
@@ -584,7 +584,7 @@ class Cron_Job extends System_Core_Application
         }
 
         if ( $received > 0 )
-            $eventLog->addEvent( System_Api_EventLog::Cron, System_Api_EventLog::Information, $eventLog->tr( 'Processed %1 inbox emails', null, $received ) );
+            $eventLog->addEvent( System_Api_EventLog::Cron, System_Api_EventLog::Information, $eventLog->t( 'log.InboxEmailsProcessed', array( $received ) ) );
     }
 
     private function matchRecipient( $mapPattern, $headers, &$matches )
@@ -614,23 +614,23 @@ class Cron_Job extends System_Core_Application
 
     private function formatHeaders( $headers )
     {
-        $text = $this->tr( 'From:' ) . ' ' . $this->formatAddress( $headers[ 'from' ] ) . "\n";
+        $text = $this->t( 'label.From' ) . ' ' . $this->formatAddress( $headers[ 'from' ] ) . "\n";
 
         if ( !empty( $headers[ 'to' ] ) ) {
             $to = array();
             foreach ( $headers[ 'to' ] as $addr )
                 $to[] = $this->formatAddress( $addr );
-            $text .= $this->tr( 'To:' ) . ' ' . implode( '; ', $to ) . "\n";
+            $text .= $this->t( 'label.To' ) . ' ' . implode( '; ', $to ) . "\n";
         }
 
         if ( !empty( $headers[ 'cc' ] ) ) {
             $cc = array();
             foreach ( $headers[ 'cc' ] as $addr )
                 $cc[] = $this->formatAddress( $addr );
-            $text .= $this->tr( 'CC:' ) . ' ' . implode( '; ', $cc ) . "\n";
+            $text .= $this->t( 'label.CC' ) . ' ' . implode( '; ', $cc ) . "\n";
         }
 
-        $text .= $this->tr( 'Subject:' ) . ' ' . $headers[ 'subject' ] . "\n\n";
+        $text .= $this->t( 'label.Subject' ) . ' ' . $headers[ 'subject' ] . "\n\n";
 
         return $text;
     }
@@ -683,10 +683,9 @@ class Cron_Job extends System_Core_Application
         }
     }
 
-    private function tr( $source, $comment = null )
+    private function t( $key, $args = null )
     {
-        $args = func_get_args();
-        return $this->translator->translate( System_Core_Translator::SystemLanguage, get_class( $this ), $args );
+        return $this->translator->translate( System_Core_Translator::SystemLanguage, $key, $args );
     }
 }
 

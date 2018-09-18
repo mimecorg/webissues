@@ -30,7 +30,7 @@ class Common_Errors_Debug extends System_Web_Component
     protected function execute()
     {
         $this->view->setDecoratorClass( 'Common_Window' );
-        $this->view->setSlot( 'page_title', $this->tr( 'Unexpected Error' ) );
+        $this->view->setSlot( 'page_title', $this->t( 'title.UnexpectedError' ) );
 
         $application = System_Core_Application::getInstance();
 

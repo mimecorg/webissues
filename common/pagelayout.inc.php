@@ -31,7 +31,7 @@ class Common_PageLayout extends System_Web_Component
     {
         $application = System_Core_Application::getInstance();
 
-        $this->siteName = $this->tr( 'WebIssues' );
+        $this->siteName = 'WebIssues';
         try {
             if ( $application->getConnection()->isOpened() ) {
                 $serverManager = new System_Api_ServerManager();

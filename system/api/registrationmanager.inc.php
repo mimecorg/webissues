@@ -154,8 +154,7 @@ class System_Api_RegistrationManager extends System_Api_Base
         }
 
         $eventLog = new System_Api_EventLog( $this );
-        $eventLog->addEvent( System_Api_EventLog::Access, System_Api_EventLog::Information,
-            $eventLog->tr( 'User "%1" registered', null, $name ) );
+        $eventLog->addEvent( System_Api_EventLog::Access, System_Api_EventLog::Information, $eventLog->t( 'log.UserRegistered', array( $name ) ) );
 
         return $requestId;
     }
@@ -178,7 +177,7 @@ class System_Api_RegistrationManager extends System_Api_Base
 
         $eventLog = new System_Api_EventLog( $this );
         $eventLog->addEvent( System_Api_EventLog::Access, System_Api_EventLog::Information,
-            $eventLog->tr( 'Registration request for user "%1" activated', null, $request[ 'user_name' ] ) );
+            $eventLog->t( 'log.RegistrationActivated', array( $request[ 'user_name' ] ) ) );
 
         return true;
     }
@@ -221,8 +220,7 @@ class System_Api_RegistrationManager extends System_Api_Base
         }
 
         $eventLog = new System_Api_EventLog( $this );
-        $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information,
-            $eventLog->tr( 'Registration request for user "%1" approved', null, $name ) );
+        $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information, $eventLog->t( 'log.RegistrationApproved', array( $name ) ) );
 
         return $userId;
     }
@@ -240,8 +238,7 @@ class System_Api_RegistrationManager extends System_Api_Base
         $this->connection->execute( $query, $requestId );
 
         $eventLog = new System_Api_EventLog( $this );
-        $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information,
-            $eventLog->tr( 'Registration request for user "%1" rejected', null, $name ) );
+        $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information, $eventLog->t( 'log.RegistrationRejected', array( $name ) ) );
 
         return $userId;
     }

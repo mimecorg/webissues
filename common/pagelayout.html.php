@@ -32,14 +32,14 @@
             <div class="navbar-version">WebIssues <?php echo WI_VERSION ?></div>
           </div>
           <div class="navbar-sub-element">
-            <a type="button" title="<?php echo $this->tr( 'WebIssues Manual' ) ?>" href="<?php echo $this->url( $manualUrl ) ?>" target="_blank" class="btn btn-default">
+            <a type="button" title="<?php echo $this->t( 'title.WebIssuesManual' ) ?>" href="<?php echo $this->url( $manualUrl ) ?>" target="_blank" class="btn btn-default">
               <span aria-hidden="true" class="fa fa-question-circle"></span>
             </a>
           </div>
         </div>
       </div>
       <div id="navbar-element-toggle" class="navbar-element">
-        <button id="toggle-button" type="button" title="<?php echo $this->tr( 'Toggle Navigation' ) ?>" class="btn btn-default"><span aria-hidden="true" class="fa fa-bars"></span></button>
+        <button id="toggle-button" type="button" title="<?php echo $this->t( 'cmd.ToggleNavigation' ) ?>" class="btn btn-default"><span aria-hidden="true" class="fa fa-bars"></span></button>
       </div>
     </div>
   </div>

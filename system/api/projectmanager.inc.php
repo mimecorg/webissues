@@ -306,8 +306,7 @@ class System_Api_ProjectManager extends System_Api_Base
         }
 
         $eventLog = new System_Api_EventLog( $this );
-        $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information,
-            $eventLog->tr( 'Added project "%1"', null, $name ) );
+        $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information, $eventLog->t( 'log.ProjectAdded', array( $name ) ) );
 
         return $projectId;
     }
@@ -344,8 +343,7 @@ class System_Api_ProjectManager extends System_Api_Base
         }
 
         $eventLog = new System_Api_EventLog( $this );
-        $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information,
-            $eventLog->tr( 'Renamed project "%1" to "%2"', null, $oldName, $newName ) );
+        $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information, $eventLog->t( 'log.ProjectRenamed', array( $oldName, $newName ) ) );
 
         return true;
     }
@@ -368,13 +366,10 @@ class System_Api_ProjectManager extends System_Api_Base
         $this->connection->execute( $query, $isPublic, $projectId );
 
         $eventLog = new System_Api_EventLog( $this );
-        if ( $isPublic ) {
-            $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information,
-                $eventLog->tr( 'Enabled public access for project "%1"', null, $project[ 'project_name' ] ) );
-        } else {
-            $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information,
-                $eventLog->tr( 'Disabled public access for project "%1"', null, $project[ 'project_name' ] ) );
-        }
+        if ( $isPublic )
+            $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information, $eventLog->t( 'log.PublicAccessEnabled', array( $project[ 'project_name' ] ) ) );
+        else
+            $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information, $eventLog->t( 'log.PubliAccessDisabled', array( $project[ 'project_name' ] ) ) );
 
         return true;
     }
@@ -392,8 +387,7 @@ class System_Api_ProjectManager extends System_Api_Base
         $this->connection->execute( $query, $projectId );
 
         $eventLog = new System_Api_EventLog( $this );
-        $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information,
-            $eventLog->tr( 'Archived project "%1"', null, $project[ 'project_name' ] ) );
+        $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information, $eventLog->t( 'log.ProjectArchived', array( $project[ 'project_name' ] ) ) );
 
         return true;
     }
@@ -411,8 +405,7 @@ class System_Api_ProjectManager extends System_Api_Base
         $this->connection->execute( $query, $projectId );
 
         $eventLog = new System_Api_EventLog( $this );
-        $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information,
-            $eventLog->tr( 'Restored project "%1"', null, $project[ 'project_name' ] ) );
+        $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information, $eventLog->t( 'log.ProjectRestored', array( $project[ 'project_name' ] ) ) );
 
         return true;
     }
@@ -451,13 +444,10 @@ class System_Api_ProjectManager extends System_Api_Base
         }
 
         $eventLog = new System_Api_EventLog( $this );
-        if ( $flags & self::ForceDelete ) {
-            $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Warning,
-                $eventLog->tr( 'Deleted project "%1" with folders', null, $project[ 'project_name' ] ) );
-        } else {
-            $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information,
-                $eventLog->tr( 'Deleted project "%1"', null, $project[ 'project_name' ] ) );
-        }
+        if ( $flags & self::ForceDelete )
+            $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Warning, $eventLog->t( 'log.ProjectForceDeleted', array( $project[ 'project_name' ] ) ) );
+        else
+            $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information, $eventLog->t( 'log.ProjectDeleted', array( $project[ 'project_name' ] ) ) );
 
         $issueManager = new System_Api_IssueManager();
         $issueManager->deleteFiles( $files );
@@ -510,8 +500,7 @@ class System_Api_ProjectManager extends System_Api_Base
         }
 
         $eventLog = new System_Api_EventLog( $this );
-        $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information,
-            $eventLog->tr( 'Added folder "%1" to project "%2"', null, $name, $project[ 'project_name' ] ) );
+        $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information, $eventLog->t( 'log.FolderAdded', array( $name, $project[ 'project_name' ] ) ) );
 
         return $folderId;
     }
@@ -549,8 +538,7 @@ class System_Api_ProjectManager extends System_Api_Base
         }
 
         $eventLog = new System_Api_EventLog( $this );
-        $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information,
-            $eventLog->tr( 'Renamed folder "%1" to "%2" in project "%3"', null, $oldName, $newName, $folder[ 'project_name' ] ) );
+        $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information, $eventLog->t( 'log.FolderRenamed', array( $oldName, $newName, $folder[ 'project_name' ] ) ) );
 
         return true;
     }
@@ -588,13 +576,10 @@ class System_Api_ProjectManager extends System_Api_Base
         }
 
         $eventLog = new System_Api_EventLog( $this );
-        if ( $flags & self::ForceDelete ) {
-            $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Warning,
-                $eventLog->tr( 'Deleted folder "%1" with issues from project "%2"', null, $folder[ 'folder_name' ], $folder[ 'project_name' ] ) );
-        } else {
-            $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information,
-                $eventLog->tr( 'Deleted folder "%1" from project "%2"', null, $folder[ 'folder_name' ], $folder[ 'project_name' ] ) );
-        }
+        if ( $flags & self::ForceDelete )
+            $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Warning, $eventLog->t( 'log.FolderForceDeleted', array( $folder[ 'folder_name' ], $folder[ 'project_name' ] ) ) );
+        else
+            $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information, $eventLog->t( 'log.FolderDeleted', array( $folder[ 'folder_name' ], $folder[ 'project_name' ] ) ) );
 
         $issueManager = new System_Api_IssueManager();
         $issueManager->deleteFiles( $files );
@@ -650,8 +635,7 @@ class System_Api_ProjectManager extends System_Api_Base
 
         $eventLog = new System_Api_EventLog( $this );
         $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information,
-            $eventLog->tr( 'Moved folder "%1" from project "%2" to "%3"', null, $folder[ 'folder_name' ],
-            $folder[ 'project_name' ], $project[ 'project_name' ] ) );
+            $eventLog->t( 'log.FolderMoved', array( $folder[ 'folder_name' ], $folder[ 'project_name' ], $project[ 'project_name' ] ) ) );
 
         return true;
     }

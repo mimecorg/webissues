@@ -34,10 +34,8 @@ class Common_Mail_Approve extends System_Web_Component
     protected function execute()
     {
         $this->view->setDecoratorClass( 'Common_Mail_Layout' );
-        $this->view->setSlot( 'subject', $this->tr( 'WebIssues Server registration approved' ) );
+        $this->view->setSlot( 'subject', $this->t( 'subject.RegistrationApproved' ) );
 
-        $this->login = $this->register[ 'user_login' ];
         $this->userName = $this->register[ 'user_name' ];
-        $this->email = $this->register[ 'user_email' ];
     }
 }

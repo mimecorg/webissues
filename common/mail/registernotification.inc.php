@@ -34,7 +34,7 @@ class Common_Mail_RegisterNotification extends System_Web_Component
     protected function execute()
     {
         $this->view->setDecoratorClass( 'Common_Mail_Layout' );
-        $this->view->setSlot( 'subject', $this->tr( 'WebIssues Server registration requests' ) );
+        $this->view->setSlot( 'subject', $this->t( 'subject.RegistrationRequests' ) );
 
         $formatter = new System_Api_Formatter();
 

@@ -313,8 +313,7 @@ class System_Api_TypeManager extends System_Api_Base
         }
 
         $eventLog = new System_Api_EventLog( $this );
-        $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information,
-            $eventLog->tr( 'Added issue type "%1"', null, $name ) );
+        $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information, $eventLog->t( 'log.TypeAdded', array( $name ) ) );
 
         return $typeId;
     }
@@ -351,8 +350,7 @@ class System_Api_TypeManager extends System_Api_Base
         }
 
         $eventLog = new System_Api_EventLog( $this );
-        $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information,
-            $eventLog->tr( 'Renamed issue type "%1" to "%2"', null, $oldName, $newName ) );
+        $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information, $eventLog->t( 'log.TypeRenamed', array( $oldName, $newName ) ) );
 
         return true;
     }
@@ -391,13 +389,10 @@ class System_Api_TypeManager extends System_Api_Base
         }
 
         $eventLog = new System_Api_EventLog( $this );
-        if ( $flags & self::ForceDelete ) {
-            $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Warning,
-                $eventLog->tr( 'Deleted issue type "%1" with folders', null, $type[ 'type_name' ] ) );
-        } else {
-            $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information,
-                $eventLog->tr( 'Deleted issue type "%1"', null, $type[ 'type_name' ] ) );
-        }
+        if ( $flags & self::ForceDelete )
+            $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Warning, $eventLog->t( 'log.TypeForceDeleted', array( $type[ 'type_name' ] ) ) );
+        else
+            $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information, $eventLog->t( 'log.TypeDeleted', array( $type[ 'type_name' ] ) ) );
 
         $issueManager = new System_Api_IssueManager();
         $issueManager->deleteFiles( $files );
@@ -449,8 +444,7 @@ class System_Api_TypeManager extends System_Api_Base
         }
 
         $eventLog = new System_Api_EventLog( $this );
-        $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information,
-            $eventLog->tr( 'Added attribute "%1" to issue type "%2"', null, $name, $type[ 'type_name' ] ) );
+        $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information, $eventLog->t( 'log.AttributeAdded', array( $name, $type[ 'type_name' ] ) ) );
 
         return $attributeId;
     }
@@ -488,8 +482,7 @@ class System_Api_TypeManager extends System_Api_Base
         }
 
         $eventLog = new System_Api_EventLog( $this );
-        $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information,
-            $eventLog->tr( 'Renamed attribute "%1" to "%2" of issue type "%3"', null, $oldName, $newName, $attribute[ 'type_name' ] ) );
+        $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information, $eventLog->t( 'log.AttributeRenamed', array( $oldName, $newName, $attribute[ 'type_name' ] ) ) );
 
         return true;
     }
@@ -512,8 +505,7 @@ class System_Api_TypeManager extends System_Api_Base
         $this->connection->execute( $query, $newDefinition, $attributeId );
 
         $eventLog = new System_Api_EventLog( $this );
-        $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information,
-            $eventLog->tr( 'Modified attribute "%1" of issue type "%2"', null, $attribute[ 'attr_name' ], $attribute[ 'type_name' ] ) );
+        $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information, $eventLog->t( 'log.AttributeModified', array( $attribute[ 'attr_name' ], $attribute[ 'type_name' ] ) ) );
 
         return true;
     }
@@ -545,13 +537,10 @@ class System_Api_TypeManager extends System_Api_Base
         }
 
         $eventLog = new System_Api_EventLog( $this );
-        if ( $flags & self::ForceDelete ) {
-            $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Warning,
-                $eventLog->tr( 'Deleted attribute "%1" with values from issue type "%2"', null, $attribute[ 'attr_name' ], $attribute[ 'type_name' ] ) );
-        } else {
-            $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information,
-                $eventLog->tr( 'Deleted attribute "%1" from issue type "%2"', null, $attribute[ 'attr_name' ], $attribute[ 'type_name' ] ) );
-        }
+        if ( $flags & self::ForceDelete )
+            $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Warning, $eventLog->t( 'log.AttributeForceDeleted', array( $attribute[ 'attr_name' ], $attribute[ 'type_name' ] ) ) );
+        else
+            $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information, $eventLog->t( 'log.AttributeDeleted', array( $attribute[ 'attr_name' ], $attribute[ 'type_name' ] ) ) );
 
         return true;
     }

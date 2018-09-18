@@ -68,40 +68,40 @@ class Setup_Install extends System_Web_Component
 
         switch ( $this->page ) {
             case 'config_exists':
-                $this->view->setSlot( 'page_title', $this->tr( 'Server Already Configured' ) );
+                $this->view->setSlot( 'page_title', $this->t( 'title.ServerAlreadyConfigured' ) );
                 $this->view->setSlot( 'window_size', 'small' );
                 break;
 
             case 'language':
-                $this->view->setSlot( 'page_title', $this->tr( 'Select Language' ) );
+                $this->view->setSlot( 'page_title', $this->t( 'title.SelectLanguage' ) );
                 $this->view->setSlot( 'window_size', 'small' );
                 break;
 
             case 'site_error':
-                $this->view->setSlot( 'page_title', $this->tr( 'Configuration Error' ) );
+                $this->view->setSlot( 'page_title', $this->t( 'title.ConfigurationError' ) );
                 $this->view->setSlot( 'window_size', 'small' );
                 break;
 
             case 'connection':
-                $this->view->setSlot( 'page_title', $this->tr( 'Database Configuration' ) );
+                $this->view->setSlot( 'page_title', $this->t( 'title.DatabaseConfiguration' ) );
                 break;
 
             case 'server':
-                $this->view->setSlot( 'page_title', $this->tr( 'Server Configuration' ) );
+                $this->view->setSlot( 'page_title', $this->t( 'title.ServerConfiguration' ) );
                 break;
 
             case 'new_site':
             case 'existing_site':
-                $this->view->setSlot( 'page_title', $this->tr( 'Confirm Installation' ) );
+                $this->view->setSlot( 'page_title', $this->t( 'title.ConfirmInstallation' ) );
                 break;
 
             case 'completed':
-                $this->view->setSlot( 'page_title', $this->tr( 'Installation Completed' ) );
+                $this->view->setSlot( 'page_title', $this->t( 'title.InstallationCompleted' ) );
                 $this->view->setSlot( 'window_size', 'small' );
                 break;
 
             case 'failed':
-                $this->view->setSlot( 'page_title', $this->tr( 'Installation Failed' ) );
+                $this->view->setSlot( 'page_title', $this->t( 'title.InstallationFailed' ) );
                 break;
         }
     }
@@ -229,12 +229,11 @@ class Setup_Install extends System_Web_Component
     {
         if ( !empty( $this->language ) && isset( $this->languageOptions[ $this->language ] ) ) {
             $translator = System_Core_Application::getInstance()->getTranslator();
-            $translator->addModule( 'webissues' );
             $translator->setLanguage( System_Core_Translator::SystemLanguage, $this->language );
             $translator->setLanguage( System_Core_Translator::UserLanguage, $this->language );
 
             if ( $this->serverName === null )
-                $this->serverName = $this->tr( 'My WebIssues Server' );
+                $this->serverName = $this->t( 'installer.MyWebIssuesServer' );
 
             $this->modeOptions = $this->getModeOptions();
             $this->dataOptions = $this->getDataOptions();
@@ -252,14 +251,14 @@ class Setup_Install extends System_Web_Component
         $siteDirectory = $site->getPath( 'site_dir' );
 
         if ( !System_Core_FileSystem::isDirectoryWritable( $siteDirectory ) ) {
-            $this->error = $this->tr( "Cannot access directory '%1'.", null, System_Core_FileSystem::toNativeSeparators( $siteDirectory ) );
+            $this->error = $this->t( 'error.CannotAccessDirectory', array( System_Core_FileSystem::toNativeSeparators( $siteDirectory ) ) );
             return false;
         }
 
         $storageDirectory = $siteDirectory . '/storage';
 
         if ( !System_Core_FileSystem::isDirectoryWritable( $storageDirectory ) ) {
-            $this->error = $this->tr( "Cannot access directory '%1'.", null, System_Core_FileSystem::toNativeSeparators( $storageDirectory ) );
+            $this->error = $this->t( 'error.CannotAccessDirectory', array( System_Core_FileSystem::toNativeSeparators( $storageDirectory ) ) );
             return false;
         }
 
@@ -268,7 +267,7 @@ class Setup_Install extends System_Web_Component
             $debugFile = $site->getPath( 'debug_file' );
 
             if ( !System_Core_FileSystem::isFileWritable( $debugFile ) ) {
-                $this->error = $this->tr( "Cannot access file '%1'.", null, System_Core_FileSystem::toNativeSeparators( $debugFile ) );
+                $this->error = $this->t( 'error.CannotAccessFile', array( System_Core_FileSystem::toNativeSeparators( $debugFile ) ) );
                 return false;
             }
         }
@@ -293,8 +292,8 @@ class Setup_Install extends System_Web_Component
     {
         $options = array();
 
-        $options[ 'new' ] = $this->tr( 'Create new database tables' );
-        $options[ 'existing' ] = $this->tr( 'Use existing database tables' );
+        $options[ 'new' ] = $this->t( 'text.CreateNewTables' );
+        $options[ 'existing' ] = $this->t( 'text.UseExistingTables' );
 
         return $options;
     }
@@ -303,8 +302,8 @@ class Setup_Install extends System_Web_Component
     {
         $options = array();
 
-        $options[ '' ] = $this->tr( 'Do not install any issue types' );
-        $options[ 'default' ] = $this->tr( 'Install the default set of issue types' );
+        $options[ '' ] = $this->t( 'text.NoIssueTypes' );
+        $options[ 'default' ] = $this->t( 'text.DefaultIssueTypes' );
 
         return $options;
     }
@@ -328,7 +327,7 @@ class Setup_Install extends System_Web_Component
             $connection->close();
 
             $this->page = 'connection';
-            $this->form->setError( 'connection', $this->tr( 'Could not connect to the database. Please check connection details and try again.' ) );
+            $this->form->setError( 'connection', $this->t( 'error.ConnectionError' ) );
 
             return false;
         }
@@ -344,7 +343,7 @@ class Setup_Install extends System_Web_Component
 
             if ( $this->mode == 'existing' ) {
                 if ( !$connection->checkTableExists( 'server' ) ) {
-                    $this->form->setError( 'mode', $this->tr( 'The WebIssues tables were not found in the database. Make sure the table prefix is correct and try again.' ) );
+                    $this->form->setError( 'mode', $this->t( 'error.NoDatabaseTables' ) );
                 } else {
                     $serverManager = new System_Api_ServerManager();
                     $server = $serverManager->getServer();
@@ -355,7 +354,7 @@ class Setup_Install extends System_Web_Component
                     $current = version_compare( $version, WI_DATABASE_VERSION );
 
                     if ( version_compare( $version, '1.0' ) < 0 || $current > 0 ) {
-                        $this->form->setError( 'mode', $this->tr( 'The existing database is not compatible with this version of WebIssues.' ) );
+                        $this->form->setError( 'mode', $this->t( 'error.IncompatibleDatabase' ) );
                     } else {
                         $this->update = ( $current < 0 );
                         $this->page = 'existing_site';
@@ -363,7 +362,7 @@ class Setup_Install extends System_Web_Component
                 }
             } else {
                 if ( $connection->checkTableExists( 'server' ) )
-                    $this->form->setError( 'mode', $this->tr( 'The WebIssues tables already exist in the database. Drop them first or use a different table prefix and try again.' ) );
+                    $this->form->setError( 'mode', $this->t( 'error.TablesAlreadyExist' ) );
                 else
                     $this->page = 'server';
             }
@@ -371,7 +370,7 @@ class Setup_Install extends System_Web_Component
             $connection->close();
 
             $this->page = 'connection';
-            $this->form->setError( 'connection', $this->tr( 'Could not retrieve information from the database.' ) );
+            $this->form->setError( 'connection', $this->t( 'error.DatabaseError' ) );
         }
     }
 
@@ -380,21 +379,21 @@ class Setup_Install extends System_Web_Component
         switch ( $this->engine ) {
             case 'mysqli':
                 if ( !function_exists( 'mysqli_connect' ) ) {
-                    $this->form->setError( 'engine', $this->tr( 'The \'%1\' extension is missing or disabled.', null, 'mysqli' ) );
+                    $this->form->setError( 'engine', $this->t( 'error.MissingExtension', array( 'mysqli' ) ) );
                     return false;
                 }
                 break;
 
             case 'pgsql':
                 if ( !function_exists( 'pg_connect' ) ) {
-                    $this->form->setError( 'engine', $this->tr( 'The \'%1\' extension is missing or disabled.', null, 'pgsql' ) );
+                    $this->form->setError( 'engine', $this->t( 'error.MissingExtension', array( 'pgsql' ) ) );
                     return false;
                 }
                 break;
 
             case 'mssql':
                 if ( !@class_exists( 'COM', false ) ) {
-                    $this->form->setError( 'engine', $this->tr( 'The \'%1\' extension is missing or disabled.', null, 'com_dotnet' ) );
+                    $this->form->setError( 'engine', $this->t( 'error.MissingExtension', array( 'com_dotnet' ) ) );
                     return false;
                 }
                 break;
@@ -413,7 +412,7 @@ class Setup_Install extends System_Web_Component
                 $connection = System_Core_Application::getInstance()->getConnection();
 
                 if ( !$connection->getParameter( 'have_innodb' ) ) {
-                    $this->form->setError( 'connection', $this->tr( 'Database does not support InnoDB storage which is required by WebIssues Server.' ) );
+                    $this->form->setError( 'connection', $this->t( 'error.NoInnoDBStorage' ) );
                     return false;
                 }
                 break;
@@ -439,7 +438,7 @@ class Setup_Install extends System_Web_Component
         $version = $connection->getParameter( 'version' );
 
         if ( version_compare( $version, $minVersion ) < 0 ) {
-            $this->form->setError( 'connection', $this->tr( 'Database version %1 is older than minimum required version %2.', null, $version, $minVersion ) );
+            $this->form->setError( 'connection', $this->t( 'error.IncorrectDatabaseVersion', array( $version, $minVersion ) ) );
             return false;
         }
 
@@ -465,8 +464,7 @@ class Setup_Install extends System_Web_Component
             }
 
             $eventLog = new System_Api_EventLog( $this );
-            $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information,
-                $eventLog->tr( 'Completed the installation of the server' ) );
+            $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information, $eventLog->t( 'log.InstallationCompleted' ) );
 
             return true;
         } catch ( System_Db_Exception $e ) {
@@ -499,8 +497,7 @@ class Setup_Install extends System_Web_Component
             $updater->updateDatabase( $version );
 
             $eventLog = new System_Api_EventLog( $this );
-            $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information,
-                $eventLog->tr( 'Updated database to version %1', null, WI_DATABASE_VERSION ) );
+            $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information, $eventLog->t( 'log.DatabaseUpdated', array( WI_DATABASE_VERSION ) ) );
 
             return true;
         } catch ( System_Db_Exception $e ) {
@@ -527,7 +524,7 @@ class Setup_Install extends System_Web_Component
         $path = $siteDir . '/config.inc.php';
 
         if ( @file_put_contents( $path, $body, LOCK_EX ) === false ) {
-            $this->error = $this->tr( 'The configuration file could not be written.' );
+            $this->error = $this->t( 'error.CannotSaveConfiguration' );
             $this->page = 'failed';
             return false;
         }

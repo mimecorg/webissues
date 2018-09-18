@@ -33,7 +33,7 @@ class Common_Errors_Handle404 extends System_Web_Component
 
         $this->view->setDecoratorClass( 'Common_Window' );
         $this->view->setSlot( 'window_size', 'small' );
-        $this->view->setSlot( 'page_title', $this->tr( 'Page Not Found' ) );
+        $this->view->setSlot( 'page_title', $this->t( 'title.PageNotFound' ) );
 
         if ( System_Core_Application::getInstance()->isLoggingEnabled() ) {
             $helper = new Common_Errors_Helper();
@@ -41,8 +41,7 @@ class Common_Errors_Handle404 extends System_Web_Component
 
             if ( $url != null ) {
                 $eventLog = new System_Api_EventLog( $this );
-                $eventLog->addEvent( System_Api_EventLog::Access, System_Api_EventLog::Warning,
-                    $eventLog->tr( 'Page not found: %1', null, $url ) );
+                $eventLog->addEvent( System_Api_EventLog::Access, System_Api_EventLog::Warning, $eventLog->t( 'log.PageNotFound', array( $url ) ) );
             }
         }
     }

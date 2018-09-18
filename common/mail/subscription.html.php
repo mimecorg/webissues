@@ -1,13 +1,12 @@
 <?php if ( !defined( 'WI_VERSION' ) ) die( -1 ); ?>
 
 <?php if ( !empty( $hasInbox ) ): ?>
-<p><?php echo $separator . ' ' . $this->tr( 'Include your response above this line' ) . ' ' . $separator ?></p>
-<p><?php echo $this->tr( 'You can add comments and attachments to this issue by responding to this email. Include %1 in the subject when sending emails regarding this issue.',
-    null, '[#' . $issueId . ']' ) ?></p>
+<p><?php echo $separator . ' ' . $this->t( 'prompt.IncludeResponseAbove' ) . ' ' . $separator ?></p>
+<p><?php echo $this->t( 'prompt.EmailRespond', array( '[#' . $issueId . ']' ) ) ?></p>
 <?php endif ?>
 
 <h1>
-<?php echo $this->mailLink( $this->appendQueryString( '/client/index.php', array( 'issue' => $issueId ) ), $details[ 'issue_name' ] ); ?>
+<?php echo $this->mailLink( '/client/index.php#/issues/' . $issueId, $details[ 'issue_name' ] ); ?>
 </h1>
 
 <div class="sub-pane-wrapper">
@@ -16,27 +15,27 @@
 <tr>
 <td class="top-sub-pane"<?php if ( empty( $attributeValues ) ) echo ' colspan="2"' ?>>
 
-<h3><?php echo $this->tr( 'Properties' ) ?></h3>
+<h3><?php echo $this->t( 'title.Properties' ) ?></h3>
 
 <table class="info-list">
 <tr>
-<td><?php echo $this->tr( 'ID:' ) ?></td>
+<td><?php echo $this->t( 'label.ID' ) ?></td>
 <td><?php echo $details[ 'issue_id' ] ?></td>
 </tr>
 <tr>
-<td><?php echo $this->tr( 'Type:' ) ?></td>
+<td><?php echo $this->t( 'label.Type' ) ?></td>
 <td><?php echo $details[ 'type_name' ] ?></td>
 </tr>
 <tr>
-<td><?php echo $this->tr( 'Location:' ) ?></td>
+<td><?php echo $this->t( 'label.Location' ) ?></td>
 <td><?php echo $details[ 'project_name' ] . ' &mdash; ' . $details[ 'folder_name' ] ?></td>
 </tr>
 <tr>
-<td><?php echo $this->tr( 'Created:' ) ?></td>
+<td><?php echo $this->t( 'label.Created' ) ?></td>
 <td><?php echo $details[ 'created_date' ] . ' &mdash; ' . $details[ 'created_by' ] ?></td>
 </tr>
 <tr>
-<td><?php echo $this->tr( 'Last Modified:' ) ?></td>
+<td><?php echo $this->t( 'label.LastModified' ) ?></td>
 <td><?php echo $details[ 'modified_date' ] . ' &mdash; ' . $details[ 'modified_by' ] ?></td>
 </tr>
 </table>
@@ -45,7 +44,7 @@
 <?php if ( !empty( $attributeValues ) ): ?>
 <td class="top-sub-pane">
 
-<h3><?php echo $this->tr( 'Attributes' ) ?></h3>
+<h3><?php echo $this->t( 'title.Attributes' ) ?></h3>
 
 <table class="info-list">
 <?php foreach( $attributeValues as $value ): ?>
@@ -64,7 +63,7 @@
 <tr>
 <td colspan="2" class="bottom-sub-pane">
 
-<h3><?php echo $this->tr( 'Description' ) ?></h3>
+<h3><?php echo $this->t( 'title.Description' ) ?></h3>
 
 <div class="comment-text"><?php echo $descr[ 'descr_text' ] ?></div>
 
@@ -76,7 +75,7 @@
 <tr>
 <td colspan="2" class="bottom-sub-pane">
 
-<h3><?php echo $this->tr( 'Issue History' ) ?></h3>
+<h3><?php echo $this->t( 'title.IssueHistory' ) ?></h3>
 
 <?php
     foreach ( $history as $id => $item ):
@@ -101,14 +100,14 @@
 <?php
     switch ( $change[ 'change_type' ] ):
     case System_Const::IssueCreated:
-        echo $this->tr( 'Name' ) . ': "' . $change[ 'value_new' ] . '"';
+        echo $this->t( 'label.Name' ) . ' "' . $change[ 'value_new' ] . '"';
         break;
     case System_Const::IssueRenamed:
-        echo $this->tr( 'Name' ) . ': "' . $change[ 'value_old' ] . '" &rarr; "' . $change[ 'value_new' ] . '"';
+        echo $this->t( 'label.Name' ) . ' "' . $change[ 'value_old' ] . '" &rarr; "' . $change[ 'value_new' ] . '"';
         break;
     case System_Const::ValueChanged:
-        $from = ( $change[ 'value_old' ] == '' ) ? $this->tr( 'empty' ) : '"' . $change[ 'value_old' ] . '"';
-        $to = ( $change[ 'value_new' ] == '' ) ? $this->tr( 'empty' ) : '"' . $change[ 'value_new' ] . '"';
+        $from = ( $change[ 'value_old' ] == '' ) ? $this->t( 'text.empty' ) : '"' . $change[ 'value_old' ] . '"';
+        $to = ( $change[ 'value_new' ] == '' ) ? $this->t( 'text.empty' ) : '"' . $change[ 'value_new' ] . '"';
         echo $change[ 'attr_name' ] . ': ' . $from . ' &rarr; ' . $to;
         break;
     endswitch;
@@ -131,7 +130,7 @@
 
 <div class="attachment">
 <?php
-    echo $this->mailLink( $this->appendQueryString( '/client/issues/getattachment.php', array( 'id' => $id ) ), $item[ 'file_name' ] ) . ' (' . $item[ 'file_size' ] . ')';
+    echo $this->mailLink( $this->appendQueryString( '/client/file.php', array( 'id' => $id ) ), $item[ 'file_name' ] ) . ' (' . $item[ 'file_size' ] . ')';
     if ( $item[ 'file_descr' ] != '' ):
         echo ' &mdash; ' . $item[ 'file_descr' ];
     endif;
@@ -146,9 +145,9 @@
 <ul class="changes">
 <li>
 <?php
-    $from = ( $item[ 'from_folder_name' ] == '' ) ? $this->tr( 'Unknown Folder' ) : '"' . $item[ 'from_folder_name' ] . '"';
-    $to = ( $item[ 'to_folder_name' ] == '' ) ? $this->tr( 'Unknown Folder' ) : '"' . $item[ 'to_folder_name' ] . '"';
-    echo $this->tr( 'Issue moved from %1 to %2', null, $from, $to );
+    $from = ( $item[ 'from_folder_name' ] == '' ) ? $this->t( 'unknown' ) : '"' . $item[ 'from_folder_name' ] . '"';
+    $to = ( $item[ 'to_folder_name' ] == '' ) ? $this->t( 'unknown' ) : '"' . $item[ 'to_folder_name' ] . '"';
+    echo $this->t( 'label.Location' ) . ' ' . $from . ' &rarr; ' . $to;
 ?>
 </li>
 </ul>
@@ -172,4 +171,4 @@
 
 </div>
 
-<p><?php echo $this->tr( 'This is a subscription email from the WebIssues Server.' ) ?></p>
+<p><?php echo $this->t( 'prompt.SubsriptionEmail' ) ?></p>

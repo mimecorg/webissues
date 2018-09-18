@@ -1,7 +1,7 @@
 <?php if ( !defined( 'WI_VERSION' ) ) die( -1 ); ?>
 
 <div class="alert alert-danger">
-<p><?php echo $this->tr( 'The following error(s) occured while processing the request:' ) ?></p>
+<p><?php echo $this->t( 'error.UnexpectedError' ) ?></p>
 </div>
 
 <div class="alert alert-default">

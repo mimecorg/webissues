@@ -50,26 +50,26 @@ class Setup_Update extends System_Web_Component
 
         switch ( $this->page ) {
             case 'up_to_date':
-                $this->view->setSlot( 'page_title', $this->tr( 'Server Already Updated' ) );
+                $this->view->setSlot( 'page_title', $this->t( 'title.ServerAlreadyUpdated' ) );
                 $this->view->setSlot( 'window_size', 'small' );
                 break;
 
             case 'login':
-                $this->view->setSlot( 'page_title', $this->tr( 'Log in to WebIssues' ) );
+                $this->view->setSlot( 'page_title', $this->t( 'title.LogInToWebIssues' ) );
                 $this->view->setSlot( 'window_size', 'small' );
                 break;
 
             case 'update':
-                $this->view->setSlot( 'page_title', $this->tr( 'Confirm Update' ) );
+                $this->view->setSlot( 'page_title', $this->t( 'title.ConfirmUpdate' ) );
                 break;
 
             case 'completed':
-                $this->view->setSlot( 'page_title', $this->tr( 'Update Completed' ) );
+                $this->view->setSlot( 'page_title', $this->t( 'title.UpdateCompleted' ) );
                 $this->view->setSlot( 'window_size', 'small' );
                 break;
 
             case 'failed':
-                $this->view->setSlot( 'page_title', $this->tr( 'Update Failed' ) );
+                $this->view->setSlot( 'page_title', $this->t( 'title.UpdateFailed' ) );
                 break;
         }
     }
@@ -148,8 +148,7 @@ class Setup_Update extends System_Web_Component
             $updater->updateDatabase( $this->version );
 
             $eventLog = new System_Api_EventLog( $this );
-            $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information,
-                $eventLog->tr( 'Updated database to version %1', null, WI_DATABASE_VERSION ) );
+            $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information, $eventLog->t( 'log.DatabaseUpdated', array( WI_DATABASE_VERSION ) ) );
 
             return true;
         } catch ( System_Db_Exception $e ) {

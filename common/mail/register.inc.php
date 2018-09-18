@@ -34,11 +34,9 @@ class Common_Mail_Register extends System_Web_Component
     protected function execute()
     {
         $this->view->setDecoratorClass( 'Common_Mail_Layout' );
-        $this->view->setSlot( 'subject', $this->tr( 'WebIssues Server email verification' ) );
+        $this->view->setSlot( 'subject', $this->t( 'subject.EmailVerification' ) );
 
-        $this->login = $this->register[ 'user_login' ];
         $this->userName = $this->register[ 'user_name' ];
-        $this->email = $this->register[ 'user_email' ];
 
         // Note: use WI_BASE_URL here because this email is always sent from the registration form and the link
         // is valid even if the server URL is not configured.

@@ -248,23 +248,6 @@ class System_Web_View extends System_Web_Base
     }
 
     /**
-    * Return a translated version of the source string.
-    * The original string is returned if no translation is available.
-    * Parameter placeholders (%%1, %%2, etc.) are replaced with additional
-    * arguments passed to this function.
-    * This method calls System_Core_Translator::translate() with appropriate
-    * context based on the component's class name.
-    * @param $source The source string to translate.
-    * @param $comment An optional comment explaining the use of the string
-    * to the translators.
-    */
-    protected function tr( $source, $comment = null )
-    {
-        $args = func_get_args();
-		return $this->translator->translate( System_Core_Translator::UserLanguage, $this->componentClass, $args );
-    }
-
-    /**
     * Return the unescaped value of the data item.
     * @param $key The name of the data item.
     * @return The value of the item without HTML escaping.

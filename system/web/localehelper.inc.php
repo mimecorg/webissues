@@ -34,63 +34,6 @@ class System_Web_LocaleHelper extends System_Web_Base
     }
 
     /**
-    * Return days of week from Sunday to Saturday.
-    */
-    public function getDaysOfWeek()
-    {
-        return array(
-            $this->tr( 'Sunday' ),
-            $this->tr( 'Monday' ),
-            $this->tr( 'Tuesday' ),
-            $this->tr( 'Wednesday' ),
-            $this->tr( 'Thursday' ),
-            $this->tr( 'Friday' ),
-            $this->tr( 'Saturday' ) );
-    }
-
-    /**
-    * Return abbreviated days of week.
-    */
-    public function getShortDaysOfWeek()
-    {
-        $days = array();
-        foreach ( $this->getDaysOfWeek() as $day )
-            $days[] = mb_substr( $day, 0, 2 );
-        return $days;
-    }
-
-    /**
-    * Return month names.
-    */
-    public function getMonths()
-    {
-        return array(
-            $this->tr( 'January' ),
-            $this->tr( 'February' ),
-            $this->tr( 'March' ),
-            $this->tr( 'April' ),
-            $this->tr( 'May' ),
-            $this->tr( 'June' ),
-            $this->tr( 'July' ),
-            $this->tr( 'August' ),
-            $this->tr( 'September' ),
-            $this->tr( 'October' ),
-            $this->tr( 'November' ),
-            $this->tr( 'December' ) );
-    }
-
-    /**
-    * Return abbreviated month names.
-    */
-    public function getShortMonths()
-    {
-        $months = array();
-        foreach ( $this->getMonths() as $month )
-            $months[] = mb_substr( $month, 0, 3 );
-        return $months;
-    }
-
-    /**
     * Format file size using appropriate unit.
     * @param $size File size in bytes.
     * @return File size in bytes, kilobytes or megabytes.
@@ -100,13 +43,13 @@ class System_Web_LocaleHelper extends System_Web_Base
         $formatter = new System_Api_Formatter();
 
         if ( $size < 1024 )
-            return $this->tr( "%1 bytes", null, $formatter->formatDecimalNumber( $size, 0 ) );
+            return $this->t( "text.bytes", array( $formatter->formatDecimalNumber( $size, 0 ) ) );
 
         $size /= 1024;
         if ( $size < 1024 )
-            return $this->tr( "%1 kB", null, $formatter->formatDecimalNumber( $size, 1, System_Api_Formatter::StripZeros ) );
+            return $this->t( "text.kB", array( $formatter->formatDecimalNumber( $size, 1, System_Api_Formatter::StripZeros ) ) );
 
         $size /= 1024;
-        return $this->tr( "%1 MB", null, $formatter->formatDecimalNumber( $size, 1, System_Api_Formatter::StripZeros ) );
+        return $this->t( "text.MB", array( $formatter->formatDecimalNumber( $size, 1, System_Api_Formatter::StripZeros ) ) );
     }
 }
