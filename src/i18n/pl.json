@@ -161,7 +161,7 @@
     "UnselectAll": "Odznacz wszystkie"
   },
   "error": {
-    "AccessDenied": "Nie masz wystarczających uprawnien aby wykonać żądaną operację.",
+    "AccessDenied": "Nie masz wystarczających uprawnień aby wykonać żądaną operację.",
     "BadRequest": "Serwer nie mógł zrozumieć żądania.",
     "CannotEditOwnAcess": "Nie możesz zmienić własnego dostępu do tego projektu.",
     "DownloadError": "Plik nie mógł zostać pobrany.",
