@@ -436,6 +436,8 @@ export default {
     const route = this.$router.route;
     if ( route != null && route.name == 'IssueItem' && route.params.issueId == this.issueId )
       this.$emit( 'scrollToAnchor', 'item' + route.params.itemId );
+    else
+      this.$emit( 'loadPosition', '/issues/' + this.issueId );
 
     document.addEventListener( 'keydown', this.handleKeyDown );
   },
@@ -445,13 +447,36 @@ export default {
   },
 
   routeChanged( route ) {
-    if ( route != null && route.name == 'Item' && this.isItemInHistory( route.params.itemId ) ) {
-      this.$router.replace( 'IssueItem', { issueId: this.issueId, itemId: route.params.itemId } );
+    if ( route != null && route.name == 'IssueDetails' && route.params.issueId == this.issueId ) {
+      this.$emit( 'loadPosition', '/issues/' + this.issueId );
       return true;
-    } else if ( route != null && route.name == 'IssueItem' && route.params.issueId == this.issueId ) {
+    }
+
+    if ( route != null && route.name == 'Item' ) {
+      const itemId = route.params.itemId;
+
+      if ( itemId == this.issueId ) {
+        this.$emit( 'resetPosition', '/issues/' + this.issueId );
+        this.$router.replace( 'IssueDetails', { issueId: this.issueId } );
+        return true;
+      }
+
+      if ( this.isItemInHistory( itemId ) ) {
+        this.$emit( 'savePosition', '/issues/' + this.issueId );
+        this.$router.replace( 'IssueItem', { issueId: this.issueId, itemId } );
+        return true;
+      }
+
+      this.$emit( 'resetPosition', '/issues/' + itemId );
+    }
+
+    this.$emit( 'savePosition', '/issues/' + this.issueId );
+
+    if ( route != null && route.name == 'IssueItem' && route.params.issueId == this.issueId ) {
       this.$emit( 'scrollToAnchor', 'item' + route.params.itemId );
       return true;
     }
+
     return false;
   }
 }

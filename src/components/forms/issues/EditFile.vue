@@ -123,7 +123,7 @@ export default {
       this.$ajax.post( '/server/api/issues/files/' + this.mode + '.php', data, file ).then( ( { stampId } ) => {
         if ( stampId != false )
           this.$store.commit( 'list/setDirty' );
-        this.returnToDetails( this.mode == 'add' ? stampId : this.fileId );
+        this.returnToDetails();
       } ).catch( error => {
         this.$emit( 'error', error );
       } );
@@ -149,11 +149,8 @@ export default {
       this.returnToDetails();
     },
 
-    returnToDetails( itemId = null ) {
-      if ( itemId != null )
-        this.$router.push( 'IssueItem', { issueId: this.issueId, itemId } );
-      else
-        this.$router.push( 'IssueDetails', { issueId: this.issueId } );
+    returnToDetails() {
+      this.$router.push( 'IssueDetails', { issueId: this.issueId } );
     },
 
     close() {

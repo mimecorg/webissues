@@ -44,8 +44,11 @@
 import { mapState } from 'vuex'
 
 import { Access } from '@/constants'
+import savePosition from '@/mixins/save-position'
 
 export default {
+  mixins: [ savePosition ],
+
   props: {
     projectId: Number,
     name: String,

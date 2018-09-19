@@ -59,7 +59,8 @@ export default function makeRouter() {
   }
 
   function onHashChange() {
-    callHandlers( handlers, getCurrentRoute() );
+    const fromRoute = lastRoute;
+    callHandlers( handlers, getCurrentRoute(), fromRoute );
   }
 
   window.addEventListener( 'hashchange', onHashChange );
@@ -147,7 +148,8 @@ function resolveRoute( routes, path ) {
   return {
     name: route.name,
     handler: route.handler,
-    params
+    params,
+    path
   };
 }
 
@@ -171,16 +173,16 @@ function pushPath( path ) {
 }
 
 function replacePath( path ) {
-    let href = window.location.href;
-    const index = href.indexOf( '#' );
-    if ( index >= 0 )
-      href = href.slice( 0, index );
-    window.location.replace( href + '#' + path );
+  let href = window.location.href;
+  const index = href.indexOf( '#' );
+  if ( index >= 0 )
+    href = href.slice( 0, index );
+  window.location.replace( href + '#' + path );
 }
 
-function callHandlers( handlers, route ) {
+function callHandlers( handlers, route, fromRoute ) {
   for ( let i = handlers.length - 1; i >= 0; i-- ) {
-    if ( handlers[ i ]( route ) )
+    if ( handlers[ i ]( route, fromRoute ) )
       break;
   }
 }

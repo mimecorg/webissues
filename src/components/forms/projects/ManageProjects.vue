@@ -34,7 +34,11 @@
 <script>
 import { mapGetters } from 'vuex'
 
+import savePosition from '@/mixins/save-position'
+
 export default {
+  mixins: [ savePosition ],
+
   props: {
     projects: Array
   },

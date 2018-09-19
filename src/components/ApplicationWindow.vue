@@ -21,7 +21,8 @@
   <div ref="overlay" id="window-overlay" tabindex="-1" v-bind:class="{ 'window-busy': busy }" v-on:click.self="close">
     <div id="window" v-bind:class="'window-' + size">
       <component v-if="childForm != null" v-bind:is="getForm( childForm )" v-bind="childProps"
-                 v-on:close="close" v-on:block="block" v-on:unblock="unblock" v-on:scrollToAnchor="scrollToAnchor" v-on:error="error"/>
+                 v-on:close="close" v-on:block="block" v-on:unblock="unblock" v-on:scrollToAnchor="scrollToAnchor"
+                 v-on:loadPosition="loadPosition" v-on:savePosition="savePosition" v-on:resetPosition="resetPosition" v-on:error="error"/>
       <BusyOverlay v-if="busy"/>
     </div>
   </div>
@@ -35,7 +36,8 @@ import { getForm } from '@/components/forms'
 export default {
   data() {
     return {
-      top: 0
+      top: 0,
+      savedPositions: []
     };
   },
 
@@ -82,6 +84,21 @@ export default {
         }
         this.$refs.overlay.scrollTop = top;
       }
+    },
+
+    loadPosition( key ) {
+      const position = this.savedPositions.find( s => s.key == key );
+      if ( position != null )
+        this.$refs.overlay.scrollTop = position.top;
+      else
+        this.$refs.overlay.scrollTop = 0;
+    },
+    savePosition( key ) {
+      this.resetPosition( key );
+      this.savedPositions.push( { key, top: this.$refs.overlay.scrollTop } );
+    },
+    resetPosition( key ) {
+      this.savedPositions = this.savedPositions.filter( s => s.key != key && !s.key.startsWith( key + '/' ) );
     },
 
     error( error ) {
