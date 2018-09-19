@@ -81,19 +81,15 @@ export default function makeRouter() {
     redirect( url ) {
       window.location = url;
     },
-    register( factories ) {
-      factories.forEach( factory => {
-        factory( ( name, path, handler = null ) => {
-          addRoute( routes, name, path, handler );
-        } );
+    register( factory ) {
+      factory( ( name, path, handler = null ) => {
+        addRoute( routes, name, path, handler );
       } );
     },
-    hotUpdate( factories ) {
-      factories.forEach( factory => {
-        factory( ( name, path, handler = null ) => {
-          removeRoute( routes, name );
-          addRoute( routes, name, path, handler );
-        } );
+    hotUpdate( factory ) {
+      factory( ( name, path, handler = null ) => {
+        removeRoute( routes, name );
+        addRoute( routes, name, path, handler );
       } );
       lastPath = null;
       onHashChange();

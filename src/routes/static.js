@@ -17,7 +17,7 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-export default function staticRoutes( route ) {
+export default function routeStatic( route ) {
   route( 'Home', '' );
   route( 'List', '/types/:typeId' );
   route( 'ListView', '/views/:viewId' );
