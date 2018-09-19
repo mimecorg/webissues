@@ -42,17 +42,35 @@ export default {
     ApplicationWindow
   },
   computed: {
-    ...mapGetters( 'list', [ 'type' ] ),
+    ...mapState( 'global', [ 'serverName' ] ),
+    ...mapGetters( 'list', [ 'type', 'title' ] ),
     ...mapState( 'window', [ 'route' ] )
+  },
+  watch: {
+    title( value ) {
+      this.updateTitle();
+    }
+  },
+  methods: {
+    updateTitle() {
+      if ( this.route == null ) {
+        if ( this.title != null )
+          document.title = this.title + ' | ' + this.serverName;
+        else
+          document.title = this.serverName;
+      }
+    }
   },
   mounted() {
     this.$store.dispatch( 'initialize' );
+    this.updateTitle();
   },
   beforeDestroy() {
     this.$store.dispatch( 'destroy' );
   },
   routeChanged( route ) {
     this.$store.dispatch( 'navigate', route );
+    this.updateTitle();
   }
 }
 </script>

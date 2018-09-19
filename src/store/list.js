@@ -129,6 +129,20 @@ function makeGetters() {
         return Math.min( state.offset + PageSize, state.totalCount );
       else
         return null;
+    },
+    title( state, getters ) {
+      let title = null;
+      if ( getters.type != null ) {
+        title = getters.type.name;
+        if ( getters.view != null )
+          title += ' - ' + getters.view.name;
+        if ( getters.project != null ) {
+          title += ' | ' + getters.project.name;
+          if ( getters.folder != null )
+            title += ' - ' + getters.folder.name;
+        }
+      }
+      return title;
     }
   };
 }
