@@ -137,8 +137,6 @@ class Server_Api_Issues_List
 
         System_Web_Base::setLinkMode( System_Web_Base::RouteLinks );
 
-        $formatter = new System_Api_Formatter();
-
         $connection = System_Core_Application::getInstance()->getConnection();
 
         $query = $queryGenerator->generateSelectQuery();
@@ -173,17 +171,14 @@ class Server_Api_Issues_List
 
                     case System_Api_Column::CreatedDate:
                     case System_Api_Column::ModifiedDate:
-                        $cells[] = $formatter->formatDateTime( $value, System_Api_Formatter::ToLocalTimeZone );
+                        $cells[] = $value;
                         break;
 
                     default:
-                        if ( $column > System_Api_Column::UserDefined ) {
-                            $attribute = $queryGenerator->getAttributeForColumn( $column );
-                            $value = $formatter->convertAttributeValue( $attribute[ 'attr_def' ], $value );
+                        if ( $column > System_Api_Column::UserDefined )
                             $cells[] = System_Web_LinkLocator::convertToHtml( $value );
-                        } else {
+                        else
                             $cells[] = htmlspecialchars( $value );
-                        }
                         break;
                 }
             }

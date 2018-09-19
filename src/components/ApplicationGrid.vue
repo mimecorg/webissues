@@ -18,7 +18,7 @@
 -->
 
 <template>
-  <Grid id="application-grid" v-bind:items="issues" v-bind:column-names="columnNames" v-bind:column-classes="columnClasses"
+  <Grid id="application-grid" v-bind:items="convertedIssues" v-bind:column-names="columnNames" v-bind:column-classes="columnClasses"
         sort-enabled v-bind:sort-column="sortColumnIndex" v-bind:sort-ascending="sortAscending"
         footer-visible v-bind:previous-enabled="previousEnabled" v-bind:next-enabled="nextEnabled"
         v-bind:status-text="statusText" v-bind:busy="busy" v-on:sort="sort" v-on:previous="previous" v-on:next="next"
@@ -38,7 +38,7 @@ export default {
   computed: {
     ...mapGetters( [ 'busy' ] ),
     ...mapState( 'list', [ 'sortColumn', 'sortAscending', 'columns', 'issues', 'totalCount' ] ),
-    ...mapGetters( 'list', [ 'firstIndex', 'lastIndex' ] ),
+    ...mapGetters( 'list', [ 'type', 'firstIndex', 'lastIndex' ] ),
     columnNames() {
       return this.columns.map( column => column.name );
     },
@@ -50,6 +50,31 @@ export default {
           return 'column-name';
         else if ( column.id == Column.Location )
           return 'column-location';
+      } );
+    },
+    columnAttributes() {
+      return this.columns.map( column => {
+        if ( column.id > Column.UserDefined && this.type != null )
+          return this.type.attributes.find( a => a.id == column.id - Column.UserDefined );
+        else
+          return null;
+      } );
+    },
+    convertedIssues() {
+      const attributes = this.columnAttributes;
+      return this.issues.map( issue => {
+        return {
+          ...issue,
+          cells: issue.cells.map( ( value, index ) => {
+            const id = this.columns[ index ].id;
+            if ( id == Column.ModifiedDate || id == Column.CreatedDate )
+              return this.$formatter.formatStamp( value );
+            else if ( value != '' && attributes[ index ] != null )
+              return this.$formatter.convertAttributeValue( value, attributes[ index ] );
+            else
+              return value;
+          } )
+        };
       } );
     },
     sortColumnIndex() {
