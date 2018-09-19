@@ -26,7 +26,7 @@
     </div>
     <div v-bind:class="[ 'progress-message', { 'has-error': error != null } ]">
       <p v-if="error != null" class="help-block">{{ error }}</p>
-      <p v-else class="help-block">{{ $t( 'info.Downloaded', [ receivedPercent, fileSize ] ) }}</p>
+      <p v-else class="help-block">{{ $t( 'info.Downloaded', [ receivedPercent, formattedFileSize ] ) }}</p>
     </div>
     <div class="form-buttons">
       <button v-if="path != null" class="btn btn-primary" v-on:click="open">{{ $t( 'cmd.Open' ) }}</button>
@@ -45,7 +45,7 @@ export default {
     fileId: Number,
     name: String,
     total: Number,
-    fileSize: String,
+    fileSize: Number,
     initialPath: String
   },
 
@@ -64,6 +64,9 @@ export default {
         return '100%';
       else
         return '' + Math.floor( 100 * this.received / this.total ) + '%';
+    },
+    formattedFileSize() {
+      return this.$formatter.formatFileSize( this.fileSize );
     }
   },
 

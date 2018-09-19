@@ -44,11 +44,9 @@ class Server_Api_Issues_Files_Load
         if ( $file[ 'issue_id' ] != $issueId )
             throw new System_Api_Error( System_Api_Error::UnknownFile );
 
-        $localeHelper = new System_Web_LocaleHelper();
-
         $result[ 'name' ] = $file[ 'file_name' ];
         $result[ 'total' ] = $file[ 'file_size' ];
-        $result[ 'size' ] = $localeHelper->formatFileSize( $file[ 'file_size' ] );
+        $result[ 'size' ] = $file[ 'file_size' ];
         $result[ 'description' ] = $file[ 'file_descr' ];
 
         return $result;
