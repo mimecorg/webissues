@@ -30,8 +30,8 @@
     </div>
     <div v-if="breadcrumbs != null" class="form-header-breadcrumbs">
       <template v-for="( breadcrumb, index ) in breadcrumbs">
-        <span v-bind:key="index" class="fa fa-chevron-left" aria-hidden="true"></span>
-        <HyperLink v-bind:key="index" v-on:click="breadcrumbClicked( breadcrumb )">{{ breadcrumb.label }}</HyperLink>
+        <span v-bind:key="'span' + index" class="fa fa-chevron-left" aria-hidden="true"></span>
+        <HyperLink v-bind:key="'link' + index" v-on:click="breadcrumbClicked( breadcrumb )">{{ breadcrumb.label }}</HyperLink>
       </template>
     </div>
   </div>
