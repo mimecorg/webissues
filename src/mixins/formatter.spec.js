@@ -241,4 +241,26 @@ describe( 'formatter', () => {
       expect( value ).to.equal( '4.8 text.MB' );
     } );
   } );
+
+  describe( 'formatExpression', () => {
+    it( 'today', () => {
+      const value = formatter.formatExpression( '[Today]+7', { type: 'DATETIME' } );
+      expect( value ).to.equal( '[text.Today]+7' );
+    } );
+
+    it( 'me', () => {
+      const value = formatter.formatExpression( '[Me]+7', { type: 'USER' } );
+      expect( value ).to.equal( '[text.Me]' );
+    } );
+
+    it( 'number', () => {
+      const value = enFormatter.formatExpression( '1234', { type: 'NUMERIC' } );
+      expect( value ).to.equal( '1,234' );
+    } );
+
+    it( 'date', () => {
+      const value = enFormatter.formatExpression( '1982-04-19', { type: 'DATETIME' } );
+      expect( value ).to.equal( '4/19/1982' );
+    } );
+  } );
 } );

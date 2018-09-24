@@ -1,3 +1,4 @@
+<?php
 /**************************************************************************
 * This file is part of the WebIssues Server program
 * Copyright (C) 2006 Michał Męciński
@@ -17,10 +18,24 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-import routeProjects from '@/routes/admin/projects'
-import routeTypes from '@/routes/admin/types'
+require_once( '../../../system/bootstrap.inc.php' );
 
-export default function routeAdmin( route, ajax, store ) {
-  routeProjects( route, ajax, store );
-  routeTypes( route, ajax, store );
+class Server_Api_Types_Delete
+{
+    public $access = 'admin';
+
+    public $params = array(
+        'typeId' => array( 'type' => 'int', 'required' => true ),
+        'force' => array( 'type' => 'bool', 'default' => false )
+    );
+
+    public function run( $typeId, $force )
+    {
+        $typeManager = new System_Api_TypeManager();
+        $type = $typeManager->getIssueType( $typeId );
+
+        $typeManager->deleteIssueType( $type, $force ? System_Api_TypeManager::ForceDelete : 0 );
+    }
 }
+
+System_Bootstrap::run( 'Server_Api_Application', 'Server_Api_Types_Delete' );

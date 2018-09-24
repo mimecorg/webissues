@@ -1,4 +1,11 @@
 {
+  "AttributeType": {
+    "DATETIME": "Date & time",
+    "ENUM": "Dropdown list",
+    "NUMERIC": "Numeric",
+    "TEXT": "Text",
+    "USER": "User"
+  },
   "ErrorCode": {
     "AccessDenied": "Access denied.",
     "AlertAlreadyExists": "Alert already exists.",
@@ -98,6 +105,7 @@
     "AddIssue": "Add Issue",
     "AddMembers": "Add Members",
     "AddProject": "Add Project",
+    "AddType": "Add Type",
     "AnonymousAccess": "Anonymous Access",
     "ArchiveProject": "Archive Project",
     "Attach": "Attach",
@@ -116,6 +124,7 @@
     "DeleteFolder": "Delete Folder",
     "DeleteIssue": "Delete Issue",
     "DeleteProject": "Delete Project",
+    "DeleteType": "Delete Type",
     "Edit": "Edit",
     "EditAttributes": "Edit Attributes",
     "EditComment": "Edit Comment",
@@ -139,6 +148,7 @@
     "Next": "Next",
     "OK": "OK",
     "Open": "Open",
+    "Order": "Order",
     "Preview": "Preview",
     "Previous": "Previous",
     "QuoteBlock": "Quote Block",
@@ -149,6 +159,7 @@
     "RemoveMember": "Remove Member",
     "RenameFolder": "Rename Folder",
     "RenameProject": "Rename Project",
+    "RenameType": "Rename Type",
     "Reply": "Reply",
     "RightToLeftText": "Right-To-Left Text",
     "SaveAs": "Save As",
@@ -185,6 +196,7 @@
   },
   "info": {
     "Downloaded": "Downloaded {0} of {1}.",
+    "NoAttributes": "This issue type has no attributes.",
     "NoAvailableProjects": "There are no available projects.",
     "NoAvailableUsers": "There are no more available users to add.",
     "NoComments": "This issue has no comments.",
@@ -192,6 +204,7 @@
     "NoDescription": "This issue has no description.",
     "NoFiles": "This issue has no attached files.",
     "NoFolders": "This project has no folders.",
+    "NoIssueTypes": "There are no issue types.",
     "NoMembers": "This project has no members.",
     "NoProjectDescription": "This project has no description.",
     "NoProjects": "There are no projects."
@@ -224,6 +237,7 @@
     "AddMembers": "Add new members to project {0}.",
     "AddProject": "Create a new project.",
     "AddProjectDescription": "Add description to project {0}.",
+    "AddType": "Create a new issue type.",
     "ArchiveProject": "Are you sure you want to move project {0} to the archive?",
     "AttachFile": "Attach a file to issue {0}.",
     "CloneIssue": "Clone issue {0} as a new issue in the selected folder.",
@@ -234,6 +248,7 @@
     "DeleteIssue": "Are you sure you want to delete issue {0}?",
     "DeleteProject": "Are you sure you want to delete project {0}?",
     "DeleteProjectDescription": "Are you sure you want to delete description for project {0}?",
+    "DeleteType": "Are you sure you want to delete type {0}?",
     "DownloadFile": "Open or save file {0}.",
     "DragFileHere": "Drag your file here or click to browse.",
     "EditAttributes": "Edit attributes of issue {0}.",
@@ -251,9 +266,11 @@
     "RemoveMember": "Do you want to remove user {0} from project {1}?",
     "RenameFolder": "Enter the new name of folder {0}.",
     "RenameProject": "Enter the new name of project {0}.",
+    "RenameType": "Enter the new name of type {0}.",
     "WarningDeleteFolder": "{0} All issues in this folder will be permanently deleted.",
     "WarningDeleteIssue": "{0} The entire issue history will be permanently deleted.",
-    "WarningDeleteProject": "{0} All folders and issues in this project will be permanently deleted."
+    "WarningDeleteProject": "{0} All folders and issues in this project will be permanently deleted.",
+    "WarningDeleteType": "{0} All folders and issues of this type will be permanently deleted."
   },
   "text": {
     "AllFolders": "All Folders",
@@ -270,6 +287,8 @@
     "IssuesCount": "{0} issues",
     "IssuesCountOf": "{0}-{1} of {2} issues",
     "MB": "{0} MB",
+    "Me": "Me",
+    "No": "No",
     "NoIssues": "No issues",
     "OR": "OR",
     "PlainText": "Plain Text",
@@ -283,6 +302,7 @@
     "SelectProject": "Select Project",
     "SelectType": "Select Type",
     "TextWithMarkup": "Text with Markup",
+    "Today": "Today",
     "Type": "Type: {0}",
     "UnknownAttribute": "Unknown Attribute",
     "UnknownFolder": "Unknown Folder",
@@ -291,6 +311,7 @@
     "UnknownUser": "Unknown User",
     "User": "User: {0}",
     "View": "View: {0}",
+    "Yes": "Yes",
     "bytes": "{0} bytes",
     "empty": "empty",
     "kB": "{0} kB",
@@ -309,6 +330,7 @@
     "Created": "Created",
     "CreatedBy": "Created By",
     "CreatedDate": "Created Date",
+    "DefaultValue": "Default Value",
     "Description": "Description",
     "DownloadFile": "Download File",
     "EmailSettings": "Email Settings",
@@ -342,6 +364,7 @@
     "PublicAlerts": "Public Alerts",
     "PublicViews": "Public Views",
     "RegistrationRequests": "Registration Requests",
+    "Required": "Required",
     "SessionExpired": "Session Expired",
     "StatusReport": "Status Report",
     "Type": "Type",
@@ -350,6 +373,7 @@
     "UserAccounts": "User Accounts",
     "UserPreferences": "User Preferences",
     "Users": "Users",
+    "ViewSettings": "View Settings",
     "WebIssuesManual": "WebIssues Manual",
     "WebIssuesSettings": "WebIssues Settings"
   }

@@ -1,3 +1,4 @@
+<?php
 /**************************************************************************
 * This file is part of the WebIssues Server program
 * Copyright (C) 2006 Michał Męciński
@@ -17,10 +18,30 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-import routeProjects from '@/routes/admin/projects'
-import routeTypes from '@/routes/admin/types'
+require_once( '../../../system/bootstrap.inc.php' );
 
-export default function routeAdmin( route, ajax, store ) {
-  routeProjects( route, ajax, store );
-  routeTypes( route, ajax, store );
+class Server_Api_Types_Add
+{
+    public $access = 'admin';
+
+    public $params = array(
+        'name' => array( 'type' => 'string', 'required' => true )
+    );
+
+    public function run( $name )
+    {
+        $validator = new System_Api_Validator();
+        $validator->checkString( $name, System_Const::NameMaxLength );
+
+        $typeManager = new System_Api_TypeManager();
+
+        $typeId = $typeManager->addIssueType( $name );
+
+        $result[ 'typeId' ] = $typeId;
+        $result[ 'changed' ] = true;
+
+        return $result;
+    }
 }
+
+System_Bootstrap::run( 'Server_Api_Application', 'Server_Api_Types_Add' );

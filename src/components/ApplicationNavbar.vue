@@ -51,7 +51,7 @@
             <template v-if="isAdministrator">
               <li><HyperLink><span class="fa fa-users" aria-hidden="true"></span> {{ $t( 'title.UserAccounts' ) }}</HyperLink></li>
               <li><HyperLink><span class="fa fa-user-circle-o" aria-hidden="true"></span> {{ $t( 'title.RegistrationRequests' ) }}</HyperLink></li>
-              <li><HyperLink><span class="fa fa-list" aria-hidden="true"></span> {{ $t( 'title.IssueTypes' ) }}</HyperLink></li>
+              <li><HyperLink v-on:click="manageTypes"><span class="fa fa-list" aria-hidden="true"></span> {{ $t( 'title.IssueTypes' ) }}</HyperLink></li>
               <li><HyperLink><span class="fa fa-clock-o" aria-hidden="true"></span> {{ $t( 'title.ArchivedProjects' ) }}</HyperLink></li>
               <li role="separator" class="divider"></li>
               <li><HyperLink><span class="fa fa-wrench" aria-hidden="true"></span> {{ $t( 'title.GeneralSettings' ) }}</HyperLink></li>
@@ -162,6 +162,9 @@ export default {
     },
     manageProjects() {
       this.$router.push( 'ManageProjects' );
+    },
+    manageTypes() {
+      this.$router.push( 'ManageTypes' );
     },
 
     restartClient() {
