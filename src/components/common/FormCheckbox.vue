@@ -18,28 +18,24 @@
 -->
 
 <template>
-  <FormGroup v-bind:id="id" v-bind:label="label" v-bind:required="required" v-bind:error="error">
-    <input ref="input" v-bind:id="id" v-bind:type="type" class="form-control" v-bind:value="value" v-bind:maxlength="maxlength" v-bind:disabled="disabled" v-on="inputListeners">
-  </FormGroup>
+  <div class="form-group">
+    <div class="checkbox">
+      <label><input ref="input" type="checkbox" v-bind:checked="value" v-on="inputListeners"> {{ label }}</label>
+    </div>
+  </div>
 </template>
 
 <script>
 export default {
   props: {
-    id: String,
-    type: { type: String, default: 'text' },
-    value: String,
-    label: String,
-    required: Boolean,
-    disabled: Boolean,
-    error: String,
-    maxlength: Number
+    value: Boolean,
+    label: String
   },
   computed: {
     inputListeners() {
       return {
         ...this.$listeners,
-        input: this.valueChanged
+        change: this.valueChanged
       };
     }
   },
@@ -48,7 +44,7 @@ export default {
       this.$refs.input.focus();
     },
     valueChanged( e ) {
-      this.$emit( 'input', e.target.value );
+      this.$emit( 'input', e.target.checked );
     }
   }
 }

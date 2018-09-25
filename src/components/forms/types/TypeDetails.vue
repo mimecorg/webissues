@@ -27,10 +27,11 @@
       </DropdownButton>
     </FormHeader>
     <FormSection v-bind:title="$t( 'title.Attributes' )">
-      <button type="button" class="btn btn-success"><span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'cmd.Add' ) }}</button>
+      <button type="button" class="btn btn-success" v-on:click="addAttribute"><span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'cmd.Add' ) }}</button>
       <button v-if="attributes.length > 1" type="button" class="btn btn-default"><span class="fa fa-random" aria-hidden="true"></span> {{ $t( 'cmd.Order' ) }}</button>
     </FormSection>
-    <Grid v-if="attributes.length > 0" v-bind:items="attributes" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-wide', null, null, null ]">
+    <Grid v-if="attributes.length > 0" v-bind:items="attributes" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-wide', null, null, null ]"
+          v-on:row-click="rowClick">
       <template slot-scope="{ item, columnIndex, columnClass }">
         <td v-bind:class="columnClass">{{ getCellValue( columnIndex, item ) }}</td>
       </template>
@@ -93,6 +94,14 @@ export default {
     },
     deleteType() {
       this.$router.push( 'DeleteType', { typeId: this.typeId } );
+    },
+
+    addAttribute() {
+      this.$router.push( 'AddAttribute', { typeId: this.typeId } );
+    },
+
+    rowClick( rowIndex ) {
+      this.$router.push( 'EditAttribute', { typeId: this.typeId, attributeId: this.attributes[ rowIndex ].id } );
     },
 
     close() {

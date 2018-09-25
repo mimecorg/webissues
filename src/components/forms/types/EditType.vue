@@ -104,9 +104,6 @@ export default {
 
     close() {
       this.$emit( 'close' );
-    },
-    error( error ) {
-      this.$emit( 'error', error );
     }
   },
 

@@ -75,4 +75,29 @@ export default function routeTypes( route, ajax, store ) {
       };
     } );
   } );
+
+  route( 'AddAttribute', '/admin/types/:typeId/attributes/add', ( { typeId } ) => {
+    return ajax.post( '/server/api/types/load.php', { typeId } ).then( ( { name } ) => {
+      return {
+        form: 'types/EditAttribute',
+        mode: 'add',
+        typeId,
+        typeName: name
+      };
+    } );
+  } );
+
+  route( 'EditAttribute', '/admin/types/:typeId/attributes/:attributeId/edit', ( { typeId, attributeId } ) => {
+    return ajax.post( '/server/api/types/attributes/load.php', { typeId, attributeId, details: true } ).then( ( { name, type, details } ) => {
+      return {
+        form: 'types/EditAttribute',
+        mode: 'edit',
+        typeId,
+        attributeId,
+        initialName: name,
+        initialType: type,
+        initialDetails: details
+      };
+    } );
+  } );
 }
