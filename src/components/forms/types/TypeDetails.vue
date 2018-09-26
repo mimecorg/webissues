@@ -45,9 +45,6 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex'
-
-import { Access } from '@/constants'
 import savePosition from '@/mixins/save-position'
 
 export default {
@@ -60,8 +57,6 @@ export default {
   },
 
   computed: {
-    ...mapState( 'global', [ 'types', 'users' ] ),
-    ...mapGetters( 'global', [ 'isAdministrator' ] ),
     breadcrumbs() {
       return [
         { label: this.$t( 'title.IssueTypes' ), route: 'ManageTypes' }
