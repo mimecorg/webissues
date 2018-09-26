@@ -50,6 +50,9 @@ class Server_Api_Types_Attributes_Load
             foreach ( $info->getAllMetadata() as $key => $value )
                 $resultDetails[ $key ] = $value;
 
+            if ( empty( $resultDetails ) )
+                $resultDetails = new stdClass();
+
             $result[ 'details' ] = $resultDetails;
         }
 
