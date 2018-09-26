@@ -20,44 +20,22 @@
 
 require_once( '../../../../system/bootstrap.inc.php' );
 
-class Server_Api_Types_Attributes_Load
+class Server_Api_Types_Attributes_Delete
 {
     public $access = 'admin';
 
     public $params = array(
-        'typeId' => array( 'type' => 'int', 'required' => true ),
         'attributeId' => array( 'type' => 'int', 'required' => true ),
-        'details' => array( 'type' => 'bool', 'default' => false ),
-        'used' => array( 'type' => 'bool', 'default' => false )
+        'force' => array( 'type' => 'bool', 'default' => false )
     );
 
-    public function run( $typeId, $attributeId, $details, $used )
+    public function run( $attributeId, $force )
     {
         $typeManager = new System_Api_TypeManager();
         $attribute = $typeManager->getAttributeType( $attributeId );
 
-        if ( $attribute[ 'type_id' ] != $typeId )
-            throw new System_Api_Error( System_Api_Error::UnknownAttribute );
-
-        $result[ 'name' ] = $attribute[ 'attr_name' ];
-
-        $info = System_Api_DefinitionInfo::fromString( $attribute[ 'attr_def' ] );
-        $result[ 'type' ] = $info->getType();
-
-        if ( $details ) {
-            $resultDetails = array();
-
-            foreach ( $info->getAllMetadata() as $key => $value )
-                $resultDetails[ $key ] = $value;
-
-            $result[ 'details' ] = $resultDetails;
-        }
-
-        if ( $used )
-            $result[ 'used' ] = $typeManager->checkAttributeTypeUsed( $attribute );
-
-        return $result;
+        $typeManager->deleteAttributeType( $attribute, $force ? System_Api_TypeManager::ForceDelete : 0 );
     }
 }
 
-System_Bootstrap::run( 'Server_Api_Application', 'Server_Api_Types_Attributes_Load' );
+System_Bootstrap::run( 'Server_Api_Application', 'Server_Api_Types_Attributes_Delete' );

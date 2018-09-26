@@ -1,0 +1,78 @@
+<!--
+* This file is part of the WebIssues Server program
+* Copyright (C) 2006 Michał Męciński
+* Copyright (C) 2007-2017 WebIssues Team
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU Affero General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Affero General Public License for more details.
+*
+* You should have received a copy of the GNU Affero General Public License
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<template>
+  <div class="container-fluid">
+    <FormHeader v-bind:title="$t( 'cmd.DeleteAttribute' )" v-on:close="close"/>
+    <Prompt path="prompt.DeleteAttribute"><strong>{{ name }}</strong></Prompt>
+    <Prompt v-if="force" path="prompt.WarningDeleteAttribute" alert-class="alert-danger"><strong>{{ $t( 'label.Warning' ) }}</strong></Prompt>
+    <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
+  </div>
+</template>
+
+<script>
+import { ErrorCode, Reason } from '@/constants'
+
+export default {
+  props: {
+    typeId: Number,
+    attributeId: Number,
+    name: String,
+    used: Boolean
+  },
+
+  data() {
+    return {
+      force: this.used
+    };
+  },
+
+  methods: {
+    submit() {
+      this.$emit( 'block' );
+
+      const data = { attributeId: this.attributeId, force: this.force };
+
+      this.$ajax.post( '/server/api/types/attributes/delete.php', data ).then( () => {
+        this.$store.commit( 'global/setDirty' );
+        this.returnToDetails();
+      } ).catch( error => {
+        if ( error.reason == Reason.APIError && error.errorCode == ErrorCode.CannotDeleteAttribute ) {
+          this.$emit( 'unblock' );
+          this.force = true;
+        } else {
+          this.$emit( 'error', error );
+        }
+      } );
+    },
+
+    cancel() {
+      this.returnToDetails();
+    },
+
+    returnToDetails() {
+      this.$router.push( 'TypeDetails', { typeId: this.typeId } );
+    },
+
+    close() {
+      this.$emit( 'close' );
+    }
+  }
+}
+</script>

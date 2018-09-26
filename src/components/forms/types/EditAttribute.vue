@@ -19,7 +19,11 @@
 
 <template>
   <div class="container-fluid">
-    <FormHeader v-bind:title="title" v-on:close="close"/>
+    <FormHeader v-bind:title="title" v-on:close="close">
+      <button v-if="mode == 'edit'" type="button" class="btn btn-default" v-on:click="deleteAttribute">
+        <span class="fa fa-trash" aria-hidden="true"></span> {{ $t( 'cmd.Delete' ) }}
+      </button>
+    </FormHeader>
     <Prompt v-if="mode == 'edit'" path="prompt.ModifyAttribute"><strong>{{ initialName }}</strong></Prompt>
     <Prompt v-else-if="mode == 'add'" path="prompt.AddAttribute"><strong>{{ typeName }}</strong></Prompt>
     <FormInput ref="name" id="name" v-bind:label="$t( 'label.Name' )" v-bind="$field( 'name' )" v-model="name"/>
@@ -438,6 +442,10 @@ export default {
 
     returnToDetails() {
       this.$router.push( 'TypeDetails', { typeId: this.typeId } );
+    },
+
+    deleteAttribute() {
+      this.$router.push( 'DeleteAttribute', { typeId: this.typeId, attributeId: this.attributeId } );
     },
 
     close() {

@@ -100,4 +100,17 @@ export default function routeTypes( route, ajax, store ) {
       };
     } );
   } );
+
+  route( 'DeleteAttribute', '/admin/types/:typeId/attributes/:attributeId/delete', ( { typeId, attributeId } ) => {
+    return ajax.post( '/server/api/types/attributes/load.php', { typeId, attributeId, used: true } ).then( ( { name, used } ) => {
+      return {
+        form: 'types/DeleteAttribute',
+        size: 'small',
+        typeId,
+        attributeId,
+        name,
+        used
+      };
+    } );
+  } );
 }
