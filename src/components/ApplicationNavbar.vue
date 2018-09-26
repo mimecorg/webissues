@@ -49,18 +49,12 @@
             <li><HyperLink v-on:click="manageProjects"><span class="fa fa-object-group" aria-hidden="true"></span> {{ $t( 'title.Projects' ) }}</HyperLink></li>
             <li><HyperLink><span class="fa fa-bell-o" aria-hidden="true"></span> {{ $t( 'title.PublicAlerts' ) }}</HyperLink></li>
             <template v-if="isAdministrator">
-              <li><HyperLink><span class="fa fa-users" aria-hidden="true"></span> {{ $t( 'title.UserAccounts' ) }}</HyperLink></li>
-              <li><HyperLink><span class="fa fa-user-circle-o" aria-hidden="true"></span> {{ $t( 'title.RegistrationRequests' ) }}</HyperLink></li>
+              <li role="separator" class="divider"></li>
               <li><HyperLink v-on:click="manageTypes"><span class="fa fa-list" aria-hidden="true"></span> {{ $t( 'title.IssueTypes' ) }}</HyperLink></li>
-              <li><HyperLink><span class="fa fa-clock-o" aria-hidden="true"></span> {{ $t( 'title.ArchivedProjects' ) }}</HyperLink></li>
+              <li><HyperLink><span class="fa fa-users" aria-hidden="true"></span> {{ $t( 'title.UserAccounts' ) }}</HyperLink></li>
               <li role="separator" class="divider"></li>
-              <li><HyperLink><span class="fa fa-wrench" aria-hidden="true"></span> {{ $t( 'title.GeneralSettings' ) }}</HyperLink></li>
-              <li><HyperLink><span class="fa fa-lock" aria-hidden="true"></span> {{ $t( 'title.AccessSettings' ) }}</HyperLink></li>
-              <li><HyperLink><span class="fa fa-envelope-o" aria-hidden="true"></span> {{ $t( 'title.EmailSettings' ) }}</HyperLink></li>
-              <li><HyperLink><span class="fa fa-inbox" aria-hidden="true"></span> {{ $t( 'title.InboxSettings' ) }}</HyperLink></li>
-              <li><HyperLink><span class="fa fa-cogs" aria-hidden="true"></span> {{ $t( 'title.AdvancedSettings' ) }}</HyperLink></li>
+              <li><HyperLink><span class="fa fa-wrench" aria-hidden="true"></span> {{ $t( 'title.ServerSettings' ) }}</HyperLink></li>
               <li role="separator" class="divider"></li>
-              <li><HyperLink><span class="fa fa-info" aria-hidden="true"></span> {{ $t( 'title.StatusReport' ) }}</HyperLink></li>
               <li><HyperLink><span class="fa fa-book" aria-hidden="true"></span> {{ $t( 'title.EventLog' ) }}</HyperLink></li>
             </template>
           </DropdownButton>
@@ -73,7 +67,6 @@
               <li><HyperLink><span class="fa fa-bell-o" aria-hidden="true"></span> {{ $t( 'title.PersonalAlerts' ) }}</HyperLink></li>
               <li role="separator" class="divider"></li>
               <li><HyperLink><span class="fa fa-sliders" aria-hidden="true"></span> {{ $t( 'title.UserPreferences' ) }}</HyperLink></li>
-              <li><HyperLink><span class="fa fa-unlock-alt" aria-hidden="true"></span> {{ $t( 'cmd.ChangePassword' ) }}</HyperLink></li>
               <li role="separator" class="divider"></li>
               <li v-if="isWeb"><a v-bind:href="baseURL + '/index.php'"><span class="fa fa-sign-out" aria-hidden="true"></span> {{ $t( 'cmd.LogOut' ) }}</a></li>
               <li v-else><HyperLink v-on:click="restartClient"><span class="fa fa-sign-out" aria-hidden="true"></span> {{ $t( 'cmd.LogOut' ) }}</HyperLink></li>
