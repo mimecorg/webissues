@@ -113,4 +113,15 @@ export default function routeTypes( route, ajax, store ) {
       };
     } );
   } );
+
+  route( 'ReorderAttributes', '/admin/types/:typeId/attributes/reorder', ( { typeId } ) => {
+    return ajax.post( '/server/api/types/load.php', { typeId, attributes: true } ).then( ( { name, attributes } ) => {
+      return {
+        form: 'types/ReorderAttributes',
+        typeId,
+        name,
+        initialAttributes: attributes
+      };
+    } );
+  } );
 }

@@ -19,6 +19,10 @@
 
 import Vue from 'vue'
 
+import draggable from 'vuedraggable'
+
+Vue.component( 'draggable', draggable );
+
 import '@/components/common'
 
 import Application from '@/components/Application'

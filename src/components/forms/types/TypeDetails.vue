@@ -28,7 +28,9 @@
     </FormHeader>
     <FormSection v-bind:title="$t( 'title.Attributes' )">
       <button type="button" class="btn btn-success" v-on:click="addAttribute"><span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'cmd.Add' ) }}</button>
-      <button v-if="attributes.length > 1" type="button" class="btn btn-default"><span class="fa fa-random" aria-hidden="true"></span> {{ $t( 'cmd.Order' ) }}</button>
+      <button v-if="attributes.length > 1" type="button" class="btn btn-default" v-on:click="reorderAttributes">
+        <span class="fa fa-random" aria-hidden="true"></span> {{ $t( 'cmd.ChangeOrder' ) }}
+      </button>
     </FormSection>
     <Grid v-if="attributes.length > 0" v-bind:items="attributes" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-wide', null, null, null ]"
           v-on:row-click="rowClick">
@@ -98,6 +100,9 @@ export default {
 
     addAttribute() {
       this.$router.push( 'AddAttribute', { typeId: this.typeId } );
+    },
+    reorderAttributes() {
+      this.$router.push( 'ReorderAttributes', { typeId: this.typeId } );
     },
 
     rowClick( rowIndex ) {
