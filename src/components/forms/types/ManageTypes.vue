@@ -22,7 +22,7 @@
     <FormHeader v-bind:title="$t( 'title.IssueTypes' )" v-on:close="close">
       <button type="button" class="btn btn-success" v-on:click="addType"><span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'cmd.Add' ) }}</button>
     </FormHeader>
-    <Grid v-if="types.length > 0" v-bind:items="types" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-wide' ]" v-on:row-click="rowClick">
+    <Grid v-if="types.length > 0" v-bind:items="types" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-large' ]" v-on:row-click="rowClick">
       <template slot-scope="{ item, columnIndex, columnClass }">
         <td v-bind:class="columnClass">{{ getCellValue( columnIndex, item ) }}</td>
       </template>

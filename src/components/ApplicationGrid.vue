@@ -45,11 +45,11 @@ export default {
     columnClasses() {
       return this.columns.map( column => {
         if ( column.id == Column.ID )
-          return 'column-id';
+          return 'column-small';
         else if ( column.id == Column.Name )
-          return 'column-name';
+          return 'column-xlarge';
         else if ( column.id == Column.Location )
-          return 'column-location';
+          return 'column-medium';
       } );
     },
     columnAttributes() {

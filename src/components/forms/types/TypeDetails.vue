@@ -32,7 +32,7 @@
         <span class="fa fa-random" aria-hidden="true"></span> {{ $t( 'cmd.ChangeOrder' ) }}
       </button>
     </FormSection>
-    <Grid v-if="attributes.length > 0" v-bind:items="attributes" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-wide', null, null, null ]"
+    <Grid v-if="attributes.length > 0" v-bind:items="attributes" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-large', null, null, 'column-small' ]"
           v-on:row-click="rowClick">
       <template slot-scope="{ item, columnIndex, columnClass }">
         <td v-bind:class="columnClass">{{ getCellValue( columnIndex, item ) }}</td>

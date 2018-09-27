@@ -50,7 +50,7 @@
         <span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'cmd.Add' ) }}
       </button>
     </FormSection>
-    <Grid v-if="folders.length > 0" v-bind:items="folders" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-wide', null ]"
+    <Grid v-if="folders.length > 0" v-bind:items="folders" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-large', null ]"
           v-bind:row-click-disabled="!isProjectAdministrator" v-on:row-click="rowClick">
       <template slot-scope="{ item, columnIndex, columnClass }">
         <td v-bind:class="columnClass">{{ getCellValue( columnIndex, item ) }}</td>
