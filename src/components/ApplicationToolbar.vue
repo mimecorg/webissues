@@ -22,7 +22,7 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-xs-12 col-sm-6 col-lg-4 dropdown-filters">
-          <DropdownButton v-if="types.length > 0" fa-class="fa-list" v-bind:text="typeName" v-bind:title="typeTitle">
+          <DropdownButton v-if="types.length > 0" fa-class="fa-list" btn-class="btn-primary" v-bind:text="typeName" v-bind:title="typeTitle">
             <div class="dropdown-menu-scroll">
               <li v-for="t in types" v-bind:key="t.id" v-bind:class="{ active: type != null && t.id == type.id }">
                 <HyperLink v-on:click="selectType( t )">{{ t.name }}</HyperLink>
