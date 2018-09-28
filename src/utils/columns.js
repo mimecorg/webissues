@@ -17,47 +17,28 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-.draggable-container {
-  border-top: 1px solid @draggable-border-color;
-  margin-bottom: 20px;
-}
+import { Column } from '@/constants'
 
-.draggable-item > .btn {
-  float: right;
-  margin: 4px 10px 0 0;
-  padding: 5px 7px;
-  border-color: transparent;
-
-  &:focus {
-    border-color: darken( @btn-default-border, 25% );
-  }
-
-  &:hover, &:active {
-    border-color: darken( @btn-default-border, 12% );
-  }
-}
-
-.draggable-handle, .draggable-fixed {
-  border-bottom: 1px solid @draggable-border-color;
-  padding: 10px;
-
-  > .fa {
-    margin-right: 5px;
-  }
-}
-
-.draggable-handle {
-  cursor: move;
-
-  > .fa {
-    color: @draggable-icon-color;
-  }
-}
-
-.draggable-fixed {
-  color: @draggable-fixed-color;
-
-  > .fa {
-    color: transparent;
+export function getColumnName( column ) {
+  switch ( column ) {
+    case Column.ID:
+      return this.$t( 'title.ID' );
+    case Column.Name:
+      return this.$t( 'title.Name' );
+    case Column.CreatedBy:
+      return this.$t( 'title.CreatedBy' );
+    case Column.CreatedDate:
+      return this.$t( 'title.CreatedDate' );
+    case Column.ModifiedBy:
+      return this.$t( 'title.ModifiedBy' );
+    case Column.ModifiedDate:
+      return this.$t( 'title.ModifiedDate' );
+    default:
+      if ( column > Column.UserDefined && this.type != null ) {
+        const attribute = this.type.attributes.find( a => a.id == column - Column.UserDefined );
+        if ( attribute != null )
+          return attribute.name;
+      }
+      return this.$t( 'text.UnknownColumn' );
   }
 }

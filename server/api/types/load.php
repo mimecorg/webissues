@@ -27,10 +27,12 @@ class Server_Api_Types_Load
     public $params = array(
         'typeId' => array( 'type' => 'int', 'required' => true ),
         'attributes' => array( 'type' => 'bool', 'default' => false ),
+        'defaultView' => array( 'type' => 'bool', 'default' => false ),
+        'views' => array( 'type' => 'bool', 'default' => false ),
         'used' => array( 'type' => 'bool', 'default' => false )
     );
 
-    public function run( $typeId, $attributes, $used )
+    public function run( $typeId, $attributes, $defaultView, $views, $used )
     {
         $typeManager = new System_Api_TypeManager();
         $type = $typeManager->getIssueType( $typeId );
@@ -60,10 +62,55 @@ class Server_Api_Types_Load
             }
         }
 
+        if ( $defaultView ) {
+            $viewManager = new System_Api_ViewManager();
+            $definition = $viewManager->getViewSetting( $type, 'default_view' );
+
+            $resultView = array();
+
+            if ( $definition != null ) {
+                $this->getViewInformation( $resultView, $definition );
+            } else {
+                $resultView[ 'columns' ] = array( System_Api_Column::ID, System_Api_Column::Name, System_Api_Column::ModifiedDate, System_Api_Column::ModifiedBy );
+                $resultView[ 'sortColumn' ] = System_Api_Column::ID;
+                $resultView[ 'sortAscending' ] = true;
+            }
+
+            $result[ 'defaultView' ] = $resultView;
+        }
+
+        if ( $views ) {
+            $viewManager = new System_Api_ViewManager();
+            $viewRows = $viewManager->getPublicViews( $type );
+
+            $result[ 'views' ] = array();
+
+            foreach ( $viewRows as $view ) {
+                $resultView = array();
+                $resultView[ 'id' ] = (int)$view[ 'view_id' ];
+                $resultView[ 'name' ] = $view[ 'view_name' ];
+
+                $this->getViewInformation( $resultView, $view[ 'view_def' ] );
+
+                $result[ 'views' ][] = $resultView;
+            }
+        }
+
         if ( $used )
             $result[ 'used' ] = $typeManager->checkIssueTypeUsed( $type );
 
         return $result;
+    }
+
+    private function getViewInformation( &$resultView, $definition )
+    {
+        $info = System_Api_DefinitionInfo::fromString( $definition );
+
+        $validator = new System_Api_Validator();
+        $resultView[ 'columns' ] = $validator->convertToIntArray( $info->getMetadata( 'columns' ) );
+
+        $resultView[ 'sortColumn' ] = $info->getMetadata( 'sort-column' );
+        $resultView[ 'sortAscending' ] = $info->getMetadata( 'sort-desc', 0 ) == 0;
     }
 }
 

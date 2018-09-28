@@ -104,6 +104,23 @@ class System_Api_ViewManager extends System_Api_Base
     }
 
     /**
+    * Return all public views for given issue type.
+    * @param $type Issue type for which views are retrieved.
+    * @return An array of associative arrays representing views.
+    */
+    public function getPublicViews( $type )
+    {
+        $typeId = $type[ 'type_id' ];
+
+        $query = 'SELECT view_id, view_name, view_def'
+            . ' FROM {views}'
+            . ' WHERE type_id = %d AND user_id IS NULL'
+            . ' ORDER BY view_name';
+
+        return $this->connection->queryTable( $query, $typeId );
+    }
+
+    /**
     * Get the total number of public views for given issue type.
     * @param $type Issue type for which views are retrieved.
     */

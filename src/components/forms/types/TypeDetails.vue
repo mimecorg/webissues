@@ -20,7 +20,7 @@
 <template>
   <div class="container-fluid">
     <FormHeader v-bind:title="name" v-bind:breadcrumbs="breadcrumbs" v-on:close="close">
-      <button type="button" class="btn btn-default"><span class="fa fa-filter" aria-hidden="true"></span> {{ $t( 'title.ViewSettings' ) }}</button>
+      <button type="button" class="btn btn-default" v-on:click="viewSettings"><span class="fa fa-filter" aria-hidden="true"></span> {{ $t( 'title.ViewSettings' ) }}</button>
       <DropdownButton fa-class="fa-ellipsis-v" menu-class="dropdown-menu-right" v-bind:title="$t( 'title.More' )">
         <li><HyperLink v-on:click="renameType"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'cmd.RenameType' ) }}</HyperLink></li>
         <li><HyperLink v-on:click="deleteType"><span class="fa fa-trash" aria-hidden="true"></span> {{ $t( 'cmd.DeleteType' ) }}</HyperLink></li>
@@ -91,6 +91,9 @@ export default {
     },
     deleteType() {
       this.$router.push( 'DeleteType', { typeId: this.typeId } );
+    },
+    viewSettings() {
+      this.$router.push( 'ViewSettings', { typeId: this.typeId } );
     },
 
     addAttribute() {

@@ -124,4 +124,28 @@ export default function routeTypes( route, ajax, store ) {
       };
     } );
   } );
+
+  route( 'ViewSettings', '/admin/types/:typeId/views', ( { typeId } ) => {
+    return ajax.post( '/server/api/types/load.php', { typeId, defaultView: true, views: true } ).then( ( { name, defaultView, views } ) => {
+      return {
+        form: 'types/ViewSettings',
+        size: 'large',
+        typeId,
+        name,
+        defaultView,
+        views
+      };
+    } );
+  } );
+
+  route( 'EditDefaultView', '/admin/types/:typeId/views/default/edit', ( { typeId } ) => {
+    return ajax.post( '/server/api/types/load.php', { typeId, defaultView: true } ).then( ( { name, defaultView } ) => {
+      return {
+        form: 'types/EditView',
+        typeId,
+        typeName: name,
+        initialView: defaultView
+      };
+    } );
+  } );
 }
