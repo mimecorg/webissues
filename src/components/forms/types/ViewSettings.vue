@@ -36,7 +36,7 @@
       </div>
     </div>
     <FormSection v-bind:title="$t( 'title.PublicViews' )">
-      <button type="button" class="btn btn-success"><span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'cmd.Add' ) }}</button>
+      <button type="button" class="btn btn-success" v-on:click="addView"><span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'cmd.Add' ) }}</button>
     </FormSection>
     <Grid v-if="views.length > 0" v-bind:items="views" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-medium', 'column-xlarge', null ]">
       <template slot-scope="{ item, columnIndex, columnClass }">
@@ -111,6 +111,9 @@ export default {
 
     editDefaultView() {
       this.$router.push( 'EditDefaultView', { typeId: this.typeId } );
+    },
+    addView() {
+      this.$router.push( 'AddPublicView', { typeId: this.typeId } );
     },
 
     close() {

@@ -142,6 +142,19 @@ export default function routeTypes( route, ajax, store ) {
     return ajax.post( '/server/api/types/load.php', { typeId, defaultView: true } ).then( ( { name, defaultView } ) => {
       return {
         form: 'types/EditView',
+        mode: 'default',
+        typeId,
+        typeName: name,
+        initialView: defaultView
+      };
+    } );
+  } );
+
+  route( 'AddPublicView', '/admin/types/:typeId/views/add', ( { typeId } ) => {
+    return ajax.post( '/server/api/types/load.php', { typeId, defaultView: true } ).then( ( { name, defaultView } ) => {
+      return {
+        form: 'types/EditView',
+        mode: 'add',
         typeId,
         typeName: name,
         initialView: defaultView
