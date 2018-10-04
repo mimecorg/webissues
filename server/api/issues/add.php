@@ -34,7 +34,7 @@ class Server_Api_Issues_Add
 
     public function run( $folderId, $name, $values, $description, $descriptionFormat )
     {
-        $helper = new Server_Api_Issues_Helper();
+        $helper = new Server_Api_Helpers_Issues();
         $values = $helper->extractValues( $values );
 
         $projectManager = new System_Api_ProjectManager();
