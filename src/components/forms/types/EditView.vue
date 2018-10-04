@@ -19,9 +19,16 @@
 
 <template>
   <div class="container-fluid">
-    <FormHeader v-bind:title="title" v-on:close="close"/>
-    <Prompt v-bind:path="promptPath"><strong>{{ typeName }}</strong></Prompt>
-    <FormInput v-if="mode == 'add'" ref="name" id="name" v-bind:label="$t( 'label.Name' )" v-bind="$field( 'name' )" v-model="name"/>
+    <FormHeader v-bind:title="title" v-on:close="close">
+      <DropdownButton v-if="mode == 'edit'" fa-class="fa-ellipsis-v" menu-class="dropdown-menu-right" v-bind:title="$t( 'title.More' )">
+        <li><HyperLink v-on:click="cloneView"><span class="fa fa-clone" aria-hidden="true"></span> {{ $t( 'cmd.CloneView' ) }}</HyperLink></li>
+        <li><HyperLink><span class="fa fa-lock" aria-hidden="true"></span> {{ $t( 'cmd.UnpublishView' ) }}</HyperLink></li>
+        <li><HyperLink><span class="fa fa-trash" aria-hidden="true"></span> {{ $t( 'cmd.DeleteView' ) }}</HyperLink></li>
+      </DropdownButton>
+    </FormHeader>
+    <Prompt v-if="mode == 'default' || mode == 'add'" v-bind:path="promptPath"><strong>{{ typeName }}</strong></Prompt>
+    <Prompt v-else v-bind:path="promptPath"><strong>{{ initialName }}</strong></Prompt>
+    <FormInput v-if="mode == 'add' || mode == 'edit' || mode == 'clone'" ref="name" id="name" v-bind:label="$t( 'label.Name' )" v-bind="$field( 'name' )" v-model="name"/>
     <FormSection v-bind:title="$t( 'title.Columns' )">
       <DropdownButton v-if="availableColumns.length > 0" fa-class="fa-plus" menu-class="dropdown-menu-right" v-bind:title="$t( 'cmd.AddColumn' )">
         <div class="dropdown-menu-scroll">
@@ -58,7 +65,7 @@
         </div>
       </FormGroup>
     </Panel>
-    <template v-if="mode == 'add'">
+    <template v-if="mode == 'add' || mode == 'edit' || mode == 'clone'">
       <FormSection v-bind:title="$t( 'title.Filters' )">
         <DropdownButton fa-class="fa-plus" menu-class="dropdown-menu-right" v-bind:title="$t( 'cmd.AddFilter' )">
           <div class="dropdown-menu-scroll">
@@ -104,6 +111,7 @@ export default {
     mode: String,
     typeId: Number,
     typeName: String,
+    viewId: Number,
     initialName: String,
     initialView: Object
   },
@@ -115,19 +123,24 @@ export default {
         type: String,
         required: true,
         maxLength: MaxLength.Name,
-        condition: this.mode == 'add'
+        condition: this.mode == 'add' || this.mode == 'edit' || this.mode == 'clone'
       }
     };
   },
 
   data() {
-    return {
+    const data = {
       columns: this.initialView.columns,
       sortColumn: this.initialView.sortColumn,
       sortAscending: this.initialView.sortAscending,
       filters: [],
       nextId: 1
     };
+
+    if ( this.initialView.filters != null )
+      data.filters = this.initialView.filters.map( f => ( { id: data.nextId++,column: f.column, operator: f.operator, value: f.value, error: null } ) );
+
+    return data;
   },
 
   computed: {
@@ -137,12 +150,20 @@ export default {
         return this.$t( 'title.DefaultView' );
       else if ( this.mode == 'add' )
         return this.$t( 'cmd.AddPublicView' );
+      else if ( this.mode == 'edit' )
+        return this.$t( 'cmd.EditView' );
+      else if ( this.mode == 'clone' )
+        return this.$t( 'cmd.CloneView' );
     },
     promptPath() {
       if ( this.mode == 'default' )
         return 'prompt.EditDefaultView';
       else if ( this.mode == 'add' )
         return 'prompt.AddPublicView';
+      else if ( this.mode == 'edit' )
+        return 'prompt.EditPublicView';
+      else if ( this.mode == 'clone' )
+        return 'prompt.ClonePublicView';
     },
     type() {
       return this.types.find( t => t.id == this.typeId );
@@ -167,7 +188,7 @@ export default {
     submit() {
       let valid = this.$fields.validate();
 
-      if ( this.mode == 'add' )
+      if ( this.mode == 'add' || this.mode == 'edit' || this.mode == 'clone' )
         valid = this.validateFilters( valid );
 
       if ( !valid )
@@ -181,18 +202,28 @@ export default {
         return;
       }
 
-      const data = { typeId: this.typeId };
-      if ( this.mode == 'add' )
+      if ( this.mode == 'edit' && !this.$fields.modified() && columns == initialColumns && this.sortColumn == this.initialView.sortColumn
+           && this.sortAscending == this.initialView.sortAscending && this.areFiltersEqual( this.initialView.filters, this.filters ) ) {
+        this.returnToDetails();
+        return;
+      }
+
+      const data = {};
+      if ( this.mode == 'default' || this.mode == 'add' || this.mode == 'clone' )
+        data.typeId = this.typeId;
+      else
+        data.viewId = this.viewId;
+      if ( this.mode == 'add' || this.mode == 'edit' || this.mode == 'clone' )
         data.name = this.name;
       data.columns = columns;
       data.sortColumn = this.sortColumn;
       data.sortAscending = this.sortAscending;
-      if ( this.mode == 'add' )
+      if ( this.mode == 'add' || this.mode == 'edit' || this.mode == 'clone' )
         data.filters = this.filters.map( f => ( { column: f.column, operator: f.operator, value: f.value } ) );
 
       this.$emit( 'block' );
 
-      this.$ajax.post( '/server/api/types/views/' + this.mode + '.php', data ).then( ( { changed } ) => {
+      this.$ajax.post( '/server/api/types/views/' + ( this.mode == 'clone' ? 'add' : this.mode ) + '.php', data ).then( ( { changed } ) => {
         if ( changed )
           this.$store.commit( 'global/setDirty' );
         this.returnToDetails();
@@ -353,6 +384,22 @@ export default {
       }
 
       return valid;
+    },
+
+    areFiltersEqual( filters1, filters2 ) {
+      if ( filters1.length != filters2.length )
+        return false;
+
+      for ( let i = 0; i < filters1.length; i++ ) {
+        if ( filters1[ i ].column != filters2[ i ].column || filters1[ i ].operator != filters2[ i ].operator || filters1[ i ].value != filters2[ i ].value )
+          return false;
+      }
+
+      return true;
+    },
+
+    cloneView() {
+      this.$router.push( 'ClonePublicView', { typeId: this.typeId, viewId: this.viewId } );
     },
 
     cancel() {

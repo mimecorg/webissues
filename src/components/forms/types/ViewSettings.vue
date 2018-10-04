@@ -38,7 +38,8 @@
     <FormSection v-bind:title="$t( 'title.PublicViews' )">
       <button type="button" class="btn btn-success" v-on:click="addView"><span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'cmd.Add' ) }}</button>
     </FormSection>
-    <Grid v-if="views.length > 0" v-bind:items="views" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-medium', 'column-xlarge', null ]">
+    <Grid v-if="views.length > 0" v-bind:items="views" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-medium', 'column-xlarge', null ]"
+          v-on:row-click="rowClick">
       <template slot-scope="{ item, columnIndex, columnClass }">
         <td v-bind:class="columnClass">{{ getCellValue( columnIndex, item ) }}</td>
       </template>
@@ -114,6 +115,10 @@ export default {
     },
     addView() {
       this.$router.push( 'AddPublicView', { typeId: this.typeId } );
+    },
+
+    rowClick( rowIndex ) {
+      this.$router.push( 'EditPublicView', { typeId: this.typeId, viewId: this.views[ rowIndex ].id } );
     },
 
     close() {

@@ -69,7 +69,8 @@ class Server_Api_Types_Load
             $resultView = array();
 
             if ( $definition != null ) {
-                $this->getViewInformation( $resultView, $definition );
+                $helper = new Server_Api_Helpers_Views();
+                $helper->getViewInformation( $resultView, $definition );
             } else {
                 $resultView[ 'columns' ] = array( System_Api_Column::ID, System_Api_Column::Name, System_Api_Column::ModifiedDate, System_Api_Column::ModifiedBy );
                 $resultView[ 'sortColumn' ] = System_Api_Column::ID;
@@ -85,12 +86,14 @@ class Server_Api_Types_Load
 
             $result[ 'views' ] = array();
 
+            $helper = new Server_Api_Helpers_Views();
+
             foreach ( $viewRows as $view ) {
                 $resultView = array();
                 $resultView[ 'id' ] = (int)$view[ 'view_id' ];
                 $resultView[ 'name' ] = $view[ 'view_name' ];
 
-                $this->getViewInformation( $resultView, $view[ 'view_def' ] );
+                $helper->getViewInformation( $resultView, $view[ 'view_def' ] );
 
                 $result[ 'views' ][] = $resultView;
             }
@@ -100,17 +103,6 @@ class Server_Api_Types_Load
             $result[ 'used' ] = $typeManager->checkIssueTypeUsed( $type );
 
         return $result;
-    }
-
-    private function getViewInformation( &$resultView, $definition )
-    {
-        $info = System_Api_DefinitionInfo::fromString( $definition );
-
-        $validator = new System_Api_Validator();
-        $resultView[ 'columns' ] = $validator->convertToIntArray( $info->getMetadata( 'columns' ) );
-
-        $resultView[ 'sortColumn' ] = $info->getMetadata( 'sort-column' );
-        $resultView[ 'sortAscending' ] = $info->getMetadata( 'sort-desc', 0 ) == 0;
     }
 }
 

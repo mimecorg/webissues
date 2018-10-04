@@ -20,12 +20,12 @@
 
 require_once( '../../../../system/bootstrap.inc.php' );
 
-class Server_Api_Types_Views_Add
+class Server_Api_Types_Views_Edit
 {
     public $access = 'admin';
 
     public $params = array(
-        'typeId' => array( 'type' => 'int', 'required' => true ),
+        'viewId' => array( 'type' => 'int', 'required' => true ),
         'name' => array( 'type' => 'string', 'required' => true ),
         'columns' => array( 'type' => 'string', 'required' => true ),
         'sortColumn' => array( 'type' => 'int', 'required' => true ),
@@ -33,13 +33,19 @@ class Server_Api_Types_Views_Add
         'filters' => array( 'type' => 'array', 'required' => true )
     );
 
-    public function run( $typeId, $name, $columns, $sortColumn, $sortAscending, $filters )
+    public function run( $viewId, $name, $columns, $sortColumn, $sortAscending, $filters )
     {
         $validator = new System_Api_Validator();
         $validator->checkString( $name, System_Const::NameMaxLength );
 
+        $viewManager = new System_Api_ViewManager();
+        $view = $viewManager->getView( $viewId );
+
+        if ( $view[ 'is_public' ] == 0 )
+            throw new System_Api_Error( System_Api_Error::UnknownView );
+
         $typeManager = new System_Api_TypeManager();
-        $type = $typeManager->getIssueType( $typeId );
+        $type = $typeManager->getIssueTypeForView( $view );
         $attributes = $typeManager->getAttributeTypesForIssueType( $type );
 
         $helper = new Server_Api_Helpers_Views();
@@ -47,13 +53,14 @@ class Server_Api_Types_Views_Add
 
         $validator->checkViewDefinition( $attributes, $definition );
 
-        $viewManager = new System_Api_ViewManager();
+        $renamed = $viewManager->renameView( $view, $name );
+        $modified = $viewManager->modifyView( $view, $definition );
 
-        $result[ 'viewId' ] = $viewManager->addPublicView( $type, $name, $definition );
-        $result[ 'changed' ] = true;
+        $result[ 'viewId' ] = $viewId;
+        $result[ 'changed' ] = $renamed || $modified;
 
         return $result;
     }
 }
 
-System_Bootstrap::run( 'Server_Api_Application', 'Server_Api_Types_Views_Add' );
+System_Bootstrap::run( 'Server_Api_Application', 'Server_Api_Types_Views_Edit' );

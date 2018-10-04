@@ -161,4 +161,30 @@ export default function routeTypes( route, ajax, store ) {
       };
     } );
   } );
+
+  route( 'EditPublicView', '/admin/types/:typeId/views/:viewId/edit', ( { typeId, viewId } ) => {
+    return ajax.post( '/server/api/types/views/load.php', { typeId, viewId } ).then( ( { name, details } ) => {
+      return {
+        form: 'types/EditView',
+        mode: 'edit',
+        typeId,
+        viewId,
+        initialName: name,
+        initialView: details
+      };
+    } );
+  } );
+
+  route( 'ClonePublicView', '/admin/types/:typeId/views/:viewId/clone', ( { typeId, viewId } ) => {
+    return ajax.post( '/server/api/types/views/load.php', { typeId, viewId } ).then( ( { name, details } ) => {
+      return {
+        form: 'types/EditView',
+        mode: 'clone',
+        typeId,
+        viewId,
+        initialName: name,
+        initialView: details
+      };
+    } );
+  } );
 }
