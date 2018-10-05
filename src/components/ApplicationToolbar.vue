@@ -22,14 +22,14 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-xs-12 col-sm-6 col-lg-4 dropdown-filters">
-          <DropdownButton v-if="types.length > 0" fa-class="fa-list" btn-class="btn-primary" v-bind:text="typeName" v-bind:title="typeTitle">
+          <DropdownButton v-if="types.length > 0" fa-class="fa-table" btn-class="btn-primary" v-bind:text="typeName" v-bind:title="typeTitle">
             <div class="dropdown-menu-scroll">
               <li v-for="t in types" v-bind:key="t.id" v-bind:class="{ active: type != null && t.id == type.id }">
                 <HyperLink v-on:click="selectType( t )">{{ t.name }}</HyperLink>
               </li>
             </div>
           </DropdownButton>
-          <DropdownButton v-if="type != null" fa-class="fa-filter" v-bind:text="viewName" v-bind:title="viewTitle">
+          <DropdownButton v-if="type != null" fa-class="fa-binoculars" v-bind:text="viewName" v-bind:title="viewTitle">
             <div class="dropdown-menu-scroll">
               <li v-bind:class="{ active: view == null }">
                 <HyperLink v-on:click="selectView( null )">{{ $t( 'text.AllIssues' ) }}</HyperLink>
@@ -52,7 +52,7 @@
           </DropdownButton>
         </div>
         <div v-if="type != null" class="col-xs-12 col-sm-6 col-lg-4 dropdown-filters">
-          <DropdownButton fa-class="fa-object-group" v-bind:text="projectName" v-bind:title="projectTitle">
+          <DropdownButton fa-class="fa-briefcase" v-bind:text="projectName" v-bind:title="projectTitle">
             <div class="dropdown-menu-scroll">
               <li v-bind:class="{ active: project == null }">
                 <HyperLink v-on:click="selectProject( null )">{{ $t( 'text.AllProjects' ) }}</HyperLink>
@@ -108,8 +108,6 @@
               <DropdownButton fa-class="fa-ellipsis-v" menu-class="dropdown-menu-right" v-bind:title="$t( 'title.More' )">
                 <li><HyperLink><span class="fa fa-check-circle-o" aria-hidden="true"></span> {{ $t( 'cmd.MarkAllAsRead' ) }}</HyperLink></li>
                 <li><HyperLink><span class="fa fa-check-circle" aria-hidden="true"></span> {{ $t( 'cmd.MarkAllAsUnread' ) }}</HyperLink></li>
-                <li role="separator" class="divider"></li>
-                <li><HyperLink><span class="fa fa-pencil-square-o" aria-hidden="true"></span> {{ $t( 'title.ProjectDescription' ) }}</HyperLink></li>
                 <li role="separator" class="divider"></li>
                 <li><HyperLink><span class="fa fa-file-text-o" aria-hidden="true"></span> {{ $t( 'cmd.ExportToCSV' ) }}</HyperLink></li>
               </DropdownButton>

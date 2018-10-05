@@ -30,7 +30,7 @@
     <FormInput ref="name" id="name" v-bind:label="$t( 'label.Name' )" v-bind="$field( 'name' )" v-model="name"/>
     <FormGroup v-if="mode == 'add'" v-bind:label="$t( 'label.Type' )" v-bind="$field( 'typeId' )">
       <div class="dropdown-filters">
-        <DropdownButton ref="type" fa-class="fa-list" v-bind:text="typeName" v-bind:title="typeTitle">
+        <DropdownButton ref="type" fa-class="fa-table" v-bind:text="typeName" v-bind:title="typeTitle">
           <div class="dropdown-menu-scroll">
             <li v-bind:class="{ active: type == null }">
               <HyperLink v-on:click="selectType( null )">{{ $t( 'text.SelectType' ) }}</HyperLink>

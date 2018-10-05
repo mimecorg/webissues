@@ -23,7 +23,7 @@
       <button v-if="isProjectAdministrator" type="button" class="btn btn-default" v-on:click="projectPermissions"><span class="fa fa-unlock-alt" aria-hidden="true"></span> {{ $t( 'title.Permissions' ) }}</button>
       <DropdownButton v-if="isAdministrator" fa-class="fa-ellipsis-v" menu-class="dropdown-menu-right" v-bind:title="$t( 'title.More' )">
         <li><HyperLink v-on:click="renameProject"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'cmd.RenameProject' ) }}</HyperLink></li>
-        <li><HyperLink v-on:click="archiveProject"><span class="fa fa-clock-o" aria-hidden="true"></span> {{ $t( 'cmd.ArchiveProject' ) }}</HyperLink></li>
+        <li><HyperLink v-on:click="archiveProject"><span class="fa fa-archive" aria-hidden="true"></span> {{ $t( 'cmd.ArchiveProject' ) }}</HyperLink></li>
         <li><HyperLink v-on:click="deleteProject"><span class="fa fa-trash" aria-hidden="true"></span> {{ $t( 'cmd.DeleteProject' ) }}</HyperLink></li>
       </DropdownButton>
     </FormHeader>

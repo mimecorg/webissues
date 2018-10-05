@@ -46,11 +46,11 @@
           </button>
           <DropdownButton v-if="canManageProjects" fa-class="fa-cog" v-bind:text="$t( 'title.Administration' )"
                           text-class="hidden-sm hidden-md" v-bind:title="$t( 'title.AdministrationMenu' )">
-            <li><HyperLink v-on:click="manageProjects"><span class="fa fa-object-group" aria-hidden="true"></span> {{ $t( 'title.Projects' ) }}</HyperLink></li>
+            <li><HyperLink v-on:click="manageProjects"><span class="fa fa-briefcase" aria-hidden="true"></span> {{ $t( 'title.Projects' ) }}</HyperLink></li>
             <li><HyperLink><span class="fa fa-bell-o" aria-hidden="true"></span> {{ $t( 'title.PublicAlerts' ) }}</HyperLink></li>
             <template v-if="isAdministrator">
               <li role="separator" class="divider"></li>
-              <li><HyperLink v-on:click="manageTypes"><span class="fa fa-list" aria-hidden="true"></span> {{ $t( 'title.IssueTypes' ) }}</HyperLink></li>
+              <li><HyperLink v-on:click="manageTypes"><span class="fa fa-table" aria-hidden="true"></span> {{ $t( 'title.IssueTypes' ) }}</HyperLink></li>
               <li><HyperLink><span class="fa fa-users" aria-hidden="true"></span> {{ $t( 'title.UserAccounts' ) }}</HyperLink></li>
               <li role="separator" class="divider"></li>
               <li><HyperLink><span class="fa fa-wrench" aria-hidden="true"></span> {{ $t( 'title.ServerSettings' ) }}</HyperLink></li>
@@ -59,11 +59,11 @@
             </template>
           </DropdownButton>
           <button v-else class="btn btn-default" v-on:click="manageProjects">
-            <span class="fa fa-object-group" aria-hidden="true"></span> <span class="hidden-sm hidden-md">{{ $t( 'title.Projects' ) }}</span>
+            <span class="fa fa-briefcase" aria-hidden="true"></span> <span class="hidden-sm hidden-md">{{ $t( 'title.Projects' ) }}</span>
           </button>
           <DropdownButton fa-class="fa-user" v-bind:text="userName" text-class="hidden-sm hidden-md" v-bind:title="userTitle">
             <template v-if="isAuthenticated">
-              <li><HyperLink><span class="fa fa-filter" aria-hidden="true"></span> {{ $t( 'title.PersonalViews' ) }}</HyperLink></li>
+              <li><HyperLink><span class="fa fa-binoculars" aria-hidden="true"></span> {{ $t( 'title.PersonalViews' ) }}</HyperLink></li>
               <li><HyperLink><span class="fa fa-bell-o" aria-hidden="true"></span> {{ $t( 'title.PersonalAlerts' ) }}</HyperLink></li>
               <li role="separator" class="divider"></li>
               <li><HyperLink><span class="fa fa-sliders" aria-hidden="true"></span> {{ $t( 'title.UserPreferences' ) }}</HyperLink></li>
