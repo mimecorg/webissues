@@ -163,7 +163,7 @@ export default function routeTypes( route, ajax, store ) {
   } );
 
   route( 'EditPublicView', '/admin/types/:typeId/views/:viewId/edit', ( { typeId, viewId } ) => {
-    return ajax.post( '/server/api/types/views/load.php', { typeId, viewId } ).then( ( { name, details } ) => {
+    return ajax.post( '/server/api/types/views/load.php', { typeId, viewId, details: true } ).then( ( { name, details } ) => {
       return {
         form: 'types/EditView',
         mode: 'edit',
@@ -176,7 +176,7 @@ export default function routeTypes( route, ajax, store ) {
   } );
 
   route( 'ClonePublicView', '/admin/types/:typeId/views/:viewId/clone', ( { typeId, viewId } ) => {
-    return ajax.post( '/server/api/types/views/load.php', { typeId, viewId } ).then( ( { name, details } ) => {
+    return ajax.post( '/server/api/types/views/load.php', { typeId, viewId, details: true } ).then( ( { name, details } ) => {
       return {
         form: 'types/EditView',
         mode: 'clone',
@@ -184,6 +184,30 @@ export default function routeTypes( route, ajax, store ) {
         viewId,
         initialName: name,
         initialView: details
+      };
+    } );
+  } );
+
+  route( 'UnpublishView', '/admin/types/:typeId/views/:viewId/unpublish', ( { typeId, viewId } ) => {
+    return ajax.post( '/server/api/types/views/load.php', { typeId, viewId } ).then( ( { name } ) => {
+      return {
+        form: 'types/UnpublishView',
+        size: 'small',
+        typeId,
+        viewId,
+        name
+      };
+    } );
+  } );
+
+  route( 'DeletePublicView', '/admin/types/:typeId/views/:viewId/delete', ( { typeId, viewId } ) => {
+    return ajax.post( '/server/api/types/views/load.php', { typeId, viewId } ).then( ( { name } ) => {
+      return {
+        form: 'types/DeleteView',
+        size: 'small',
+        typeId,
+        viewId,
+        name
       };
     } );
   } );

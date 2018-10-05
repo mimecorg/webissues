@@ -22,8 +22,8 @@
     <FormHeader v-bind:title="title" v-on:close="close">
       <DropdownButton v-if="mode == 'edit'" fa-class="fa-ellipsis-v" menu-class="dropdown-menu-right" v-bind:title="$t( 'title.More' )">
         <li><HyperLink v-on:click="cloneView"><span class="fa fa-clone" aria-hidden="true"></span> {{ $t( 'cmd.CloneView' ) }}</HyperLink></li>
-        <li><HyperLink><span class="fa fa-lock" aria-hidden="true"></span> {{ $t( 'cmd.UnpublishView' ) }}</HyperLink></li>
-        <li><HyperLink><span class="fa fa-trash" aria-hidden="true"></span> {{ $t( 'cmd.DeleteView' ) }}</HyperLink></li>
+        <li><HyperLink v-on:click="unpublishView"><span class="fa fa-lock" aria-hidden="true"></span> {{ $t( 'cmd.UnpublishView' ) }}</HyperLink></li>
+        <li><HyperLink v-on:click="deleteView"><span class="fa fa-trash" aria-hidden="true"></span> {{ $t( 'cmd.DeleteView' ) }}</HyperLink></li>
       </DropdownButton>
     </FormHeader>
     <Prompt v-if="mode == 'default' || mode == 'add'" v-bind:path="promptPath"><strong>{{ typeName }}</strong></Prompt>
@@ -400,6 +400,12 @@ export default {
 
     cloneView() {
       this.$router.push( 'ClonePublicView', { typeId: this.typeId, viewId: this.viewId } );
+    },
+    unpublishView() {
+      this.$router.push( 'UnpublishView', { typeId: this.typeId, viewId: this.viewId } );
+    },
+    deleteView() {
+      this.$router.push( 'DeletePublicView', { typeId: this.typeId, viewId: this.viewId } );
     },
 
     cancel() {
