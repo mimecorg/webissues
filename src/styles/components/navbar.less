@@ -24,6 +24,14 @@
   .btn-default {
     .button-variant( @btn-navbar-color, @btn-navbar-bg, @btn-navbar-border );
   }
+
+  .btn-info {
+    .button-variant( @btn-navbar-info-color, @btn-navbar-info-bg, @btn-navbar-info-border );
+  }
+
+  .btn-success {
+    .button-variant( @btn-success-color, @btn-success-bg, lighten( @btn-success-bg, 20% ) );
+  }
 }
 
 .navbar-fixed {
@@ -46,9 +54,11 @@
   .element-wide();
 }
 
-.navbar-brand {
-  display: table;
-  width: 100%;
+.navbar-title {
+  color: @navbar-brand-color;
+  font-size: @navbar-brand-font-size;
+  margin-top: 5px;
+  .ellipsis();
 
   a, a:focus, a:hover {
     text-decoration: none;
@@ -56,32 +66,19 @@
   }
 }
 
-.navbar-brand-logo {
-  display: table-cell;
-}
-
-.navbar-brand-img {
-  .image( '~@/images/webissues-logo.png'; 32px; 32px );
-  margin: 1px 10px 1px 0;
-}
-
-.navbar-brand-name {
-  display: table-cell;
-  vertical-align: middle;
-  width: 100%;
-  max-width: 0;
-  color: @navbar-brand-color;
-  font-size: @navbar-brand-font-size;
-  .ellipsis();
-}
-
 .navbar-sub-group, .navbar-sub-element {
   display: inline-block;
   vertical-align: middle;
 }
 
-.navbar-version {
+.navbar-brand-img {
+  float: left;
+  .image( '~@/images/webissues-logo.png'; 20px; 20px );
   margin-left: 15px;
+}
+
+.navbar-brand-name {
+  margin-left: 40px;
   margin-right: 15px;
   color: @navbar-text-color;
   .ellipsis();
@@ -182,8 +179,12 @@
       .element-wide();
     }
 
-    .navbar-version {
+    .navbar-brand-img {
       margin-left: 0;
+    }
+
+    .navbar-version {
+      margin-left: 25px;
     }
   }
 

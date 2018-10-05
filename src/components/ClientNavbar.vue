@@ -22,33 +22,29 @@
     <div class="container-fluid">
       <div class="navbar-group">
         <div class="navbar-element navbar-element-wide">
-          <div class="navbar-brand">
-            <div class="navbar-brand-logo">
-              <div class="navbar-brand-img"></div>
-            </div>
-            <div class="navbar-brand-name">
-              {{ serverName != null ? serverName : 'WebIssues' }}
-            </div>
+          <div class="navbar-title">
+            {{ serverName != null ? serverName : 'WebIssues' }}
           </div>
         </div>
         <div id="navbar-element-collapse" v-bind:class="[ 'navbar-element', 'collapse', { 'in' : expanded } ]" v-bind:aria-expanded="expanded ? 'true' : 'false'">
           <div class="navbar-sub-group">
             <div class="navbar-sub-element navbar-sub-element-wide">
-              <div v-if="serverVersion != null" class="navbar-version">WebIssues {{ serverVersion }}</div>
+              <div class="navbar-brand-img"></div>
+              <div class="navbar-brand-name">WebIssues {{ serverVersion }}</div>
             </div>
             <div class="navbar-sub-element">
-              <button v-if="serverName != null" type="button" class="btn btn-default" v-bind:title="$t( 'title.WebIssuesSettings' )" v-on:click="clientSettings">
+              <button v-if="serverName != null" type="button" class="btn btn-info" v-bind:title="$t( 'title.WebIssuesSettings' )" v-on:click="clientSettings">
                 <span class="fa fa-wrench" aria-hidden="true"></span>
               </button>
-              <button v-if="serverName != null" type="button" class="btn btn-default" v-bind:title="$t( 'title.AboutWebIssues' )"><span class="fa fa-info-circle" aria-hidden="true"></span></button>
-              <button type="button" class="btn btn-default" v-bind:title="$t( 'title.WebIssuesManual' )" v-on:click="openManual">
+              <button v-if="serverName != null" type="button" class="btn btn-info" v-bind:title="$t( 'title.AboutWebIssues' )"><span class="fa fa-info-circle" aria-hidden="true"></span></button>
+              <button type="button" class="btn btn-info" v-bind:title="$t( 'title.WebIssuesManual' )" v-on:click="openManual">
                 <span class="fa fa-question-circle" aria-hidden="true"></span>
               </button>
             </div>
           </div>
         </div>
         <div id="navbar-element-toggle" class="navbar-element">
-          <button type="button" class="btn btn-default" v-bind:title="$t( 'cmd.ToggleNavigation' )" v-on:click="toggle">
+          <button type="button" class="btn btn-info" v-bind:title="$t( 'cmd.ToggleNavigation' )" v-on:click="toggle">
             <span class="fa fa-bars" aria-hidden="true"></span>
           </button>
         </div>

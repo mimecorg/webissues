@@ -22,19 +22,9 @@
     <div class="container-fluid">
       <div class="navbar-group">
         <div class="navbar-element navbar-element-wide">
-          <div class="navbar-brand">
-            <div class="navbar-brand-logo">
-              <a v-if="isWeb" v-bind:href="baseURL + '/client/index.php'">
-                <div class="navbar-brand-img"></div>
-              </a>
-              <HyperLink v-else v-on:click="home">
-                <div class="navbar-brand-img"></div>
-              </HyperLink>
-            </div>
-            <div class="navbar-brand-name">
-              <a v-if="isWeb" v-bind:href="baseURL + '/client/index.php'">{{ serverName }}</a>
-              <HyperLink v-else v-on:click="home">{{ serverName }}</HyperLink>
-            </div>
+          <div class="navbar-title">
+            <a v-if="isWeb" v-bind:href="baseURL + '/client/index.php'">{{ serverName }}</a>
+            <HyperLink v-else v-on:click="home">{{ serverName }}</HyperLink>
           </div>
         </div>
         <div id="navbar-element-collapse" v-bind:class="[ 'navbar-element', 'collapse', { 'in' : expanded } ]" v-bind:aria-expanded="expanded ? 'true' : 'false'">
@@ -82,17 +72,18 @@
           </DropdownButton>
           <div class="navbar-sub-group">
             <div class="navbar-sub-element navbar-sub-element-wide">
-              <div class="navbar-version">WebIssues {{ serverVersion }}</div>
+              <div class="navbar-brand-img"></div>
+              <div class="navbar-brand-name">WebIssues {{ serverVersion }}</div>
             </div>
             <div class="navbar-sub-element">
-              <button v-if="!isWeb" type="button" class="btn btn-default" v-bind:title="$t( 'title.WebIssuesSettings' )" v-on:click="clientSettings">
+              <button v-if="!isWeb" type="button" class="btn btn-info" v-bind:title="$t( 'title.WebIssuesSettings' )" v-on:click="clientSettings">
                 <span class="fa fa-wrench" aria-hidden="true"></span>
               </button>
-              <button type="button" class="btn btn-default" v-bind:title="$t( 'title.AboutWebIssues' )"><span class="fa fa-info-circle" aria-hidden="true"></span></button>
-              <a v-if="isWeb" type="button" class="btn btn-default" v-bind:title="$t( 'title.WebIssuesManual' )" v-bind:href="manualURL" target="_blank">
+              <button type="button" class="btn btn-info" v-bind:title="$t( 'title.AboutWebIssues' )"><span class="fa fa-info-circle" aria-hidden="true"></span></button>
+              <a v-if="isWeb" type="button" class="btn btn-info" v-bind:title="$t( 'title.WebIssuesManual' )" v-bind:href="manualURL" target="_blank">
                 <span class="fa fa-question-circle" aria-hidden="true"></span>
               </a>
-              <button v-else type="button" class="btn btn-default" v-bind:title="$t( 'title.WebIssuesManual' )" v-on:click="openManual">
+              <button v-else type="button" class="btn btn-info" v-bind:title="$t( 'title.WebIssuesManual' )" v-on:click="openManual">
                 <span class="fa fa-question-circle" aria-hidden="true"></span>
               </button>
             </div>
@@ -102,7 +93,7 @@
           <button v-if="type != null" type="button" class="btn btn-success" v-bind:title="$t( 'cmd.AddIssue' )" v-on:click="addIssue">
             <span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'cmd.Add' ) }}
           </button>
-          <button type="button" class="btn btn-default" v-bind:title="$t( 'cmd.ToggleNavigation' )" v-on:click="toggle">
+          <button type="button" class="btn btn-info" v-bind:title="$t( 'cmd.ToggleNavigation' )" v-on:click="toggle">
             <span class="fa fa-bars" aria-hidden="true"></span>
           </button>
         </div>
