@@ -87,7 +87,9 @@ export default {
       return this.lastIndex < this.totalCount;
     },
     statusText() {
-      if ( this.totalCount == 0 )
+      if ( this.type == null )
+        return this.$t( 'text.NoTypeSelected' );
+      else if ( this.totalCount == 0 )
         return this.$t( 'text.NoIssues' );
       else if ( this.firstIndex == 1 && this.lastIndex == this.totalCount )
         return this.$t( 'text.IssuesCount', [ this.totalCount ] );
