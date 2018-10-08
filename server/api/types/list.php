@@ -22,14 +22,24 @@ require_once( '../../../system/bootstrap.inc.php' );
 
 class Server_Api_Types_List
 {
-    public $access = 'admin';
+    public $access = '*';
 
     public $params = array();
 
     public function run()
     {
+        if ( System_Api_Principal::getCurrent()->isAdministrator() ) {
+            $isAdministrator = true;
+        } else {
+            $projectManager = new System_Api_ProjectManager();
+            $isAdministrator = $projectManager->isProjectAdministrator();
+        }
+
         $typeManager = new System_Api_TypeManager();
-        $types = $typeManager->getIssueTypes();
+        if ( $isAdministrator )
+            $types = $typeManager->getIssueTypes();
+        else
+            $types = $typeManager->getAvailableIssueTypes();
 
         $result[ 'types' ] = array();
 

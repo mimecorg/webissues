@@ -22,7 +22,7 @@ require_once( '../../../../system/bootstrap.inc.php' );
 
 class Server_Api_Types_Views_Load
 {
-    public $access = 'admin';
+    public $access = '*';
 
     public $params = array(
         'typeId' => array( 'type' => 'int', 'required' => true ),
@@ -36,13 +36,11 @@ class Server_Api_Types_Views_Load
         $type = $typeManager->getIssueType( $typeId );
 
         $viewManager = new System_Api_ViewManager();
-        $view = $viewManager->getViewForIssueType( $type, $viewId );
-
-        if ( $view[ 'is_public' ] == 0 )
-            throw new System_Api_Error( System_Api_Error::UnknownView );
+        $view = $viewManager->getViewForIssueType( $type, $viewId, System_Api_ViewManager::AllowEdit );
 
         $result[ 'id' ] = $view[ 'view_id' ];
         $result[ 'name' ] = $view[ 'view_name' ];
+        $result[ 'isPublic' ] = $view[ 'is_public' ] != 0;
 
         if ( $details ) {
             $resultDetails = array();

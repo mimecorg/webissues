@@ -22,7 +22,8 @@
     <FormHeader v-bind:title="title" v-on:close="close">
       <DropdownButton v-if="mode == 'edit'" fa-class="fa-ellipsis-v" menu-class="dropdown-menu-right" v-bind:title="$t( 'title.More' )">
         <li><HyperLink v-on:click="cloneView"><span class="fa fa-clone" aria-hidden="true"></span> {{ $t( 'cmd.CloneView' ) }}</HyperLink></li>
-        <li><HyperLink v-on:click="unpublishView"><span class="fa fa-lock" aria-hidden="true"></span> {{ $t( 'cmd.UnpublishView' ) }}</HyperLink></li>
+        <li v-if="isPublic"><HyperLink v-on:click="unpublishView"><span class="fa fa-lock" aria-hidden="true"></span> {{ $t( 'cmd.UnpublishView' ) }}</HyperLink></li>
+        <li v-else><HyperLink v-on:click="publishView"><span class="fa fa-upload" aria-hidden="true"></span> {{ $t( 'cmd.PublishView' ) }}</HyperLink></li>
         <li><HyperLink v-on:click="deleteView"><span class="fa fa-trash" aria-hidden="true"></span> {{ $t( 'cmd.DeleteView' ) }}</HyperLink></li>
       </DropdownButton>
     </FormHeader>
@@ -112,6 +113,7 @@ export default {
     typeId: Number,
     typeName: String,
     viewId: Number,
+    isPublic: Boolean,
     initialName: String,
     initialView: Object
   },
@@ -149,7 +151,7 @@ export default {
       if ( this.mode == 'default' )
         return this.$t( 'title.DefaultView' );
       else if ( this.mode == 'add' )
-        return this.$t( 'cmd.AddPublicView' );
+        return this.isPublic ? this.$t( 'cmd.AddPublicView' ) : this.$t( 'cmd.AddPersonalView' );
       else if ( this.mode == 'edit' )
         return this.$t( 'cmd.EditView' );
       else if ( this.mode == 'clone' )
@@ -159,11 +161,11 @@ export default {
       if ( this.mode == 'default' )
         return 'prompt.EditDefaultView';
       else if ( this.mode == 'add' )
-        return 'prompt.AddPublicView';
+        return this.isPublic ? 'prompt.AddPublicView' : 'prompt.AddPersonalView';
       else if ( this.mode == 'edit' )
-        return 'prompt.EditPublicView';
+        return this.isPublic ? 'prompt.EditPublicView' : 'prompt.EditPersonalView';
       else if ( this.mode == 'clone' )
-        return 'prompt.ClonePublicView';
+        return this.isPublic ? 'prompt.ClonePublicView' : 'prompt.ClonePersonalView';
     },
     type() {
       return this.types.find( t => t.id == this.typeId );
@@ -213,6 +215,8 @@ export default {
         data.typeId = this.typeId;
       else
         data.viewId = this.viewId;
+      if ( this.mode == 'add' || this.mode == 'clone' )
+        data.isPublic = this.isPublic;
       if ( this.mode == 'add' || this.mode == 'edit' || this.mode == 'clone' )
         data.name = this.name;
       data.columns = columns;
@@ -399,13 +403,16 @@ export default {
     },
 
     cloneView() {
-      this.$router.push( 'ClonePublicView', { typeId: this.typeId, viewId: this.viewId } );
+      this.$router.push( 'CloneView', { typeId: this.typeId, viewId: this.viewId } );
     },
     unpublishView() {
       this.$router.push( 'UnpublishView', { typeId: this.typeId, viewId: this.viewId } );
     },
+    publishView() {
+      this.$router.push( 'PublishView', { typeId: this.typeId, viewId: this.viewId } );
+    },
     deleteView() {
-      this.$router.push( 'DeletePublicView', { typeId: this.typeId, viewId: this.viewId } );
+      this.$router.push( 'DeleteView', { typeId: this.typeId, viewId: this.viewId } );
     },
 
     cancel() {

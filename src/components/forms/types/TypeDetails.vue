@@ -21,19 +21,19 @@
   <div class="container-fluid">
     <FormHeader v-bind:title="name" v-bind:breadcrumbs="breadcrumbs" v-on:close="close">
       <button type="button" class="btn btn-default" v-on:click="viewSettings"><span class="fa fa-binoculars" aria-hidden="true"></span> {{ $t( 'title.ViewSettings' ) }}</button>
-      <DropdownButton fa-class="fa-ellipsis-v" menu-class="dropdown-menu-right" v-bind:title="$t( 'title.More' )">
+      <DropdownButton v-if="isAdministrator" fa-class="fa-ellipsis-v" menu-class="dropdown-menu-right" v-bind:title="$t( 'title.More' )">
         <li><HyperLink v-on:click="renameType"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'cmd.RenameType' ) }}</HyperLink></li>
         <li><HyperLink v-on:click="deleteType"><span class="fa fa-trash" aria-hidden="true"></span> {{ $t( 'cmd.DeleteType' ) }}</HyperLink></li>
       </DropdownButton>
     </FormHeader>
     <FormSection v-bind:title="$t( 'title.Attributes' )">
-      <button type="button" class="btn btn-success" v-on:click="addAttribute"><span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'cmd.Add' ) }}</button>
-      <button v-if="attributes.length > 1" type="button" class="btn btn-default" v-on:click="reorderAttributes">
+      <button v-if="isAdministrator" type="button" class="btn btn-success" v-on:click="addAttribute"><span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'cmd.Add' ) }}</button>
+      <button v-if="isAdministrator && attributes.length > 1" type="button" class="btn btn-default" v-on:click="reorderAttributes">
         <span class="fa fa-random" aria-hidden="true"></span> {{ $t( 'cmd.ChangeOrder' ) }}
       </button>
     </FormSection>
     <Grid v-if="attributes.length > 0" v-bind:items="attributes" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-large', null, null, 'column-small' ]"
-          v-on:row-click="rowClick">
+          v-bind:row-click-disabled="!isAdministrator" v-on:row-click="rowClick">
       <template slot-scope="{ item, columnIndex, columnClass }">
         <td v-bind:class="columnClass">{{ getCellValue( columnIndex, item ) }}</td>
       </template>
@@ -45,6 +45,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 import savePosition from '@/mixins/save-position'
 
 export default {
@@ -57,6 +59,7 @@ export default {
   },
 
   computed: {
+    ...mapGetters( 'global', [ 'isAdministrator' ] ),
     breadcrumbs() {
       return [
         { label: this.$t( 'title.IssueTypes' ), route: 'ManageTypes' }

@@ -20,7 +20,7 @@
 <template>
   <div class="container-fluid">
     <FormHeader v-bind:title="$t( 'title.IssueTypes' )" v-on:close="close">
-      <button type="button" class="btn btn-success" v-on:click="addType"><span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'cmd.Add' ) }}</button>
+      <button v-if="isAdministrator" type="button" class="btn btn-success" v-on:click="addType"><span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'cmd.Add' ) }}</button>
     </FormHeader>
     <Grid v-if="types.length > 0" v-bind:items="types" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-large' ]" v-on:row-click="rowClick">
       <template slot-scope="{ item, columnIndex, columnClass }">
@@ -44,6 +44,7 @@ export default {
   },
 
   computed: {
+    ...mapGetters( 'global', [ 'isAdministrator' ] ),
     columnNames() {
       return [ this.$t( 'title.Name' ) ];
     }

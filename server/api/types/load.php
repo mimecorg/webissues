@@ -22,20 +22,28 @@ require_once( '../../../system/bootstrap.inc.php' );
 
 class Server_Api_Types_Load
 {
-    public $access = 'admin';
+    public $access = '*';
 
     public $params = array(
         'typeId' => array( 'type' => 'int', 'required' => true ),
         'attributes' => array( 'type' => 'bool', 'default' => false ),
         'defaultView' => array( 'type' => 'bool', 'default' => false ),
-        'views' => array( 'type' => 'bool', 'default' => false ),
+        'publicViews' => array( 'type' => 'bool', 'default' => false ),
+        'personalViews' => array( 'type' => 'bool', 'default' => false ),
         'used' => array( 'type' => 'bool', 'default' => false )
     );
 
-    public function run( $typeId, $attributes, $defaultView, $views, $used )
+    public function run( $typeId, $attributes, $defaultView, $publicViews, $personalViews, $used )
     {
+        if ( System_Api_Principal::getCurrent()->isAdministrator() ) {
+            $isAdministrator = true;
+        } else {
+            $projectManager = new System_Api_ProjectManager();
+            $isAdministrator = $projectManager->isProjectAdministrator();
+        }
+
         $typeManager = new System_Api_TypeManager();
-        $type = $typeManager->getIssueType( $typeId );
+        $type = $typeManager->getIssueType( $typeId, $isAdministrator ? 0 : System_Api_TypeManager::CheckAvailable );
 
         $result[ 'id' ] = $type[ 'type_id' ];
         $result[ 'name' ] = $type[ 'type_name' ];
@@ -80,11 +88,11 @@ class Server_Api_Types_Load
             $result[ 'defaultView' ] = $resultView;
         }
 
-        if ( $views ) {
+        if ( $publicViews ) {
             $viewManager = new System_Api_ViewManager();
             $viewRows = $viewManager->getPublicViews( $type );
 
-            $result[ 'views' ] = array();
+            $result[ 'publicViews' ] = array();
 
             $helper = new Server_Api_Helpers_Views();
 
@@ -95,7 +103,26 @@ class Server_Api_Types_Load
 
                 $helper->getViewInformation( $resultView, $view[ 'view_def' ] );
 
-                $result[ 'views' ][] = $resultView;
+                $result[ 'publicViews' ][] = $resultView;
+            }
+        }
+
+        if ( $personalViews ) {
+            $viewManager = new System_Api_ViewManager();
+            $viewRows = $viewManager->getPersonalViews( $type );
+
+            $result[ 'personalViews' ] = array();
+
+            $helper = new Server_Api_Helpers_Views();
+
+            foreach ( $viewRows as $view ) {
+                $resultView = array();
+                $resultView[ 'id' ] = (int)$view[ 'view_id' ];
+                $resultView[ 'name' ] = $view[ 'view_name' ];
+
+                $helper->getViewInformation( $resultView, $view[ 'view_def' ] );
+
+                $result[ 'personalViews' ][] = $resultView;
             }
         }
 

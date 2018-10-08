@@ -35,6 +35,8 @@ class System_Api_TypeManager extends System_Api_Base
     /*@{*/
     /** Force deletion with all associated data. */
     const ForceDelete = 1;
+    /** Check if type is available to the current user. */
+    const CheckAvailable = 2;
     /*@}*/
 
     private static $attributeTypes = array();
@@ -61,13 +63,30 @@ class System_Api_TypeManager extends System_Api_Base
     /**
     * Get the issue type with given identifier.
     * @param $typeId Identifier of the type.
+    * @param $flags If CheckAvailable is passed the issue type is only returned
+    * if it is available to the current user.
     * @return Array containing the issue type.
     */
-    public function getIssueType( $typeId )
+    public function getIssueType( $typeId, $flags = 0 )
     {
-        $query = 'SELECT type_id, type_name FROM {issue_types} WHERE type_id = %d';
+        $principal = System_Api_Principal::getCurrent();
 
-        if ( !( $type = $this->connection->queryRow( $query, $typeId ) ) )
+        $query = 'SELECT t.type_id, t.type_name FROM {issue_types} AS t WHERE t.type_id = %d';
+
+        if ( $flags & self::CheckAvailable ) {
+            if ( !$principal->isAuthenticated() ) {
+                $query .= ' AND t.type_id IN ( SELECT f.type_id FROM {folders} AS f'
+                    . ' JOIN {projects} AS p ON p.project_id = f.project_id'
+                    . ' WHERE p.is_public = 1 AND p.is_archived = 0 )';
+            } else if ( !$principal->isAdministrator() ) {
+                $query .= ' AND t.type_id IN ( SELECT f.type_id FROM {folders} AS f'
+                    . ' JOIN {projects} AS p ON p.project_id = f.project_id'
+                    . ' JOIN {effective_rights} AS r ON r.project_id = f.project_id AND r.user_id = %d'
+                    . ' WHERE p.is_archived = 0 )';
+            }
+        }
+
+        if ( !( $type = $this->connection->queryRow( $query, $typeId, $principal->getUserId() ) ) )
             throw new System_Api_Error( System_Api_Error::UnknownType );
 
         return $type;

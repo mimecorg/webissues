@@ -22,10 +22,11 @@ require_once( '../../../../system/bootstrap.inc.php' );
 
 class Server_Api_Types_Views_Add
 {
-    public $access = 'admin';
+    public $access = '*';
 
     public $params = array(
         'typeId' => array( 'type' => 'int', 'required' => true ),
+        'isPublic' => array( 'type' => 'bool', 'required' => true ),
         'name' => array( 'type' => 'string', 'required' => true ),
         'columns' => array( 'type' => 'string', 'required' => true ),
         'sortColumn' => array( 'type' => 'int', 'required' => true ),
@@ -33,8 +34,11 @@ class Server_Api_Types_Views_Add
         'filters' => array( 'type' => 'array', 'required' => true )
     );
 
-    public function run( $typeId, $name, $columns, $sortColumn, $sortAscending, $filters )
+    public function run( $typeId, $isPublic, $name, $columns, $sortColumn, $sortAscending, $filters )
     {
+        if ( $isPublic && !System_Api_Principal::getCurrent()->isAdministrator() )
+            throw new System_Api_Error( System_Api_Error::AccessDenied );
+
         $validator = new System_Api_Validator();
         $validator->checkString( $name, System_Const::NameMaxLength );
 
@@ -49,7 +53,10 @@ class Server_Api_Types_Views_Add
 
         $viewManager = new System_Api_ViewManager();
 
-        $result[ 'viewId' ] = $viewManager->addPublicView( $type, $name, $definition );
+        if ( $isPublic )
+            $result[ 'viewId' ] = $viewManager->addPublicView( $type, $name, $definition );
+        else
+            $result[ 'viewId' ] = $viewManager->addPersonalView( $type, $name, $definition );
         $result[ 'changed' ] = true;
 
         return $result;

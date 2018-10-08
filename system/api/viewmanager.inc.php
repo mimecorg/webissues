@@ -66,6 +66,24 @@ class System_Api_ViewManager extends System_Api_Base
     }
 
     /**
+    * Get the list of personal views for given issue type.
+    * @param $type Issue type for which views are retrieved.
+    * @return An array of associative arrays representing views.
+    */
+    public function getPersonalViews( $type )
+    {
+        $principal = System_Api_Principal::getCurrent();
+
+        $typeId = $type[ 'type_id' ];
+
+        $query = 'SELECT view_id, view_name, view_def'
+            . ' FROM {views}'
+            . ' WHERE type_id = %d AND user_id = %d';
+
+        return $this->connection->queryTable( $query, $typeId, $principal->getUserId() );
+    }
+
+    /**
     * Get the total number of personal views for given issue type.
     * @param $type Issue type for which views are retrieved.
     */

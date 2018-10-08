@@ -20,38 +20,58 @@
 <template>
   <div class="container-fluid">
     <FormHeader v-bind:title="$t( 'title.ViewSettings' )" v-bind:breadcrumbs="breadcrumbs" v-on:close="close"/>
-    <FormSection v-bind:title="$t( 'title.DefaultView' )">
-      <button type="button" class="btn btn-default" v-on:click="editDefaultView"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'cmd.Edit' ) }}</button>
-    </FormSection>
-    <div class="panel panel-default">
-      <div class="panel-body panel-table">
-        <div class="row">
-          <div class="col-xs-3 col-sm-2">{{ $t( 'label.Columns' ) }}</div>
-          <div class="col-xs-9 col-sm-10">{{ defaultColumns }}</div>
-        </div>
-        <div class="row">
-          <div class="col-xs-3 col-sm-2">{{ $t( 'label.SortBy' ) }}</div>
-          <div class="col-xs-9 col-sm-10">{{ defaultSortBy }}</div>
+    <template v-if="isAdministrator">
+      <FormSection v-bind:title="$t( 'title.DefaultView' )">
+        <button type="button" class="btn btn-default" v-on:click="editDefaultView" v-bind:title="$t( 'cmd.EditDefaultView' )">
+          <span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'cmd.Edit' ) }}
+        </button>
+      </FormSection>
+      <div class="panel panel-default">
+        <div class="panel-body panel-table">
+          <div class="row">
+            <div class="col-xs-3 col-sm-2">{{ $t( 'label.Columns' ) }}</div>
+            <div class="col-xs-9 col-sm-10">{{ defaultColumns }}</div>
+          </div>
+          <div class="row">
+            <div class="col-xs-3 col-sm-2">{{ $t( 'label.SortBy' ) }}</div>
+            <div class="col-xs-9 col-sm-10">{{ defaultSortBy }}</div>
+          </div>
         </div>
       </div>
-    </div>
-    <FormSection v-bind:title="$t( 'title.PublicViews' )">
-      <button type="button" class="btn btn-success" v-on:click="addView"><span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'cmd.Add' ) }}</button>
+      <FormSection v-bind:title="$t( 'title.PublicViews' )">
+        <button type="button" class="btn btn-success" v-on:click="addPublicView" v-bind:title="$t( 'cmd.AddPublicView' )">
+          <span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'cmd.Add' ) }}
+        </button>
+      </FormSection>
+      <Grid v-if="publicViews.length > 0" v-bind:items="publicViews" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-medium', 'column-xlarge', null ]"
+            v-on:row-click="rowClickPublic">
+        <template slot-scope="{ item, columnIndex, columnClass }">
+          <td v-bind:class="columnClass">{{ getCellValue( columnIndex, item ) }}</td>
+        </template>
+      </Grid>
+      <div v-else class="alert alert-info">
+        {{ $t( 'info.NoPublicViews' ) }}
+      </div>
+    </template>
+    <FormSection v-bind:title="$t( 'title.PersonalViews' )">
+      <button type="button" class="btn btn-success" v-on:click="addPersonalView" v-bind:title="$t( 'cmd.AddPersonalView' )">
+        <span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'cmd.Add' ) }}
+      </button>
     </FormSection>
-    <Grid v-if="views.length > 0" v-bind:items="views" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-medium', 'column-xlarge', null ]"
-          v-on:row-click="rowClick">
+    <Grid v-if="personalViews.length > 0" v-bind:items="personalViews" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-medium', 'column-xlarge', null ]"
+          v-on:row-click="rowClickPersonal">
       <template slot-scope="{ item, columnIndex, columnClass }">
         <td v-bind:class="columnClass">{{ getCellValue( columnIndex, item ) }}</td>
       </template>
     </Grid>
     <div v-else class="alert alert-info">
-      {{ $t( 'info.NoPublicViews' ) }}
+      {{ $t( 'info.NoPersonalViews' ) }}
     </div>
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 
 import savePosition from '@/mixins/save-position'
 import { getColumnName } from '@/utils/columns'
@@ -63,11 +83,13 @@ export default {
     typeId: Number,
     name: String,
     defaultView: Object,
-    views: Array
+    publicViews: Array,
+    personalViews: Array,
   },
 
   computed: {
     ...mapState( 'global', [ 'types' ] ),
+    ...mapGetters( 'global', [ 'isAdministrator' ] ),
     breadcrumbs() {
       return [
         { label: this.$t( 'title.IssueTypes' ), route: 'ManageTypes' },
@@ -113,12 +135,18 @@ export default {
     editDefaultView() {
       this.$router.push( 'EditDefaultView', { typeId: this.typeId } );
     },
-    addView() {
+    addPublicView() {
       this.$router.push( 'AddPublicView', { typeId: this.typeId } );
     },
+    addPersonalView() {
+      this.$router.push( 'AddPersonalView', { typeId: this.typeId } );
+    },
 
-    rowClick( rowIndex ) {
-      this.$router.push( 'EditPublicView', { typeId: this.typeId, viewId: this.views[ rowIndex ].id } );
+    rowClickPublic( rowIndex ) {
+      this.$router.push( 'EditView', { typeId: this.typeId, viewId: this.publicViews[ rowIndex ].id } );
+    },
+    rowClickPersonal( rowIndex ) {
+      this.$router.push( 'EditView', { typeId: this.typeId, viewId: this.personalViews[ rowIndex ].id } );
     },
 
     close() {

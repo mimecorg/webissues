@@ -280,6 +280,21 @@ class System_Api_ProjectManager extends System_Api_Base
     }
 
     /**
+    * Return @c true if the current user has project administrator rights in at least one project.
+    */
+    public function isProjectAdministrator()
+    {
+        $principal = System_Api_Principal::getCurrent();
+
+        $query = 'SELECT COUNT(*)'
+            . ' FROM {rights} AS r'
+            . ' JOIN {projects} AS p ON p.project_id = r.project_id'
+            . ' WHERE r.user_id = %d AND r.project_access = %d AND p.is_archived = 0';
+
+        return $this->connection->queryScalar( $query, $principal->getUserId(), System_Const::AdministratorAccess ) > 0;
+    }
+
+    /**
     * Create a new project. An error is thrown if a project with given name
     * already exists.
     * @param $name The name of the project to create.

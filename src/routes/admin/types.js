@@ -53,6 +53,8 @@ export default function routeTypes( route, ajax, store ) {
   } );
 
   route( 'RenameType', '/admin/types/:typeId/rename', ( { typeId } ) => {
+    if ( store.state.global.userAccess != Access.AdministratorAccess )
+      return Promise.reject( makeError( ErrorCode.AccessDenied ) );
     return ajax.post( '/server/api/types/load.php', { typeId } ).then( ( { name } ) => {
       return {
         form: 'types/EditType',
@@ -65,6 +67,8 @@ export default function routeTypes( route, ajax, store ) {
   } );
 
   route( 'DeleteType', '/admin/types/:typeId/delete', ( { typeId } ) => {
+    if ( store.state.global.userAccess != Access.AdministratorAccess )
+      return Promise.reject( makeError( ErrorCode.AccessDenied ) );
     return ajax.post( '/server/api/types/load.php', { typeId, used: true } ).then( ( { name, used } ) => {
       return {
         form: 'types/DeleteType',
@@ -77,6 +81,8 @@ export default function routeTypes( route, ajax, store ) {
   } );
 
   route( 'AddAttribute', '/admin/types/:typeId/attributes/add', ( { typeId } ) => {
+    if ( store.state.global.userAccess != Access.AdministratorAccess )
+      return Promise.reject( makeError( ErrorCode.AccessDenied ) );
     return ajax.post( '/server/api/types/load.php', { typeId } ).then( ( { name } ) => {
       return {
         form: 'types/EditAttribute',
@@ -115,6 +121,8 @@ export default function routeTypes( route, ajax, store ) {
   } );
 
   route( 'ReorderAttributes', '/admin/types/:typeId/attributes/reorder', ( { typeId } ) => {
+    if ( store.state.global.userAccess != Access.AdministratorAccess )
+      return Promise.reject( makeError( ErrorCode.AccessDenied ) );
     return ajax.post( '/server/api/types/load.php', { typeId, attributes: true } ).then( ( { name, attributes } ) => {
       return {
         form: 'types/ReorderAttributes',
@@ -126,19 +134,24 @@ export default function routeTypes( route, ajax, store ) {
   } );
 
   route( 'ViewSettings', '/admin/types/:typeId/views', ( { typeId } ) => {
-    return ajax.post( '/server/api/types/load.php', { typeId, defaultView: true, views: true } ).then( ( { name, defaultView, views } ) => {
+    const isAdministrator = store.state.global.userAccess == Access.AdministratorAccess;
+    const data = { typeId, defaultView: isAdministrator, publicViews: isAdministrator, personalViews: true };
+    return ajax.post( '/server/api/types/load.php', data ).then( ( { name, defaultView, publicViews, personalViews } ) => {
       return {
         form: 'types/ViewSettings',
         size: 'large',
         typeId,
         name,
         defaultView,
-        views
+        publicViews,
+        personalViews
       };
     } );
   } );
 
   route( 'EditDefaultView', '/admin/types/:typeId/views/default/edit', ( { typeId } ) => {
+    if ( store.state.global.userAccess != Access.AdministratorAccess )
+      return Promise.reject( makeError( ErrorCode.AccessDenied ) );
     return ajax.post( '/server/api/types/load.php', { typeId, defaultView: true } ).then( ( { name, defaultView } ) => {
       return {
         form: 'types/EditView',
@@ -150,38 +163,56 @@ export default function routeTypes( route, ajax, store ) {
     } );
   } );
 
-  route( 'AddPublicView', '/admin/types/:typeId/views/add', ( { typeId } ) => {
+  route( 'AddPublicView', '/admin/types/:typeId/views/add/public', ( { typeId } ) => {
+    if ( store.state.global.userAccess != Access.AdministratorAccess )
+      return Promise.reject( makeError( ErrorCode.AccessDenied ) );
     return ajax.post( '/server/api/types/load.php', { typeId, defaultView: true } ).then( ( { name, defaultView } ) => {
       return {
         form: 'types/EditView',
         mode: 'add',
         typeId,
         typeName: name,
+        isPublic: true,
         initialView: defaultView
       };
     } );
   } );
 
-  route( 'EditPublicView', '/admin/types/:typeId/views/:viewId/edit', ( { typeId, viewId } ) => {
-    return ajax.post( '/server/api/types/views/load.php', { typeId, viewId, details: true } ).then( ( { name, details } ) => {
+  route( 'AddPersonalView', '/admin/types/:typeId/views/add/personal', ( { typeId } ) => {
+    return ajax.post( '/server/api/types/load.php', { typeId, defaultView: true } ).then( ( { name, defaultView } ) => {
+      return {
+        form: 'types/EditView',
+        mode: 'add',
+        typeId,
+        typeName: name,
+        isPublic: false,
+        initialView: defaultView
+      };
+    } );
+  } );
+
+  route( 'EditView', '/admin/types/:typeId/views/:viewId/edit', ( { typeId, viewId } ) => {
+    return ajax.post( '/server/api/types/views/load.php', { typeId, viewId, details: true } ).then( ( { name, isPublic, details } ) => {
       return {
         form: 'types/EditView',
         mode: 'edit',
         typeId,
         viewId,
+        isPublic,
         initialName: name,
         initialView: details
       };
     } );
   } );
 
-  route( 'ClonePublicView', '/admin/types/:typeId/views/:viewId/clone', ( { typeId, viewId } ) => {
-    return ajax.post( '/server/api/types/views/load.php', { typeId, viewId, details: true } ).then( ( { name, details } ) => {
+  route( 'CloneView', '/admin/types/:typeId/views/:viewId/clone', ( { typeId, viewId } ) => {
+    return ajax.post( '/server/api/types/views/load.php', { typeId, viewId, details: true } ).then( ( { name, isPublic, details } ) => {
       return {
         form: 'types/EditView',
         mode: 'clone',
         typeId,
         viewId,
+        isPublic,
         initialName: name,
         initialView: details
       };
@@ -200,13 +231,14 @@ export default function routeTypes( route, ajax, store ) {
     } );
   } );
 
-  route( 'DeletePublicView', '/admin/types/:typeId/views/:viewId/delete', ( { typeId, viewId } ) => {
-    return ajax.post( '/server/api/types/views/load.php', { typeId, viewId } ).then( ( { name } ) => {
+  route( 'DeleteView', '/admin/types/:typeId/views/:viewId/delete', ( { typeId, viewId } ) => {
+    return ajax.post( '/server/api/types/views/load.php', { typeId, viewId } ).then( ( { name, isPublic } ) => {
       return {
         form: 'types/DeleteView',
         size: 'small',
         typeId,
         viewId,
+        isPublic,
         name
       };
     } );
