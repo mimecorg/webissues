@@ -43,6 +43,7 @@ function makeState() {
     searchText: '',
     searchValue: '',
     searchError: false,
+    overrideSort: false,
     sortColumn: null,
     sortAscending: false,
     offset: 0,
@@ -158,6 +159,7 @@ function makeMutations() {
       state.searchText = '';
       state.searchValue = '';
       state.searchError = false;
+      state.overrideSort = false;
       state.sortColumn = null;
       state.sortAscending = false;
       state.offset = 0;
@@ -197,6 +199,7 @@ function makeMutations() {
       state.offset = 0;
     },
     setSortOrder( state, { sortColumn, sortAscending } ) {
+      state.overrideSort = true;
       state.sortColumn = sortColumn;
       state.sortAscending = sortAscending;
       state.offset = 0;
@@ -240,14 +243,18 @@ function makeActions( ajax ) {
         typeId: state.typeId,
         viewId: state.viewId,
         projectId: state.projectId,
-        folderId: state.folderId,
-        searchColumn: state.searchColumn,
-        searchValue: state.searchValue,
-        sortColumn: state.sortColumn,
-        sortAscending: state.sortAscending,
-        offset: state.offset,
-        limit: PageSize
+        folderId: state.folderId
       };
+      if ( state.searchValue != '' ) {
+        query.searchColumn = state.searchColumn;
+        query.searchValue = state.searchValue;
+      };
+      if ( state.overrideSort ) {
+        query.sortColumn = state.sortColumn;
+        query.sortAscending = state.sortAscending;
+      };
+      query.offset = state.offset;
+      query.limit = PageSize;
       const promise = ajax.post( '/server/api/issues/list.php', query );
       commit( 'setLastPromise', promise );
       return new Promise( ( resolve, reject ) => {
