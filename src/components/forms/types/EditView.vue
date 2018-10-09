@@ -23,7 +23,7 @@
       <DropdownButton v-if="mode == 'edit'" fa-class="fa-ellipsis-v" menu-class="dropdown-menu-right" v-bind:title="$t( 'title.More' )">
         <li><HyperLink v-on:click="cloneView"><span class="fa fa-clone" aria-hidden="true"></span> {{ $t( 'cmd.CloneView' ) }}</HyperLink></li>
         <li v-if="isPublic"><HyperLink v-on:click="unpublishView"><span class="fa fa-lock" aria-hidden="true"></span> {{ $t( 'cmd.UnpublishView' ) }}</HyperLink></li>
-        <li v-else><HyperLink v-on:click="publishView"><span class="fa fa-upload" aria-hidden="true"></span> {{ $t( 'cmd.PublishView' ) }}</HyperLink></li>
+        <li v-else-if="isAdministrator"><HyperLink v-on:click="publishView"><span class="fa fa-upload" aria-hidden="true"></span> {{ $t( 'cmd.PublishView' ) }}</HyperLink></li>
         <li><HyperLink v-on:click="deleteView"><span class="fa fa-trash" aria-hidden="true"></span> {{ $t( 'cmd.DeleteView' ) }}</HyperLink></li>
       </DropdownButton>
     </FormHeader>
@@ -102,7 +102,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 
 import { Column, MaxLength, ErrorCode, Reason } from '@/constants'
 import { getColumnName } from '@/utils/columns'
@@ -147,6 +147,7 @@ export default {
 
   computed: {
     ...mapState( 'global', [ 'types' ] ),
+    ...mapGetters( 'global', [ 'isAdministrator' ] ),
     title() {
       if ( this.mode == 'default' )
         return this.$t( 'title.DefaultView' );

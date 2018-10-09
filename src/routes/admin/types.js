@@ -163,7 +163,7 @@ export default function routeTypes( route, ajax, store ) {
     } );
   } );
 
-  route( 'AddPublicView', '/admin/types/:typeId/views/add/public', ( { typeId } ) => {
+  route( 'AddPublicView', '/admin/types/:typeId/views/public/add', ( { typeId } ) => {
     if ( store.state.global.userAccess != Access.AdministratorAccess )
       return Promise.reject( makeError( ErrorCode.AccessDenied ) );
     return ajax.post( '/server/api/types/load.php', { typeId, defaultView: true } ).then( ( { name, defaultView } ) => {
@@ -178,7 +178,7 @@ export default function routeTypes( route, ajax, store ) {
     } );
   } );
 
-  route( 'AddPersonalView', '/admin/types/:typeId/views/add/personal', ( { typeId } ) => {
+  route( 'AddPersonalView', '/admin/types/:typeId/views/personal/add', ( { typeId } ) => {
     return ajax.post( '/server/api/types/load.php', { typeId, defaultView: true } ).then( ( { name, defaultView } ) => {
       return {
         form: 'types/EditView',
@@ -219,11 +219,29 @@ export default function routeTypes( route, ajax, store ) {
     } );
   } );
 
-  route( 'UnpublishView', '/admin/types/:typeId/views/:viewId/unpublish', ( { typeId, viewId } ) => {
+  route( 'PublishView', '/admin/types/:typeId/views/:viewId/publish', ( { typeId, viewId } ) => {
+    if ( store.state.global.userAccess != Access.AdministratorAccess )
+      return Promise.reject( makeError( ErrorCode.AccessDenied ) );
     return ajax.post( '/server/api/types/views/load.php', { typeId, viewId } ).then( ( { name } ) => {
       return {
-        form: 'types/UnpublishView',
+        form: 'types/PublishView',
         size: 'small',
+        mode: 'publish',
+        typeId,
+        viewId,
+        name
+      };
+    } );
+  } );
+
+  route( 'UnpublishView', '/admin/types/:typeId/views/:viewId/unpublish', ( { typeId, viewId } ) => {
+    if ( store.state.global.userAccess != Access.AdministratorAccess )
+      return Promise.reject( makeError( ErrorCode.AccessDenied ) );
+    return ajax.post( '/server/api/types/views/load.php', { typeId, viewId } ).then( ( { name } ) => {
+      return {
+        form: 'types/PublishView',
+        size: 'small',
+        mode: 'unpublish',
         typeId,
         viewId,
         name

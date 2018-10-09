@@ -19,41 +19,67 @@
 
 <template>
   <div class="container-fluid">
-    <FormHeader v-bind:title="$t( 'cmd.DeleteView' )" v-on:close="close"/>
-    <Prompt v-bind:path="promptPath"><strong>{{ name }}</strong></Prompt>
-    <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
+    <FormHeader v-bind:title="title" v-on:close="close"/>
+    <Prompt v-if="errorPath == null" v-bind:path="promptPath"><strong>{{ name }}</strong></Prompt>
+    <Prompt v-else v-bind:path="errorPath" alert-class="alert-danger"/>
+    <FormButtons v-bind:cancel-hidden="errorPath != null" v-on:ok="submit" v-on:cancel="cancel"/>
   </div>
 </template>
 
 <script>
+import { ErrorCode, Reason } from '@/constants'
+
 export default {
   props: {
+    mode: String,
     typeId: Number,
     viewId: Number,
-    isPublic: Boolean,
     name: String
   },
 
+  data() {
+    return {
+      errorPath: null
+    };
+  },
+
   computed: {
+    title() {
+      if ( this.mode == 'publish' )
+        return this.$t( 'cmd.PublishView' );
+      else if ( this.mode == 'unpublish' )
+        return this.$t( 'cmd.UnpublishView' );
+    },
     promptPath() {
-      if ( this.isPublic )
-        return 'prompt.DeletePublicView';
-      else
-        return 'prompt.DeletePersonalView';
+      if ( this.mode == 'publish' )
+        return 'prompt.PublishView';
+      else if ( this.mode == 'unpublish' )
+        return 'prompt.UnpublishView';
     }
   },
 
   methods: {
     submit() {
+      if ( this.errorPath != null ) {
+        this.returnToDetails();
+        return;
+      }
+
       this.$emit( 'block' );
 
       const data = { viewId: this.viewId };
 
-      this.$ajax.post( '/server/api/types/views/delete.php', data ).then( () => {
-        this.$store.commit( 'global/setDirty' );
+      this.$ajax.post( '/server/api/types/views/' + this.mode + '.php', data ).then( ( { changed } ) => {
+        if ( changed )
+          this.$store.commit( 'global/setDirty' );
         this.returnToDetails();
       } ).catch( error => {
-        this.$emit( 'error', error );
+        if ( error.reason == Reason.APIError && error.errorCode == ErrorCode.ViewAlreadyExists ) {
+          this.$emit( 'unblock' );
+          this.errorPath = 'ErrorCode.' + error.errorCode;
+        } else {
+          this.$emit( 'error', error );
+        }
       } );
     },
 

@@ -33,10 +33,9 @@ class Server_Api_Types_Views_Unpublish
         $viewManager = new System_Api_ViewManager();
         $view = $viewManager->getView( $viewId );
 
-        if ( $view[ 'is_public' ] == 0 )
-            throw new System_Api_Error( System_Api_Error::UnknownView );
+        $result[ 'changed' ] = $viewManager->unpublishView( $view );
 
-        $viewManager->unpublishView( $view );
+        return $result;
     }
 }
 

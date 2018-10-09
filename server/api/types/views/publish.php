@@ -20,9 +20,9 @@
 
 require_once( '../../../../system/bootstrap.inc.php' );
 
-class Server_Api_Types_Views_Delete
+class Server_Api_Types_Views_Unpublish
 {
-    public $access = '*';
+    public $access = 'admin';
 
     public $params = array(
         'viewId' => array( 'type' => 'int', 'required' => true )
@@ -31,10 +31,12 @@ class Server_Api_Types_Views_Delete
     public function run( $viewId )
     {
         $viewManager = new System_Api_ViewManager();
-        $view = $viewManager->getView( $viewId, System_Api_ViewManager::AllowEdit );
+        $view = $viewManager->getView( $viewId );
 
-        $viewManager->deleteView( $view );
+        $result[ 'changed' ] = $viewManager->publishView( $view );
+
+        return $result;
     }
 }
 
-System_Bootstrap::run( 'Server_Api_Application', 'Server_Api_Types_Views_Delete' );
+System_Bootstrap::run( 'Server_Api_Application', 'Server_Api_Types_Views_Unpublish' );
