@@ -179,7 +179,8 @@ export default {
     maxlength: Number,
     className: String,
     withTime: Boolean,
-    withToday: Boolean
+    withToday: Boolean,
+    withExpressions: Boolean
   },
 
   data() {
@@ -327,12 +328,17 @@ export default {
       }
     },
     selectToday() {
-      const now = new Date();
-      if ( this.withTime )
-        this.selectedDate = this.createDate( now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), now.getMinutes() );
-      else
-        this.selectedDate = this.createDate( now.getFullYear(), now.getMonth(), now.getDate() );
-      this.updateText();
+      if ( this.withExpressions ) {
+        this.selectedDate = null;
+        this.text = '[' + this.$t( 'text.Today' ) + ']';
+      } else {
+        const now = new Date();
+        if ( this.withTime )
+          this.selectedDate = this.createDate( now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), now.getMinutes() );
+        else
+          this.selectedDate = this.createDate( now.getFullYear(), now.getMonth(), now.getDate() );
+        this.updateText();
+      }
       this.close();
     },
 

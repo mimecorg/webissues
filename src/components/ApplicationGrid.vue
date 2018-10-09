@@ -45,11 +45,11 @@ export default {
     columnClasses() {
       return this.columns.map( column => {
         if ( column.id == Column.ID )
-          return 'column-id';
+          return 'column-small';
         else if ( column.id == Column.Name )
-          return 'column-name';
+          return 'column-xlarge';
         else if ( column.id == Column.Location )
-          return 'column-location';
+          return 'column-medium';
       } );
     },
     columnAttributes() {
@@ -87,7 +87,9 @@ export default {
       return this.lastIndex < this.totalCount;
     },
     statusText() {
-      if ( this.totalCount == 0 )
+      if ( this.type == null )
+        return this.$t( 'text.NoTypeSelected' );
+      else if ( this.totalCount == 0 )
         return this.$t( 'text.NoIssues' );
       else if ( this.firstIndex == 1 && this.lastIndex == this.totalCount )
         return this.$t( 'text.IssuesCount', [ this.totalCount ] );

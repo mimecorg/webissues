@@ -287,6 +287,26 @@ class Setup_Updater extends System_Web_Base
                 $this->connection->execute( $query, $key, $value );
         }
 
+        if ( version_compare( $version, '2.0.001' ) < 0 ) {
+            $newTables = array(
+                'view_preferences' => array(
+                    'type_id'           => 'INTEGER ref-table="issue_types" ref-column="type_id" on-delete="cascade"',
+                    'user_id'           => 'INTEGER ref-table="users" ref-column="user_id"',
+                    'pref_key'          => 'VARCHAR length=40',
+                    'pref_value'        => 'TEXT size="long"',
+                    'pk'                => 'PRIMARY columns={"type_id","user_id","pref_key"}',
+                    'user_idx'          => 'INDEX columns={"user_id"}'
+                )
+            );
+
+            $generator = $this->connection->getSchemaGenerator();
+
+            foreach ( $newTables as $tableName => $fields )
+                $generator->createTable( $tableName, $fields );
+
+            $generator->updateReferences();
+        }
+
         $query = 'DELETE FROM {sessions}';
         $this->connection->execute( $query );
 

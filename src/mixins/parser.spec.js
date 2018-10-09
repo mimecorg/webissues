@@ -24,11 +24,11 @@ import makeParser from '@/mixins/parser'
 import { ErrorCode } from '@/constants'
 import { makeError } from '@/utils/errors'
 import { invariantSettings } from '@/utils/locale'
-import { enSettings, plSettings } from '@/test'
+import { enSettings, plSettings, i18n } from '@/test'
 
-const parser = makeParser( { state: { global: { settings: invariantSettings } } } );
-const enParser = makeParser( { state: { global: { settings: enSettings } } } );
-const plParser = makeParser( { state: { global: { settings: plSettings } } } );
+const parser = makeParser( { state: { global: { settings: invariantSettings } } }, i18n );
+const enParser = makeParser( { state: { global: { settings: enSettings } } }, i18n );
+const plParser = makeParser( { state: { global: { settings: plSettings } } }, i18n );
 
 describe( 'parser', () => {
   describe( 'normalizeString', () => {
@@ -213,6 +213,50 @@ describe( 'parser', () => {
     it( 'datetime', () => {
       const value = enParser.convertAttributeValue( '4/19/1982 9:45 pm', { type: 'DATETIME', time: 1 } );
       expect( value ).to.equal( '1982-04-19 21:45' );
+    } );
+  } );
+
+  describe( 'normalizeExpression', () => {
+    it( 'today', () => {
+      const value = parser.normalizeExpression( '[text.TODAY] + 7', { type: 'DATETIME' } );
+      expect( value ).to.equal( '[text.Today]+7' );
+    } );
+
+    it( 'me', () => {
+      const value = parser.normalizeExpression( '[text.ME]', { type: 'USER' } );
+      expect( value ).to.equal( '[text.Me]' );
+    } );
+
+    it( 'number', () => {
+      const value = enParser.normalizeExpression( '1234', { type: 'NUMERIC' } );
+      expect( value ).to.equal( '1,234' );
+    } );
+
+    it( 'date', () => {
+      const value = enParser.normalizeExpression( '04/19/1982', { type: 'DATETIME' } );
+      expect( value ).to.equal( '4/19/1982' );
+    } );
+  } );
+
+  describe( 'convertExpression', () => {
+    it( 'today', () => {
+      const value = parser.convertExpression( '[text.TODAY] + 7', { type: 'DATETIME' } );
+      expect( value ).to.equal( '[Today]+7' );
+    } );
+
+    it( 'me', () => {
+      const value = parser.convertExpression( '[text.ME]', { type: 'USER' } );
+      expect( value ).to.equal( '[Me]' );
+    } );
+
+    it( 'number', () => {
+      const value = enParser.convertExpression( '1,234', { type: 'NUMERIC' } );
+      expect( value ).to.equal( '1234' );
+    } );
+
+    it( 'date', () => {
+      const value = enParser.convertExpression( '04/19/1982', { type: 'DATETIME' } );
+      expect( value ).to.equal( '1982-04-19' );
     } );
   } );
 

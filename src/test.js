@@ -47,7 +47,10 @@ export const plSettings = {
 };
 
 export const i18n = {
-  t( string, [ value ] ) {
-    return value + ' ' + string;
+  t( string, args ) {
+    if ( args != null )
+      return args[ 0 ] + ' ' + string;
+    else
+      return string;
   }
 };

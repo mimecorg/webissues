@@ -21,7 +21,7 @@
   <Autocomplete v-if="isAutocomplete" ref="child" v-bind:id="id" v-bind:value="value" v-bind:maxlength="maxLength" v-bind:items="items" v-bind:multi-select="multiSelect"
                 v-on:input="value => valueChanged( value )"/>
   <DatePicker v-else-if="isDatePicker" ref="child" v-bind:id="id" v-bind:value="value" v-bind:maxlength="maxLength" v-bind:with-time="withTime"
-              v-on:input="value => valueChanged( value )"/>
+              v-bind:with-expressions="withExpressions" v-on:input="value => valueChanged( value )"/>
   <textarea v-else-if="isMultiLine" ref="child" v-bind:id="id" class="form-control" rows="6" v-bind:value="value" v-bind:maxlength="maxLength"
             v-on:input="valueChanged( $event.target.value )"></textarea>
   <input v-else ref="child" v-bind:id="id" type="text" class="form-control" v-bind:value="value" v-bind:maxlength="maxLength"
@@ -38,7 +38,8 @@ export default {
     id: String,
     value: String,
     attribute: Object,
-    project: Object
+    project: Object,
+    withExpressions: Boolean
   },
 
   computed: {
@@ -64,9 +65,9 @@ export default {
           return this.attribute.items;
         } else {
           if ( this.attribute.members == 1 && this.memberNames != null )
-            return this.memberNames;
+            return this.withExpressions ? [ '[' + this.$t( 'text.Me' ) + ']', ...this.memberNames ] : this.memberNames;
           else
-            return this.userNames;
+            return this.withExpressions ? [ '[' + this.$t( 'text.Me' ) + ']', ...this.userNames ] : this.userNames;
         }
       } else {
         return [];

@@ -98,9 +98,29 @@
   min-width: @grid-column-width;
   max-width: @grid-column-width;
 
-  &.column-wide {
-  min-width: 2 * @grid-column-width;
-  max-width: 2 * @grid-column-width;
+  &.column-small {
+    min-width: 0.5 * @grid-column-width;
+    max-width: 0.5 * @grid-column-width;
+  }
+
+  &.column-medium {
+    min-width: 1.5 * @grid-column-width;
+    max-width: 1.5 * @grid-column-width;
+  }
+
+  &.column-large {
+    min-width: 2 * @grid-column-width;
+    max-width: 2 * @grid-column-width;
+  }
+
+  &.column-xlarge {
+    min-width: 2 * @grid-column-width;
+    max-width: 2 * @grid-column-width;
+
+    @media ( min-width: @screen-lg-min ) {
+      min-width: 3 * @grid-column-width;
+      max-width: 3 * @grid-column-width;
+    }
   }
 
   &.column-fill {

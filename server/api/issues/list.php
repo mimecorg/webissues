@@ -135,6 +135,11 @@ class Server_Api_Issues_List
             $result[ 'columns' ][] = $resultColumn;
         }
 
+        if ( $view != null )
+            $viewManager->setViewPreference( $type, 'initial_view', $view[ 'view_id' ] );
+        else
+            $viewManager->setViewPreference( $type, 'initial_view', '' );
+
         System_Web_Base::setLinkMode( System_Web_Base::RouteLinks );
 
         $connection = System_Core_Application::getInstance()->getConnection();

@@ -19,7 +19,7 @@
 
 <template>
   <FormGroup v-bind:id="id" v-bind:label="label" v-bind:required="required" v-bind:error="error">
-    <input ref="input" v-bind:id="id" v-bind:type="type" class="form-control" v-bind:value="value" v-bind:maxlength="maxlength" v-on="inputListeners">
+    <input ref="input" v-bind:id="id" v-bind:type="type" class="form-control" v-bind:value="value" v-bind:maxlength="maxlength" v-bind:disabled="disabled" v-on="inputListeners">
   </FormGroup>
 </template>
 
@@ -31,6 +31,7 @@ export default {
     value: String,
     label: String,
     required: Boolean,
+    disabled: Boolean,
     error: String,
     maxlength: Number
   },

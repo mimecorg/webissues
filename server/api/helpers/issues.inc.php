@@ -20,7 +20,7 @@
 
 if ( !defined( 'WI_VERSION' ) ) die( -1 );
 
-class Server_Api_Issues_Helper
+class Server_Api_Helpers_Issues
 {
     public function extractValues( $values )
     {

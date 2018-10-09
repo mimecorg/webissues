@@ -19,6 +19,10 @@
 
 import Vue from 'vue'
 
+import draggable from 'vuedraggable'
+
+Vue.component( 'draggable', draggable );
+
 import '@/components/common'
 
 import Application from '@/components/Application'
@@ -49,7 +53,7 @@ export function startApplication( { baseURL, csrfToken, locale, ...initialState 
     const ajax = makeAjax( baseURL, csrfToken );
     const router = makeRouter();
     const store = makeStore( baseURL, initialState, ajax, router );
-    const parser = makeParser( store );
+    const parser = makeParser( store, i18n );
     const formatter = makeFormatter( store, i18n );
 
     registerRoutes( router, i18n, ajax, store, formatter );
@@ -69,8 +73,7 @@ export function startApplication( { baseURL, csrfToken, locale, ...initialState 
   } );
 }
 
-export function destroyApplication()
-{
+export function destroyApplication() {
   app.$destroy();
   app.$options.router.destroy();
   app = null;

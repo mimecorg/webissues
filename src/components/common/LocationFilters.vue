@@ -19,7 +19,7 @@
 
 <template>
   <div class="dropdown-filters">
-    <DropdownButton ref="project" fa-class="fa-object-group" v-bind:text="projectName" v-bind:title="projectTitle">
+    <DropdownButton ref="project" fa-class="fa-briefcase" v-bind:text="projectName" v-bind:title="projectTitle">
       <div class="dropdown-menu-scroll">
         <li v-bind:class="{ active: project == null }">
           <HyperLink v-on:click="selectProject( null )">{{ $t( 'text.SelectProject' ) }}</HyperLink>

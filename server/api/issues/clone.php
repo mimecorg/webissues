@@ -35,7 +35,7 @@ class Server_Api_Issues_Edit
 
     public function run( $issueId, $folderId, $name, $values, $description, $descriptionFormat )
     {
-        $helper = new Server_Api_Issues_Helper();
+        $helper = new Server_Api_Helpers_Issues();
         $values = $helper->extractValues( $values );
 
         $issueManager = new System_Api_IssueManager();

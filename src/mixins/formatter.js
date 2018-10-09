@@ -51,6 +51,9 @@ export default function makeFormatter( store, i18n ) {
     },
     formatFileSize( size ) {
       return formatFileSize( size, i18n, store.state.global.settings );
+    },
+    formatExpression( value, attribute ) {
+      return formatExpression( value, attribute, i18n, store.state.global.settings );
     }
   }
 }
@@ -140,6 +143,19 @@ function formatFileSize( size, i18n, settings ) {
 
   size /= 1024;
   return i18n.t( 'text.MB', [ formatDecimalNumber( size, 1, { stripZeros: true }, settings ) ] );
+}
+
+function formatExpression( value, attribute, i18n, settings ) {
+  if ( value == null || value == '' )
+    return '';
+
+  if ( ( attribute.type == 'TEXT' || attribute.type == 'ENUM' || attribute.type == 'USER' ) && value.substr( 0, 4 ) == '[Me]' )
+    return '[' + i18n.t( 'text.Me' ) + ']';
+
+  if ( attribute.type == 'DATETIME' && value.substr( 0, 7 ) == '[Today]' )
+    return '[' + i18n.t( 'text.Today' ) + ']' + value.substr( 7 );
+
+  return convertAttributeValue( value, attribute, {}, settings );
 }
 
 function toSingleLine( string ) {

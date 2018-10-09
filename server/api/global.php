@@ -94,6 +94,8 @@ class Server_Api_Global
         $viewManager = new System_Api_ViewManager();
         $views = $viewManager->getViews();
 
+        $viewPreferences = $viewManager->getViewPreferences();
+
         $result[ 'types' ] = array();
 
         foreach ( $types as $type ) {
@@ -137,6 +139,11 @@ class Server_Api_Global
                     $resultView[ 'public' ] = $view[ 'is_public' ] != 0;
                     $resultType[ 'views' ][] = $resultView;
                 }
+            }
+
+            foreach ( $viewPreferences as $preference ) {
+                if ( $preference[ 'type_id' ] == $type[ 'type_id' ] && $preference[ 'pref_key' ] == 'initial_view' )
+                    $resultType[ 'initialView' ] = (int)$preference[ 'pref_value' ];
             }
 
             $result[ 'types' ][] = $resultType;

@@ -261,6 +261,14 @@ class Setup_Installer extends System_Web_Base
                 'login_idx'         => 'INDEX columns={"user_login"} unique=1',
                 'name_idx'          => 'INDEX columns={"user_name"}'
             ),
+            'view_preferences' => array(
+                'type_id'           => 'INTEGER ref-table="issue_types" ref-column="type_id" on-delete="cascade"',
+                'user_id'           => 'INTEGER ref-table="users" ref-column="user_id"',
+                'pref_key'          => 'VARCHAR length=40',
+                'pref_value'        => 'TEXT size="long"',
+                'pk'                => 'PRIMARY columns={"type_id","user_id","pref_key"}',
+                'user_idx'          => 'INDEX columns={"user_id"}'
+            ),
             'view_settings' => array(
                 'type_id'           => 'INTEGER ref-table="issue_types" ref-column="type_id" on-delete="cascade"',
                 'set_key'           => 'VARCHAR length=40',

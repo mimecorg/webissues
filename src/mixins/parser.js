@@ -33,7 +33,7 @@ Vue.mixin( {
   }
 } );
 
-export default function makeParser( store ) {
+export default function makeParser( store, i18n ) {
   return {
     normalizeString,
     parseInteger,
@@ -43,6 +43,12 @@ export default function makeParser( store ) {
     },
     convertAttributeValue( value, attribute ) {
       return convertAttributeValue( value, attribute, store.state.global.settings );
+    },
+    normalizeExpression( value, attribute ) {
+      return normalizeExpression( value, attribute, i18n, store.state.global.users, store.state.global.settings );
+    },
+    convertExpression( value, attribute ) {
+      return convertExpression( value, attribute, i18n, store.state.global.settings );
     },
     parseDate( value, flags = {} ) {
       return parseDate( value, flags, store.state.global.settings );
@@ -210,6 +216,58 @@ function convertAttributeValue( value, attribute, settings ) {
   }
 
   return value;
+}
+
+function normalizeExpression( value, attribute, i18n, users, settings ) {
+  if ( value == '' ) {
+    if ( attribute.required == 1 )
+      throw makeError( ErrorCode.EmptyValue );
+    return '';
+  }
+
+  const result = processExpression( value, attribute, i18n, true );
+  if ( result != null )
+    return result;
+
+  return normalizeAttributeValue( value, attribute, null, users, settings );
+}
+
+function convertExpression( value, attribute, i18n, settings ) {
+  if ( value == '' )
+    return '';
+
+  const result = processExpression( value, attribute, i18n, false );
+  if ( result != null )
+    return result;
+
+  return convertAttributeValue( value, attribute, settings );
+}
+
+function processExpression( value, attribute, i18n, normalize ) {
+  if ( attribute.type == 'TEXT' || attribute.type == 'ENUM' || attribute.type == 'USER' ) {
+    const me = '[' + i18n.t( 'text.Me' ) + ']';
+    if ( value.substr( 0, me.length ).toLowerCase() == me.toLowerCase() ) {
+      if ( value.length > me.length )
+        throw makeError( ErrorCode.InvalidFormat );
+      return normalize ? me : '[Me]';
+    }
+  }
+
+  if ( attribute.type == 'DATETIME' ) {
+    const today = '[' + i18n.t( 'text.Today' ) + ']';
+    if ( value.substr( 0, today.length ).toLowerCase() == today.toLowerCase() ) {
+      let result = normalize ? today : '[Today]';
+      if ( value.length > today.length ) {
+        const parts = /^\s*([+-])\s*(\d+)$/.exec( value.substr( today.length ) );
+        if ( parts == null || parts[ 2 ] == 0 )
+          throw makeError( ErrorCode.InvalidFormat );
+        result += parts[ 1 ] + parts[ 2 ];
+      }
+      return result;
+    }
+  }
+
+  return null;
 }
 
 function checkLength( value, minLength, maxLength ) {

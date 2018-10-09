@@ -17,26 +17,24 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-import staticRoutes from '@/routes/static'
-import makeIssueRoutes from '@/routes/issue'
-import makeAdminRoutes from '@/routes/admin'
-import makeUserRoutes from '@/routes/user'
+import routeStatic from '@/routes/static'
+import routeIssues from '@/routes/issues'
+import routeAdmin from '@/routes/admin'
+import routeUser from '@/routes/user'
 
 export default function registerRoutes( router, i18n, ajax, store, formatter ) {
-  function makeRoutes() {
-    return [
-      staticRoutes,
-      makeIssueRoutes( i18n, ajax, store, formatter ),
-      makeAdminRoutes( ajax, store ),
-      makeUserRoutes()
-    ];
+  function routeAll( route ) {
+    routeStatic( route ),
+    routeIssues( route, i18n, ajax, store, formatter ),
+    routeAdmin( route, ajax, store ),
+    routeUser( route )
   }
 
-  router.register( makeRoutes() );
+  router.register( routeAll );
 
   if ( process.env.NODE_ENV != 'production' && module.hot != null ) {
-    module.hot.accept( [ '@/routes/static', '@/routes/issue', '@/routes/admin', '@/routes/user' ], () => {
-      router.hotUpdate( makeRoutes() );
+    module.hot.accept( [ '@/routes/static', '@/routes/issues', '@/routes/admin', '@/routes/user' ], () => {
+      router.hotUpdate( routeAll );
     } );
   }
 }

@@ -30,6 +30,7 @@ if ( !defined( 'WI_VERSION' ) ) die( -1 );
 class System_Api_ViewManager extends System_Api_Base
 {
     private static $settings = array();
+    private static $preferences = array();
     private static $views = array();
 
     /**
@@ -63,6 +64,24 @@ class System_Api_ViewManager extends System_Api_Base
             . ' WHERE user_id = %d OR user_id IS NULL';
 
         return $this->connection->queryTable( $query, $principal->getUserId() );
+    }
+
+    /**
+    * Get the list of personal views for given issue type.
+    * @param $type Issue type for which views are retrieved.
+    * @return An array of associative arrays representing views.
+    */
+    public function getPersonalViews( $type )
+    {
+        $principal = System_Api_Principal::getCurrent();
+
+        $typeId = $type[ 'type_id' ];
+
+        $query = 'SELECT view_id, view_name, view_def'
+            . ' FROM {views}'
+            . ' WHERE type_id = %d AND user_id = %d';
+
+        return $this->connection->queryTable( $query, $typeId, $principal->getUserId() );
     }
 
     /**
@@ -101,6 +120,23 @@ class System_Api_ViewManager extends System_Api_Base
             . ' WHERE type_id = %d AND user_id = %d';
 
         return $this->connection->queryPage( $query, $orderBy, $limit, $offset, $typeId, $principal->getUserId() );
+    }
+
+    /**
+    * Return all public views for given issue type.
+    * @param $type Issue type for which views are retrieved.
+    * @return An array of associative arrays representing views.
+    */
+    public function getPublicViews( $type )
+    {
+        $typeId = $type[ 'type_id' ];
+
+        $query = 'SELECT view_id, view_name, view_def'
+            . ' FROM {views}'
+            . ' WHERE type_id = %d AND user_id IS NULL'
+            . ' ORDER BY view_name';
+
+        return $this->connection->queryTable( $query, $typeId );
     }
 
     /**
@@ -589,5 +625,64 @@ class System_Api_ViewManager extends System_Api_Base
         }
 
         return $rows;
+    }
+
+    public function getViewPreferences()
+    {
+        $principal = System_Api_Principal::getCurrent();
+
+        $query = 'SELECT type_id, pref_key, pref_value'
+            . ' FROM {view_preferences}'
+            . ' WHERE user_id = %d';
+
+        return $this->connection->queryTable( $query, $principal->getUserId() );
+    }
+
+    public function getViewPreference( $type, $key )
+    {
+        $principal = System_Api_Principal::getCurrent();
+
+        $typeId = $type[ 'type_id' ];
+
+        if ( isset( self::$preferences[ $typeId ] ) ) {
+            $preferences = self::$preferences[ $typeId ];
+        } else {
+            $query = 'SELECT pref_key, pref_value FROM {view_preferences} WHERE type_id = %d AND user_id = %d';
+
+            $table = $this->connection->queryTable( $query, $typeId, $principal->getUserId() );
+
+            $preferences = array();
+            foreach ( $table as $row )
+                $preferences[ $row[ 'pref_key' ] ] = $row[ 'pref_value' ];
+
+            self::$preferences[ $typeId ] = $preferences;
+        }
+
+        return isset( $preferences[ $key ] ) ? $preferences[ $key ] : null;
+    }
+
+    public function setViewPreference( $type, $key, $newValue )
+    {
+        $principal = System_Api_Principal::getCurrent();
+
+        $oldValue = $this->getViewPreference( $type, $key );
+
+        if ( $newValue == $oldValue )
+            return false;
+
+        $typeId = $type[ 'type_id' ];
+
+        if ( $oldValue == '' )
+            $query = 'INSERT INTO {view_preferences} ( type_id, user_id, pref_key, pref_value ) VALUES ( %1d, %2d, %3s, %4s )';
+        else if ( $newValue == '' )
+            $query = 'DELETE FROM {view_preferences} WHERE type_id = %1d AND user_id = %2d AND pref_key = %3s';
+        else
+            $query = 'UPDATE {view_preferences} SET pref_value = %4s WHERE type_id = %1d AND user_id = %2d AND pref_key = %3s';
+
+        $this->connection->execute( $query, $typeId, $principal->getUserId(), $key, $newValue );
+
+        self::$preferences[ $typeId ][ $key ] = $newValue;
+
+        return true;
     }
 }

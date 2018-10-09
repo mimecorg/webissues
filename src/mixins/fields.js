@@ -49,7 +49,8 @@ Vue.mixin( {
       this.$field = field.bind( this );
       this.$fields = {
         validate: validate.bind( this ),
-        modified: modified.bind( this )
+        modified: modified.bind( this ),
+        clear: clear.bind( this )
       };
     }
   }
@@ -121,4 +122,9 @@ function modified() {
       return true;
   }
   return false;
+}
+
+function clear() {
+  for ( const name in this.$fieldsData )
+    this[ name + 'Error' ] = null;
 }
