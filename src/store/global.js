@@ -85,6 +85,11 @@ function makeMutations() {
       state.users = users;
       state.settings = settings;
     },
+    setInitialView( state, { typeId, viewId } ) {
+      const type = state.types.find( t => t.id == typeId );
+      if ( type != null )
+        type.initialView = viewId;
+    },
     beginUpdate( state ) {
       state.lastUpdate = Date.now();
       state.dirty = false;

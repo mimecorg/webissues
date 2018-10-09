@@ -265,9 +265,13 @@ export default {
 
   methods: {
     selectType( type ) {
-      this.updateFilters( { type, project: this.project } );
+      let view = null;
+      if ( type.initialView != null )
+        view = type.views.find( v => v.id == type.initialView );
+      this.updateFilters( { type, view, project: this.project } );
     },
     selectView( view ) {
+      this.$store.commit( 'global/setInitialView', { typeId: this.type.id, viewId: view != null ? view.id : null } );
       this.updateFilters( { type: this.type, view, project: this.project, folder: this.folder } );
     },
     selectProject( project ) {
