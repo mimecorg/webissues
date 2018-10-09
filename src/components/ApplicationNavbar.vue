@@ -34,8 +34,8 @@
           <button type="button" class="btn btn-default" v-bind:title="$t( 'cmd.GoToItem' )" v-on:click="goToItem">
             <span class="fa fa-arrow-right" aria-hidden="true"></span> <span class="hidden-sm hidden-md">{{ $t( 'cmd.GoTo' ) }}</span>
           </button>
-          <DropdownButton v-if="isAuthenticated" fa-class="fa-cog" v-bind:text="$t( 'title.Administration' )"
-                          text-class="hidden-sm hidden-md" v-bind:title="$t( 'title.AdministrationMenu' )">
+          <DropdownButton v-if="isAuthenticated" fa-class="fa-cog" v-bind:text="$t( 'title.Tools' )"
+                          text-class="hidden-sm hidden-md" v-bind:title="$t( 'title.Tools' )">
             <li><HyperLink v-on:click="manageProjects"><span class="fa fa-briefcase" aria-hidden="true"></span> {{ $t( 'title.Projects' ) }}</HyperLink></li>
             <li><HyperLink v-on:click="manageTypes"><span class="fa fa-table" aria-hidden="true"></span> {{ $t( 'title.IssueTypes' ) }}</HyperLink></li>
             <li v-if="isAdministrator"><HyperLink><span class="fa fa-users" aria-hidden="true"></span> {{ $t( 'title.UserAccounts' ) }}</HyperLink></li>
