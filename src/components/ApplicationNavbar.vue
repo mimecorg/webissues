@@ -38,7 +38,7 @@
                           text-class="hidden-sm hidden-md" v-bind:title="$t( 'title.Tools' )">
             <li><HyperLink v-on:click="manageProjects"><span class="fa fa-briefcase" aria-hidden="true"></span> {{ $t( 'title.Projects' ) }}</HyperLink></li>
             <li><HyperLink v-on:click="manageTypes"><span class="fa fa-table" aria-hidden="true"></span> {{ $t( 'title.IssueTypes' ) }}</HyperLink></li>
-            <li v-if="isAdministrator"><HyperLink><span class="fa fa-users" aria-hidden="true"></span> {{ $t( 'title.UserAccounts' ) }}</HyperLink></li>
+            <li v-if="isAdministrator"><HyperLink v-on:click="manageUsers"><span class="fa fa-users" aria-hidden="true"></span> {{ $t( 'title.UserAccounts' ) }}</HyperLink></li>
             <li role="separator" class="divider"></li>
             <li><HyperLink><span class="fa fa-bell-o" aria-hidden="true"></span> {{ $t( 'title.Alerts' ) }}</HyperLink></li>
             <template v-if="isAdministrator">
@@ -145,6 +145,9 @@ export default {
     },
     manageTypes() {
       this.$router.push( 'ManageTypes' );
+    },
+    manageUsers() {
+      this.$router.push( 'ManageUsers' );
     },
 
     restartClient() {

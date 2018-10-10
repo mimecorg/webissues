@@ -49,9 +49,12 @@ class System_Api_UserManager extends System_Api_Base
     */
     public function getUsers()
     {
-        $query = 'SELECT user_id, user_login, user_name, user_access FROM {users} ORDER BY user_name COLLATE LOCALE';
+        $query = 'SELECT u.user_id, u.user_login, u.user_name, u.user_access, p.pref_value AS user_email'
+            . ' FROM {users} AS u'
+            . ' LEFT OUTER JOIN {preferences} AS p ON p.user_id = u.user_id AND p.pref_key = %s'
+            . ' ORDER BY user_name COLLATE LOCALE';
 
-        return $this->connection->queryTable( $query );
+        return $this->connection->queryTable( $query, 'email' );
     }
 
     /**

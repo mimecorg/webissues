@@ -17,12 +17,17 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-import routeProjects from '@/routes/admin/projects'
-import routeTypes from '@/routes/admin/types'
-import routeUsers from '@/routes/admin/users'
+import { Access, ErrorCode } from '@/constants'
+import { makeError } from '@/utils/errors'
 
-export default function routeAdmin( route, ajax, store ) {
-  routeProjects( route, ajax, store );
-  routeTypes( route, ajax, store );
-  routeUsers( route, ajax, store );
+export default function routeUsers( route, ajax, store ) {
+  route( 'ManageUsers', '/admin/users', () => {
+    return ajax.post( '/server/api/users/list.php' ).then( ( { users } ) => {
+      return {
+        form: 'users/ManageUsers',
+        size: 'large',
+        users
+      };
+    } );
+  } );
 }

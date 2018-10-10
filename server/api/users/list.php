@@ -1,3 +1,4 @@
+<?php
 /**************************************************************************
 * This file is part of the WebIssues Server program
 * Copyright (C) 2006 Michał Męciński
@@ -17,12 +18,35 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-import routeProjects from '@/routes/admin/projects'
-import routeTypes from '@/routes/admin/types'
-import routeUsers from '@/routes/admin/users'
+require_once( '../../../system/bootstrap.inc.php' );
 
-export default function routeAdmin( route, ajax, store ) {
-  routeProjects( route, ajax, store );
-  routeTypes( route, ajax, store );
-  routeUsers( route, ajax, store );
+class Server_Api_Users_List
+{
+    public $access = 'admin';
+
+    public $params = array();
+
+    public function run()
+    {
+        $userManager = new System_Api_UserManager();
+        $users = $userManager->getUsers();
+
+        $result[ 'users' ] = array();
+
+        foreach ( $users as $user ) {
+            $resultUser = array();
+
+            $resultUser[ 'id' ] = (int)$user[ 'user_id' ];
+            $resultUser[ 'name' ] = $user[ 'user_name' ];
+            $resultUser[ 'login' ] = $user[ 'user_login' ];
+            $resultUser[ 'access' ] = $user[ 'user_access' ];
+            $resultUser[ 'email' ] = $user[ 'user_email' ];
+
+            $result[ 'users' ][] = $resultUser;
+        }
+
+        return $result;
+    }
 }
+
+System_Bootstrap::run( 'Server_Api_Application', 'Server_Api_Users_List' );
