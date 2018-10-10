@@ -17,6 +17,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
+import Vue from 'vue'
+
 import ErrorMessage from '@/components/forms/ErrorMessage'
 
 const loadedForms = {
@@ -32,10 +34,16 @@ if ( process.env.TARGET == 'electron' ) {
   } );
 }
 
+const loadedComponents = {};
+
+const componentModules = {
+  Draggable: () => import( /* webpackChunkName: "vendor-draggable" */ 'vuedraggable' )
+};
+
 const formModules = {
   issues: name => import( /* webpackMode: "lazy-once", webpackChunkName: "forms-issues" */ `@/components/forms/issues/${name}` ),
   projects: name => import( /* webpackMode: "lazy-once", webpackChunkName: "forms-projects" */ `@/components/forms/projects/${name}` ),
-  types: name => import( /* webpackMode: "lazy-once", webpackChunkName: "forms-types" */ `@/components/forms/types/${name}` )
+  types: name => withComponents( import( /* webpackMode: "lazy-once", webpackChunkName: "forms-types" */ `@/components/forms/types/${name}` ), [ 'Draggable' ] )
 };
 
 export function loadForm( name ) {
@@ -51,4 +59,18 @@ export function loadForm( name ) {
 
 export function getForm( name ) {
   return loadedForms[ name ];
+}
+
+function loadComponent( name ) {
+  if ( loadedComponents[ name ] != null )
+    return Promise.resolve();
+
+  return componentModules[ name ]().then( component => {
+    Vue.component( name, component.default );
+    loadedComponents[ name ] = component.default;
+  } );
+}
+
+function withComponents( form, components ) {
+  return Promise.all( [ form, ...components.map( name => loadComponent( name ) ) ] ).then( modules => modules[ 0 ] );
 }

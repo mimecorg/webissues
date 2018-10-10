@@ -35,7 +35,7 @@ function update( element, value ) {
   const blocks = element.querySelectorAll( 'pre.hljs' );
   if ( blocks.length > 0 ) {
     if ( highlightBlock == null ) {
-      import( /* webpackChunkName: "highlight" */ '@/utils/highlight' ).then( hljs => {
+      import( /* webpackChunkName: "vendor-highlight" */ '@/utils/highlight' ).then( hljs => {
         highlightBlock = hljs.highlightBlock;
         highlightAllBlocks( blocks );
       } );

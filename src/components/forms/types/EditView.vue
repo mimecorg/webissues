@@ -37,14 +37,14 @@
         </div>
       </DropdownButton>
     </FormSection>
-    <draggable class="draggable-container" v-bind:options="{ handle: '.draggable-handle' }" v-bind:move="canMoveColumn" v-model="columns">
+    <Draggable class="draggable-container" v-bind:options="{ handle: '.draggable-handle' }" v-bind:move="canMoveColumn" v-model="columns">
       <div v-for="column in columns" v-bind:key="column" class="draggable-item">
         <button v-if="!isFixedColumn( column )" class="btn btn-default" v-bind:title="$t( 'cmd.Remove' )" v-on:click="removeColumn( column )">
           <span class="fa fa-remove" aria-hidden="true"></span>
         </button>
         <div v-bind:class="isFixedColumn( column ) ? 'draggable-fixed' : 'draggable-handle'"><span class="fa fa-bars" aria-hidden="true"></span> {{ getColumnName( column ) }}</div>
       </div>
-    </draggable>
+    </Draggable>
     <Panel v-bind:title="$t( 'title.SortOrder' )">
       <FormGroup v-bind:label="$t( 'label.Column' )">
         <div class="dropdown-filters">
@@ -74,7 +74,7 @@
           </div>
         </DropdownButton>
       </FormSection>
-      <draggable v-if="filters.length > 0" class="filters" v-bind:options="{ handle: '.filters-name' }" v-model="filters">
+      <Draggable v-if="filters.length > 0" class="filters" v-bind:options="{ handle: '.filters-name' }" v-model="filters">
         <div v-for="filter in filters" v-bind:key="filter.id" class="row">
           <button class="btn btn-default" v-bind:title="$t( 'cmd.Remove' )" v-on:click="removeFilter( filter )"><span class="fa fa-remove" aria-hidden="true"></span></button>
           <div class="col-xs-10 col-sm-3 filters-name"><span class="fa fa-bars" aria-hidden="true"></span> {{ getColumnName( filter.column ) }}</div>
@@ -92,7 +92,7 @@
             <p v-if="filter.error != null" class="help-block">{{ filter.error }}</p>
           </div>
         </div>
-      </draggable>
+      </Draggable>
       <div v-else class="alert alert-info">
         {{ $t( 'info.NoFilters' ) }}
       </div>
