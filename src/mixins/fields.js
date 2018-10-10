@@ -76,7 +76,7 @@ function validate() {
     this[ name + 'Error' ] = null;
 
     if ( typeof field.condition == 'function' ) {
-      if ( !field.condition.apply( this ) )
+      if ( !field.condition() )
         continue;
     }
 

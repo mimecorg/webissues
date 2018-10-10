@@ -71,13 +71,13 @@ export default {
         type: String,
         required: true,
         maxLength: MaxLength.Password,
-        condition() { return this.changePassword; }
+        condition: () => this.changePassword
       },
       confirmPassword: {
         type: String,
         required: true,
         maxLength: MaxLength.Password,
-        condition() { return this.changePassword; },
+        condition: () => this.changePassword,
         parse: this.comparePassword
       }
     };

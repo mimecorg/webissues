@@ -116,37 +116,37 @@ export default {
       minLength: {
         type: String,
         maxLength: 3,
-        condition() { return this.hasMinMaxLength },
+        condition: () => this.hasMinMaxLength,
         parse: this.parseMinLength
       },
       maxLength: {
         type: String,
         maxLength: 3,
-        condition() { return this.hasMinMaxLength },
+        condition: () => this.hasMinMaxLength,
         parse: this.parseMaxLength
       },
       items: {
         type: String,
         multiLine: true,
         required: true,
-        condition() { return this.attributeType == 'ENUM' },
+        condition: () => this.attributeType == 'ENUM',
         parse: this.parseItems
       },
       decimal: {
         value: '0',
         type: String,
         required: true,
-        condition() { return this.attributeType == 'NUMERIC' },
+        condition: () => this.attributeType == 'NUMERIC',
         parse: this.parseDecimal
       },
       minValue: {
         type: String,
-        condition() { return this.attributeType == 'NUMERIC' },
+        condition: () => this.attributeType == 'NUMERIC',
         parse: this.parseMinValue
       },
       maxValue: {
         type: String,
-        condition() { return this.attributeType == 'NUMERIC' },
+        condition: () => this.attributeType == 'NUMERIC',
         parse: this.parseMaxValue
       },
       defaultValue: {

@@ -60,7 +60,7 @@ export default {
   },
 
   fields() {
-    const result = {
+    const fields = {
       name: {
         value: this.initialName,
         type: String,
@@ -103,10 +103,10 @@ export default {
         }
       }
       field.focus = () => this.$refs.attribute[ i ].focus();
-      result[ 'attribute' + id ] = field;
+      fields[ 'attribute' + id ] = field;
     }
 
-    return result;
+    return fields;
   },
 
   data() {
