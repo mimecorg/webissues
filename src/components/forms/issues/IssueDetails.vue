@@ -410,7 +410,7 @@ export default {
       this.update();
     },
     setFilter( filter ) {
-      this.$store.commit( 'issue/setFilter', filter );
+      this.$store.commit( 'global/setHistoryFilter', filter );
       this.update();
     },
     update() {

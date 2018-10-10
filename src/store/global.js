@@ -90,6 +90,9 @@ function makeMutations() {
       if ( type != null )
         type.initialView = viewId;
     },
+    setHistoryFilter( state, value ) {
+      state.settings.historyFilter = value;
+    },
     beginUpdate( state ) {
       state.lastUpdate = Date.now();
       state.dirty = false;

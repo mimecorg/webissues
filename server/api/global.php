@@ -170,8 +170,14 @@ class Server_Api_Global
         $settings[ 'selfRegister' ] = $serverManager->getSetting( 'self_register' ) == 1 && $serverManager->getSetting( 'email_engine' ) != null;
 
         $preferencesManager = new System_Api_PreferencesManager();
-        $settings[ 'historyOrder' ] = $preferencesManager->getPreferenceOrSetting( 'history_order' );
-        $settings[ 'defaultFormat' ] = (int)$preferencesManager->getPreferenceOrSetting( 'default_format' );
+        $historyFilter = $preferencesManager->getPreference( 'history_filter' );
+        if ( $historyFilter != null )
+            $settings[ 'historyFilter' ] = (int)$historyFilter;
+        else
+            $settings[ 'historyFilter' ] = System_Api_HistoryProvider::AllHistory;
+
+        $settings[ 'historyOrder' ] = $serverManager->getSetting( 'history_order' );
+        $settings[ 'defaultFormat' ] = (int)$serverManager->getSetting( 'default_format' );
 
         $locale = new System_Api_Locale();
 

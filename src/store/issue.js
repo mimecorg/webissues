@@ -35,7 +35,7 @@ function makeState() {
   return {
     issueId: null,
     modifiedSince: 0,
-    filter: History.AllHistory,
+    filter: null,
     unread: false,
     details: null,
     description: null,
@@ -90,7 +90,7 @@ function makeMutations() {
     clear( state ) {
       state.issueId = null;
       state.modifiedSince = 0;
-      state.filter = History.AllHistory;
+      state.filter = null;
       state.unread = false;
       state.details = null;
       state.description = null;
@@ -128,6 +128,9 @@ function makeMutations() {
 function makeActions( ajax ) {
   return {
     load( { state, rootState, commit } ) {
+      if ( state.filter != rootState.global.settings.historyFilter )
+        commit( 'setFilter', rootState.global.settings.historyFilter );
+
       const query = {
         issueId: state.issueId,
         description: true,
