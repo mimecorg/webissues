@@ -31,8 +31,6 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-
 import { Access } from '@/constants'
 import savePosition from '@/mixins/save-position'
 

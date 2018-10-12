@@ -476,6 +476,43 @@ class System_Api_UserManager extends System_Api_Base
     }
 
     /**
+    * Change the login of a user. An error is thrown if another user with given login
+    * already exists.
+    * @param $user The user to rename.
+    * @param $newLogin The new login of the user.
+    * @return @c true if the login was modified.
+    */
+    public function changeLogin( $user, $newLogin )
+    {
+        $userId = $user[ 'user_id' ];
+        $oldLogin = $user[ 'user_login' ];
+
+        if ( $newLogin == $oldLogin )
+            return false;
+
+        $transaction = $this->connection->beginTransaction( System_Db_Transaction::RepeatableRead, 'users' );
+
+        try {
+            $query = 'SELECT user_id FROM {users} WHERE user_login = %s';
+            if ( $this->connection->queryScalar( $query, $newLogin ) !== false )
+                throw new System_Api_Error( System_Api_Error::UserAlreadyExists );
+
+            $query = 'UPDATE {users} SET user_login = %s WHERE user_id = %d';
+            $this->connection->execute( $query, $newLogin, $userId );
+
+            $transaction->commit();
+        } catch ( Exception $ex ) {
+            $transaction->rollback();
+            throw $ex;
+        }
+
+        $eventLog = new System_Api_EventLog( $this );
+        $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information, $eventLog->t( 'log.UserLoginChanged', array( $oldLogin, $newLogin ) ) );
+
+        return true;
+    }
+
+    /**
     * Modify the access to the server for the given user.
     * The access level of the built-in 'admin' user cannot be changed.
     * @param $user The user whoose access is modified.

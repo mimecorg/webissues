@@ -231,6 +231,7 @@
     "UserAccessDisabled": "Disabled access for user \"{0}\"",
     "UserAccessRegular": "Granted regular access for user \"{0}\"",
     "UserAdded": "Added user \"{0}\"",
+    "UserLoginChanged": "Changed login of user \"{0}\" to \"{1}\"",
     "UserOwnPasswordChanged": "User \"{0}\" changed own password",
     "UserPasswordChanged": "Changed password for user \"{0}\"",
     "UserRegistered": "User \"{0}\" registered",

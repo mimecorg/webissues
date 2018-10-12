@@ -200,6 +200,18 @@ class Server_Api_Global
 
         $result[ 'settings' ] = $settings;
 
+        $languages = $locale->getAvailableLanguages();
+
+        $result[ 'languages' ] = array();
+
+        foreach ( $languages as $key => $name ) {
+            $resultLanguage = array();
+            $resultLanguage[ 'key' ] = $key;
+            $resultLanguage[ 'name' ] = $name;
+
+            $result[ 'languages' ][] = $resultLanguage;
+        }
+
         return $result;
     }
 }

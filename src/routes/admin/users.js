@@ -30,4 +30,36 @@ export default function routeUsers( route, ajax, store ) {
       };
     } );
   } );
+
+  route( 'AddUser', '/admin/users/add', () => {
+    if ( store.state.global.userAccess != Access.AdministratorAccess )
+      return Promise.reject( makeError( ErrorCode.AccessDenied ) );
+    return Promise.resolve( { form: 'users/EditUser', mode: 'add' } );
+  } );
+
+  route( 'UserDetails', '/admin/users/:userId', ( { userId } ) => {
+    return ajax.post( '/server/api/users/load.php', { userId, projects: true } ).then( ( { name, details, projects } ) => {
+      return {
+        form: 'users/UserDetails',
+        userId,
+        name,
+        details,
+        userProjects: projects
+      };
+    } );
+  } );
+
+  route( 'EditUser', '/admin/users/:userId/edit', ( { userId } ) => {
+    return ajax.post( '/server/api/users/load.php', { userId } ).then( ( { name, details } ) => {
+      return {
+        form: 'users/EditUser',
+        mode: 'edit',
+        userId,
+        initialName: name,
+        initialLogin: details.login,
+        initialEmail: details.email,
+        initialLanguage: details.language,
+      };
+    } );
+  } );
 }

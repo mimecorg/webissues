@@ -44,6 +44,7 @@ function makeState( baseURL, { serverName, serverVersion, serverUUID, userId, us
     types: [],
     users: [],
     settings: {},
+    languages: [],
     lastUpdate: null,
     dirty: false
   };
@@ -73,7 +74,7 @@ function makeMutations() {
     setDirty( state ) {
       state.dirty = true;
     },
-    setData( state, { serverName, serverVersion, serverUUID, userId, userName, userAccess, projects, types, users, settings } ) {
+    setData( state, { serverName, serverVersion, serverUUID, userId, userName, userAccess, projects, types, users, settings, languages } ) {
       state.serverName = serverName;
       state.serverVersion = serverVersion;
       state.serverUUID = serverUUID;
@@ -84,6 +85,7 @@ function makeMutations() {
       state.types = types;
       state.users = users;
       state.settings = settings;
+      state.languages = languages;
     },
     setInitialView( state, { typeId, viewId } ) {
       const type = state.types.find( t => t.id == typeId );
