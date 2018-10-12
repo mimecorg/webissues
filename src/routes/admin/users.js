@@ -62,4 +62,16 @@ export default function routeUsers( route, ajax, store ) {
       };
     } );
   } );
+
+  route( 'EditUserAccess', '/admin/users/:userId/permissions/edit', ( { userId } ) => {
+    return ajax.post( '/server/api/users/load.php', { userId } ).then( ( { name, details } ) => {
+      return {
+        form: 'users/EditUserAccess',
+        size: 'small',
+        userId,
+        name,
+        initialAccess: details.access
+      };
+    } );
+  } );
 }

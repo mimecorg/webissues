@@ -319,6 +319,7 @@
     "EditProjectDescription": "Edit description of project {0}.",
     "EditPublicView": "Modify the public view {0}.",
     "EditUser": "Modify the account of user {0}.",
+    "EditUserAccess": "Change global access for user {0}.",
     "EnterDropdownListItems": "Enter one dropdown list item per line.",
     "EnterNewPassword": "You have to enter a new password in order to log in.",
     "GoToItem": "Enter the identifier of an issue, comment or file.",

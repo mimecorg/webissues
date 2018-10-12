@@ -45,7 +45,9 @@
       </div>
     </div>
     <FormSection v-bind:title="$t( 'title.GlobalAccess' )">
-      <button type="button" class="btn btn-default"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'cmd.Edit' ) }}</button>
+      <button v-if="!isCurrentUser" type="button" class="btn btn-default" v-on:click="editAccess">
+        <span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'cmd.Edit' ) }}
+      </button>
     </FormSection>
     <div class="alert alert-default">
       {{ globalAccess }}
@@ -112,6 +114,9 @@ export default {
         this.$t( 'title.Name' ),
         this.$t( 'title.Access' )
       ];
+    },
+    isCurrentUser() {
+      return this.userId == this.$store.state.global.userId;
     }
   },
 
@@ -133,6 +138,9 @@ export default {
 
     editUser() {
       this.$router.push( 'EditUser', { userId: this.userId } );
+    },
+    editAccess() {
+      this.$router.push( 'EditUserAccess', { userId: this.userId } );
     },
 
     close() {
