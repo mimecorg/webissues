@@ -19,54 +19,28 @@
 
 <template>
   <div class="container-fluid">
-    <FormHeader v-bind:title="$t( 'title.GlobalAccess' )" v-on:close="close"/>
-    <Prompt path="prompt.EditUserAccess"><strong>{{ name }}</strong></Prompt>
-    <FormGroup v-bind:label="$t( 'label.Access' )" required>
-      <div class="radio">
-        <label><input type="radio" v-model="access" v-bind:value="noAccess"> {{ $t( 'text.Disabled' ) }}</label>
-      </div>
-      <div class="radio">
-        <label><input type="radio" v-model="access" v-bind:value="normalAccess"> {{ $t( 'text.RegularUser' ) }}</label>
-      </div>
-      <div class="radio">
-        <label><input type="radio" v-model="access" v-bind:value="administratorAccess"> {{ $t( 'text.SystemAdministrator' ) }}</label>
-      </div>
-    </FormGroup>
+    <FormHeader v-bind:title="$t( 'cmd.RemoveProject' )" v-on:close="close"/>
+    <Prompt path="prompt.RemoveMember"><strong>{{ userName }}</strong><strong>{{ projectName }}</strong></Prompt>
     <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
   </div>
 </template>
 
 <script>
-import { ErrorCode, Access } from '@/constants'
+import { Access } from '@/constants'
 
 export default {
   props: {
     userId: Number,
-    name: String,
-    initialAccess: Number
-  },
-
-  data() {
-    return {
-      noAccess: Access.NoAccess,
-      normalAccess: Access.NormalAccess,
-      administratorAccess: Access.AdministratorAccess,
-      access: this.initialAccess,
-    };
+    projectId: Number,
+    userName: String,
+    projectName: String
   },
 
   methods: {
     submit() {
       this.$emit( 'block' );
 
-      if ( this.access == this.initialAccess ) {
-        this.returnToDetails();
-        return;
-      }
-
-      const data = { userId: this.userId, access: this.access };
-
-      this.$ajax.post( '/server/api/users/access.php', data ).then( () => {
+      this.$ajax.post( '/server/api/users/projects/edit.php', { userId: this.userId, projects: [ this.projectId ], access: Access.NoAccess } ).then( () => {
         this.returnToDetails();
       } ).catch( error => {
         this.$emit( 'error', error );

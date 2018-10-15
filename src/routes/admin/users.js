@@ -74,4 +74,45 @@ export default function routeUsers( route, ajax, store ) {
       };
     } );
   } );
+
+  route( 'AddUserProjects', '/admin/users/:userId/projects/add', ( { userId } ) => {
+    return ajax.post( '/server/api/users/load.php', { userId, projects: true } ).then( ( { name, projects } ) => {
+      return {
+        form: 'users/EditUserProject',
+        mode: 'add',
+        userId,
+        userName: name,
+        initialAccess: Access.NormalAccess,
+        userProjects: projects
+      };
+    } );
+  } );
+
+  route( 'EditUserProject', '/admin/users/:userId/projects/:projectId/edit', ( { userId, projectId } ) => {
+    return ajax.post( '/server/api/users/projects/load.php', { userId, projectId } ).then( ( { userName, projectName, access } ) => {
+      return {
+        form: 'users/EditUserProject',
+        size: 'small',
+        mode: 'edit',
+        userId,
+        projectId,
+        userName,
+        projectName,
+        initialAccess: access
+      };
+    } );
+  } );
+
+  route( 'RemoveUserProject', '/admin/users/:userId/projects/:projectId/remove', ( { userId, projectId } ) => {
+    return ajax.post( '/server/api/users/projects/load.php', { userId, projectId } ).then( ( { userName, projectName } ) => {
+      return {
+        form: 'users/RemoveUserProject',
+        size: 'small',
+        userId,
+        projectId,
+        userName,
+        projectName
+      };
+    } );
+  } );
 }
