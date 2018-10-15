@@ -38,6 +38,7 @@
     "InvalidTime": "Time is not correct.",
     "InvalidValue": "Value is invalid.",
     "ItemNotFound": "The specified item was not found.",
+    "LoginAlreadyExists": "A user with this login already exists.",
     "LoginRequired": "Login required.",
     "MissingAttribute": "An attribute is missing.",
     "MissingColumn": "A required column is missing.",
@@ -69,7 +70,7 @@
     "UnknownType": "Type does not exist.",
     "UnknownUser": "User does not exist.",
     "UnknownView": "View does not exist.",
-    "UserAlreadyExists": "A user with this login or name already exists.",
+    "UserAlreadyExists": "A user with this name already exists.",
     "ViewAlreadyExists": "A view with this name already exists."
   },
   "Operator": {

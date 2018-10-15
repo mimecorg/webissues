@@ -123,13 +123,21 @@ class System_Api_RegistrationManager extends System_Api_Base
         $transaction = $this->connection->beginTransaction( System_Db_Transaction::Serializable, 'users' );
 
         try {
-            $query = 'SELECT user_id FROM {users} WHERE user_login = %s OR user_name = %s';
-            if ( $this->connection->queryScalar( $query, $login, $name ) !== false )
+            $query = 'SELECT user_id FROM {users} WHERE user_name = %s';
+            if ( $this->connection->queryScalar( $query, $name ) !== false )
                 throw new System_Api_Error( System_Api_Error::UserAlreadyExists );
 
-            $query = 'SELECT request_id FROM {register_requests} WHERE user_login = %s OR user_name = %s';
-            if ( $this->connection->queryScalar( $query, $login, $name ) !== false )
+            $query = 'SELECT user_id FROM {users} WHERE user_login = %s';
+            if ( $this->connection->queryScalar( $query, $login ) !== false )
+                throw new System_Api_Error( System_Api_Error::LoginAlreadyExists );
+
+            $query = 'SELECT request_id FROM {register_requests} WHERE user_name = %s';
+            if ( $this->connection->queryScalar( $query, $name ) !== false )
                 throw new System_Api_Error( System_Api_Error::UserAlreadyExists );
+
+            $query = 'SELECT request_id FROM {register_requests} WHERE user_login = %s';
+            if ( $this->connection->queryScalar( $query, $login ) !== false )
+                throw new System_Api_Error( System_Api_Error::LoginAlreadyExists );
 
             $query = 'SELECT user_id FROM {preferences} WHERE pref_key = %s AND UPPER( pref_value ) = %s';
             if ( $this->connection->queryScalar( $query, 'email', mb_strtoupper( $email ) ) !== false )
@@ -198,9 +206,13 @@ class System_Api_RegistrationManager extends System_Api_Base
         $transaction = $this->connection->beginTransaction( System_Db_Transaction::Serializable, 'users' );
 
         try {
-            $query = 'SELECT user_id FROM {users} WHERE user_login = %s OR user_name = %s';
-            if ( $this->connection->queryScalar( $query, $login, $name ) !== false )
+            $query = 'SELECT user_id FROM {users} WHERE user_name = %s';
+            if ( $this->connection->queryScalar( $query, $name ) !== false )
                 throw new System_Api_Error( System_Api_Error::UserAlreadyExists );
+
+            $query = 'SELECT user_id FROM {users} WHERE user_login = %s';
+            if ( $this->connection->queryScalar( $query, $login ) !== false )
+                throw new System_Api_Error( System_Api_Error::LoginAlreadyExists );
 
             $query = 'INSERT INTO {users} ( user_login, user_name, user_passwd, user_access, passwd_temp ) VALUES ( %s, %s, %s, %d, %d )';
             $this->connection->execute( $query, $login, $name, $hash, System_Const::NormalAccess, 0 );

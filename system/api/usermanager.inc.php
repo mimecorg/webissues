@@ -339,9 +339,13 @@ class System_Api_UserManager extends System_Api_Base
         $transaction = $this->connection->beginTransaction( System_Db_Transaction::Serializable, 'users' );
 
         try {
-            $query = 'SELECT user_id FROM {users} WHERE user_login = %s OR user_name = %s';
-            if ( $this->connection->queryScalar( $query, $login, $name ) !== false )
+            $query = 'SELECT user_id FROM {users} WHERE user_name = %s';
+            if ( $this->connection->queryScalar( $query, $name ) !== false )
                 throw new System_Api_Error( System_Api_Error::UserAlreadyExists );
+
+            $query = 'SELECT user_id FROM {users} WHERE user_login = %s';
+            if ( $this->connection->queryScalar( $query, $login ) !== false )
+                throw new System_Api_Error( System_Api_Error::LoginAlreadyExists );
 
             $passwordHash = new System_Core_PasswordHash();
             $hash = $passwordHash->hashPassword( $password );
@@ -495,7 +499,7 @@ class System_Api_UserManager extends System_Api_Base
         try {
             $query = 'SELECT user_id FROM {users} WHERE user_login = %s';
             if ( $this->connection->queryScalar( $query, $newLogin ) !== false )
-                throw new System_Api_Error( System_Api_Error::UserAlreadyExists );
+                throw new System_Api_Error( System_Api_Error::LoginAlreadyExists );
 
             $query = 'UPDATE {users} SET user_login = %s WHERE user_id = %d';
             $this->connection->execute( $query, $newLogin, $userId );

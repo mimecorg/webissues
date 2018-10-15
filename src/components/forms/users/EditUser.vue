@@ -165,6 +165,12 @@ export default {
           this.$nextTick( () => {
             this.$refs.name.focus();
           } );
+        } else if ( error.reason == Reason.APIError && error.errorCode == ErrorCode.LoginAlreadyExists ) {
+          this.$emit( 'unblock' );
+          this.loginError = this.$t( 'ErrorCode.' + error.errorCode );
+          this.$nextTick( () => {
+            this.$refs.login.focus();
+          } );
         } else {
           this.$emit( 'error', error );
         }

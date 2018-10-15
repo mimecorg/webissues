@@ -131,7 +131,12 @@ class Users_Register extends System_Web_Component
             $engine->loadSettings();
             $engine->send( $this->email, $this->userName, $subject, $body );
         } catch ( System_Api_Error $ex ) {
-            $this->form->getErrorHelper()->handleError( $ex->getMessage() == System_Api_Error::EmailAlreadyExists ? 'email' : 'userName', $ex );
+            if ( $ex->getMessage() == System_Api_Error::EmailAlreadyExists )
+                $this->form->getErrorHelper()->handleError( 'email', $ex );
+            else if ( $ex->getMessage() == System_Api_Error::LoginAlreadyExists )
+                $this->form->getErrorHelper()->handleError( 'login', $ex );
+            else
+                $this->form->getErrorHelper()->handleError( 'userName', $ex );
         }
     }
 

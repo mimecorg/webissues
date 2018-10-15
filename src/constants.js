@@ -129,6 +129,7 @@ export const ErrorCode = {
   InvalidTextFormat: 363,
   UnknownSubscription: 364,
   SubscriptionAlreadyExists: 365,
+  LoginAlreadyExists: 366,
 };
 
 export const Reason = {
