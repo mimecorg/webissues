@@ -21,7 +21,7 @@
   <div class="container-fluid">
     <FormHeader v-bind:title="name" v-bind:breadcrumbs="breadcrumbs" v-on:close="close">
       <DropdownButton fa-class="fa-ellipsis-v" menu-class="dropdown-menu-right" v-bind:title="$t( 'title.More' )">
-        <li><HyperLink><span class="fa fa-key" aria-hidden="true"></span> {{ $t( 'cmd.ChangePassword' ) }}</HyperLink></li>
+        <li><HyperLink v-on:click="changePassword"><span class="fa fa-key" aria-hidden="true"></span> {{ $t( 'cmd.ChangePassword' ) }}</HyperLink></li>
         <li><HyperLink><span class="fa fa-question-circle-o" aria-hidden="true"></span> {{ $t( 'cmd.ResetPassword' ) }}</HyperLink></li>
       </DropdownButton>
     </FormHeader>
@@ -145,6 +145,9 @@ export default {
     },
     editAccess() {
       this.$router.push( 'EditUserAccess', { userId: this.userId } );
+    },
+    changePassword() {
+      this.$router.push( 'ChangePassword', { userId: this.userId } );
     },
 
     addProjects() {

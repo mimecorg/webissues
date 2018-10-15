@@ -118,4 +118,14 @@ export default function routeUsers( route, ajax, store ) {
       };
     } );
   } );
+
+  route( 'ChangePassword', '/admin/users/:userId/password/change', ( { userId } ) => {
+    return ajax.post( '/server/api/users/load.php', { userId } ).then( ( { details } ) => {
+      return {
+        form: 'users/ChangePassword',
+        userId,
+        name: details.name
+      };
+    } );
+  } );
 }
