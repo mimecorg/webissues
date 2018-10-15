@@ -171,6 +171,12 @@ export default {
           this.$nextTick( () => {
             this.$refs.login.focus();
           } );
+        } else if ( error.reason == Reason.APIError && error.errorCode == ErrorCode.EmailAlreadyExists ) {
+          this.$emit( 'unblock' );
+          this.emailError = this.$t( 'ErrorCode.' + error.errorCode );
+          this.$nextTick( () => {
+            this.$refs.email.focus();
+          } );
         } else {
           this.$emit( 'error', error );
         }

@@ -44,15 +44,10 @@ class Server_Api_Users_Edit
         $userManager = new System_Api_UserManager();
         $user = $userManager->getUser( $userId );
 
-        $renamed = $userManager->renameUser( $user, $name );
-        $loginChanged = $userManager->changeLogin( $user, $login );
-
-        $preferencesManager = new System_Api_PreferencesManager( $user );
-        $emailChanged = $preferencesManager->setPreference( 'email', $email );
-        $languageChanged = $preferencesManager->setPreference( 'language', $language );
+        $changed = $userManager->editUser( $user, $name, $login, $email, $language );
 
         $result[ 'userId' ] = $userId;
-        $result[ 'changed' ] = $renamed || $loginChanged || $emailChanged || $languageChanged;
+        $result[ 'changed' ] = $changed;
 
         return $result;
     }

@@ -44,16 +44,7 @@ class Server_Api_Users_Add
         $validator->checkPreference( 'language', $language );
 
         $userManager = new System_Api_UserManager();
-        $userId = $userManager->addUser( $login, $name, $password, $mustChangePassword ? 1 : 0 );
-
-        if ( $email != '' || $language != '' ) {
-            $user = array( 'user_id' => $userId );
-            $preferencesManager = new System_Api_PreferencesManager( $user );
-            if ( $email != '' )
-                $preferencesManager->setPreference( 'email', $email );
-            if ( $language != '' )
-                $preferencesManager->setPreference( 'language', $language );
-        }
+        $userId = $userManager->addUser( $login, $name, $password, $mustChangePassword ? 1 : 0, $email, $language );
 
         $result[ 'userId' ] = $userId;
         $result[ 'changed' ] = true;
