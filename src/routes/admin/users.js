@@ -38,24 +38,27 @@ export default function routeUsers( route, ajax, store ) {
   } );
 
   route( 'UserDetails', '/admin/users/:userId', ( { userId } ) => {
-    return ajax.post( '/server/api/users/load.php', { userId, projects: true } ).then( ( { name, details, projects } ) => {
+    return ajax.post( '/server/api/users/load.php', { userId, projects: true } ).then( ( { details, projects } ) => {
       return {
         form: 'users/UserDetails',
         userId,
-        name,
-        details,
+        name: details.name,
+        login: details.login,
+        email: details.email,
+        language: details.language,
+        access: details.access,
         userProjects: projects
       };
     } );
   } );
 
   route( 'EditUser', '/admin/users/:userId/edit', ( { userId } ) => {
-    return ajax.post( '/server/api/users/load.php', { userId } ).then( ( { name, details } ) => {
+    return ajax.post( '/server/api/users/load.php', { userId } ).then( ( { details } ) => {
       return {
         form: 'users/EditUser',
         mode: 'edit',
         userId,
-        initialName: name,
+        initialName: details.name,
         initialLogin: details.login,
         initialEmail: details.email,
         initialLanguage: details.language,
@@ -64,12 +67,12 @@ export default function routeUsers( route, ajax, store ) {
   } );
 
   route( 'EditUserAccess', '/admin/users/:userId/permissions/edit', ( { userId } ) => {
-    return ajax.post( '/server/api/users/load.php', { userId } ).then( ( { name, details } ) => {
+    return ajax.post( '/server/api/users/load.php', { userId } ).then( ( { details } ) => {
       return {
         form: 'users/EditUserAccess',
         size: 'small',
         userId,
-        name,
+        name: details.name,
         initialAccess: details.access
       };
     } );

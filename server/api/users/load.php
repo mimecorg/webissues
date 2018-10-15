@@ -34,9 +34,8 @@ class Server_Api_Users_Load
         $userManager = new System_Api_UserManager();
         $user = $userManager->getUser( $userId );
 
-        $result[ 'userId' ] = $user[ 'user_id' ];
-        $result[ 'name' ] = $user[ 'user_name' ];
-
+        $resultDetails[ 'id' ] = $user[ 'user_id' ];
+        $resultDetails[ 'name' ] = $user[ 'user_name' ];
         $resultDetails[ 'login' ] = $user[ 'user_login' ];
         $resultDetails[ 'access' ] = $user[ 'user_access' ];
 

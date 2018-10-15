@@ -32,11 +32,11 @@
       <div class="panel-body panel-table">
         <div class="row">
           <div class="col-xs-4 col-sm-3">{{ $t( 'label.Login' ) }}</div>
-          <div class="col-xs-8 col-sm-9">{{ details.login }}</div>
+          <div class="col-xs-8 col-sm-9">{{ login }}</div>
         </div>
         <div class="row">
           <div class="col-xs-4 col-sm-3">{{ $t( 'label.EmailAddress' ) }}</div>
-          <div class="col-xs-8 col-sm-9">{{ details.email }}</div>
+          <div class="col-xs-8 col-sm-9">{{ email }}</div>
         </div>
         <div class="row">
           <div class="col-xs-4 col-sm-3">{{ $t( 'label.Language' ) }}</div>
@@ -79,7 +79,10 @@ export default {
   props: {
     userId: Number,
     name: String,
-    details: Object,
+    login: String,
+    email: String,
+    language: String,
+    access: Number,
     userProjects: Array
   },
 
@@ -91,20 +94,20 @@ export default {
       ];
     },
     languageName() {
-      if ( this.details.language == null ) {
+      if ( this.language == null ) {
         return this.$t( 'text.DefaultLanguage' );
       } else {
-        const language = this.languages.find( l => l.key == this.details.language );
+        const language = this.languages.find( l => l.key == this.language );
         if ( language != null )
           return language.name;
       }
     },
     globalAccess() {
-      if ( this.details.access == Access.NoAccess )
+      if ( this.access == Access.NoAccess )
         return this.$t( 'text.Disabled' );
-      else if ( this.details.access == Access.NormalAccess )
+      else if ( this.access == Access.NormalAccess )
         return this.$t( 'text.RegularUser' );
-      else if ( this.details.access == Access.AdministratorAccess )
+      else if ( this.access == Access.AdministratorAccess )
         return this.$t( 'text.SystemAdministrator' );
     },
     sortedProjects() {
