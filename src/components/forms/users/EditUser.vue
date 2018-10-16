@@ -177,7 +177,14 @@ export default {
       this.$ajax.post( url, data ).then( ( { userId, changed } ) => {
         if ( changed )
           this.$store.commit( 'global/setDirty' );
-        this.returnToDetails( userId );
+        if ( changed && userId == this.$store.state.global.userId ) {
+          const language = this.language != '' ? this.language : this.$store.state.global.settings.defaultLanguage;
+          this.$i18n.setLocale( language ).then( () => {
+            this.returnToDetails( userId );
+          } );
+        } else {
+          this.returnToDetails( userId );
+        }
       } ).catch( error => {
         if ( error.reason == Reason.APIError && error.errorCode == ErrorCode.UserAlreadyExists ) {
           this.$emit( 'unblock' );

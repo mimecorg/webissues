@@ -198,6 +198,8 @@ class Server_Api_Global
 
         $settings[ 'firstDayOfWeek' ] = (int)$locale->getSetting( 'first_day_of_week' );
 
+        $settings[ 'defaultLanguage' ] = $serverManager->getSetting( 'language' );
+
         $result[ 'settings' ] = $settings;
 
         $languages = $locale->getAvailableLanguages();
