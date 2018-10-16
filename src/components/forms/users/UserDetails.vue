@@ -64,7 +64,7 @@
       </template>
     </Grid>
     <div v-else class="alert alert-info">
-      {{ $t( 'info.NoUserProjects' ) }}
+      {{ isCurrentUser ? $t( 'info.NoOwnProjects' ) : $t( 'info.NoUserProjects' ) }}
     </div>
   </div>
 </template>
