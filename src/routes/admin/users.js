@@ -61,7 +61,7 @@ export default function routeUsers( route, ajax, store ) {
         initialName: details.name,
         initialLogin: details.login,
         initialEmail: details.email,
-        initialLanguage: details.language,
+        initialLanguage: details.language
       };
     } );
   } );
@@ -79,12 +79,12 @@ export default function routeUsers( route, ajax, store ) {
   } );
 
   route( 'AddUserProjects', '/admin/users/:userId/projects/add', ( { userId } ) => {
-    return ajax.post( '/server/api/users/load.php', { userId, projects: true } ).then( ( { name, projects } ) => {
+    return ajax.post( '/server/api/users/load.php', { userId, projects: true } ).then( ( { details, projects } ) => {
       return {
         form: 'users/EditUserProject',
         mode: 'add',
         userId,
-        userName: name,
+        userName: details.name,
         initialAccess: Access.NormalAccess,
         userProjects: projects
       };

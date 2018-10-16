@@ -17,23 +17,21 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-import routeStatic from '@/routes/static'
+import routeGlobal from '@/routes/global'
 import routeIssues from '@/routes/issues'
 import routeAdmin from '@/routes/admin'
-import routeUser from '@/routes/user'
 
 export default function registerRoutes( router, i18n, ajax, store, formatter ) {
   function routeAll( route ) {
-    routeStatic( route ),
-    routeIssues( route, i18n, ajax, store, formatter ),
-    routeAdmin( route, ajax, store ),
-    routeUser( route )
+    routeGlobal( route, ajax, store );
+    routeIssues( route, i18n, ajax, store, formatter );
+    routeAdmin( route, ajax, store );
   }
 
   router.register( routeAll );
 
   if ( process.env.NODE_ENV != 'production' && module.hot != null ) {
-    module.hot.accept( [ '@/routes/static', '@/routes/issues', '@/routes/admin', '@/routes/user' ], () => {
+    module.hot.accept( [ '@/routes/global', '@/routes/issues', '@/routes/admin' ], () => {
       router.hotUpdate( routeAll );
     } );
   }

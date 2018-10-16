@@ -21,9 +21,10 @@
   <div class="container-fluid">
     <FormHeader v-bind:title="title" v-on:close="close"/>
     <Prompt v-if="mode == 'edit'" path="prompt.EditUser"><strong>{{ initialName }}</strong></Prompt>
+    <Prompt v-else-if="mode == 'account'" path="prompt.EditAccount"></Prompt>
     <Prompt v-else-if="mode == 'add'" path="prompt.AddUser"></Prompt>
-    <FormInput ref="name" id="name" v-bind:label="$t( 'label.Name' )" v-bind="$field( 'name' )" v-model="name"/>
-    <FormInput ref="login" id="login" v-bind:label="$t( 'label.Login' )" v-bind="$field( 'login' )" v-model="login"/>
+    <FormInput v-if="isAdministrator" ref="name" id="name" v-bind:label="$t( 'label.Name' )" v-bind="$field( 'name' )" v-model="name"/>
+    <FormInput v-if="isAdministrator" ref="login" id="login" v-bind:label="$t( 'label.Login' )" v-bind="$field( 'login' )" v-model="login"/>
     <FormInput v-if="mode == 'add'" ref="password" id="password" type="password" v-bind:label="$t( 'label.Password' )" v-bind="$field( 'password' )" v-model="password"/>
     <FormInput v-if="mode == 'add'" ref="confirmPassword" id="confirmPassword" type="password" v-bind:label="$t( 'label.ConfirmPassword' )" v-bind="$field( 'confirmPassword' )" v-model="confirmPassword"/>
     <FormCheckbox v-if="mode == 'add'" v-bind:label="$t( 'text.UserMustChangePassword' )" v-model="mustChangePassword"/>
@@ -48,9 +49,9 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 
-import { MaxLength, ErrorCode, Reason } from '@/constants'
+import { MaxLength, ErrorCode, Reason, Access } from '@/constants'
 import { makeParseError } from '@/utils/errors'
 
 export default {
@@ -64,18 +65,22 @@ export default {
   },
 
   fields() {
+    const isAdministrator = this.$store.state.global.userAccess == Access.AdministratorAccess;
+
     return {
       name: {
         value: this.initialName,
         type: String,
         required: true,
-        maxLength: MaxLength.Name
+        maxLength: MaxLength.Name,
+        condition: isAdministrator
       },
       login: {
         value: this.initialLogin,
         type: String,
         required: true,
-        maxLength: MaxLength.Login
+        maxLength: MaxLength.Login,
+        condition: isAdministrator
       },
       password: {
         type: String,
@@ -113,9 +118,12 @@ export default {
 
   computed: {
     ...mapState( 'global', [ 'languages' ] ),
+    ...mapGetters( 'global', [ 'isAdministrator' ] ),
     title() {
       if ( this.mode == 'edit' )
         return this.$t( 'cmd.EditUser' );
+      else if ( this.mode == 'account' )
+        return this.$t( 'cmd.EditAccount' );
       else if ( this.mode == 'add' )
         return this.$t( 'cmd.AddUser' );
     },
@@ -135,16 +143,18 @@ export default {
       if ( !this.$fields.validate() )
         return;
 
-      if ( this.mode == 'edit' && !this.$fields.modified() ) {
+      if ( ( this.mode == 'edit' || this.mode == 'account' ) && !this.$fields.modified() ) {
         this.returnToDetails( this.userId );
         return;
       }
 
       const data = {};
-      if ( this.mode == 'edit' )
+      if ( this.mode == 'edit' || this.mode == 'account' && this.isAdministrator )
         data.userId = this.userId;
-      data.name = this.name;
-      data.login = this.login;
+      if ( this.isAdministrator ) {
+        data.name = this.name;
+        data.login = this.login;
+      }
       if ( this.mode == 'add' ) {
         data.password = this.password;
         data.mustChangePassword = this.mustChangePassword;
@@ -154,7 +164,17 @@ export default {
 
       this.$emit( 'block' );
 
-      this.$ajax.post( '/server/api/users/' + this.mode + '.php', data ).then( ( { userId, changed } ) => {
+      let url;
+      if ( this.mode == 'account' ) {
+        if ( this.isAdministrator )
+          url = '/server/api/users/edit.php';
+        else
+          url = '/server/api/account/edit.php';
+      } else {
+        url = '/server/api/users/' + this.mode + '.php';
+      }
+
+      this.$ajax.post( url, data ).then( ( { userId, changed } ) => {
         if ( changed )
           this.$store.commit( 'global/setDirty' );
         this.returnToDetails( userId );
@@ -184,14 +204,17 @@ export default {
     },
 
     cancel() {
-      if ( this.mode == 'edit' )
+      if ( this.mode == 'edit' || this.mode == 'account' )
         this.returnToDetails( this.userId );
       else
         this.$router.push( 'ManageUsers' );
     },
 
     returnToDetails( userId ) {
-      this.$router.push( 'UserDetails', { userId } );
+      if ( this.mode == 'account' )
+        this.$router.push( 'MyAccount' );
+      else
+        this.$router.push( 'UserDetails', { userId } );
     },
 
     close() {
@@ -212,7 +235,10 @@ export default {
   },
 
   mounted() {
-    this.$refs.name.focus();
+    if ( this.isAdministrator )
+      this.$refs.name.focus();
+    else
+      this.$refs.email.focus();
   }
 }
 </script>

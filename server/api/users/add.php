@@ -40,6 +40,7 @@ class Server_Api_Users_Add
         $validator->checkString( $login, System_Const::LoginMaxLength );
         $validator->checkString( $password, System_Const::PasswordMaxLength );
         $validator->checkString( $email, System_Const::ValueMaxLength, System_Api_Validator::AllowEmpty );
+        $validator->checkString( $language, System_Const::ValueMaxLength, System_Api_Validator::AllowEmpty );
         $validator->checkPreference( 'email', $email );
         $validator->checkPreference( 'language', $language );
 

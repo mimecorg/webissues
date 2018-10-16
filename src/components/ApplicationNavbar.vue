@@ -52,7 +52,7 @@
           </button>
           <DropdownButton fa-class="fa-user" v-bind:text="userName" text-class="hidden-sm hidden-md" v-bind:title="userTitle">
             <template v-if="isAuthenticated">
-              <li><HyperLink><span class="fa fa-sliders" aria-hidden="true"></span> {{ $t( 'title.MyAccount' ) }}</HyperLink></li>
+              <li><HyperLink v-on:click="myAccount"><span class="fa fa-sliders" aria-hidden="true"></span> {{ $t( 'title.MyAccount' ) }}</HyperLink></li>
               <li role="separator" class="divider"></li>
               <li v-if="isWeb"><a v-bind:href="baseURL + '/index.php'"><span class="fa fa-sign-out" aria-hidden="true"></span> {{ $t( 'cmd.LogOut' ) }}</a></li>
               <li v-else><HyperLink v-on:click="restartClient"><span class="fa fa-sign-out" aria-hidden="true"></span> {{ $t( 'cmd.LogOut' ) }}</HyperLink></li>
@@ -148,6 +148,10 @@ export default {
     },
     manageUsers() {
       this.$router.push( 'ManageUsers' );
+    },
+
+    myAccount() {
+      this.$router.push( 'MyAccount' );
     },
 
     restartClient() {

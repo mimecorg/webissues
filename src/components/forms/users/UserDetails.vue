@@ -53,10 +53,12 @@
       {{ globalAccess }}
     </div>
     <FormSection v-bind:title="$t( 'title.Projects' )">
-      <button type="button" class="btn btn-success" v-on:click="addProjects"><span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'cmd.Add' ) }}</button>
+      <button v-if="isAdministrator" type="button" class="btn btn-success" v-on:click="addProjects">
+        <span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'cmd.Add' ) }}
+      </button>
     </FormSection>
     <Grid v-if="sortedProjects.length > 0" v-bind:items="sortedProjects" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-large', null ]"
-          v-on:row-click="rowClick">
+          v-bind:row-click-disabled="!isAdministrator" v-on:row-click="rowClick">
       <template slot-scope="{ item, columnIndex, columnClass }">
         <td v-bind:class="columnClass">{{ getCellValue( columnIndex, item ) }}</td>
       </template>
@@ -68,7 +70,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 
 import { Access } from '@/constants'
 import savePosition from '@/mixins/save-position'
@@ -83,13 +85,15 @@ export default {
     email: String,
     language: String,
     access: Number,
-    userProjects: Array
+    userProjects: Array,
+    accountMode: Boolean
   },
 
   computed: {
     ...mapState( 'global', [ 'projects', 'languages' ] ),
+    ...mapGetters( 'global', [ 'isAdministrator' ] ),
     breadcrumbs() {
-      return [
+      return this.accountMode ? null : [
         { label: this.$t( 'title.UserAccounts' ), route: 'ManageUsers' }
       ];
     },
@@ -141,21 +145,21 @@ export default {
     },
 
     editUser() {
-      this.$router.push( 'EditUser', { userId: this.userId } );
+      this.$router.push( this.accountMode ? 'EditAccount' : 'EditUser', { userId: this.userId } );
     },
     editAccess() {
       this.$router.push( 'EditUserAccess', { userId: this.userId } );
     },
     changePassword() {
-      this.$router.push( 'ChangePassword', { userId: this.userId } );
+      this.$router.push( this.accountMode ? 'ChangeAccountPassword' : 'ChangePassword', { userId: this.userId } );
     },
 
     addProjects() {
-      this.$router.push( 'AddUserProjects', { userId: this.userId } );
+      this.$router.push( this.accountMode ? 'AddAccountProjects' : 'AddUserProjects', { userId: this.userId } );
     },
 
     rowClick( rowIndex ) {
-      this.$router.push( 'EditUserProject', { userId: this.userId, projectId: this.sortedProjects[ rowIndex ].id } );
+      this.$router.push( this.accountMode ? 'EditAccountProject' : 'EditUserProject', { userId: this.userId, projectId: this.sortedProjects[ rowIndex ].id } );
     },
 
     close() {

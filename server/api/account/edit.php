@@ -20,23 +20,20 @@
 
 require_once( '../../../system/bootstrap.inc.php' );
 
-class Server_Api_Users_Edit
+class Server_Api_Account_Edit
 {
-    public $access = 'admin';
+    public $access = '*';
 
     public $params = array(
-        'userId' => array( 'type' => 'int', 'required' => true ),
-        'name' => array( 'type' => 'string', 'required' => true ),
-        'login' => array( 'type' => 'string', 'required' => true ),
         'email' => array( 'type' => 'string', 'default' => '' ),
         'language' => array( 'type' => 'string', 'default' => '' )
     );
 
-    public function run( $userId, $name, $login, $email, $language )
+    public function run( $email, $language )
     {
+        $userId = System_Api_Principal::getCurrent()->getUserId();
+
         $validator = new System_Api_Validator();
-        $validator->checkString( $name, System_Const::NameMaxLength );
-        $validator->checkString( $login, System_Const::LoginMaxLength );
         $validator->checkString( $email, System_Const::ValueMaxLength, System_Api_Validator::AllowEmpty );
         $validator->checkString( $language, System_Const::ValueMaxLength, System_Api_Validator::AllowEmpty );
         $validator->checkPreference( 'email', $email );
@@ -45,7 +42,7 @@ class Server_Api_Users_Edit
         $userManager = new System_Api_UserManager();
         $user = $userManager->getUser( $userId );
 
-        $changed = $userManager->editUser( $user, $name, $login, $email, $language );
+        $changed = $userManager->editUser( $user, $user[ 'user_name' ], $user[ 'user_login' ], $email, $language );
 
         $result[ 'userId' ] = $userId;
         $result[ 'changed' ] = $changed;
@@ -54,4 +51,4 @@ class Server_Api_Users_Edit
     }
 }
 
-System_Bootstrap::run( 'Server_Api_Application', 'Server_Api_Users_Edit' );
+System_Bootstrap::run( 'Server_Api_Application', 'Server_Api_Account_Edit' );

@@ -37,7 +37,8 @@ import { makeParseError } from '@/utils/errors'
 export default {
   props: {
     userId: Number,
-    name: String
+    name: String,
+    accountMode: Boolean
   },
 
   fields() {
@@ -117,7 +118,10 @@ export default {
     },
 
     returnToDetails() {
-      this.$router.push( 'UserDetails', { userId: this.userId } );
+      if ( this.accountMode )
+        this.$router.push( 'MyAccount' );
+      else
+        this.$router.push( 'UserDetails', { userId: this.userId } );
     },
 
     close() {

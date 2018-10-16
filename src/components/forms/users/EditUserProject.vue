@@ -65,7 +65,8 @@ export default {
     userName: String,
     projectName: String,
     initialAccess: Number,
-    userProjects: Array
+    userProjects: Array,
+    accountMode: Boolean
   },
 
   data() {
@@ -92,7 +93,7 @@ export default {
 
   methods: {
     removeProject() {
-      this.$router.push( 'RemoveUserProject', { userId: this.userId, projectId: this.projectId } );
+      this.$router.push( this.accountMode ? 'RemoveAccountProject' : 'RemoveUserProject', { userId: this.userId, projectId: this.projectId } );
     },
 
     selectAll( state ) {
@@ -133,7 +134,10 @@ export default {
     },
 
     returnToDetails() {
-      this.$router.push( 'UserDetails', { userId: this.userId } );
+      if ( this.accountMode )
+        this.$router.push( 'MyAccount' );
+      else
+        this.$router.push( 'UserDetails', { userId: this.userId } );
     },
 
     close() {

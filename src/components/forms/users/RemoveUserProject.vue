@@ -33,7 +33,8 @@ export default {
     userId: Number,
     projectId: Number,
     userName: String,
-    projectName: String
+    projectName: String,
+    accountMode: Boolean
   },
 
   methods: {
@@ -52,7 +53,10 @@ export default {
     },
 
     returnToDetails() {
-      this.$router.push( 'UserDetails', { userId: this.userId } );
+      if ( this.accountMode )
+        this.$router.push( 'MyAccount' );
+      else
+        this.$router.push( 'UserDetails', { userId: this.userId } );
     },
 
     close() {
