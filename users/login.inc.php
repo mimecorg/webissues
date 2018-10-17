@@ -73,6 +73,7 @@ class Users_Login extends System_Web_Component
 
         $this->anonymousAccess = $serverManager->getSetting( 'anonymous_access' ) == 1;
         $this->selfRegister = $serverManager->getSetting( 'self_register' ) == 1 && $serverManager->getSetting( 'email_engine' ) != null;
+        $this->resetPassword = $serverManager->getSetting( 'email_engine' ) != null;
     }
 
     private function initializeRules()

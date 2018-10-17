@@ -458,6 +458,60 @@ class System_Api_UserManager extends System_Api_Base
         return true;
     }
 
+    public function getUserWithResetKey( $key )
+    {
+        $query = 'SELECT user_id, user_login, user_name, user_access, reset_time FROM {users} WHERE reset_key = %s';
+
+        if ( !( $user = $this->connection->queryRow( $query, $key ) ) )
+            throw new System_Api_Error( System_Api_Error::InvalidResetKey );
+
+        if ( $user[ 'user_access' ] == System_Const::NoAccess )
+            throw new System_Api_Error( System_Api_Error::InvalidResetKey );
+
+        $serverManager = new System_Api_ServerManager();
+        $lifetime = $serverManager->getSetting( 'register_max_lifetime' );
+
+        if ( $user[ 'reset_time' ] < time() - $lifetime )
+            throw new System_Api_Error( System_Api_Error::InvalidResetKey );
+
+        return $user;
+    }
+
+    /**
+    * Set the password reset key for given user.
+    * @param $user The user to set the key for.
+    * @param $key The password reset key.
+    */
+    public function setPasswordResetKey( $user, $key )
+    {
+        $userId = $user[ 'user_id' ];
+
+        $query = 'UPDATE {users} SET reset_key = %s, reset_time = %d WHERE user_id = %d';
+        $this->connection->execute( $query, $key, time(), $userId );
+
+        $eventLog = new System_Api_EventLog( $this );
+        $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information, $eventLog->t( 'log.UserPasswordResetSent', array( $user[ 'user_name' ] ) ) );
+    }
+
+    /**
+    * Reset the password of a user.
+    * @param $user The user whoose password is changed.
+    * @param $newPassword The new password.
+    */
+    public function resetPassword( $user, $newPassword )
+    {
+        $userId = $user[ 'user_id' ];
+
+        $passwordHash = new System_Core_PasswordHash();
+        $newHash = $passwordHash->hashPassword( $newPassword );
+
+        $query = 'UPDATE {users} SET user_passwd = %s, passwd_temp = 0, reset_key = NULL, reset_time = NULL WHERE user_id = %d';
+        $this->connection->execute( $query, $newHash, $userId );
+
+        $eventLog = new System_Api_EventLog( $this );
+        $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information, $eventLog->t( 'log.UserPasswordReset', array( $user[ 'user_name' ] ) ) );
+    }
+
     /**
     * Rename a user. An error is thrown if another user with given name
     * already exists.

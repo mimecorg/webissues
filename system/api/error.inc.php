@@ -95,6 +95,7 @@ class System_Api_Error extends System_Core_Exception
     const UnknownSubscription = '364 Unknown Subscription';
     const SubscriptionAlreadyExists = '365 Subscription Already Exists';
     const LoginAlreadyExists = '366 Login Already Exists';
+    const InvalidResetKey = '367 Invalid Reset Key';
 
     public function __construct( $message, $wrappedException = null )
     {

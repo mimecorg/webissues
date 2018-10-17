@@ -16,9 +16,14 @@ case 'login': ?>
 <?php endif ?>
 </div>
 
-<?php if ( $selfRegister ): ?>
+<?php if ( $selfRegister || $resetPassword ): ?>
 <div class="form-options">
+<?php if ( $selfRegister ): ?>
 <p><?php echo $this->link( '/users/register.php', '<span class="fa fa-user-plus" aria-hidden="true"></span> ' . $this->t( 'cmd.RegisterNewAccount' ) ) ?></p>
+<?php endif ?>
+<?php if ( $resetPassword ): ?>
+<p><?php echo $this->link( '/users/password.php', '<span class="fa fa-unlock-alt" aria-hidden="true"></span> ' . $this->t( 'cmd.ResetPassword' ) ) ?></p>
+<?php endif ?>
 </div>
 <?php endif ?>
 

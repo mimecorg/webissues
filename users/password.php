@@ -20,7 +20,7 @@
 
 require_once( '../system/bootstrap.inc.php' );
 
-class Users_Register extends System_Web_Component
+class Users_Password extends System_Web_Component
 {
     private $rules = null;
 
@@ -32,49 +32,50 @@ class Users_Register extends System_Web_Component
     protected function execute()
     {
         $serverManager = new System_Api_ServerManager();
-        if ( $serverManager->getSetting( 'self_register' ) != 1 || $serverManager->getSetting( 'email_engine' ) == null )
+        if ( $serverManager->getSetting( 'email_engine' ) == null )
             throw new System_Api_Error( System_Api_Error::AccessDenied );
 
-        $this->autoApprove = $serverManager->getSetting( 'register_auto_approve' ) == 1;
-
         $this->view->setDecoratorClass( 'Common_Window' );
-        $this->view->setSlot( 'page_title', $this->t( 'cmd.RegisterNewAccount' ) );
+        $this->view->setSlot( 'page_title', $this->t( 'cmd.ResetPassword' ) );
+        $this->view->setSlot( 'window_size', 'small' );
 
         if ( System_Api_Principal::getCurrent()->isAuthenticated() ) {
             $sessionManager = new System_Api_SessionManager();
             $sessionManager->logout();
         }
 
-        $this->form = new System_Web_Form( 'register', $this );
-        $this->form->addViewState( 'page', 'register' );
-        $this->form->addField( 'userName' );
-        $this->form->addField( 'login' );
+        $this->form = new System_Web_Form( 'password', $this );
+        $this->form->addViewState( 'page', 'email' );
+        $this->form->addViewState( 'userLogin', '' );
+        $this->form->addField( 'email' );
         $this->form->addField( 'password' );
         $this->form->addField( 'passwordConfirm' );
-        $this->form->addField( 'email' );
 
         if ( $this->form->loadForm() ) {
-            if ( $this->form->isSubmittedWith( 'cancel' ) || $this->form->isSubmittedWith( 'ok' ) )
+            if ( $this->form->isSubmittedWith( 'cancel' ) || $this->form->isSubmittedWith( 'ok' ) && ( $this->page == 'sent' || $this->page == 'done' ) )
                 $this->response->redirect( '/index.php' );
 
             $this->initializeRules();
             $this->validate();
 
-            if ( $this->form->isSubmittedWith( 'register' ) && !$this->form->hasErrors() ) {
-                $this->register();
-                if ( !$this->form->hasErrors() )
-                    $this->page = 'registered';
+            if ( $this->form->isSubmittedWith( 'ok' ) && !$this->form->hasErrors() ) {
+                if ( $this->page == 'email' ) {
+                    $this->send();
+                    if ( !$this->form->hasErrors() )
+                        $this->page = 'sent';
+                } else {
+                    $key = $this->request->getQueryString( 'key' );
+                    if ( $key != null ) {
+                        $this->setPassword( $key );
+                        $this->page = 'done';
+                    }
+                }
             }
         } else {
             $key = $this->request->getQueryString( 'key' );
             if ( $key != null ) {
-                if ( $this->autoApprove ) {
-                    $this->approve( $key );
-                    $this->page = 'approved';
-                } else {
-                    $this->activate( $key );
-                    $this->page = 'activated';
-                }
+                $this->reset( $key );
+                $this->page = 'reset';
             }
         }
 
@@ -90,13 +91,12 @@ class Users_Register extends System_Web_Component
 
         $this->form->clearRules();
 
-        if ( $this->page == 'register' ) {
-            $this->form->addTextRule( 'userName', System_Const::NameMaxLength );
-            $this->form->addTextRule( 'login', System_Const::LoginMaxLength );
+        if ( $this->page == 'email' ) {
+            $this->form->addTextRule( 'email', System_Const::ValueMaxLength );
+        } else if ( $this->page == 'reset' ) {
             $this->form->addTextRule( 'password', System_Const::PasswordMaxLength );
             $this->form->addTextRule( 'passwordConfirm', System_Const::PasswordMaxLength );
             $this->form->addPasswordRule( 'passwordConfirm', 'password' );
-            $this->form->addTextRule( 'email', System_Const::ValueMaxLength );
         }
     }
 
@@ -104,7 +104,7 @@ class Users_Register extends System_Web_Component
     {
         $this->form->validate();
 
-        if ( $this->page == 'register' && !$this->form->hasErrors() ) {
+        if ( $this->page == 'email' && !$this->form->hasErrors() ) {
             $validator = new System_Api_Validator();
             try {
                 $validator->checkEmailAddress( $this->email );
@@ -114,47 +114,47 @@ class Users_Register extends System_Web_Component
         }
     }
 
-    private function register()
+    private function send()
     {
         try {
+            $userManager = new System_Api_UserManager();
+            $user = $userManager->getUserByEmail( $this->email );
+
             $keyGenerator = new System_Api_KeyGenerator();
-            $key = $keyGenerator->generateKey( System_Api_KeyGenerator::RegistrationRequest );
+            $key = $keyGenerator->generateKey( System_Api_KeyGenerator::PasswordReset );
 
-            $registrationManager = new System_Api_RegistrationManager();
-            $registrationManager->addRequest( $this->login, $this->userName, $this->password, $this->email, $key );
+            $userManager->setPasswordResetKey( $user, $key );
 
-            $register = array( 'user_login' => $this->login, 'user_name' => $this->userName, 'user_email' => $this->email, 'request_key' => $key );
+            $reset = array( 'user_login' => $user[ 'user_login' ], 'user_name' => $user[ 'user_name' ], 'user_email' => $this->email, 'reset_key' => $key );
 
-            $mail = System_Web_Component::createComponent( 'Common_Mail_Register', null, $register );
+            $mail = System_Web_Component::createComponent( 'Common_Mail_ResetPassword', null, $reset );
             $body = $mail->run();
             $subject = $mail->getView()->getSlot( 'subject' );
 
             $engine = new System_Mail_Engine();
             $engine->loadSettings();
-            $engine->send( $this->email, $this->userName, $subject, $body );
+            $engine->send( $this->email, $user[ 'user_name' ], $subject, $body );
         } catch ( System_Api_Error $ex ) {
-            if ( $ex->getMessage() == System_Api_Error::EmailAlreadyExists )
-                $this->form->getErrorHelper()->handleError( 'email', $ex );
-            else if ( $ex->getMessage() == System_Api_Error::LoginAlreadyExists )
-                $this->form->getErrorHelper()->handleError( 'login', $ex );
+            if ( $ex->getMessage() == System_Api_Error::UnknownUser )
+                $this->form->setError( 'email', $this->t( 'error.NoUserWithThisEmail' ) );
             else
-                $this->form->getErrorHelper()->handleError( 'userName', $ex );
+                $this->form->getErrorHelper()->handleError( 'email', $ex );
         }
     }
 
-    private function activate( $key )
+    private function reset( $key )
     {
-        $registrationManager = new System_Api_RegistrationManager();
-        $request = $registrationManager->getRequestWithKey( $key );
-        $registrationManager->activateRequest( $request );
+        $userManager = new System_Api_UserManager();
+        $user = $userManager->getUserWithResetKey( $key );
+        $this->userLogin = $user[ 'user_login' ];
     }
 
-    private function approve( $key )
+    private function setPassword( $key )
     {
-        $registrationManager = new System_Api_RegistrationManager();
-        $request = $registrationManager->getRequestWithKey( $key );
-        $registrationManager->approveRequest( $request );
+        $userManager = new System_Api_UserManager();
+        $user = $userManager->getUserWithResetKey( $key );
+        $userManager->resetPassword( $user, $this->password );
     }
 }
 
-System_Bootstrap::run( 'Common_Application', 'Users_Register' );
+System_Bootstrap::run( 'Common_Application', 'Users_Password' );

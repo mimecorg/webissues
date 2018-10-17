@@ -34,22 +34,6 @@ class System_Api_RegistrationManager extends System_Api_Base
     }
 
     /**
-    * Generate a random activation key.
-    */
-    public function generateKey()
-    {
-        $chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-        $len = strlen( $chars );
-
-        $result = '';
-
-        for ( $i = 0; $i < 8; $i ++ )
-            $result .= $chars[ mt_rand( 0, $len - 1 ) ];
-
-        return $result;
-    }
-
-    /**
     * Return the registration request with given identifier.
     * @param $requestId Identifier of the request.
     * @return Array containing the request.
