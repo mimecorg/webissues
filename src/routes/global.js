@@ -113,6 +113,19 @@ export default function routeGlobal( route, ajax, store ) {
     } );
   } );
 
+  route( 'ResetAccountPassword', '/account/password/reset', ( { userId } ) => {
+    return ajax.post( '/server/api/account/load.php' ).then( ( { details } ) => {
+      return {
+        form: 'users/ResetPassword',
+        size: 'small',
+        userId: details.id,
+        name: details.name,
+        email: details.email,
+        accountMode: true
+      };
+    } );
+  } );
+
   if ( process.env.TARGET == 'electron' ) {
     route( 'ClientSettings', '/settings', () => {
       return Promise.resolve( { form: 'client/ClientSettings', size: 'small' } );

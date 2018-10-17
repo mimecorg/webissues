@@ -128,4 +128,16 @@ export default function routeUsers( route, ajax, store ) {
       };
     } );
   } );
+
+  route( 'ResetPassword', '/admin/users/:userId/password/reset', ( { userId } ) => {
+    return ajax.post( '/server/api/users/load.php', { userId } ).then( ( { details } ) => {
+      return {
+        form: 'users/ResetPassword',
+        size: 'small',
+        userId,
+        name: details.name,
+        email: details.email
+      };
+    } );
+  } );
 }

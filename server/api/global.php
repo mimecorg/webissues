@@ -168,6 +168,7 @@ class Server_Api_Global
         $settings[ 'fileMaxSize' ] = (int)$serverManager->getSetting( 'file_max_size' );
         $settings[ 'hideEmptyValues' ] = $serverManager->getSetting( 'hide_empty_values' ) == '1';
         $settings[ 'selfRegister' ] = $serverManager->getSetting( 'self_register' ) == 1 && $serverManager->getSetting( 'email_engine' ) != null;
+        $settings[ 'resetPassword' ] = $serverManager->getSetting( 'email_engine' ) != null;
 
         $preferencesManager = new System_Api_PreferencesManager();
         $historyFilter = $preferencesManager->getPreference( 'history_filter' );

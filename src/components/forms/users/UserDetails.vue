@@ -20,10 +20,11 @@
 <template>
   <div class="container-fluid">
     <FormHeader v-bind:title="name" v-bind:breadcrumbs="breadcrumbs" v-on:close="close">
-      <DropdownButton fa-class="fa-ellipsis-v" menu-class="dropdown-menu-right" v-bind:title="$t( 'title.More' )">
+      <DropdownButton v-if="settings.resetPassword" fa-class="fa-ellipsis-v" menu-class="dropdown-menu-right" v-bind:title="$t( 'title.More' )">
         <li><HyperLink v-on:click="changePassword"><span class="fa fa-key" aria-hidden="true"></span> {{ $t( 'cmd.ChangePassword' ) }}</HyperLink></li>
-        <li><HyperLink><span class="fa fa-question-circle-o" aria-hidden="true"></span> {{ $t( 'cmd.ResetPassword' ) }}</HyperLink></li>
+        <li><HyperLink v-on:click="resetPassword"><span class="fa fa-unlock-alt" aria-hidden="true"></span> {{ $t( 'cmd.ResetPassword' ) }}</HyperLink></li>
       </DropdownButton>
+      <button v-else type="button" class="btn btn-default" v-on:click="changePassword"><span class="fa fa-key" aria-hidden="true"></span> {{ $t( 'cmd.ChangePassword' ) }}</button>
     </FormHeader>
     <FormSection v-bind:title="$t( 'title.Account' )">
       <button type="button" class="btn btn-default" v-on:click="editUser"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'cmd.Edit' ) }}</button>
@@ -90,7 +91,7 @@ export default {
   },
 
   computed: {
-    ...mapState( 'global', [ 'projects', 'languages' ] ),
+    ...mapState( 'global', [ 'projects', 'settings', 'languages' ] ),
     ...mapGetters( 'global', [ 'isAdministrator' ] ),
     breadcrumbs() {
       return this.accountMode ? null : [
@@ -152,6 +153,9 @@ export default {
     },
     changePassword() {
       this.$router.push( this.accountMode ? 'ChangeAccountPassword' : 'ChangePassword', { userId: this.userId } );
+    },
+    resetPassword() {
+      this.$router.push( this.accountMode ? 'ResetAccountPassword' : 'ResetPassword', { userId: this.userId } );
     },
 
     addProjects() {
