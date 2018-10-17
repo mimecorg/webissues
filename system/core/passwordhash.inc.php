@@ -73,6 +73,9 @@ class System_Core_PasswordHash
     */
     public function checkPassword( $password, $storedHash )
     {
+        if ( $storedHash == null )
+            return false;
+
         if ( substr( $storedHash, 0, 5 ) == '$WI0$' )
             $password = md5( $password );
 

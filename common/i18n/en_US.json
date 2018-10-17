@@ -245,6 +245,7 @@
     "UserRenamed": "Renamed user \"{0}\" to \"{1}\""
   },
   "prompt": {
+    "AccountCreated": "A user account has been created for you with login {0}. To set your password, please open the following URL:",
     "AlertEmail": "This is a WebIssues alert notification.",
     "ContinueConfiguration": "Go to the {0} to continue the configuration of this server.",
     "Credentials": "Enter login and password for your new account.",
@@ -290,6 +291,7 @@
     "WelcomeToWebIssues": "Your WebIssues server is almost ready. We just need to configure the database."
   },
   "subject": {
+    "AccountCreated": "WebIssues: Account created",
     "EmailVerification": "WebIssues: Email verification",
     "RegistrationApproved": "WebIssues: Registration approved",
     "RegistrationRejected": "WebIssues: Registration rejected",

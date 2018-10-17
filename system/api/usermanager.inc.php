@@ -332,11 +332,12 @@ class System_Api_UserManager extends System_Api_Base
     * @param $password The password of the user.
     * @param $isTemp If @c true the password is temporary and user must
     * change it at next logon.
+    * @param $invitationKey The key for reset password link.
     * @param $email The email of the user.
     * @param $language The language of the user.
     * @return Identifier of the user.
     */
-    public function addUser( $login, $name, $password, $isTemp, $email, $language )
+    public function addUser( $login, $name, $password, $isTemp, $invitationKey, $email, $language )
     {
         $transaction = $this->connection->beginTransaction( System_Db_Transaction::Serializable, 'users' );
 
@@ -355,11 +356,16 @@ class System_Api_UserManager extends System_Api_Base
                     throw new System_Api_Error( System_Api_Error::EmailAlreadyExists );
             }
 
-            $passwordHash = new System_Core_PasswordHash();
-            $hash = $passwordHash->hashPassword( $password );
+            if ( $invitationKey == null ) {
+                $passwordHash = new System_Core_PasswordHash();
+                $hash = $passwordHash->hashPassword( $password );
 
-            $query = 'INSERT INTO {users} ( user_login, user_name, user_passwd, user_access, passwd_temp ) VALUES ( %s, %s, %s, %d, %d )';
-            $this->connection->execute( $query, $login, $name, $hash, System_Const::NormalAccess, $isTemp );
+                $query = 'INSERT INTO {users} ( user_login, user_name, user_passwd, user_access, passwd_temp ) VALUES ( %s, %s, %s, %d, %d )';
+                $this->connection->execute( $query, $login, $name, $hash, System_Const::NormalAccess, $isTemp );
+            } else {
+                $query = 'INSERT INTO {users} ( user_login, user_name, user_access, passwd_temp, reset_key, reset_time ) VALUES ( %s, %s, %d, %d, %s, %d )';
+                $this->connection->execute( $query, $login, $name, System_Const::NormalAccess, 0, $invitationKey, time() );
+            }
 
             $userId = $this->connection->getInsertId( 'users', 'user_id' );
 

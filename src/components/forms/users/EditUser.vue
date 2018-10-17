@@ -25,9 +25,12 @@
     <Prompt v-else-if="mode == 'add'" path="prompt.AddUser"></Prompt>
     <FormInput v-if="isAdministrator" ref="name" id="name" v-bind:label="$t( 'label.Name' )" v-bind="$field( 'name' )" v-model="name"/>
     <FormInput v-if="isAdministrator" ref="login" id="login" v-bind:label="$t( 'label.Login' )" v-bind="$field( 'login' )" v-model="login"/>
-    <FormInput v-if="mode == 'add'" ref="password" id="password" type="password" v-bind:label="$t( 'label.Password' )" v-bind="$field( 'password' )" v-model="password"/>
-    <FormInput v-if="mode == 'add'" ref="confirmPassword" id="confirmPassword" type="password" v-bind:label="$t( 'label.ConfirmPassword' )" v-bind="$field( 'confirmPassword' )" v-model="confirmPassword"/>
-    <FormCheckbox v-if="mode == 'add'" v-bind:label="$t( 'text.UserMustChangePassword' )" v-model="mustChangePassword"/>
+    <FormCheckbox v-if="mode == 'add' && settings.resetPassword" v-bind:label="$t( 'text.SendInvitationEmail' )" v-model="sendInvitationEmail"/>
+    <FormInput v-if="mode == 'add'" ref="password" id="password" type="password" v-bind:label="$t( 'label.Password' )"
+               v-bind:disabled="sendInvitationEmail" v-bind="$field( 'password' )" v-model="password"/>
+    <FormInput v-if="mode == 'add'" ref="confirmPassword" id="confirmPassword" type="password" v-bind:label="$t( 'label.ConfirmPassword' )"
+               v-bind:disabled="sendInvitationEmail" v-bind="$field( 'confirmPassword' )" v-model="confirmPassword"/>
+    <FormCheckbox v-if="mode == 'add'" v-bind:label="$t( 'text.UserMustChangePassword' )" v-bind:disabled="sendInvitationEmail" v-model="mustChangePassword"/>
     <FormInput ref="email" id="email" v-bind:label="$t( 'label.EmailAddress' )" v-bind="$field( 'email' )" v-model="email"/>
     <FormGroup v-bind:label="$t( 'label.Language' )">
       <div class="dropdown-filters">
@@ -86,14 +89,14 @@ export default {
         type: String,
         required: true,
         maxLength: MaxLength.Password,
-        condition: this.mode == 'add'
+        condition: () => this.mode == 'add' && !this.sendInvitationEmail
       },
       confirmPassword: {
         type: String,
         required: true,
         maxLength: MaxLength.Password,
         parse: this.comparePassword,
-        condition: this.mode == 'add'
+        condition: () => this.mode == 'add' && !this.sendInvitationEmail
       },
       email: {
         value: this.initialEmail != null ? this.initialEmail : '',
@@ -112,12 +115,13 @@ export default {
 
   data() {
     return {
+      sendInvitationEmail: false,
       mustChangePassword: false
     };
   },
 
   computed: {
-    ...mapState( 'global', [ 'languages' ] ),
+    ...mapState( 'global', [ 'settings', 'languages' ] ),
     ...mapGetters( 'global', [ 'isAdministrator' ] ),
     title() {
       if ( this.mode == 'edit' )
@@ -155,7 +159,9 @@ export default {
         data.name = this.name;
         data.login = this.login;
       }
-      if ( this.mode == 'add' ) {
+      if ( this.sendInvitationEmail ) {
+        data.sendInvitationEmail = true;
+      } else if ( this.mode == 'add' ) {
         data.password = this.password;
         data.mustChangePassword = this.mustChangePassword;
       }
@@ -237,6 +243,8 @@ export default {
     checkEmailAddress( value ) {
       if ( value != '' )
         this.$parser.checkEmailAddress( value );
+      else if ( this.sendInvitationEmail )
+        throw makeParseError( this.$t( 'error.NoEmailForInvitation' ) );
       return value;
     }
   },

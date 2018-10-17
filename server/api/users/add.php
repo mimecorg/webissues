@@ -27,25 +27,45 @@ class Server_Api_Users_Add
     public $params = array(
         'name' => array( 'type' => 'string', 'required' => true ),
         'login' => array( 'type' => 'string', 'required' => true ),
-        'password' => array( 'type' => 'string', 'required' => true ),
+        'sendInvitationEmail' => array( 'type' => 'bool', 'default' => false ),
+        'password' => array( 'type' => 'string', 'default' => '' ),
         'mustChangePassword' => array( 'type' => 'bool', 'default' => false ),
         'email' => array( 'type' => 'string', 'default' => '' ),
         'language' => array( 'type' => 'string', 'default' => '' )
     );
 
-    public function run( $name, $login, $password, $mustChangePassword, $email, $language )
+    public function run( $name, $login, $sendInvitationEmail, $password, $mustChangePassword, $email, $language )
     {
         $validator = new System_Api_Validator();
         $validator->checkString( $name, System_Const::NameMaxLength );
         $validator->checkString( $login, System_Const::LoginMaxLength );
-        $validator->checkString( $password, System_Const::PasswordMaxLength );
-        $validator->checkString( $email, System_Const::ValueMaxLength, System_Api_Validator::AllowEmpty );
+        $validator->checkString( $password, System_Const::PasswordMaxLength, $sendInvitationEmail ? System_Api_Validator::AllowEmpty : 0 );
+        $validator->checkString( $email, System_Const::ValueMaxLength, $sendInvitationEmail ? 0 : System_Api_Validator::AllowEmpty );
         $validator->checkString( $language, System_Const::ValueMaxLength, System_Api_Validator::AllowEmpty );
         $validator->checkPreference( 'email', $email );
         $validator->checkPreference( 'language', $language );
 
+        if ( $sendInvitationEmail ) {
+            $keyGenerator = new System_Api_KeyGenerator();
+            $invitationKey = $keyGenerator->generateKey( System_Api_KeyGenerator::PasswordReset );
+        } else {
+            $invitationKey = null;
+        }
+
         $userManager = new System_Api_UserManager();
-        $userId = $userManager->addUser( $login, $name, $password, $mustChangePassword ? 1 : 0, $email, $language );
+        $userId = $userManager->addUser( $login, $name, $password, $mustChangePassword ? 1 : 0, $invitationKey, $email, $language );
+
+        if ( $sendInvitationEmail ) {
+            $invitation = array( 'user_login' => $login, 'user_name' => $name, 'user_email' => $email, 'invitation_key' => $invitationKey );
+
+            $mail = System_Web_Component::createComponent( 'Common_Mail_AccountCreated', null, $invitation );
+            $body = $mail->run();
+            $subject = $mail->getView()->getSlot( 'subject' );
+
+            $engine = new System_Mail_Engine();
+            $engine->loadSettings();
+            $engine->send( $email, $name, $subject, $body );
+        }
 
         $result[ 'userId' ] = $userId;
         $result[ 'changed' ] = true;
