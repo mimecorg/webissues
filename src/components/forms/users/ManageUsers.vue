@@ -21,6 +21,9 @@
   <div class="container-fluid">
     <FormHeader v-bind:title="$t( 'title.UserAccounts' )" v-on:close="close">
       <button type="button" class="btn btn-success" v-on:click="addUser"><span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'cmd.Add' ) }}</button>
+      <button v-if="hasRegistrationRequests" type="button" class="btn btn-default" v-on:click="registrationRequests">
+        <span class="fa fa-user-plus" aria-hidden="true"></span> {{ $t( 'title.RegistrationRequests' ) }}
+      </button>
     </FormHeader>
     <Grid v-bind:items="users" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-medium', 'column-medium', 'column-medium', null ]" v-on:row-click="rowClick">
       <template slot-scope="{ item, columnIndex, columnClass }">
@@ -49,6 +52,9 @@ export default {
         this.$t( 'title.Email' ),
         this.$t( 'title.Access' )
       ];
+    },
+    hasRegistrationRequests() {
+      return this.$store.state.global.settings.selfRegister && !this.$store.state.global.settings.registerAutoApprove;
     }
   },
 
@@ -74,6 +80,10 @@ export default {
 
     addUser() {
       this.$router.push( 'AddUser' );
+    },
+
+    registrationRequests() {
+      this.$router.push( 'RegistrationRequests' );
     },
 
     rowClick( rowIndex ) {

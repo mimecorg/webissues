@@ -20,7 +20,7 @@
 <template>
   <div class="container-fluid">
     <FormHeader v-bind:title="name" v-bind:breadcrumbs="breadcrumbs" v-on:close="close">
-      <DropdownButton v-if="settings.resetPassword" fa-class="fa-ellipsis-v" menu-class="dropdown-menu-right" v-bind:title="$t( 'title.More' )">
+      <DropdownButton v-if="canResetPassword" fa-class="fa-ellipsis-v" menu-class="dropdown-menu-right" v-bind:title="$t( 'title.More' )">
         <li><HyperLink v-on:click="changePassword"><span class="fa fa-key" aria-hidden="true"></span> {{ $t( 'cmd.ChangePassword' ) }}</HyperLink></li>
         <li><HyperLink v-on:click="resetPassword"><span class="fa fa-unlock-alt" aria-hidden="true"></span> {{ $t( 'cmd.ResetPassword' ) }}</HyperLink></li>
       </DropdownButton>
@@ -126,6 +126,9 @@ export default {
     },
     isCurrentUser() {
       return this.userId == this.$store.state.global.userId;
+    },
+    canResetPassword() {
+      return this.$store.state.global.settings.resetPassword;
     }
   },
 

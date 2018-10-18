@@ -70,6 +70,17 @@ class System_Api_RegistrationManager extends System_Api_Base
     }
 
     /**
+    * Get a list of requests.
+    * @return An array of associative arrays representing requests.
+    */
+    public function getRequests()
+    {
+        $query = 'SELECT request_id, user_login, user_name, user_email, created_time FROM {register_requests} WHERE is_active = 1 ORDER BY user_name';
+
+        return $this->connection->queryTable( $query );
+    }
+
+    /**
     * Get the total number of requests.
     */
     public function getRequestsCount()
@@ -235,8 +246,6 @@ class System_Api_RegistrationManager extends System_Api_Base
 
         $eventLog = new System_Api_EventLog( $this );
         $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information, $eventLog->t( 'log.RegistrationRejected', array( $name ) ) );
-
-        return $userId;
     }
 
     /**

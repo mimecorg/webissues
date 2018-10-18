@@ -140,4 +140,48 @@ export default function routeUsers( route, ajax, store ) {
       };
     } );
   } );
+
+  route( 'RegistrationRequests', '/admin/users/requests', () => {
+    return ajax.post( '/server/api/users/requests/list.php' ).then( ( { requests } ) => {
+      return {
+        form: 'users/RegistrationRequests',
+        size: 'large',
+        requests
+      };
+    } );
+  } );
+
+  route( 'RequestDetails', '/admin/users/requests/:requestId', ( { requestId } ) => {
+    return ajax.post( '/server/api/users/requests/load.php', { requestId } ).then( ( { details } ) => {
+      return {
+        form: 'users/RequestDetails',
+        requestId,
+        name: details.name,
+        login: details.login,
+        email: details.email,
+        date: details.date
+      };
+    } );
+  } );
+
+  route( 'ApproveRequest', '/admin/users/requests/:requestId/approve', ( { requestId } ) => {
+    return ajax.post( '/server/api/users/requests/load.php', { requestId } ).then( ( { details } ) => {
+      return {
+        form: 'users/ApproveRequest',
+        requestId,
+        name: details.name
+      };
+    } );
+  } );
+
+  route( 'RejectRequest', '/admin/users/requests/:requestId/reject', ( { requestId } ) => {
+    return ajax.post( '/server/api/users/requests/load.php', { requestId } ).then( ( { details } ) => {
+      return {
+        form: 'users/RejectRequest',
+        size: 'small',
+        requestId,
+        name: details.name
+      };
+    } );
+  } );
 }

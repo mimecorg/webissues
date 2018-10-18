@@ -25,7 +25,7 @@
     <Prompt v-else-if="mode == 'add'" path="prompt.AddUser"></Prompt>
     <FormInput v-if="isAdministrator" ref="name" id="name" v-bind:label="$t( 'label.Name' )" v-bind="$field( 'name' )" v-model="name"/>
     <FormInput v-if="isAdministrator" ref="login" id="login" v-bind:label="$t( 'label.Login' )" v-bind="$field( 'login' )" v-model="login"/>
-    <FormCheckbox v-if="mode == 'add' && settings.resetPassword" v-bind:label="$t( 'text.SendInvitationEmail' )" v-model="sendInvitationEmail"/>
+    <FormCheckbox v-if="mode == 'add' && canResetPassword" v-bind:label="$t( 'text.SendInvitationEmail' )" v-model="sendInvitationEmail"/>
     <FormInput v-if="mode == 'add'" ref="password" id="password" type="password" v-bind:label="$t( 'label.Password' )"
                v-bind:disabled="sendInvitationEmail" v-bind="$field( 'password' )" v-model="password"/>
     <FormInput v-if="mode == 'add'" ref="confirmPassword" id="confirmPassword" type="password" v-bind:label="$t( 'label.ConfirmPassword' )"
@@ -121,7 +121,7 @@ export default {
   },
 
   computed: {
-    ...mapState( 'global', [ 'settings', 'languages' ] ),
+    ...mapState( 'global', [ 'languages' ] ),
     ...mapGetters( 'global', [ 'isAdministrator' ] ),
     title() {
       if ( this.mode == 'edit' )
@@ -139,6 +139,9 @@ export default {
         if ( language != null )
           return language.name;
       }
+    },
+    canResetPassword() {
+      return this.$store.state.global.settings.resetPassword;
     }
   },
 
