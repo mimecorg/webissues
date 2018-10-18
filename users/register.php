@@ -35,14 +35,17 @@ class Users_Register extends System_Web_Component
         if ( $serverManager->getSetting( 'self_register' ) != 1 || $serverManager->getSetting( 'email_engine' ) == null )
             throw new System_Api_Error( System_Api_Error::AccessDenied );
 
-        $this->autoApprove = $serverManager->getSetting( 'register_auto_approve' ) == 1;
-
-        $this->view->setDecoratorClass( 'Common_Window' );
-
         if ( System_Api_Principal::getCurrent()->isAuthenticated() ) {
             $sessionManager = new System_Api_SessionManager();
             $sessionManager->logout();
+
+            $translator = System_Core_Application::getInstance()->getTranslator();
+            $translator->setLanguage( System_Core_Translator::UserLanguage, null );
         }
+
+        $this->view->setDecoratorClass( 'Common_Window' );
+
+        $this->autoApprove = $serverManager->getSetting( 'register_auto_approve' ) == 1;
 
         $this->form = new System_Web_Form( 'register', $this );
         $this->form->addViewState( 'page', 'register' );
