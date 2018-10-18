@@ -47,25 +47,21 @@
               <li><HyperLink><span class="fa fa-book" aria-hidden="true"></span> {{ $t( 'title.EventLog' ) }}</HyperLink></li>
             </template>
           </DropdownButton>
-          <button v-else class="btn btn-default" v-on:click="manageProjects">
+          <button v-else class="btn btn-default" v-bind:title="$t( 'title.Projects' )" v-on:click="manageProjects">
             <span class="fa fa-briefcase" aria-hidden="true"></span> <span class="hidden-sm hidden-md">{{ $t( 'title.Projects' ) }}</span>
           </button>
-          <DropdownButton fa-class="fa-user" v-bind:text="userName" text-class="hidden-sm hidden-md" v-bind:title="userTitle">
-            <template v-if="isAuthenticated">
-              <li><HyperLink v-on:click="myAccount"><span class="fa fa-sliders" aria-hidden="true"></span> {{ $t( 'title.MyAccount' ) }}</HyperLink></li>
-              <li role="separator" class="divider"></li>
-              <li v-if="isWeb"><a v-bind:href="baseURL + '/index.php'"><span class="fa fa-sign-out" aria-hidden="true"></span> {{ $t( 'cmd.LogOut' ) }}</a></li>
-              <li v-else><HyperLink v-on:click="restartClient"><span class="fa fa-sign-out" aria-hidden="true"></span> {{ $t( 'cmd.LogOut' ) }}</HyperLink></li>
-            </template>
-            <template v-else-if="isWeb">
-              <li><a v-bind:href="baseURL + '/index.php'"><span class="fa fa-sign-in" aria-hidden="true"></span> {{ $t( 'cmd.LogIn' ) }}</a></li>
-              <li v-if="selfRegister"><a v-bind:href="baseURL + '/users/register.php'"><span class="fa fa-user-plus" aria-hidden="true"></span> {{ $t( 'cmd.Register' ) }}</a></li>
-            </template>
-            <template v-else>
-              <li><HyperLink v-on:click="restartClient"><span class="fa fa-sign-in" aria-hidden="true"></span> {{ $t( 'cmd.LogIn' ) }}</HyperLink></li>
-              <li v-if="selfRegister"><HyperLink v-on:click="openRegister"><span class="fa fa-user-plus" aria-hidden="true"></span> {{ $t( 'cmd.Register' ) }}</HyperLink></li>
-            </template>
+          <DropdownButton v-if="isAuthenticated" fa-class="fa-user" v-bind:text="userName" text-class="hidden-sm hidden-md" v-bind:title="userTitle">
+            <li><HyperLink v-on:click="myAccount"><span class="fa fa-sliders" aria-hidden="true"></span> {{ $t( 'title.MyAccount' ) }}</HyperLink></li>
+            <li role="separator" class="divider"></li>
+            <li v-if="isWeb"><a v-bind:href="baseURL + '/index.php'"><span class="fa fa-sign-out" aria-hidden="true"></span> {{ $t( 'cmd.LogOut' ) }}</a></li>
+            <li v-else><HyperLink v-on:click="restartClient"><span class="fa fa-sign-out" aria-hidden="true"></span> {{ $t( 'cmd.LogOut' ) }}</HyperLink></li>
           </DropdownButton>
+          <a v-else-if="isWeb" type="button" class="btn btn-default" v-bind:title="$t( 'cmd.LogIn' )" v-bind:href="baseURL + '/index.php'">
+            <span class="fa fa-sign-in" aria-hidden="true"></span> <span class="hidden-sm hidden-md">{{ $t( 'cmd.LogIn' ) }}</span>
+          </a>
+          <button v-else type="button" class="btn btn-default" v-bind:title="$t( 'cmd.LogIn' )" v-on:click="restartClient">
+            <span class="fa fa-sign-in" aria-hidden="true"></span> <span class="hidden-sm hidden-md">{{ $t( 'cmd.LogIn' ) }}</span>
+          </button>
           <div class="navbar-sub-group">
             <div class="navbar-sub-element navbar-sub-element-wide">
               <div class="navbar-brand-img"></div>
@@ -123,9 +119,6 @@ export default {
     },
     isWeb() {
       return process.env.TARGET == 'web';
-    },
-    selfRegister() {
-      return this.$store.state.global.settings.selfRegister;
     }
   },
 
