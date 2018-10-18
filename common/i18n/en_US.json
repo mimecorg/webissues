@@ -317,6 +317,7 @@
   },
   "title": {
     "AccessForbidden": "Access Forbidden",
+    "AccountRegistered": "Account Registered",
     "AdministratorAccount": "Administrator Account",
     "Attributes": "Attributes",
     "ConfigurationError": "Configuration Error",
@@ -331,6 +332,7 @@
     "Description": "Description",
     "Email": "Email",
     "EmailAddress": "Email Address",
+    "EmailVerified": "Email Verified",
     "ID": "ID",
     "IncompatibleDatabase": "Incompatible Database",
     "InstallationCompleted": "Installation Completed",
