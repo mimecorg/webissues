@@ -134,13 +134,8 @@ class Users_Register extends System_Web_Component
 
             $data = array( 'user_login' => $this->login, 'user_name' => $this->userName, 'user_email' => $this->email, 'request_key' => $key );
 
-            $mail = System_Web_Component::createComponent( 'Common_Mail_EmailVerification', null, $data );
-            $body = $mail->run();
-            $subject = $mail->getView()->getSlot( 'subject' );
-
-            $engine = new System_Mail_Engine();
-            $engine->loadSettings();
-            $engine->send( $this->email, $this->userName, $subject, $body );
+            $helper = new System_Mail_Helper();
+            $helper->send( $this->email, $this->userName, 'Common_Mail_EmailVerification', $data );
         } catch ( System_Api_Error $ex ) {
             if ( $ex->getMessage() == System_Api_Error::EmailAlreadyExists )
                 $this->form->getErrorHelper()->handleError( 'email', $ex );

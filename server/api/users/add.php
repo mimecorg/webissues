@@ -58,13 +58,8 @@ class Server_Api_Users_Add
         if ( $sendInvitationEmail ) {
             $data = array( 'user_login' => $login, 'user_name' => $name, 'user_email' => $email, 'invitation_key' => $invitationKey );
 
-            $mail = System_Web_Component::createComponent( 'Common_Mail_AccountCreated', null, $data );
-            $body = $mail->run();
-            $subject = $mail->getView()->getSlot( 'subject' );
-
-            $engine = new System_Mail_Engine();
-            $engine->loadSettings();
-            $engine->send( $email, $name, $subject, $body );
+            $helper = new System_Mail_Helper();
+            $helper->send( $email, $name, 'Common_Mail_AccountCreated', $data );
         }
 
         $result[ 'userId' ] = $userId;

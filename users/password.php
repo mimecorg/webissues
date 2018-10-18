@@ -127,13 +127,8 @@ class Users_Password extends System_Web_Component
 
             $data = array( 'user_login' => $user[ 'user_login' ], 'user_name' => $user[ 'user_name' ], 'user_email' => $this->email, 'reset_key' => $key );
 
-            $mail = System_Web_Component::createComponent( 'Common_Mail_ResetPassword', null, $data );
-            $body = $mail->run();
-            $subject = $mail->getView()->getSlot( 'subject' );
-
-            $engine = new System_Mail_Engine();
-            $engine->loadSettings();
-            $engine->send( $this->email, $user[ 'user_name' ], $subject, $body );
+            $helper = new System_Mail_Helper();
+            $helper->send( $this->email, $user[ 'user_name' ], 'Common_Mail_ResetPassword', $data );
         } catch ( System_Api_Error $ex ) {
             if ( $ex->getMessage() == System_Api_Error::UnknownUser )
                 $this->form->setError( 'email', $this->t( 'error.NoUserWithThisEmail' ) );

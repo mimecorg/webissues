@@ -50,13 +50,8 @@ class Server_Api_Users_Password_Reset
 
         $data = array( 'user_login' => $user[ 'user_login' ], 'user_name' => $user[ 'user_name' ], 'user_email' => $email, 'reset_key' => $key );
 
-        $mail = System_Web_Component::createComponent( 'Common_Mail_ResetPassword', null, $data );
-        $body = $mail->run();
-        $subject = $mail->getView()->getSlot( 'subject' );
-
-        $engine = new System_Mail_Engine();
-        $engine->loadSettings();
-        $engine->send( $email, $user[ 'user_name' ], $subject, $body );
+        $helper = new System_Mail_Helper();
+        $helper->send( $email, $user[ 'user_name' ], 'Common_Mail_ResetPassword', $data );
     }
 }
 

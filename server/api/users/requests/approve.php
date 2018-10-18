@@ -55,13 +55,8 @@ class Server_Api_Users_Requests_Approve
         foreach ( $projectRows as $project )
             $userManager->grantMember( $user, $project, System_Const::NormalAccess );
 
-        $mail = System_Web_Component::createComponent( 'Common_Mail_RegistrationApproved', null, $request );
-        $body = $mail->run();
-        $subject = $mail->getView()->getSlot( 'subject' );
-
-        $engine = new System_Mail_Engine();
-        $engine->loadSettings();
-        $engine->send( $request[ 'user_email' ], $request[ 'user_name' ], $subject, $body );
+        $helper = new System_Mail_Helper();
+        $helper->send( $request[ 'user_email' ], $request[ 'user_name' ], 'Common_Mail_RegistrationApproved', $request );
 
         $result[ 'userId' ] = $userId;
         $result[ 'changed' ] = true;

@@ -39,13 +39,8 @@ class Server_Api_Users_Requests_Reject
 
         $registrationManager->rejectRequest( $request );
 
-        $mail = System_Web_Component::createComponent( 'Common_Mail_RegistrationRejected', null, $request );
-        $body = $mail->run();
-        $subject = $mail->getView()->getSlot( 'subject' );
-
-        $engine = new System_Mail_Engine();
-        $engine->loadSettings();
-        $engine->send( $request[ 'user_email' ], $request[ 'user_name' ], $subject, $body );
+        $helper = new System_Mail_Helper();
+        $helper->send( $request[ 'user_email' ], $request[ 'user_name' ], 'Common_Mail_RegistrationRejected', $request );
     }
 }
 
