@@ -307,6 +307,24 @@ class Setup_Updater extends System_Web_Base
             $generator->updateReferences();
         }
 
+        if ( version_compare( $version, '2.0.002' ) < 0 ) {
+            $modifiedFields = array(
+                'user_passwd'       => 'VARCHAR length=255 ascii=1 null=1',
+            );
+
+            $newFields = array(
+                'reset_key'         => 'CHAR length=12 ascii=1 null=1',
+                'reset_time'        => 'INTEGER null=1'
+            );
+
+            $generator = $this->connection->getSchemaGenerator();
+
+            $generator->modifyFieldsNull( 'users', $modifiedFields );
+            $generator->addFields( 'users', $newFields );
+
+            $generator->updateReferences();
+        }
+
         $query = 'DELETE FROM {sessions}';
         $this->connection->execute( $query );
 

@@ -1,3 +1,4 @@
+<?php
 /**************************************************************************
 * This file is part of the WebIssues Server program
 * Copyright (C) 2006 Michał Męciński
@@ -17,10 +18,26 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-export default function routeUser( route ) {
-  if ( process.env.TARGET == 'electron' ) {
-    route( 'ClientSettings', '/settings', () => {
-      return Promise.resolve( { form: 'client/ClientSettings', size: 'small' } );
-    } );
-  }
+require_once( '../../../../system/bootstrap.inc.php' );
+
+class Server_Api_Account_Password_Edit
+{
+    public $access = '*';
+
+    public $params = array(
+        'password' => array( 'type' => 'string', 'required' => true ),
+        'newPassword' => array( 'type' => 'string', 'required' => true )
+    );
+
+    public function run( $password, $newPassword )
+    {
+        $validator = new System_Api_Validator();
+        $validator->checkString( $password, System_Const::PasswordMaxLength );
+        $validator->checkString( $newPassword, System_Const::PasswordMaxLength );
+
+        $userManager = new System_Api_UserManager();
+        $userManager->changePassword( $password, $newPassword );
+    }
 }
+
+System_Bootstrap::run( 'Server_Api_Application', 'Server_Api_Account_Password_Edit' );

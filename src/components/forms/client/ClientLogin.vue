@@ -32,8 +32,9 @@
           <button class="btn btn-default" v-on:click="startAnonymous"><span class="fa fa-user-o" aria-hidden="true"></span> {{ $t( 'cmd.AnonymousAccess' ) }}</button>
         </template>
       </div>
-      <div v-if="selfRegister" class="form-options">
-        <p><HyperLink v-on:click="openRegister"><span class="fa fa-user-plus" aria-hidden="true"></span> {{ $t( 'cmd.RegisterNewAccount' ) }}</HyperLink></p>
+      <div v-if="selfRegister || resetPassword" class="form-options">
+        <p v-if="selfRegister"><HyperLink v-on:click="openRegister"><span class="fa fa-user-plus" aria-hidden="true"></span> {{ $t( 'cmd.RegisterNewAccount' ) }}</HyperLink></p>
+        <p v-if="resetPassword"><HyperLink v-on:click="openReset"><span class="fa fa-unlock-alt" aria-hidden="true"></span> {{ $t( 'cmd.ResetPassword' ) }}</HyperLink></p>
       </div>
     </template>
     <template v-else>
@@ -52,7 +53,8 @@ import { makeParseError } from '@/utils/errors'
 export default {
   props: {
     anonymousAccess: Boolean,
-    selfRegister: Boolean
+    selfRegister: Boolean,
+    resetPassword: Boolean
   },
 
   fields() {
@@ -135,6 +137,9 @@ export default {
 
     openRegister() {
       this.$client.openURL( this.$client.settings.baseURL + '/users/register.php' );
+    },
+    openReset() {
+      this.$client.openURL( this.$client.settings.baseURL + '/users/password.php' );
     },
 
     cancelPassword() {

@@ -20,22 +20,23 @@
 
 if ( !defined( 'WI_VERSION' ) ) die( -1 );
 
-class Common_Mail_Approve extends System_Web_Component
+class Common_Mail_EmailVerification extends System_Web_Component
 {
-    private $register;
+    private $data;
 
-    protected function __construct( $register )
+    protected function __construct( $data )
     {
         parent::__construct();
 
-        $this->register = $register;
+        $this->data = $data;
     }
 
     protected function execute()
     {
-        $this->view->setDecoratorClass( 'Common_Mail_Layout' );
-        $this->view->setSlot( 'subject', $this->t( 'subject.RegistrationApproved' ) );
+        $this->view->setDecoratorClass( 'Common_Mail_Template' );
+        $this->view->setSlot( 'subject', $this->t( 'subject.EmailVerification' ) );
+        $this->view->setSlot( 'user_name', $this->data[ 'user_name' ] );
 
-        $this->userName = $this->register[ 'user_name' ];
+        $this->activationUrl = $this->appendQueryString( WI_BASE_URL . '/users/register.php', array( 'key' => $this->data[ 'request_key' ] ) );
     }
 }

@@ -35,15 +35,17 @@ class Users_Register extends System_Web_Component
         if ( $serverManager->getSetting( 'self_register' ) != 1 || $serverManager->getSetting( 'email_engine' ) == null )
             throw new System_Api_Error( System_Api_Error::AccessDenied );
 
-        $this->autoApprove = $serverManager->getSetting( 'register_auto_approve' ) == 1;
-
-        $this->view->setDecoratorClass( 'Common_Window' );
-        $this->view->setSlot( 'page_title', $this->t( 'cmd.RegisterNewAccount' ) );
-
         if ( System_Api_Principal::getCurrent()->isAuthenticated() ) {
             $sessionManager = new System_Api_SessionManager();
             $sessionManager->logout();
+
+            $translator = System_Core_Application::getInstance()->getTranslator();
+            $translator->setLanguage( System_Core_Translator::UserLanguage, null );
         }
+
+        $this->view->setDecoratorClass( 'Common_Window' );
+
+        $this->autoApprove = $serverManager->getSetting( 'register_auto_approve' ) == 1;
 
         $this->form = new System_Web_Form( 'register', $this );
         $this->form->addViewState( 'page', 'register' );
@@ -79,6 +81,16 @@ class Users_Register extends System_Web_Component
         }
 
         $this->initializeRules();
+
+        if ( $this->page == 'registered' || $this->page == 'approved' || $this->page == 'activated' )
+            $this->view->setSlot( 'window_size', 'small' );
+
+        if ( $this->page == 'registered' || $this->page == 'approved' )
+            $this->view->setSlot( 'page_title', $this->t( 'title.AccountRegistered' ) );
+        else if ( $this->page == 'activated' )
+            $this->view->setSlot( 'page_title', $this->t( 'title.EmailVerified' ) );
+        else
+            $this->view->setSlot( 'page_title', $this->t( 'cmd.RegisterNewAccount' ) );
     }
 
     private function initializeRules()
@@ -116,22 +128,24 @@ class Users_Register extends System_Web_Component
 
     private function register()
     {
-        $registrationManager = new System_Api_RegistrationManager();
         try {
-            $key = $registrationManager->generateKey();
+            $keyGenerator = new System_Api_KeyGenerator();
+            $key = $keyGenerator->generateKey( System_Api_KeyGenerator::RegistrationRequest );
+
+            $registrationManager = new System_Api_RegistrationManager();
             $registrationManager->addRequest( $this->login, $this->userName, $this->password, $this->email, $key );
 
-            $register = array( 'user_login' => $this->login, 'user_name' => $this->userName, 'user_email' => $this->email, 'request_key' => $key );
+            $data = array( 'user_login' => $this->login, 'user_name' => $this->userName, 'user_email' => $this->email, 'request_key' => $key );
 
-            $mail = System_Web_Component::createComponent( 'Common_Mail_Register', null, $register );
-            $body = $mail->run();
-            $subject = $mail->getView()->getSlot( 'subject' );
-
-            $engine = new System_Mail_Engine();
-            $engine->loadSettings();
-            $engine->send( $this->email, $this->userName, $subject, $body );
+            $helper = new System_Mail_Helper();
+            $helper->send( $this->email, $this->userName, null, 'Common_Mail_EmailVerification', $data );
         } catch ( System_Api_Error $ex ) {
-            $this->form->getErrorHelper()->handleError( $ex->getMessage() == System_Api_Error::EmailAlreadyExists ? 'email' : 'userName', $ex );
+            if ( $ex->getMessage() == System_Api_Error::EmailAlreadyExists )
+                $this->form->getErrorHelper()->handleError( 'email', $ex );
+            else if ( $ex->getMessage() == System_Api_Error::LoginAlreadyExists )
+                $this->form->getErrorHelper()->handleError( 'login', $ex );
+            else
+                $this->form->getErrorHelper()->handleError( 'userName', $ex );
         }
     }
 

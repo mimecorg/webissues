@@ -254,9 +254,11 @@ class Setup_Installer extends System_Web_Base
                 'user_id'           => 'SERIAL',
                 'user_login'        => 'VARCHAR length=40',
                 'user_name'         => 'VARCHAR length=40',
-                'user_passwd'       => 'VARCHAR length=255 ascii=1',
+                'user_passwd'       => 'VARCHAR length=255 ascii=1 null=1',
                 'user_access'       => 'INTEGER size="tiny"',
                 'passwd_temp'       => 'INTEGER size="tiny"',
+                'reset_key'         => 'CHAR length=12 ascii=1 null=1',
+                'reset_time'        => 'INTEGER null=1',
                 'pk'                => 'PRIMARY columns={"user_id"}',
                 'login_idx'         => 'INDEX columns={"user_login"} unique=1',
                 'name_idx'          => 'INDEX columns={"user_name"}'

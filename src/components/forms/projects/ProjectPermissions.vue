@@ -23,7 +23,7 @@
     <FormSection v-bind:title="$t( 'title.GlobalAccess' )">
       <button type="button" class="btn btn-default" v-on:click="editAccess"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'cmd.Edit' ) }}</button>
     </FormSection>
-    <div class="description-panel">
+    <div class="alert alert-default">
       {{ globalAccess }}
     </div>
     <FormSection v-bind:title="$t( 'title.Members' )">

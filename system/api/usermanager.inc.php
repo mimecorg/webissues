@@ -49,9 +49,12 @@ class System_Api_UserManager extends System_Api_Base
     */
     public function getUsers()
     {
-        $query = 'SELECT user_id, user_login, user_name, user_access FROM {users} ORDER BY user_name COLLATE LOCALE';
+        $query = 'SELECT u.user_id, u.user_login, u.user_name, u.user_access, p.pref_value AS user_email'
+            . ' FROM {users} AS u'
+            . ' LEFT OUTER JOIN {preferences} AS p ON p.user_id = u.user_id AND p.pref_key = %s'
+            . ' ORDER BY user_name COLLATE LOCALE';
 
-        return $this->connection->queryTable( $query );
+        return $this->connection->queryTable( $query, 'email' );
     }
 
     /**
@@ -329,24 +332,50 @@ class System_Api_UserManager extends System_Api_Base
     * @param $password The password of the user.
     * @param $isTemp If @c true the password is temporary and user must
     * change it at next logon.
+    * @param $invitationKey The key for reset password link.
+    * @param $email The email of the user.
+    * @param $language The language of the user.
     * @return Identifier of the user.
     */
-    public function addUser( $login, $name, $password, $isTemp )
+    public function addUser( $login, $name, $password, $isTemp, $invitationKey, $email, $language )
     {
         $transaction = $this->connection->beginTransaction( System_Db_Transaction::Serializable, 'users' );
 
         try {
-            $query = 'SELECT user_id FROM {users} WHERE user_login = %s OR user_name = %s';
-            if ( $this->connection->queryScalar( $query, $login, $name ) !== false )
+            $query = 'SELECT user_id FROM {users} WHERE user_name = %s';
+            if ( $this->connection->queryScalar( $query, $name ) !== false )
                 throw new System_Api_Error( System_Api_Error::UserAlreadyExists );
 
-            $passwordHash = new System_Core_PasswordHash();
-            $hash = $passwordHash->hashPassword( $password );
+            $query = 'SELECT user_id FROM {users} WHERE user_login = %s';
+            if ( $this->connection->queryScalar( $query, $login ) !== false )
+                throw new System_Api_Error( System_Api_Error::LoginAlreadyExists );
 
-            $query = 'INSERT INTO {users} ( user_login, user_name, user_passwd, user_access, passwd_temp ) VALUES ( %s, %s, %s, %d, %d )';
-            $this->connection->execute( $query, $login, $name, $hash, System_Const::NormalAccess, $isTemp );
+            if ( $email != '' ) {
+                $query = 'SELECT user_id FROM {preferences} WHERE pref_key = %s AND UPPER( pref_value ) = %s';
+                if ( $this->connection->queryScalar( $query, 'email', mb_strtoupper( $email ) ) !== false )
+                    throw new System_Api_Error( System_Api_Error::EmailAlreadyExists );
+            }
+
+            if ( $invitationKey == null ) {
+                $passwordHash = new System_Core_PasswordHash();
+                $hash = $passwordHash->hashPassword( $password );
+
+                $query = 'INSERT INTO {users} ( user_login, user_name, user_passwd, user_access, passwd_temp ) VALUES ( %s, %s, %s, %d, %d )';
+                $this->connection->execute( $query, $login, $name, $hash, System_Const::NormalAccess, $isTemp );
+            } else {
+                $query = 'INSERT INTO {users} ( user_login, user_name, user_access, passwd_temp, reset_key, reset_time ) VALUES ( %s, %s, %d, %d, %s, %d )';
+                $this->connection->execute( $query, $login, $name, System_Const::NormalAccess, 0, $invitationKey, time() );
+            }
 
             $userId = $this->connection->getInsertId( 'users', 'user_id' );
+
+            $query = 'INSERT INTO {preferences} ( user_id, pref_key, pref_value ) VALUES ( %d, %s, %s )';
+
+            if ( $email != '' )
+                $this->connection->execute( $query, $userId, 'email', $email );
+
+            if ( $language != '' )
+                $this->connection->execute( $query, $userId, 'language', $language );
 
             $transaction->commit();
         } catch ( Exception $ex ) {
@@ -435,6 +464,60 @@ class System_Api_UserManager extends System_Api_Base
         return true;
     }
 
+    public function getUserWithResetKey( $key )
+    {
+        $query = 'SELECT user_id, user_login, user_name, user_access, reset_time FROM {users} WHERE reset_key = %s';
+
+        if ( !( $user = $this->connection->queryRow( $query, $key ) ) )
+            throw new System_Api_Error( System_Api_Error::InvalidResetKey );
+
+        if ( $user[ 'user_access' ] == System_Const::NoAccess )
+            throw new System_Api_Error( System_Api_Error::InvalidResetKey );
+
+        $serverManager = new System_Api_ServerManager();
+        $lifetime = $serverManager->getSetting( 'register_max_lifetime' );
+
+        if ( $user[ 'reset_time' ] < time() - $lifetime )
+            throw new System_Api_Error( System_Api_Error::InvalidResetKey );
+
+        return $user;
+    }
+
+    /**
+    * Set the password reset key for given user.
+    * @param $user The user to set the key for.
+    * @param $key The password reset key.
+    */
+    public function setPasswordResetKey( $user, $key )
+    {
+        $userId = $user[ 'user_id' ];
+
+        $query = 'UPDATE {users} SET reset_key = %s, reset_time = %d WHERE user_id = %d';
+        $this->connection->execute( $query, $key, time(), $userId );
+
+        $eventLog = new System_Api_EventLog( $this );
+        $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information, $eventLog->t( 'log.UserPasswordResetSent', array( $user[ 'user_name' ] ) ) );
+    }
+
+    /**
+    * Reset the password of a user.
+    * @param $user The user whoose password is changed.
+    * @param $newPassword The new password.
+    */
+    public function resetPassword( $user, $newPassword )
+    {
+        $userId = $user[ 'user_id' ];
+
+        $passwordHash = new System_Core_PasswordHash();
+        $newHash = $passwordHash->hashPassword( $newPassword );
+
+        $query = 'UPDATE {users} SET user_passwd = %s, passwd_temp = 0, reset_key = NULL, reset_time = NULL WHERE user_id = %d';
+        $this->connection->execute( $query, $newHash, $userId );
+
+        $eventLog = new System_Api_EventLog( $this );
+        $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information, $eventLog->t( 'log.UserPasswordReset', array( $user[ 'user_name' ] ) ) );
+    }
+
     /**
     * Rename a user. An error is thrown if another user with given name
     * already exists.
@@ -468,6 +551,104 @@ class System_Api_UserManager extends System_Api_Base
 
         $eventLog = new System_Api_EventLog( $this );
         $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information, $eventLog->t( 'log.UserRenamed', array( $oldName, $newName ) ) );
+
+        return true;
+    }
+
+    /**
+    * Change the properties of a user.
+    * @param $user The user to modify.
+    * @param $newName The new name of the user.
+    * @param $newLogin The new login of the user.
+    * @param $newEmail The new email of the user.
+    * @param $newLanguage The new language of the user.
+    * @return @c true if the user was modified.
+    */
+    public function editUser( $user, $newName, $newLogin, $newEmail, $newLanguage )
+    {
+        $userId = $user[ 'user_id' ];
+        $oldName = $user[ 'user_name' ];
+        $oldLogin = $user[ 'user_login' ];
+
+        $transaction = $this->connection->beginTransaction( System_Db_Transaction::RepeatableRead, 'users' );
+
+        try {
+            $oldEmail = '';
+            $oldLanguage = '';
+
+            $query = 'SELECT pref_key, pref_value FROM {preferences} WHERE user_id = %d AND ( pref_key = %s OR pref_key = %s )';
+            $table = $this->connection->queryTable( $query, $userId, 'email', 'language' );
+
+            foreach ( $table as $row ) {
+                if ( $row[ 'pref_key' ] == 'email' )
+                    $oldEmail = $row[ 'pref_value' ];
+                else if ( $row[ 'pref_key' ] == 'language' )
+                    $oldLanguage = $row[ 'pref_value' ];
+            }
+
+            if ( $newName == $oldName && $newLogin == $oldLogin && $newEmail == $oldEmail && $newLanguage == $oldLanguage ) {
+                $transaction->commit();
+                return false;
+            }
+
+            if ( $newName != $oldName ) {
+                $query = 'SELECT user_id FROM {users} WHERE user_name = %s';
+                if ( $this->connection->queryScalar( $query, $newName ) !== false )
+                    throw new System_Api_Error( System_Api_Error::UserAlreadyExists );
+            }
+
+            if ( $newLogin != $oldLogin ) {
+                $query = 'SELECT user_id FROM {users} WHERE user_login = %s';
+                if ( $this->connection->queryScalar( $query, $newLogin ) !== false )
+                    throw new System_Api_Error( System_Api_Error::LoginAlreadyExists );
+            }
+
+            if ( $newEmail != '' && mb_strtoupper( $newEmail ) != mb_strtoupper( $oldEmail ) ) {
+                $query = 'SELECT user_id FROM {preferences} WHERE pref_key = %s AND UPPER( pref_value ) = %s';
+                if ( $this->connection->queryScalar( $query, 'email', mb_strtoupper( $newEmail ) ) !== false )
+                    throw new System_Api_Error( System_Api_Error::EmailAlreadyExists );
+            }
+
+            if ( $newName != $oldName || $newLogin != $oldLogin ) {
+                $query = 'UPDATE {users} SET user_name = %s, user_login = %s WHERE user_id = %d';
+                $this->connection->execute( $query, $newName, $newLogin, $userId );
+            }
+
+            if ( $newEmail != $oldEmail ) {
+                if ( $oldEmail == '' )
+                    $query = 'INSERT INTO {preferences} ( user_id, pref_key, pref_value ) VALUES ( %1d, %2s, %3s )';
+                else if ( $newEmail == '' )
+                    $query = 'DELETE FROM {preferences} WHERE user_id = %1d AND pref_key = %2s';
+                else
+                    $query = 'UPDATE {preferences} SET pref_value = %3s WHERE user_id = %1d AND pref_key = %2s';
+
+                $this->connection->execute( $query, $userId, 'email', $newEmail );
+            }
+
+            if ( $newLanguage != $oldLanguage ) {
+                if ( $oldLanguage == '' )
+                    $query = 'INSERT INTO {preferences} ( user_id, pref_key, pref_value ) VALUES ( %1d, %2s, %3s )';
+                else if ( $newLanguage == '' )
+                    $query = 'DELETE FROM {preferences} WHERE user_id = %1d AND pref_key = %2s';
+                else
+                    $query = 'UPDATE {preferences} SET pref_value = %3s WHERE user_id = %1d AND pref_key = %2s';
+
+                $this->connection->execute( $query, $userId, 'language', $newLanguage );
+            }
+
+            $transaction->commit();
+        } catch ( Exception $ex ) {
+            $transaction->rollback();
+            throw $ex;
+        }
+
+        if ( $newName != $oldName || $newLogin != $oldLogin ) {
+            $eventLog = new System_Api_EventLog( $this );
+            if ( $newName != $oldName )
+                $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information, $eventLog->t( 'log.UserRenamed', array( $oldName, $newName ) ) );
+            if ( $newLogin != $oldLogin )
+                $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information, $eventLog->t( 'log.UserLoginChanged', array( $oldLogin, $newLogin ) ) );
+        }
 
         return true;
     }

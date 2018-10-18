@@ -19,8 +19,8 @@
 
 <template>
   <div class="form-group">
-    <div class="checkbox">
-      <label><input ref="input" type="checkbox" v-bind:checked="value" v-on="inputListeners"> {{ label }}</label>
+    <div v-bind:class="[ 'checkbox', { disabled } ]">
+      <label><input ref="input" type="checkbox" v-bind:checked="value" v-bind:disabled="disabled" v-on="inputListeners"> {{ label }}</label>
     </div>
   </div>
 </template>
@@ -29,7 +29,8 @@
 export default {
   props: {
     value: Boolean,
-    label: String
+    label: String,
+    disabled: Boolean
   },
   computed: {
     inputListeners() {

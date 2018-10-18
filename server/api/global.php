@@ -168,6 +168,8 @@ class Server_Api_Global
         $settings[ 'fileMaxSize' ] = (int)$serverManager->getSetting( 'file_max_size' );
         $settings[ 'hideEmptyValues' ] = $serverManager->getSetting( 'hide_empty_values' ) == '1';
         $settings[ 'selfRegister' ] = $serverManager->getSetting( 'self_register' ) == 1 && $serverManager->getSetting( 'email_engine' ) != null;
+        $settings[ 'registerAutoApprove' ] = $serverManager->getSetting( 'register_auto_approve' ) == 1;
+        $settings[ 'resetPassword' ] = $serverManager->getSetting( 'email_engine' ) != null;
 
         $preferencesManager = new System_Api_PreferencesManager();
         $historyFilter = $preferencesManager->getPreference( 'history_filter' );
@@ -198,7 +200,21 @@ class Server_Api_Global
 
         $settings[ 'firstDayOfWeek' ] = (int)$locale->getSetting( 'first_day_of_week' );
 
+        $settings[ 'defaultLanguage' ] = $serverManager->getSetting( 'language' );
+
         $result[ 'settings' ] = $settings;
+
+        $languages = $locale->getAvailableLanguages();
+
+        $result[ 'languages' ] = array();
+
+        foreach ( $languages as $key => $name ) {
+            $resultLanguage = array();
+            $resultLanguage[ 'key' ] = $key;
+            $resultLanguage[ 'name' ] = $name;
+
+            $result[ 'languages' ][] = $resultLanguage;
+        }
 
         return $result;
     }

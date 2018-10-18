@@ -19,8 +19,10 @@
 
 import routeProjects from '@/routes/admin/projects'
 import routeTypes from '@/routes/admin/types'
+import routeUsers from '@/routes/admin/users'
 
 export default function routeAdmin( route, ajax, store ) {
   routeProjects( route, ajax, store );
   routeTypes( route, ajax, store );
+  routeUsers( route, ajax, store );
 }

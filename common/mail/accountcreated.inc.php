@@ -1,3 +1,4 @@
+<?php
 /**************************************************************************
 * This file is part of the WebIssues Server program
 * Copyright (C) 2006 Michał Męciński
@@ -17,12 +18,27 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-export default function routeStatic( route ) {
-  route( 'Home', '' );
-  route( 'List', '/types/:typeId' );
-  route( 'ListView', '/views/:viewId' );
-  route( 'ListProject', '/types/:typeId/projects/:projectId' );
-  route( 'ListViewProject', '/views/:viewId/projects/:projectId' );
-  route( 'ListFolder', '/folders/:folderId' );
-  route( 'ListViewFolder', '/views/:viewId/folders/:folderId' );
+if ( !defined( 'WI_VERSION' ) ) die( -1 );
+
+class Common_Mail_AccountCreated extends System_Web_Component
+{
+    private $data;
+
+    protected function __construct( $data )
+    {
+        parent::__construct();
+
+        $this->data = $data;
+    }
+
+    protected function execute()
+    {
+        $this->view->setDecoratorClass( 'Common_Mail_Template' );
+        $this->view->setSlot( 'subject', $this->t( 'subject.AccountCreated' ) );
+        $this->view->setSlot( 'user_name', $this->data[ 'user_name' ] );
+
+        $this->userLogin = $this->data[ 'user_login' ];
+
+        $this->invitationUrl = $this->appendQueryString( WI_BASE_URL . '/users/password.php', array( 'key' => $this->data[ 'invitation_key' ] ) );
+    }
 }

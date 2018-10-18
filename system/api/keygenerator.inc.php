@@ -20,22 +20,43 @@
 
 if ( !defined( 'WI_VERSION' ) ) die( -1 );
 
-class Common_Mail_Reject extends System_Web_Component
+/**
+* Generate keys for registration requests and resetting passwords.
+*/
+class System_Api_KeyGenerator extends System_Api_Base
 {
-    private $register;
+    /**
+    * @name Key Lengths
+    */
+    /*@{*/
+    /** Registration request key length. */
+    const RegistrationRequest = 8;
+    /** Password reset key length. */
+    const PasswordReset = 12;
+    /*@}*/
 
-    protected function __construct( $register )
+    /**
+    * Constructor.
+    */
+    public function __construct()
     {
         parent::__construct();
-
-        $this->register = $register;
     }
 
-    protected function execute()
+    /**
+    * Generate a random key.
+    * @param $length The length of the key to generate.
+    */
+    public function generateKey( $length )
     {
-        $this->view->setDecoratorClass( 'Common_Mail_Layout' );
-        $this->view->setSlot( 'subject', $this->t( 'subject.RegistrationRejected' ) );
+        $chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+        $len = strlen( $chars );
 
-        $this->userName = $this->register[ 'user_name' ];
+        $result = '';
+
+        for ( $i = 0; $i < $length; $i ++ )
+            $result .= $chars[ mt_rand( 0, $len - 1 ) ];
+
+        return $result;
     }
 }

@@ -18,22 +18,35 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-if ( !defined( 'WI_VERSION' ) ) die( -1 );
+require_once( '../../../system/bootstrap.inc.php' );
 
-class Common_Mail_TestConnection extends System_Web_Component
+class Server_Api_Users_List
 {
-    private $settings;
+    public $access = 'admin';
 
-    protected function __construct( $settings )
+    public $params = array();
+
+    public function run()
     {
-        parent::__construct();
+        $userManager = new System_Api_UserManager();
+        $users = $userManager->getUsers();
 
-        $this->settings = $settings;
-    }
+        $result[ 'users' ] = array();
 
-    protected function execute()
-    {
-        $this->view->setDecoratorClass( 'Common_Mail_Layout' );
-        $this->view->setSlot( 'subject', $this->t( 'subject.TestMessage' ) );
+        foreach ( $users as $user ) {
+            $resultUser = array();
+
+            $resultUser[ 'id' ] = (int)$user[ 'user_id' ];
+            $resultUser[ 'name' ] = $user[ 'user_name' ];
+            $resultUser[ 'login' ] = $user[ 'user_login' ];
+            $resultUser[ 'access' ] = $user[ 'user_access' ];
+            $resultUser[ 'email' ] = $user[ 'user_email' ];
+
+            $result[ 'users' ][] = $resultUser;
+        }
+
+        return $result;
     }
 }
+
+System_Bootstrap::run( 'Server_Api_Application', 'Server_Api_Users_List' );

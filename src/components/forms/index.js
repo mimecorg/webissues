@@ -43,7 +43,8 @@ const componentModules = {
 const formModules = {
   issues: name => import( /* webpackMode: "lazy-once", webpackChunkName: "forms-issues" */ `@/components/forms/issues/${name}` ),
   projects: name => import( /* webpackMode: "lazy-once", webpackChunkName: "forms-projects" */ `@/components/forms/projects/${name}` ),
-  types: name => withComponents( import( /* webpackMode: "lazy-once", webpackChunkName: "forms-types" */ `@/components/forms/types/${name}` ), [ 'Draggable' ] )
+  types: name => withComponents( import( /* webpackMode: "lazy-once", webpackChunkName: "forms-types" */ `@/components/forms/types/${name}` ), [ 'Draggable' ] ),
+  users: name => import( /* webpackMode: "lazy-once", webpackChunkName: "forms-users" */ `@/components/forms/users/${name}` )
 };
 
 export function loadForm( name ) {

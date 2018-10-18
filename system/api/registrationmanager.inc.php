@@ -34,22 +34,6 @@ class System_Api_RegistrationManager extends System_Api_Base
     }
 
     /**
-    * Generate a random activation key.
-    */
-    public function generateKey()
-    {
-        $chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-        $len = strlen( $chars );
-
-        $result = '';
-
-        for ( $i = 0; $i < 8; $i ++ )
-            $result .= $chars[ mt_rand( 0, $len - 1 ) ];
-
-        return $result;
-    }
-
-    /**
     * Return the registration request with given identifier.
     * @param $requestId Identifier of the request.
     * @return Array containing the request.
@@ -83,6 +67,17 @@ class System_Api_RegistrationManager extends System_Api_Base
             throw new System_Api_Error( System_Api_Error::InvalidActivationKey );
 
         return $request;
+    }
+
+    /**
+    * Get a list of requests.
+    * @return An array of associative arrays representing requests.
+    */
+    public function getRequests()
+    {
+        $query = 'SELECT request_id, user_login, user_name, user_email, created_time FROM {register_requests} WHERE is_active = 1 ORDER BY user_name';
+
+        return $this->connection->queryTable( $query );
     }
 
     /**
@@ -123,13 +118,21 @@ class System_Api_RegistrationManager extends System_Api_Base
         $transaction = $this->connection->beginTransaction( System_Db_Transaction::Serializable, 'users' );
 
         try {
-            $query = 'SELECT user_id FROM {users} WHERE user_login = %s OR user_name = %s';
-            if ( $this->connection->queryScalar( $query, $login, $name ) !== false )
+            $query = 'SELECT user_id FROM {users} WHERE user_name = %s';
+            if ( $this->connection->queryScalar( $query, $name ) !== false )
                 throw new System_Api_Error( System_Api_Error::UserAlreadyExists );
 
-            $query = 'SELECT request_id FROM {register_requests} WHERE user_login = %s OR user_name = %s';
-            if ( $this->connection->queryScalar( $query, $login, $name ) !== false )
+            $query = 'SELECT user_id FROM {users} WHERE user_login = %s';
+            if ( $this->connection->queryScalar( $query, $login ) !== false )
+                throw new System_Api_Error( System_Api_Error::LoginAlreadyExists );
+
+            $query = 'SELECT request_id FROM {register_requests} WHERE user_name = %s';
+            if ( $this->connection->queryScalar( $query, $name ) !== false )
                 throw new System_Api_Error( System_Api_Error::UserAlreadyExists );
+
+            $query = 'SELECT request_id FROM {register_requests} WHERE user_login = %s';
+            if ( $this->connection->queryScalar( $query, $login ) !== false )
+                throw new System_Api_Error( System_Api_Error::LoginAlreadyExists );
 
             $query = 'SELECT user_id FROM {preferences} WHERE pref_key = %s AND UPPER( pref_value ) = %s';
             if ( $this->connection->queryScalar( $query, 'email', mb_strtoupper( $email ) ) !== false )
@@ -198,9 +201,13 @@ class System_Api_RegistrationManager extends System_Api_Base
         $transaction = $this->connection->beginTransaction( System_Db_Transaction::Serializable, 'users' );
 
         try {
-            $query = 'SELECT user_id FROM {users} WHERE user_login = %s OR user_name = %s';
-            if ( $this->connection->queryScalar( $query, $login, $name ) !== false )
+            $query = 'SELECT user_id FROM {users} WHERE user_name = %s';
+            if ( $this->connection->queryScalar( $query, $name ) !== false )
                 throw new System_Api_Error( System_Api_Error::UserAlreadyExists );
+
+            $query = 'SELECT user_id FROM {users} WHERE user_login = %s';
+            if ( $this->connection->queryScalar( $query, $login ) !== false )
+                throw new System_Api_Error( System_Api_Error::LoginAlreadyExists );
 
             $query = 'INSERT INTO {users} ( user_login, user_name, user_passwd, user_access, passwd_temp ) VALUES ( %s, %s, %s, %d, %d )';
             $this->connection->execute( $query, $login, $name, $hash, System_Const::NormalAccess, 0 );
@@ -239,8 +246,6 @@ class System_Api_RegistrationManager extends System_Api_Base
 
         $eventLog = new System_Api_EventLog( $this );
         $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information, $eventLog->t( 'log.RegistrationRejected', array( $name ) ) );
-
-        return $userId;
     }
 
     /**

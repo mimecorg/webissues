@@ -33,7 +33,7 @@ class Server_Api_Login
     public function run( $login, $password, $newPassword )
     {
         $validator = new System_Api_Validator();
-        $validator->checkString( $login, System_Const::NameMaxLength );
+        $validator->checkString( $login, System_Const::LoginMaxLength );
         $validator->checkString( $password, System_Const::PasswordMaxLength );
         if ( $newPassword != null )
             $validator->checkString( $newPassword, System_Const::PasswordMaxLength );
