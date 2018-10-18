@@ -33,10 +33,10 @@ class Common_Mail_AccountCreated extends System_Web_Component
 
     protected function execute()
     {
-        $this->view->setDecoratorClass( 'Common_Mail_Layout' );
+        $this->view->setDecoratorClass( 'Common_Mail_Template' );
         $this->view->setSlot( 'subject', $this->t( 'subject.AccountCreated' ) );
+        $this->view->setSlot( 'user_name', $this->invitation[ 'user_name' ] );
 
-        $this->userName = $this->invitation[ 'user_name' ];
         $this->userLogin = $this->invitation[ 'user_login' ];
 
         $this->invitationUrl = $this->appendQueryString( WI_BASE_URL . '/users/password.php', array( 'key' => $this->invitation[ 'invitation_key' ] ) );

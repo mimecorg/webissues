@@ -264,6 +264,7 @@
     "InstallationCompleted": "Installation of your WebIssues server was successfully completed.",
     "InstallationMode": "You can create new database tables or connect to an existing database.",
     "LogInToUpdate": "Log in as administrator in order to update the server.",
+    "NotificationEmail": "This is an automatic notification from WebIssues. Please do not respond to this email.",
     "PendingRegistrationRequests": "You have the following new registration requests pending for approval:",
     "RegisterAdministratorApproval": "Note that administrator's approval is required before you can log in.",
     "RegisterConfirm": "Thank you for registering your WebIssues account. To confirm your email adress, please open the following URL:",

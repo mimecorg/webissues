@@ -33,10 +33,10 @@ class Common_Mail_ResetPassword extends System_Web_Component
 
     protected function execute()
     {
-        $this->view->setDecoratorClass( 'Common_Mail_Layout' );
+        $this->view->setDecoratorClass( 'Common_Mail_Template' );
         $this->view->setSlot( 'subject', $this->t( 'subject.ResetPassword' ) );
+        $this->view->setSlot( 'user_name', $this->reset[ 'user_name' ] );
 
-        $this->userName = $this->reset[ 'user_name' ];
         $this->userLogin = $this->reset[ 'user_login' ];
 
         $this->resetUrl = $this->appendQueryString( WI_BASE_URL . '/users/password.php', array( 'key' => $this->reset[ 'reset_key' ] ) );
