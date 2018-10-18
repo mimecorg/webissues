@@ -48,7 +48,7 @@ export default function makeAjax( baseURL, csrfToken ) {
         }
         if ( csrfToken != null )
           headers[ 'X-CSRF-Token' ] = csrfToken;
-        fetch( baseURL + url, {
+        fetch( baseURL + '/server/api' + url, {
           method: 'POST',
           body,
           headers,

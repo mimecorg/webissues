@@ -62,7 +62,7 @@ export default {
 
       this.$emit( 'block' );
 
-      this.$ajax.post( '/server/api/types/attributes/reorder.php', data ).then( ( { changed } ) => {
+      this.$ajax.post( '/types/attributes/reorder.php', data ).then( ( { changed } ) => {
         if ( changed )
           this.$store.commit( 'global/setDirty' );
         this.returnToDetails();

@@ -73,7 +73,7 @@ export default {
           data.projects.push( this.projects[ i ].id );
       }
 
-      this.$ajax.post( '/server/api/users/requests/approve.php', data ).then( () => {
+      this.$ajax.post( '/users/requests/approve.php', data ).then( () => {
         this.$router.push( 'RegistrationRequests' );
       } ).catch( error => {
         this.$emit( 'error', error );

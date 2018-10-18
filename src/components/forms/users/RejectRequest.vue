@@ -38,7 +38,7 @@ export default {
 
       const data = { requestId: this.requestId };
 
-      this.$ajax.post( '/server/api/users/requests/reject.php', data ).then( () => {
+      this.$ajax.post( '/users/requests/reject.php', data ).then( () => {
         this.$router.push( 'RegistrationRequests' );
       } ).catch( error => {
         this.$emit( 'error', error );

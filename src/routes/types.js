@@ -22,7 +22,7 @@ import { makeError } from '@/utils/errors'
 
 export default function routeTypes( route, ajax, store ) {
   route( 'ManageTypes', '/types', () => {
-    return ajax.post( '/server/api/types/list.php' ).then( ( { types } ) => {
+    return ajax.post( '/types/list.php' ).then( ( { types } ) => {
       return {
         form: 'types/ManageTypes',
         types
@@ -41,7 +41,7 @@ export default function routeTypes( route, ajax, store ) {
   } );
 
   route( 'TypeDetails', '/types/:typeId', ( { typeId } ) => {
-    return ajax.post( '/server/api/types/load.php', { typeId, attributes: true } ).then( ( { name, attributes } ) => {
+    return ajax.post( '/types/load.php', { typeId, attributes: true } ).then( ( { name, attributes } ) => {
       return {
         form: 'types/TypeDetails',
         size: 'large',
@@ -55,7 +55,7 @@ export default function routeTypes( route, ajax, store ) {
   route( 'RenameType', '/types/:typeId/rename', ( { typeId } ) => {
     if ( store.state.global.userAccess != Access.AdministratorAccess )
       return Promise.reject( makeError( ErrorCode.AccessDenied ) );
-    return ajax.post( '/server/api/types/load.php', { typeId } ).then( ( { name } ) => {
+    return ajax.post( '/types/load.php', { typeId } ).then( ( { name } ) => {
       return {
         form: 'types/EditType',
         size: 'small',
@@ -69,7 +69,7 @@ export default function routeTypes( route, ajax, store ) {
   route( 'DeleteType', '/types/:typeId/delete', ( { typeId } ) => {
     if ( store.state.global.userAccess != Access.AdministratorAccess )
       return Promise.reject( makeError( ErrorCode.AccessDenied ) );
-    return ajax.post( '/server/api/types/load.php', { typeId, used: true } ).then( ( { name, used } ) => {
+    return ajax.post( '/types/load.php', { typeId, used: true } ).then( ( { name, used } ) => {
       return {
         form: 'types/DeleteType',
         size: 'small',
@@ -83,7 +83,7 @@ export default function routeTypes( route, ajax, store ) {
   route( 'AddAttribute', '/types/:typeId/attributes/add', ( { typeId } ) => {
     if ( store.state.global.userAccess != Access.AdministratorAccess )
       return Promise.reject( makeError( ErrorCode.AccessDenied ) );
-    return ajax.post( '/server/api/types/load.php', { typeId } ).then( ( { name } ) => {
+    return ajax.post( '/types/load.php', { typeId } ).then( ( { name } ) => {
       return {
         form: 'types/EditAttribute',
         mode: 'add',
@@ -94,7 +94,7 @@ export default function routeTypes( route, ajax, store ) {
   } );
 
   route( 'EditAttribute', '/types/:typeId/attributes/:attributeId/edit', ( { typeId, attributeId } ) => {
-    return ajax.post( '/server/api/types/attributes/load.php', { typeId, attributeId, details: true } ).then( ( { name, type, details } ) => {
+    return ajax.post( '/types/attributes/load.php', { typeId, attributeId, details: true } ).then( ( { name, type, details } ) => {
       return {
         form: 'types/EditAttribute',
         mode: 'edit',
@@ -108,7 +108,7 @@ export default function routeTypes( route, ajax, store ) {
   } );
 
   route( 'DeleteAttribute', '/types/:typeId/attributes/:attributeId/delete', ( { typeId, attributeId } ) => {
-    return ajax.post( '/server/api/types/attributes/load.php', { typeId, attributeId, used: true } ).then( ( { name, used } ) => {
+    return ajax.post( '/types/attributes/load.php', { typeId, attributeId, used: true } ).then( ( { name, used } ) => {
       return {
         form: 'types/DeleteAttribute',
         size: 'small',
@@ -123,7 +123,7 @@ export default function routeTypes( route, ajax, store ) {
   route( 'ReorderAttributes', '/types/:typeId/attributes/reorder', ( { typeId } ) => {
     if ( store.state.global.userAccess != Access.AdministratorAccess )
       return Promise.reject( makeError( ErrorCode.AccessDenied ) );
-    return ajax.post( '/server/api/types/load.php', { typeId, attributes: true } ).then( ( { name, attributes } ) => {
+    return ajax.post( '/types/load.php', { typeId, attributes: true } ).then( ( { name, attributes } ) => {
       return {
         form: 'types/ReorderAttributes',
         typeId,
@@ -136,7 +136,7 @@ export default function routeTypes( route, ajax, store ) {
   route( 'ViewSettings', '/types/:typeId/views', ( { typeId } ) => {
     const isAdministrator = store.state.global.userAccess == Access.AdministratorAccess;
     const data = { typeId, defaultView: isAdministrator, publicViews: isAdministrator, personalViews: true };
-    return ajax.post( '/server/api/types/load.php', data ).then( ( { name, defaultView, publicViews, personalViews } ) => {
+    return ajax.post( '/types/load.php', data ).then( ( { name, defaultView, publicViews, personalViews } ) => {
       return {
         form: 'types/ViewSettings',
         size: 'large',
@@ -152,7 +152,7 @@ export default function routeTypes( route, ajax, store ) {
   route( 'EditDefaultView', '/types/:typeId/views/default/edit', ( { typeId } ) => {
     if ( store.state.global.userAccess != Access.AdministratorAccess )
       return Promise.reject( makeError( ErrorCode.AccessDenied ) );
-    return ajax.post( '/server/api/types/load.php', { typeId, defaultView: true } ).then( ( { name, defaultView } ) => {
+    return ajax.post( '/types/load.php', { typeId, defaultView: true } ).then( ( { name, defaultView } ) => {
       return {
         form: 'types/EditView',
         mode: 'default',
@@ -166,7 +166,7 @@ export default function routeTypes( route, ajax, store ) {
   route( 'AddPublicView', '/types/:typeId/views/public/add', ( { typeId } ) => {
     if ( store.state.global.userAccess != Access.AdministratorAccess )
       return Promise.reject( makeError( ErrorCode.AccessDenied ) );
-    return ajax.post( '/server/api/types/load.php', { typeId, defaultView: true } ).then( ( { name, defaultView } ) => {
+    return ajax.post( '/types/load.php', { typeId, defaultView: true } ).then( ( { name, defaultView } ) => {
       return {
         form: 'types/EditView',
         mode: 'add',
@@ -179,7 +179,7 @@ export default function routeTypes( route, ajax, store ) {
   } );
 
   route( 'AddPersonalView', '/types/:typeId/views/personal/add', ( { typeId } ) => {
-    return ajax.post( '/server/api/types/load.php', { typeId, defaultView: true } ).then( ( { name, defaultView } ) => {
+    return ajax.post( '/types/load.php', { typeId, defaultView: true } ).then( ( { name, defaultView } ) => {
       return {
         form: 'types/EditView',
         mode: 'add',
@@ -192,7 +192,7 @@ export default function routeTypes( route, ajax, store ) {
   } );
 
   route( 'EditView', '/types/:typeId/views/:viewId/edit', ( { typeId, viewId } ) => {
-    return ajax.post( '/server/api/types/views/load.php', { typeId, viewId, details: true } ).then( ( { name, isPublic, details } ) => {
+    return ajax.post( '/types/views/load.php', { typeId, viewId, details: true } ).then( ( { name, isPublic, details } ) => {
       return {
         form: 'types/EditView',
         mode: 'edit',
@@ -206,7 +206,7 @@ export default function routeTypes( route, ajax, store ) {
   } );
 
   route( 'CloneView', '/types/:typeId/views/:viewId/clone', ( { typeId, viewId } ) => {
-    return ajax.post( '/server/api/types/views/load.php', { typeId, viewId, details: true } ).then( ( { name, isPublic, details } ) => {
+    return ajax.post( '/types/views/load.php', { typeId, viewId, details: true } ).then( ( { name, isPublic, details } ) => {
       return {
         form: 'types/EditView',
         mode: 'clone',
@@ -222,7 +222,7 @@ export default function routeTypes( route, ajax, store ) {
   route( 'PublishView', '/types/:typeId/views/:viewId/publish', ( { typeId, viewId } ) => {
     if ( store.state.global.userAccess != Access.AdministratorAccess )
       return Promise.reject( makeError( ErrorCode.AccessDenied ) );
-    return ajax.post( '/server/api/types/views/load.php', { typeId, viewId } ).then( ( { name } ) => {
+    return ajax.post( '/types/views/load.php', { typeId, viewId } ).then( ( { name } ) => {
       return {
         form: 'types/PublishView',
         size: 'small',
@@ -237,7 +237,7 @@ export default function routeTypes( route, ajax, store ) {
   route( 'UnpublishView', '/types/:typeId/views/:viewId/unpublish', ( { typeId, viewId } ) => {
     if ( store.state.global.userAccess != Access.AdministratorAccess )
       return Promise.reject( makeError( ErrorCode.AccessDenied ) );
-    return ajax.post( '/server/api/types/views/load.php', { typeId, viewId } ).then( ( { name } ) => {
+    return ajax.post( '/types/views/load.php', { typeId, viewId } ).then( ( { name } ) => {
       return {
         form: 'types/PublishView',
         size: 'small',
@@ -250,7 +250,7 @@ export default function routeTypes( route, ajax, store ) {
   } );
 
   route( 'DeleteView', '/types/:typeId/views/:viewId/delete', ( { typeId, viewId } ) => {
-    return ajax.post( '/server/api/types/views/load.php', { typeId, viewId } ).then( ( { name, isPublic } ) => {
+    return ajax.post( '/types/views/load.php', { typeId, viewId } ).then( ( { name, isPublic } ) => {
       return {
         form: 'types/DeleteView',
         size: 'small',

@@ -66,7 +66,7 @@ export default {
 
       const data = { userId: this.userId, access: this.access };
 
-      this.$ajax.post( '/server/api/users/access.php', data ).then( () => {
+      this.$ajax.post( '/users/access.php', data ).then( () => {
         this.returnToDetails();
       } ).catch( error => {
         this.$emit( 'error', error );

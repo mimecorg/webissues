@@ -49,7 +49,7 @@ export default {
 
       const data = { viewId: this.viewId };
 
-      this.$ajax.post( '/server/api/types/views/delete.php', data ).then( () => {
+      this.$ajax.post( '/types/views/delete.php', data ).then( () => {
         this.$store.commit( 'global/setDirty' );
         this.returnToDetails();
       } ).catch( error => {

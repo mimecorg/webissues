@@ -64,7 +64,7 @@ export default {
 
       this.$emit( 'block' );
 
-      this.$ajax.post( this.isOwn ? '/server/api/account/password/reset.php' : '/server/api/users/password/reset.php', data ).then( () => {
+      this.$ajax.post( this.isOwn ? '/account/password/reset.php' : '/users/password/reset.php', data ).then( () => {
         this.returnToDetails();
       } ).catch( error => {
         if ( error.reason == Reason.APIError && error.errorCode == ErrorCode.UnknownUser ) {

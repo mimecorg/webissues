@@ -120,7 +120,7 @@ export default {
 
       this.$emit( 'block' );
 
-      this.$ajax.post( '/server/api/issues/files/' + this.mode + '.php', data, file ).then( ( { stampId } ) => {
+      this.$ajax.post( '/issues/files/' + this.mode + '.php', data, file ).then( ( { stampId } ) => {
         if ( stampId != false )
           this.$store.commit( 'list/setDirty' );
         this.returnToDetails();

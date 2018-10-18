@@ -41,7 +41,7 @@ export default {
     submit() {
       this.$emit( 'block' );
 
-      this.$ajax.post( '/server/api/users/projects/edit.php', { userId: this.userId, projects: [ this.projectId ], access: Access.NoAccess } ).then( () => {
+      this.$ajax.post( '/users/projects/edit.php', { userId: this.userId, projects: [ this.projectId ], access: Access.NoAccess } ).then( () => {
         this.returnToDetails();
       } ).catch( error => {
         this.$emit( 'error', error );

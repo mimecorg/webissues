@@ -74,7 +74,7 @@ export default {
 
       this.$emit( 'block' );
 
-      this.$ajax.post( '/server/api/types/' + this.mode + '.php', data ).then( ( { typeId, changed } ) => {
+      this.$ajax.post( '/types/' + this.mode + '.php', data ).then( ( { typeId, changed } ) => {
         if ( changed )
           this.$store.commit( 'global/setDirty' );
         this.returnToDetails( typeId );

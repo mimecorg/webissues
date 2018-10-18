@@ -29,7 +29,7 @@ export default function routeGlobal( route, ajax, store ) {
   route( 'ListViewFolder', '/views/:viewId/folders/:folderId/issues' );
 
   route( 'MyAccount', '/account', () => {
-    return ajax.post( '/server/api/account/load.php', { projects: true } ).then( ( { details, projects } ) => {
+    return ajax.post( '/account/load.php', { projects: true } ).then( ( { details, projects } ) => {
       return {
         form: 'users/UserDetails',
         userId: details.id,
@@ -45,7 +45,7 @@ export default function routeGlobal( route, ajax, store ) {
   } );
 
   route( 'EditAccount', '/account/edit', () => {
-    return ajax.post( '/server/api/account/load.php' ).then( ( { details } ) => {
+    return ajax.post( '/account/load.php' ).then( ( { details } ) => {
       return {
         form: 'users/EditUser',
         mode: 'account',
@@ -59,7 +59,7 @@ export default function routeGlobal( route, ajax, store ) {
   } );
 
   route( 'AddAccountProjects', '/account/projects/add', () => {
-    return ajax.post( '/server/api/users/load.php', { userId: store.state.global.userId, projects: true } ).then( ( { details, projects } ) => {
+    return ajax.post( '/users/load.php', { userId: store.state.global.userId, projects: true } ).then( ( { details, projects } ) => {
       return {
         form: 'users/EditUserProject',
         mode: 'add',
@@ -73,7 +73,7 @@ export default function routeGlobal( route, ajax, store ) {
   } );
 
   route( 'EditAccountProject', '/account/projects/:projectId/edit', ( { projectId } ) => {
-    return ajax.post( '/server/api/users/projects/load.php', { userId: store.state.global.userId, projectId } ).then( ( { userName, projectName, access } ) => {
+    return ajax.post( '/users/projects/load.php', { userId: store.state.global.userId, projectId } ).then( ( { userName, projectName, access } ) => {
       return {
         form: 'users/EditUserProject',
         size: 'small',
@@ -89,7 +89,7 @@ export default function routeGlobal( route, ajax, store ) {
   } );
 
   route( 'RemoveAccountProject', '/account/projects/:projectId/remove', ( { projectId } ) => {
-    return ajax.post( '/server/api/users/projects/load.php', { userId: store.state.global.userId, projectId } ).then( ( { userName, projectName } ) => {
+    return ajax.post( '/users/projects/load.php', { userId: store.state.global.userId, projectId } ).then( ( { userName, projectName } ) => {
       return {
         form: 'users/RemoveUserProject',
         size: 'small',
@@ -103,7 +103,7 @@ export default function routeGlobal( route, ajax, store ) {
   } );
 
   route( 'ChangeAccountPassword', '/account/password/change', () => {
-    return ajax.post( '/server/api/account/load.php' ).then( ( { details } ) => {
+    return ajax.post( '/account/load.php' ).then( ( { details } ) => {
       return {
         form: 'users/ChangePassword',
         userId: details.id,
@@ -114,7 +114,7 @@ export default function routeGlobal( route, ajax, store ) {
   } );
 
   route( 'ResetAccountPassword', '/account/password/reset', ( { userId } ) => {
-    return ajax.post( '/server/api/account/load.php' ).then( ( { details } ) => {
+    return ajax.post( '/account/load.php' ).then( ( { details } ) => {
       return {
         form: 'users/ResetPassword',
         size: 'small',

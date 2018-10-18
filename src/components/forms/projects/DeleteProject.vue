@@ -63,7 +63,7 @@ export default {
       if ( this.mode == 'delete' )
         data.force = this.force;
 
-      this.$ajax.post( '/server/api/projects/' + this.mode + '.php', data ).then( () => {
+      this.$ajax.post( '/projects/' + this.mode + '.php', data ).then( () => {
         this.$store.commit( 'global/setDirty' );
         this.$router.push( 'ManageProjects' );
       } ).catch( error => {

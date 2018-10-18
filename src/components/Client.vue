@@ -101,7 +101,7 @@ export default {
 
     this.busy = true;
 
-    this.$ajax.post( '/server/api/info.php' ).then( ( { serverName, serverVersion, settings } ) => {
+    this.$ajax.post( '/info.php' ).then( ( { serverName, serverVersion, settings } ) => {
       if ( !this.$client.isSupportedVersion( serverVersion ) )
         throw makeVersionError( serverVersion );
 

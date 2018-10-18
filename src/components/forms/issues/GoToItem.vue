@@ -54,7 +54,7 @@ export default {
 
       this.$emit( 'block' );
 
-      this.$ajax.post( '/server/api/issues/find.php', { itemId: this.itemId } ).then( issueId => {
+      this.$ajax.post( '/issues/find.php', { itemId: this.itemId } ).then( issueId => {
         if ( this.itemId == issueId )
           this.$router.push( 'IssueDetails', { issueId } );
         else

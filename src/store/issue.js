@@ -144,7 +144,7 @@ function makeActions( ajax ) {
 
       let promise;
       if ( process.env.TARGET == 'web' ) {
-        promise = ajax.post( '/server/api/issues/load.php', query );
+        promise = ajax.post( '/issues/load.php', query );
       } else {
         promise = Vue.prototype.$client.loadIssue( rootState.global.serverUUID, state.issueId ).then( cachedData => {
           const filter = query.filter;
@@ -152,7 +152,7 @@ function makeActions( ajax ) {
           query.filter = History.AllHistory;
           query.modifiedSince = cachedData != null ? cachedData.stamp : 0;
 
-          return ajax.post( '/server/api/issues/load.php', query ).then( loadedData => {
+          return ajax.post( '/issues/load.php', query ).then( loadedData => {
             if ( cachedData == null || cachedData.stamp != loadedData.details.stamp ) {
               if ( cachedData == null ) {
                 cachedData = { description: loadedData.description, history: loadedData.history, stamp: loadedData.details.stamp };

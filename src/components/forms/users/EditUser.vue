@@ -176,11 +176,11 @@ export default {
       let url;
       if ( this.mode == 'account' ) {
         if ( this.isAdministrator )
-          url = '/server/api/users/edit.php';
+          url = '/users/edit.php';
         else
-          url = '/server/api/account/edit.php';
+          url = '/account/edit.php';
       } else {
-        url = '/server/api/users/' + this.mode + '.php';
+        url = '/users/' + this.mode + '.php';
       }
 
       this.$ajax.post( url, data ).then( ( { userId, changed } ) => {

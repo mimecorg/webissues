@@ -22,7 +22,7 @@ import { makeError } from '@/utils/errors'
 
 export default function routeUsers( route, ajax, store ) {
   route( 'ManageUsers', '/users', () => {
-    return ajax.post( '/server/api/users/list.php' ).then( ( { users } ) => {
+    return ajax.post( '/users/list.php' ).then( ( { users } ) => {
       return {
         form: 'users/ManageUsers',
         size: 'large',
@@ -38,7 +38,7 @@ export default function routeUsers( route, ajax, store ) {
   } );
 
   route( 'UserDetails', '/users/:userId', ( { userId } ) => {
-    return ajax.post( '/server/api/users/load.php', { userId, projects: true } ).then( ( { details, projects } ) => {
+    return ajax.post( '/users/load.php', { userId, projects: true } ).then( ( { details, projects } ) => {
       return {
         form: 'users/UserDetails',
         userId,
@@ -53,7 +53,7 @@ export default function routeUsers( route, ajax, store ) {
   } );
 
   route( 'EditUser', '/users/:userId/edit', ( { userId } ) => {
-    return ajax.post( '/server/api/users/load.php', { userId } ).then( ( { details } ) => {
+    return ajax.post( '/users/load.php', { userId } ).then( ( { details } ) => {
       return {
         form: 'users/EditUser',
         mode: 'edit',
@@ -67,7 +67,7 @@ export default function routeUsers( route, ajax, store ) {
   } );
 
   route( 'EditUserAccess', '/users/:userId/permissions/edit', ( { userId } ) => {
-    return ajax.post( '/server/api/users/load.php', { userId } ).then( ( { details } ) => {
+    return ajax.post( '/users/load.php', { userId } ).then( ( { details } ) => {
       return {
         form: 'users/EditUserAccess',
         size: 'small',
@@ -79,7 +79,7 @@ export default function routeUsers( route, ajax, store ) {
   } );
 
   route( 'AddUserProjects', '/users/:userId/projects/add', ( { userId } ) => {
-    return ajax.post( '/server/api/users/load.php', { userId, projects: true } ).then( ( { details, projects } ) => {
+    return ajax.post( '/users/load.php', { userId, projects: true } ).then( ( { details, projects } ) => {
       return {
         form: 'users/EditUserProject',
         mode: 'add',
@@ -92,7 +92,7 @@ export default function routeUsers( route, ajax, store ) {
   } );
 
   route( 'EditUserProject', '/users/:userId/projects/:projectId/edit', ( { userId, projectId } ) => {
-    return ajax.post( '/server/api/users/projects/load.php', { userId, projectId } ).then( ( { userName, projectName, access } ) => {
+    return ajax.post( '/users/projects/load.php', { userId, projectId } ).then( ( { userName, projectName, access } ) => {
       return {
         form: 'users/EditUserProject',
         size: 'small',
@@ -107,7 +107,7 @@ export default function routeUsers( route, ajax, store ) {
   } );
 
   route( 'RemoveUserProject', '/users/:userId/projects/:projectId/remove', ( { userId, projectId } ) => {
-    return ajax.post( '/server/api/users/projects/load.php', { userId, projectId } ).then( ( { userName, projectName } ) => {
+    return ajax.post( '/users/projects/load.php', { userId, projectId } ).then( ( { userName, projectName } ) => {
       return {
         form: 'users/RemoveUserProject',
         size: 'small',
@@ -120,7 +120,7 @@ export default function routeUsers( route, ajax, store ) {
   } );
 
   route( 'ChangePassword', '/users/:userId/password/change', ( { userId } ) => {
-    return ajax.post( '/server/api/users/load.php', { userId } ).then( ( { details } ) => {
+    return ajax.post( '/users/load.php', { userId } ).then( ( { details } ) => {
       return {
         form: 'users/ChangePassword',
         userId,
@@ -130,7 +130,7 @@ export default function routeUsers( route, ajax, store ) {
   } );
 
   route( 'ResetPassword', '/users/:userId/password/reset', ( { userId } ) => {
-    return ajax.post( '/server/api/users/load.php', { userId } ).then( ( { details } ) => {
+    return ajax.post( '/users/load.php', { userId } ).then( ( { details } ) => {
       return {
         form: 'users/ResetPassword',
         size: 'small',
@@ -142,7 +142,7 @@ export default function routeUsers( route, ajax, store ) {
   } );
 
   route( 'RegistrationRequests', '/users/requests', () => {
-    return ajax.post( '/server/api/users/requests/list.php' ).then( ( { requests } ) => {
+    return ajax.post( '/users/requests/list.php' ).then( ( { requests } ) => {
       return {
         form: 'users/RegistrationRequests',
         size: 'large',
@@ -152,7 +152,7 @@ export default function routeUsers( route, ajax, store ) {
   } );
 
   route( 'RequestDetails', '/users/requests/:requestId', ( { requestId } ) => {
-    return ajax.post( '/server/api/users/requests/load.php', { requestId } ).then( ( { details } ) => {
+    return ajax.post( '/users/requests/load.php', { requestId } ).then( ( { details } ) => {
       return {
         form: 'users/RequestDetails',
         requestId,
@@ -165,7 +165,7 @@ export default function routeUsers( route, ajax, store ) {
   } );
 
   route( 'ApproveRequest', '/users/requests/:requestId/approve', ( { requestId } ) => {
-    return ajax.post( '/server/api/users/requests/load.php', { requestId } ).then( ( { details } ) => {
+    return ajax.post( '/users/requests/load.php', { requestId } ).then( ( { details } ) => {
       return {
         form: 'users/ApproveRequest',
         requestId,
@@ -175,7 +175,7 @@ export default function routeUsers( route, ajax, store ) {
   } );
 
   route( 'RejectRequest', '/users/requests/:requestId/reject', ( { requestId } ) => {
-    return ajax.post( '/server/api/users/requests/load.php', { requestId } ).then( ( { details } ) => {
+    return ajax.post( '/users/requests/load.php', { requestId } ).then( ( { details } ) => {
       return {
         form: 'users/RejectRequest',
         size: 'small',

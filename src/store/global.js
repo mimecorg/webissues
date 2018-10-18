@@ -106,7 +106,7 @@ function makeActions( ajax ) {
   return {
     load( { commit } ) {
       commit( 'beginUpdate' );
-      return ajax.post( '/server/api/global.php' ).then( data => {
+      return ajax.post( '/global.php' ).then( data => {
         commit( 'setData', data );
       } );
     }

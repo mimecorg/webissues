@@ -282,7 +282,7 @@ export default {
         this.$emit( 'error', error );
         return;
       }
-      this.$ajax.post( '/server/api/issues/preview.php', { text } ).then( html => {
+      this.$ajax.post( '/issues/preview.php', { text } ).then( html => {
         this.previewHtml = html;
       } ).catch ( error => {
         this.$emit( 'error', error );

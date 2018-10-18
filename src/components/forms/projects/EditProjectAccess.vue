@@ -60,7 +60,7 @@ export default {
 
       const data = { projectId: this.projectId, public: this.public };
 
-      this.$ajax.post( '/server/api/projects/access.php', data ).then( () => {
+      this.$ajax.post( '/projects/access.php', data ).then( () => {
         this.returnToDetails();
       } ).catch( error => {
         this.$emit( 'error', error );

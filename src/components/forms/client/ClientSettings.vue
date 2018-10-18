@@ -65,7 +65,7 @@ export default {
 
       this.$emit( 'block' );
 
-      this.$ajax.withBaseURL( baseURL ).post( '/server/api/info.php' ).then( ( { serverName, serverVersion } ) => {
+      this.$ajax.withBaseURL( baseURL ).post( '/info.php' ).then( ( { serverName, serverVersion } ) => {
         if ( !this.$client.isSupportedVersion( serverVersion ) )
           throw makeVersionError( serverVersion );
 

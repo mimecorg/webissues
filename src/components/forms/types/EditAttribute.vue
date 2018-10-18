@@ -277,7 +277,7 @@ export default {
 
       this.$emit( 'block' );
 
-      this.$ajax.post( '/server/api/types/attributes/' + this.mode + '.php', data ).then( ( { attributeId, changed } ) => {
+      this.$ajax.post( '/types/attributes/' + this.mode + '.php', data ).then( ( { attributeId, changed } ) => {
         if ( changed )
           this.$store.commit( 'global/setDirty' );
         this.returnToDetails();

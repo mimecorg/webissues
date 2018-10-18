@@ -37,7 +37,7 @@ export default {
     submit() {
       this.$emit( 'block' );
 
-      this.$ajax.post( '/server/api/issues/files/delete.php', { fileId: this.fileId } ).then( () => {
+      this.$ajax.post( '/issues/files/delete.php', { fileId: this.fileId } ).then( () => {
         this.$store.commit( 'list/setDirty' );
         this.returnToDetails();
       } ).catch( error => {

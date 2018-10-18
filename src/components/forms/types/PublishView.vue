@@ -69,7 +69,7 @@ export default {
 
       const data = { viewId: this.viewId };
 
-      this.$ajax.post( '/server/api/types/views/' + this.mode + '.php', data ).then( ( { changed } ) => {
+      this.$ajax.post( '/types/views/' + this.mode + '.php', data ).then( ( { changed } ) => {
         if ( changed )
           this.$store.commit( 'global/setDirty' );
         this.returnToDetails();

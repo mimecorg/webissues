@@ -122,7 +122,7 @@ export default {
         return;
       }
 
-      this.$ajax.post( '/server/api/users/projects/edit.php', data ).then( () => {
+      this.$ajax.post( '/users/projects/edit.php', data ).then( () => {
         this.returnToDetails();
       } ).catch( error => {
         this.$emit( 'error', error );

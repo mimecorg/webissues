@@ -36,7 +36,7 @@ export default {
     submit() {
       this.$emit( 'block' );
 
-      this.$ajax.post( '/server/api/projects/description/delete.php', { projectId: this.projectId } ).then( () => {
+      this.$ajax.post( '/projects/description/delete.php', { projectId: this.projectId } ).then( () => {
         this.returnToDetails();
       } ).catch( error => {
         this.$emit( 'error', error );

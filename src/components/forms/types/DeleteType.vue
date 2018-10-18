@@ -48,7 +48,7 @@ export default {
 
       const data = { typeId: this.typeId, force: this.force };
 
-      this.$ajax.post( '/server/api/types/delete.php', data ).then( () => {
+      this.$ajax.post( '/types/delete.php', data ).then( () => {
         this.$store.commit( 'global/setDirty' );
         this.$router.push( 'ManageTypes' );
       } ).catch( error => {

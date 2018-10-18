@@ -49,7 +49,7 @@ export default {
 
       const data = { attributeId: this.attributeId, force: this.force };
 
-      this.$ajax.post( '/server/api/types/attributes/delete.php', data ).then( () => {
+      this.$ajax.post( '/types/attributes/delete.php', data ).then( () => {
         this.$store.commit( 'global/setDirty' );
         this.returnToDetails();
       } ).catch( error => {

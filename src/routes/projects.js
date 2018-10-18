@@ -22,7 +22,7 @@ import { makeError } from '@/utils/errors'
 
 export default function routeProjects( route, ajax, store ) {
   route( 'ManageProjects', '/projects', () => {
-    return ajax.post( '/server/api/projects/list.php' ).then( ( { projects } ) => {
+    return ajax.post( '/projects/list.php' ).then( ( { projects } ) => {
       return {
         form: 'projects/ManageProjects',
         projects
@@ -41,7 +41,7 @@ export default function routeProjects( route, ajax, store ) {
   } );
 
   route( 'ProjectDetails', '/projects/:projectId', ( { projectId } ) => {
-    return ajax.post( '/server/api/projects/load.php', { projectId, description: true, folders: true, html: true } ).then( ( { details, description, folders } ) => {
+    return ajax.post( '/projects/load.php', { projectId, description: true, folders: true, html: true } ).then( ( { details, description, folders } ) => {
       return {
         form: 'projects/ProjectDetails',
         projectId,
@@ -56,7 +56,7 @@ export default function routeProjects( route, ajax, store ) {
   route( 'RenameProject', '/projects/:projectId/rename', ( { projectId } ) => {
     if ( store.state.global.userAccess != Access.AdministratorAccess )
       return Promise.reject( makeError( ErrorCode.AccessDenied ) );
-    return ajax.post( '/server/api/projects/load.php', { projectId } ).then( ( { details } ) => {
+    return ajax.post( '/projects/load.php', { projectId } ).then( ( { details } ) => {
       return {
         form: 'projects/EditProject',
         size: 'small',
@@ -70,7 +70,7 @@ export default function routeProjects( route, ajax, store ) {
   route( 'ArchiveProject', '/projects/:projectId/archive', ( { projectId } ) => {
     if ( store.state.global.userAccess != Access.AdministratorAccess )
       return Promise.reject( makeError( ErrorCode.AccessDenied ) );
-    return ajax.post( '/server/api/projects/load.php', { projectId } ).then( ( { details } ) => {
+    return ajax.post( '/projects/load.php', { projectId } ).then( ( { details } ) => {
       return {
         form: 'projects/DeleteProject',
         size: 'small',
@@ -84,7 +84,7 @@ export default function routeProjects( route, ajax, store ) {
   route( 'DeleteProject', '/projects/:projectId/delete', ( { projectId } ) => {
     if ( store.state.global.userAccess != Access.AdministratorAccess )
       return Promise.reject( makeError( ErrorCode.AccessDenied ) );
-    return ajax.post( '/server/api/projects/load.php', { projectId, folders: true } ).then( ( { details, folders } ) => {
+    return ajax.post( '/projects/load.php', { projectId, folders: true } ).then( ( { details, folders } ) => {
       return {
         form: 'projects/DeleteProject',
         size: 'small',
@@ -97,7 +97,7 @@ export default function routeProjects( route, ajax, store ) {
   } );
 
   route( 'AddProjectDescription', '/projects/:projectId/description/add', ( { projectId } ) => {
-    return ajax.post( '/server/api/projects/load.php', { projectId, description: true, access: 'admin' } ).then( ( { details, description } ) => {
+    return ajax.post( '/projects/load.php', { projectId, description: true, access: 'admin' } ).then( ( { details, description } ) => {
       if ( description != null )
         return Promise.reject( makeError( ErrorCode.DescriptionAlreadyExists ) );
       return {
@@ -111,7 +111,7 @@ export default function routeProjects( route, ajax, store ) {
   } );
 
   route( 'EditProjectDescription', '/projects/:projectId/description/edit', ( { projectId } ) => {
-    return ajax.post( '/server/api/projects/load.php', { projectId, description: true, access: 'admin' } ).then( ( { details, description } ) => {
+    return ajax.post( '/projects/load.php', { projectId, description: true, access: 'admin' } ).then( ( { details, description } ) => {
       if ( description == null )
         return Promise.reject( makeError( ErrorCode.UnknownDescription ) );
       return {
@@ -126,7 +126,7 @@ export default function routeProjects( route, ajax, store ) {
   } );
 
   route( 'DeleteProjectDescription', '/projects/:projectId/description/delete', ( { projectId } ) => {
-    return ajax.post( '/server/api/projects/load.php', { projectId, description: true, access: 'admin' } ).then( ( { details, description } ) => {
+    return ajax.post( '/projects/load.php', { projectId, description: true, access: 'admin' } ).then( ( { details, description } ) => {
       if ( description == null )
         return Promise.reject( makeError( ErrorCode.UnknownDescription ) );
       return {
@@ -139,7 +139,7 @@ export default function routeProjects( route, ajax, store ) {
   } );
 
   route( 'AddFolder', '/projects/:projectId/folders/add', ( { projectId } ) => {
-    return ajax.post( '/server/api/projects/load.php', { projectId, access: 'admin' } ).then( ( { details } ) => {
+    return ajax.post( '/projects/load.php', { projectId, access: 'admin' } ).then( ( { details } ) => {
       return {
         form: 'projects/EditFolder',
         size: 'small',
@@ -151,7 +151,7 @@ export default function routeProjects( route, ajax, store ) {
   } );
 
   route( 'RenameFolder', '/projects/:projectId/folders/:folderId/rename', ( { projectId, folderId } ) => {
-    return ajax.post( '/server/api/projects/folders/load.php', { projectId, folderId, access: 'admin' } ).then( ( { name } ) => {
+    return ajax.post( '/projects/folders/load.php', { projectId, folderId, access: 'admin' } ).then( ( { name } ) => {
       return {
         form: 'projects/EditFolder',
         size: 'small',
@@ -164,7 +164,7 @@ export default function routeProjects( route, ajax, store ) {
   } );
 
   route( 'MoveFolder', '/projects/:projectId/folders/:folderId/move', ( { projectId, folderId } ) => {
-    return ajax.post( '/server/api/projects/folders/load.php', { projectId, folderId, access: 'admin' } ).then( ( { name } ) => {
+    return ajax.post( '/projects/folders/load.php', { projectId, folderId, access: 'admin' } ).then( ( { name } ) => {
       return {
         form: 'projects/MoveFolder',
         size: 'small',
@@ -176,7 +176,7 @@ export default function routeProjects( route, ajax, store ) {
   } );
 
   route( 'DeleteFolder', '/projects/:projectId/folders/:folderId/delete', ( { projectId, folderId } ) => {
-    return ajax.post( '/server/api/projects/folders/load.php', { projectId, folderId, access: 'admin' } ).then( ( { name, empty } ) => {
+    return ajax.post( '/projects/folders/load.php', { projectId, folderId, access: 'admin' } ).then( ( { name, empty } ) => {
       return {
         form: 'projects/DeleteFolder',
         size: 'small',
@@ -189,7 +189,7 @@ export default function routeProjects( route, ajax, store ) {
   } );
 
   route( 'ProjectPermissions', '/projects/:projectId/permissions', ( { projectId } ) => {
-    return ajax.post( '/server/api/projects/load.php', { projectId, members: true, access: 'admin' } ).then( ( { details, members } ) => {
+    return ajax.post( '/projects/load.php', { projectId, members: true, access: 'admin' } ).then( ( { details, members } ) => {
       return {
         form: 'projects/ProjectPermissions',
         projectId,
@@ -201,7 +201,7 @@ export default function routeProjects( route, ajax, store ) {
   } );
 
   route( 'EditProjectAccess', '/projects/:projectId/permissions/edit', ( { projectId } ) => {
-    return ajax.post( '/server/api/projects/load.php', { projectId, access: 'admin' } ).then( ( { details } ) => {
+    return ajax.post( '/projects/load.php', { projectId, access: 'admin' } ).then( ( { details } ) => {
       return {
         form: 'projects/EditProjectAccess',
         size: 'small',
@@ -213,7 +213,7 @@ export default function routeProjects( route, ajax, store ) {
   } );
 
   route( 'AddMembers', '/projects/:projectId/members/add', ( { projectId } ) => {
-    return ajax.post( '/server/api/projects/load.php', { projectId, members: true, access: 'admin' } ).then( ( { details, members } ) => {
+    return ajax.post( '/projects/load.php', { projectId, members: true, access: 'admin' } ).then( ( { details, members } ) => {
       return {
         form: 'projects/EditMember',
         mode: 'add',
@@ -226,7 +226,7 @@ export default function routeProjects( route, ajax, store ) {
   } );
 
   route( 'EditMember', '/projects/:projectId/members/:userId/edit', ( { projectId, userId } ) => {
-    return ajax.post( '/server/api/projects/members/load.php', { projectId, userId } ).then( ( { projectName, userName, access } ) => {
+    return ajax.post( '/projects/members/load.php', { projectId, userId } ).then( ( { projectName, userName, access } ) => {
       return {
         form: 'projects/EditMember',
         size: 'small',
@@ -241,7 +241,7 @@ export default function routeProjects( route, ajax, store ) {
   } );
 
   route( 'RemoveMember', '/projects/:projectId/members/:userId/remove', ( { projectId, userId } ) => {
-    return ajax.post( '/server/api/projects/members/load.php', { projectId, userId } ).then( ( { projectName, userName } ) => {
+    return ajax.post( '/projects/members/load.php', { projectId, userId } ).then( ( { projectName, userName } ) => {
       return {
         form: 'projects/RemoveMember',
         size: 'small',
