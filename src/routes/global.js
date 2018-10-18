@@ -21,12 +21,12 @@ import { Access } from '@/constants'
 
 export default function routeGlobal( route, ajax, store ) {
   route( 'Home', '' );
-  route( 'List', '/types/:typeId' );
-  route( 'ListView', '/views/:viewId' );
-  route( 'ListProject', '/types/:typeId/projects/:projectId' );
-  route( 'ListViewProject', '/views/:viewId/projects/:projectId' );
-  route( 'ListFolder', '/folders/:folderId' );
-  route( 'ListViewFolder', '/views/:viewId/folders/:folderId' );
+  route( 'List', '/types/:typeId/issues' );
+  route( 'ListView', '/views/:viewId/issues' );
+  route( 'ListProject', '/types/:typeId/projects/:projectId/issues' );
+  route( 'ListViewProject', '/views/:viewId/projects/:projectId/issues' );
+  route( 'ListFolder', '/folders/:folderId/issues' );
+  route( 'ListViewFolder', '/views/:viewId/folders/:folderId/issues' );
 
   route( 'MyAccount', '/account', () => {
     return ajax.post( '/server/api/account/load.php', { projects: true } ).then( ( { details, projects } ) => {
@@ -127,7 +127,7 @@ export default function routeGlobal( route, ajax, store ) {
   } );
 
   if ( process.env.TARGET == 'electron' ) {
-    route( 'ClientSettings', '/settings', () => {
+    route( 'ClientSettings', '/settings/client', () => {
       return Promise.resolve( { form: 'client/ClientSettings', size: 'small' } );
     } );
   }
