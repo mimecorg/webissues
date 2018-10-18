@@ -120,6 +120,9 @@ class Users_Password extends System_Web_Component
             $userManager = new System_Api_UserManager();
             $user = $userManager->getUserByEmail( $this->email );
 
+            $preferencesManager = new System_Api_PreferencesManager( $user );
+            $language = $preferencesManager->getPreference( 'language' );
+
             $keyGenerator = new System_Api_KeyGenerator();
             $key = $keyGenerator->generateKey( System_Api_KeyGenerator::PasswordReset );
 
@@ -128,7 +131,7 @@ class Users_Password extends System_Web_Component
             $data = array( 'user_login' => $user[ 'user_login' ], 'user_name' => $user[ 'user_name' ], 'user_email' => $this->email, 'reset_key' => $key );
 
             $helper = new System_Mail_Helper();
-            $helper->send( $this->email, $user[ 'user_name' ], 'Common_Mail_ResetPassword', $data );
+            $helper->send( $this->email, $user[ 'user_name' ], $language, 'Common_Mail_ResetPassword', $data );
         } catch ( System_Api_Error $ex ) {
             if ( $ex->getMessage() == System_Api_Error::UnknownUser )
                 $this->form->setError( 'email', $this->t( 'error.NoUserWithThisEmail' ) );

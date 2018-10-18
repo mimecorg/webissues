@@ -59,7 +59,7 @@ class Server_Api_Users_Add
             $data = array( 'user_login' => $login, 'user_name' => $name, 'user_email' => $email, 'invitation_key' => $invitationKey );
 
             $helper = new System_Mail_Helper();
-            $helper->send( $email, $name, 'Common_Mail_AccountCreated', $data );
+            $helper->send( $email, $name, $language, 'Common_Mail_AccountCreated', $data );
         }
 
         $result[ 'userId' ] = $userId;

@@ -40,7 +40,7 @@ class Server_Api_Users_Requests_Reject
         $registrationManager->rejectRequest( $request );
 
         $helper = new System_Mail_Helper();
-        $helper->send( $request[ 'user_email' ], $request[ 'user_name' ], 'Common_Mail_RegistrationRejected', $request );
+        $helper->send( $request[ 'user_email' ], $request[ 'user_name' ], null, 'Common_Mail_RegistrationRejected', $request );
     }
 }
 

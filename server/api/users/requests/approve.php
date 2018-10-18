@@ -56,7 +56,7 @@ class Server_Api_Users_Requests_Approve
             $userManager->grantMember( $user, $project, System_Const::NormalAccess );
 
         $helper = new System_Mail_Helper();
-        $helper->send( $request[ 'user_email' ], $request[ 'user_name' ], 'Common_Mail_RegistrationApproved', $request );
+        $helper->send( $request[ 'user_email' ], $request[ 'user_name' ], null, 'Common_Mail_RegistrationApproved', $request );
 
         $result[ 'userId' ] = $userId;
         $result[ 'changed' ] = true;

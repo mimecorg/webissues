@@ -30,11 +30,17 @@ class System_Mail_Helper
         $this->engine->loadSettings();
     }
 
-    public function send( $email, $name, $component, $data )
+    public function send( $email, $name, $language, $component, $data )
     {
+        $translator = System_Core_Application::getInstance()->getTranslator();
+        $oldLanguage = $translator->getLanguage( System_Core_Translator::UserLanguage );
+        $translator->setLanguage( System_Core_Translator::UserLanguage, $language );
+
         $mail = System_Web_Component::createComponent( $component, null, $data );
         $body = $mail->run();
         $subject = $mail->getView()->getSlot( 'subject' );
+
+        $translator->setLanguage( System_Core_Translator::UserLanguage, $oldLanguage );
 
         $this->engine->send( $email, $name, $subject, $body );
     }
