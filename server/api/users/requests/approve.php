@@ -55,7 +55,7 @@ class Server_Api_Users_Requests_Approve
         foreach ( $projectRows as $project )
             $userManager->grantMember( $user, $project, System_Const::NormalAccess );
 
-        $mail = System_Web_Component::createComponent( 'Common_Mail_Approve', null, $request );
+        $mail = System_Web_Component::createComponent( 'Common_Mail_RegistrationApproved', null, $request );
         $body = $mail->run();
         $subject = $mail->getView()->getSlot( 'subject' );
 

@@ -125,9 +125,9 @@ class Users_Password extends System_Web_Component
 
             $userManager->setPasswordResetKey( $user, $key );
 
-            $reset = array( 'user_login' => $user[ 'user_login' ], 'user_name' => $user[ 'user_name' ], 'user_email' => $this->email, 'reset_key' => $key );
+            $data = array( 'user_login' => $user[ 'user_login' ], 'user_name' => $user[ 'user_name' ], 'user_email' => $this->email, 'reset_key' => $key );
 
-            $mail = System_Web_Component::createComponent( 'Common_Mail_ResetPassword', null, $reset );
+            $mail = System_Web_Component::createComponent( 'Common_Mail_ResetPassword', null, $data );
             $body = $mail->run();
             $subject = $mail->getView()->getSlot( 'subject' );
 

@@ -20,20 +20,21 @@
 
 if ( !defined( 'WI_VERSION' ) ) die( -1 );
 
-class Common_Mail_TestConnection extends System_Web_Component
+class Common_Mail_RegistrationRejected extends System_Web_Component
 {
-    private $settings;
+    private $data;
 
-    protected function __construct( $settings )
+    protected function __construct( $data )
     {
         parent::__construct();
 
-        $this->settings = $settings;
+        $this->data = $data;
     }
 
     protected function execute()
     {
-        $this->view->setDecoratorClass( 'Common_Mail_Layout' );
-        $this->view->setSlot( 'subject', $this->t( 'subject.TestMessage' ) );
+        $this->view->setDecoratorClass( 'Common_Mail_Template' );
+        $this->view->setSlot( 'subject', $this->t( 'subject.RegistrationRejected' ) );
+        $this->view->setSlot( 'user_name', $this->data[ 'user_name' ] );
     }
 }

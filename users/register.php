@@ -132,9 +132,9 @@ class Users_Register extends System_Web_Component
             $registrationManager = new System_Api_RegistrationManager();
             $registrationManager->addRequest( $this->login, $this->userName, $this->password, $this->email, $key );
 
-            $register = array( 'user_login' => $this->login, 'user_name' => $this->userName, 'user_email' => $this->email, 'request_key' => $key );
+            $data = array( 'user_login' => $this->login, 'user_name' => $this->userName, 'user_email' => $this->email, 'request_key' => $key );
 
-            $mail = System_Web_Component::createComponent( 'Common_Mail_Register', null, $register );
+            $mail = System_Web_Component::createComponent( 'Common_Mail_EmailVerification', null, $data );
             $body = $mail->run();
             $subject = $mail->getView()->getSlot( 'subject' );
 

@@ -56,9 +56,9 @@ class Server_Api_Users_Add
         $userId = $userManager->addUser( $login, $name, $password, $mustChangePassword ? 1 : 0, $invitationKey, $email, $language );
 
         if ( $sendInvitationEmail ) {
-            $invitation = array( 'user_login' => $login, 'user_name' => $name, 'user_email' => $email, 'invitation_key' => $invitationKey );
+            $data = array( 'user_login' => $login, 'user_name' => $name, 'user_email' => $email, 'invitation_key' => $invitationKey );
 
-            $mail = System_Web_Component::createComponent( 'Common_Mail_AccountCreated', null, $invitation );
+            $mail = System_Web_Component::createComponent( 'Common_Mail_AccountCreated', null, $data );
             $body = $mail->run();
             $subject = $mail->getView()->getSlot( 'subject' );
 

@@ -39,7 +39,7 @@ class Server_Api_Users_Requests_Reject
 
         $registrationManager->rejectRequest( $request );
 
-        $mail = System_Web_Component::createComponent( 'Common_Mail_Reject', null, $request );
+        $mail = System_Web_Component::createComponent( 'Common_Mail_RegistrationRejected', null, $request );
         $body = $mail->run();
         $subject = $mail->getView()->getSlot( 'subject' );
 

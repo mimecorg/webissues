@@ -22,23 +22,23 @@ if ( !defined( 'WI_VERSION' ) ) die( -1 );
 
 class Common_Mail_AccountCreated extends System_Web_Component
 {
-    private $invitation;
+    private $data;
 
-    protected function __construct( $invitation )
+    protected function __construct( $data )
     {
         parent::__construct();
 
-        $this->invitation = $invitation;
+        $this->data = $data;
     }
 
     protected function execute()
     {
         $this->view->setDecoratorClass( 'Common_Mail_Template' );
         $this->view->setSlot( 'subject', $this->t( 'subject.AccountCreated' ) );
-        $this->view->setSlot( 'user_name', $this->invitation[ 'user_name' ] );
+        $this->view->setSlot( 'user_name', $this->data[ 'user_name' ] );
 
-        $this->userLogin = $this->invitation[ 'user_login' ];
+        $this->userLogin = $this->data[ 'user_login' ];
 
-        $this->invitationUrl = $this->appendQueryString( WI_BASE_URL . '/users/password.php', array( 'key' => $this->invitation[ 'invitation_key' ] ) );
+        $this->invitationUrl = $this->appendQueryString( WI_BASE_URL . '/users/password.php', array( 'key' => $this->data[ 'invitation_key' ] ) );
     }
 }

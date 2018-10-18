@@ -22,23 +22,23 @@ if ( !defined( 'WI_VERSION' ) ) die( -1 );
 
 class Common_Mail_ResetPassword extends System_Web_Component
 {
-    private $reset;
+    private $data;
 
-    protected function __construct( $reset )
+    protected function __construct( $data )
     {
         parent::__construct();
 
-        $this->reset = $reset;
+        $this->data = $data;
     }
 
     protected function execute()
     {
         $this->view->setDecoratorClass( 'Common_Mail_Template' );
         $this->view->setSlot( 'subject', $this->t( 'subject.ResetPassword' ) );
-        $this->view->setSlot( 'user_name', $this->reset[ 'user_name' ] );
+        $this->view->setSlot( 'user_name', $this->data[ 'user_name' ] );
 
-        $this->userLogin = $this->reset[ 'user_login' ];
+        $this->userLogin = $this->data[ 'user_login' ];
 
-        $this->resetUrl = $this->appendQueryString( WI_BASE_URL . '/users/password.php', array( 'key' => $this->reset[ 'reset_key' ] ) );
+        $this->resetUrl = $this->appendQueryString( WI_BASE_URL . '/users/password.php', array( 'key' => $this->data[ 'reset_key' ] ) );
     }
 }
