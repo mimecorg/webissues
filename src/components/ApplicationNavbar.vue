@@ -43,7 +43,7 @@
             <li><HyperLink><span class="fa fa-bell-o" aria-hidden="true"></span> {{ $t( 'title.Alerts' ) }}</HyperLink></li>
             <template v-if="isAdministrator">
               <li role="separator" class="divider"></li>
-              <li><HyperLink><span class="fa fa-wrench" aria-hidden="true"></span> {{ $t( 'title.ServerSettings' ) }}</HyperLink></li>
+              <li><HyperLink v-on:click="serverSettings"><span class="fa fa-wrench" aria-hidden="true"></span> {{ $t( 'title.ServerSettings' ) }}</HyperLink></li>
               <li><HyperLink><span class="fa fa-book" aria-hidden="true"></span> {{ $t( 'title.EventLog' ) }}</HyperLink></li>
             </template>
           </DropdownButton>
@@ -141,6 +141,9 @@ export default {
     },
     manageUsers() {
       this.$router.push( 'ManageUsers' );
+    },
+    serverSettings() {
+      this.$router.push( 'ServerSettings' );
     },
 
     myAccount() {
