@@ -17,28 +17,20 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-import routeGlobal from '@/routes/global'
-import routeIssues from '@/routes/issues'
-import routeProjects from '@/routes/projects'
-import routeTypes from '@/routes/types'
-import routeUsers from '@/routes/users'
-import routeSettings from '@/routes/settings'
+export default function routeSettings( route, ajax, store ) {
+  route( 'ServerSettings', '/settings', () => {
+    return ajax.post( '/settings/load.php' ).then( ( { serverName, settings } ) => {
+      return {
+        form: 'settings/ServerSettings',
+        serverName,
+        settings
+      };
+    } );
+  } );
 
-export default function registerRoutes( router, i18n, ajax, store, formatter ) {
-  function routeAll( route ) {
-    routeGlobal( route, ajax, store );
-    routeIssues( route, i18n, ajax, store, formatter );
-    routeProjects( route, ajax, store );
-    routeTypes( route, ajax, store );
-    routeUsers( route, ajax, store );
-    routeSettings( route, ajax, store );
-  }
-
-  router.register( routeAll );
-
-  if ( process.env.NODE_ENV != 'production' && module.hot != null ) {
-    module.hot.accept( [ '@/routes/global', '@/routes/issues', '@/routes/projects', '@/routes/types', '@/routes/users', '@/routes/settings' ], () => {
-      router.hotUpdate( routeAll );
+  if ( process.env.TARGET == 'electron' ) {
+    route( 'ClientSettings', '/settings/client', () => {
+      return Promise.resolve( { form: 'client/ClientSettings', size: 'small' } );
     } );
   }
 }
