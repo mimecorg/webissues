@@ -19,9 +19,13 @@
 
 <template>
   <FormGroup v-bind:label="label" v-bind:required="required" v-bind:error="error">
-    <div class="dropdown-filters">
+    <div class="dropdown-select">
       <DropdownButton ref="dropdown" v-bind:text="text">
         <div class="dropdown-menu-scroll">
+          <li v-if="defaultName != null" v-bind:class="{ active: value == '' }">
+            <HyperLink v-on:click="select( '' )">{{ defaultName }}</HyperLink>
+          </li>
+          <li v-if="defaultName != null" role="separator" class="divider"></li>
           <li v-for="( item, index ) in items" v-bind:key="item" v-bind:class="{ active: item == value }">
             <HyperLink v-on:click="select( item )">{{ itemNames[ index ] }}</HyperLink>
           </li>
@@ -39,10 +43,13 @@ export default {
     required: Boolean,
     error: String,
     items: Array,
-    itemNames: Array
+    itemNames: Array,
+    defaultName: String
   },
   computed: {
     text() {
+      if ( this.value == '' && this.defaultName != null )
+        return this.defaultName;
       return this.itemNames[ this.items.indexOf( this.value ) ];
     }
   },

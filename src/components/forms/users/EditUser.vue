@@ -32,21 +32,8 @@
                v-bind:disabled="sendInvitationEmail" v-bind="$field( 'confirmPassword' )" v-model="confirmPassword"/>
     <FormCheckbox v-if="mode == 'add'" v-bind:label="$t( 'text.UserMustChangePassword' )" v-bind:disabled="sendInvitationEmail" v-model="mustChangePassword"/>
     <FormInput ref="email" id="email" v-bind:label="$t( 'label.EmailAddress' )" v-bind="$field( 'email' )" v-model="email"/>
-    <FormGroup v-bind:label="$t( 'label.Language' )">
-      <div class="dropdown-filters">
-        <DropdownButton v-bind:text="languageName" class="dropdown-wide">
-          <div class="dropdown-menu-scroll">
-            <li v-bind:class="{ active: language == '' }">
-              <HyperLink v-on:click="language = ''">{{ $t( 'text.DefaultLanguage' ) }}</HyperLink>
-            </li>
-            <li role="separator" class="divider"></li>
-            <li v-for="l in languages" v-bind:key="l.key" v-bind:class="{ active: l.key == language }">
-              <HyperLink v-on:click="language = l.key">{{ l.name }}</HyperLink>
-            </li>
-          </div>
-        </DropdownButton>
-      </div>
-    </FormGroup>
+    <FormDropdown v-bind:label="$t( 'label.Language' )" v-bind:items="languageItems" v-bind:item-names="languageNames"
+                  v-bind:default-name="$t( 'text.DefaultLanguage' )" v-model="language"/>
     <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
   </div>
 </template>
@@ -131,17 +118,14 @@ export default {
       else if ( this.mode == 'add' )
         return this.$t( 'cmd.AddUser' );
     },
-    languageName() {
-      if ( this.language == '' ) {
-        return this.$t( 'text.DefaultLanguage' );
-      } else {
-        const language = this.languages.find( l => l.key == this.language );
-        if ( language != null )
-          return language.name;
-      }
-    },
     canResetPassword() {
       return this.$store.state.global.settings.resetPassword;
+    },
+    languageItems() {
+      return this.languages.map( l => l.key );
+    },
+    languageNames() {
+      return this.languages.map( l => l.name );
     }
   },
 

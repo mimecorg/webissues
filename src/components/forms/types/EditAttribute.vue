@@ -27,17 +27,8 @@
     <Prompt v-if="mode == 'edit'" path="prompt.ModifyAttribute"><strong>{{ initialName }}</strong></Prompt>
     <Prompt v-else-if="mode == 'add'" path="prompt.AddAttribute"><strong>{{ typeName }}</strong></Prompt>
     <FormInput ref="name" id="name" v-bind:label="$t( 'label.Name' )" v-bind="$field( 'name' )" v-model="name"/>
-    <FormGroup v-bind:label="$t( 'label.AttributeType' )" v-bind="$field( 'attributeType' )">
-      <div class="dropdown-filters">
-        <DropdownButton v-bind:text="attributeTypeName">
-          <div class="dropdown-menu-scroll">
-            <li v-for="t in attributeTypes" v-bind:key="t" v-bind:class="{ active: t == attributeType }">
-              <HyperLink v-on:click="attributeType = t">{{ $t( 'AttributeType.' + t ) }}</HyperLink>
-            </li>
-          </div>
-        </DropdownButton>
-      </div>
-    </FormGroup>
+    <FormDropdown ref="attributeType" v-bind:label="$t( 'label.AttributeType' )" v-bind="$field( 'attributeType' )"
+                  v-bind:items="attributeTypes" v-bind:item-names="attibuteTypeNames" v-model="attributeType"/>
     <Panel v-bind:title="$t( 'title.AttributeDetails' )">
       <template v-if="attributeType == 'TEXT'">
         <FormCheckbox v-bind:label="$t( 'text.AllowMultipleLines' )" v-model="multiLine"/>
@@ -215,9 +206,6 @@ export default {
       else if ( this.mode == 'add' )
         return this.$t( 'cmd.AddAttribute' );
     },
-    attributeTypeName() {
-      return this.$t( 'AttributeType.' + this.attributeType );
-    },
     attributeTypes() {
       if ( this.initialType == 'TEXT' || this.initialType == 'ENUM' || this.initialType == 'USER' )
         return [ 'TEXT', 'ENUM', 'USER' ];
@@ -225,6 +213,9 @@ export default {
         return [ this.initialType ];
       else
         return [ 'TEXT', 'ENUM', 'NUMERIC', 'DATETIME', 'USER' ];
+    },
+    attibuteTypeNames() {
+      return this.attributeTypes.map( t => this.$t( 'AttributeType.' + t ) );
     },
     hasMinMaxLength() {
       return this.attributeType == 'TEXT' || this.attributeType == 'ENUM' && this.editable && !this.multiSelect;

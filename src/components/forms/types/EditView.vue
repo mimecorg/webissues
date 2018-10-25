@@ -46,17 +46,7 @@
       </div>
     </Draggable>
     <Panel v-bind:title="$t( 'title.SortOrder' )">
-      <FormGroup v-bind:label="$t( 'label.Column' )">
-        <div class="dropdown-filters">
-          <DropdownButton v-bind:text="sortColumnName">
-            <div class="dropdown-menu-scroll">
-              <li v-for="c in columns" v-bind:key="c" v-bind:class="{ active: c == sortColumn }">
-                <HyperLink v-on:click="sortColumn = c">{{ getColumnName( c ) }}</HyperLink>
-              </li>
-            </div>
-          </DropdownButton>
-        </div>
-      </FormGroup>
+      <FormDropdown v-bind:label="$t( 'label.Column' )" v-bind:items="columns" v-bind:item-names="columnNames" v-model="sortColumn"/>
       <FormGroup v-bind:label="$t( 'label.Order' )">
         <div class="radio">
           <label><input type="radio" v-model="sortAscending" v-bind:value="true"> {{ $t( 'text.Ascending' ) }}</label>
@@ -182,8 +172,8 @@ export default {
     availableColumns() {
       return this.allColumns.filter( c => !this.columns.includes( c ) );
     },
-    sortColumnName() {
-      return this.getColumnName( this.sortColumn );
+    columnNames() {
+      return this.columns.map( c => this.getColumnName( c ) );
     }
   },
 
