@@ -43,7 +43,7 @@
     <Prompt v-else path="prompt.CronJobNotStarted" alert-class="alert-default"/>
 
     <FormSection v-bind:title="$t( 'title.AccessSettings' )">
-      <button type="button" class="btn btn-default"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'cmd.Edit' ) }}</button>
+      <button type="button" class="btn btn-default" v-on:click="accessSettings"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'cmd.Edit' ) }}</button>
     </FormSection>
     <div class="panel panel-default">
       <div class="panel-body panel-table">
@@ -154,6 +154,9 @@ export default {
   methods: {
     emailSettings() {
       this.$router.push( 'EmailSettings' );
+    },
+    accessSettings() {
+      this.$router.push( 'AccessSettings' );
     },
 
     close() {
