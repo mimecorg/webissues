@@ -18,9 +18,9 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-require_once( '../../../system/bootstrap.inc.php' );
+require_once( '../../../../system/bootstrap.inc.php' );
 
-class Server_Api_Settings_Load
+class Server_Api_Settings_Email_Load
 {
     public $access = 'admin';
 
@@ -29,9 +29,6 @@ class Server_Api_Settings_Load
     public function run()
     {
         $serverManager = new System_Api_ServerManager();
-        $server = $serverManager->getServer();
-
-        $result[ 'serverName' ] = $server[ 'server_name' ];
 
         $engine = $serverManager->getSetting( 'email_engine' );
         $settings[ 'emailEngine' ] = $engine;
@@ -39,32 +36,18 @@ class Server_Api_Settings_Load
         if ( $engine != null )
             $settings[ 'emailFrom' ] = $serverManager->getSetting( 'email_from' );
 
-        $cronLast = $serverManager->getSetting( 'cron_last' );
-        if ( $cronLast != null )
-            $settings[ 'cronLast' ] = max( time() - $cronLast, 0 );
-
-        $settings[ 'anonymousAccess' ] = $serverManager->getSetting( 'anonymous_access' ) == 1;
-        if ( $engine != null )
-            $settings[ 'selfRegister' ] = $serverManager->getSetting( 'self_register' ) == 1;
-
-        $settings[ 'language' ] = $serverManager->getSetting( 'language' );
-
-        $timeZone = $serverManager->getSetting( 'time_zone' );
-        if ( $timeZone == null ) {
-            $date = new DateTime();
-            $timeZone = $date->getTimezone()->getName();
+        if ( $engine == 'smtp' ) {
+            $settings[ 'smtpServer' ] = $serverManager->getSetting( 'smtp_server' );
+            $settings[ 'smtpPort' ] = (int)$serverManager->getSetting( 'smtp_port' );
+            $settings[ 'smtpEncryption' ] = $serverManager->getSetting( 'smtp_encryption' );
+            $settings[ 'smtpUser' ] = $serverManager->getSetting( 'smtp_user' );
+            $settings[ 'smtpPassword' ] = $serverManager->getSetting( 'smtp_password' );
         }
-        $settings[ 'timeZone' ] = $this->formatTimeZoneName( $timeZone );
 
         $result[ 'settings' ] = $settings;
 
         return $result;
     }
-
-    private function formatTimeZoneName( $timeZone )
-    {
-        return str_replace( array( '_', '/', 'St ' ), array( ' ', ' / ', 'St. ' ), $timeZone );
-    }
 }
 
-System_Bootstrap::run( 'Server_Api_Application', 'Server_Api_Settings_Load' );
+System_Bootstrap::run( 'Server_Api_Application', 'Server_Api_Settings_Email_Load' );

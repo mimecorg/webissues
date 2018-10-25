@@ -22,15 +22,29 @@
   font-weight: bold;
 }
 
-.panel-body > .form-group:last-child {
-  margin-bottom: 5px;
+.panel-body {
+  > .form-group:last-child {
+    margin-bottom: 5px;
 
-  > .help-block {
-    margin-bottom: 0;
+    > .help-block {
+      margin-bottom: 0;
+    }
+
+    > .radio:last-child {
+      margin-bottom: 0;
+    }
   }
 
-  > .radio:last-child {
-    margin-bottom: 0;
+  > .panel-buttons:last-child {
+    margin-bottom: 5px;
+  }
+
+  > .alert:last-child {
+    margin-bottom: 5px;
+  }
+
+  > p:last-child {
+    margin-bottom: 5px;
   }
 }
 
@@ -45,4 +59,14 @@
 
 .panel-table .row + .row {
   margin-top: 5px;
+}
+
+.panel-buttons {
+  text-align: right;
+  margin-bottom: 15px;
+
+  > .btn {
+    min-width: 120px;
+    margin-left: 10px;
+  }
 }

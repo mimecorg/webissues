@@ -28,6 +28,15 @@ export default function routeSettings( route, ajax, store ) {
     } );
   } );
 
+  route( 'EmailSettings', '/settings/email', () => {
+    return ajax.post( '/settings/email/load.php' ).then( ( { settings } ) => {
+      return {
+        form: 'settings/EmailSettings',
+        settings
+      };
+    } );
+  } );
+
   if ( process.env.TARGET == 'electron' ) {
     route( 'ClientSettings', '/settings/client', () => {
       return Promise.resolve( { form: 'client/ClientSettings', size: 'small' } );

@@ -22,7 +22,7 @@
     <FormHeader v-bind:title="$t( 'title.ServerSettings' )" v-on:close="close"/>
 
     <FormSection v-bind:title="$t( 'title.EmailSettings' )">
-      <button type="button" class="btn btn-default"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'cmd.Edit' ) }}</button>
+      <button type="button" class="btn btn-default" v-on:click="emailSettings"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'cmd.Edit' ) }}</button>
     </FormSection>
     <div v-if="hasEmail" class="panel panel-default">
       <div class="panel-body panel-table">
@@ -152,6 +152,10 @@ export default {
   },
 
   methods: {
+    emailSettings() {
+      this.$router.push( 'EmailSettings' );
+    },
+
     close() {
       this.$emit( 'close' );
     }
