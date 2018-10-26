@@ -142,7 +142,7 @@ function formatTimeDiff( diff, i18n, settings ) {
     return i18n.t( 'text.minutes_ago', [ formatDecimalNumber( diff, 0, {}, settings ) ] );
 
   diff /= 60;
-  if ( diff < 120 )
+  if ( diff < 48 )
     return i18n.t( 'text.hours_ago', [ formatDecimalNumber( diff, 0, {}, settings ) ] );
 
   diff /= 24;
