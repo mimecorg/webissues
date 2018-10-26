@@ -69,6 +69,11 @@ class Server_Api_Settings_Regional_Edit
 
         $result[ 'changed' ] = $changed;
 
+        $preferencesManager = new System_Api_PreferencesManager();
+        $userLanguage = $preferencesManager->getPreference( 'language' );
+
+        $result[ 'updateLanguage' ] = $changed && $userLanguage == null;
+
         return $result;
     }
 }

@@ -168,10 +168,16 @@ export default {
 
       this.$emit( 'block' );
 
-      this.$ajax.post( '/settings/regional/edit.php', data ).then( ( { changed } ) => {
+      this.$ajax.post( '/settings/regional/edit.php', data ).then( ( { changed, updateLanguage } ) => {
         if ( changed )
           this.$store.commit( 'global/setDirty' );
-        this.returnToDetails();
+        if ( updateLanguage ) {
+          this.$i18n.setLocale( this.language ).then( () => {
+            this.returnToDetails();
+          } );
+        } else {
+          this.returnToDetails();
+        }
       } ).catch( error => {
         this.$emit( 'error', error );
       } );
