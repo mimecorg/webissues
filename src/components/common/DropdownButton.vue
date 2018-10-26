@@ -72,8 +72,12 @@ export default {
     },
 
     click( e ) {
-      if ( e.target.tagName == 'A' )
-        this.close();
+      for ( let el = e.target; el != this.$refs.menu; el = el.parentNode ) {
+        if ( el.tagName == 'A' ) {
+          this.close();
+          break;
+        }
+      }
     },
 
     keyDown( e ) {
