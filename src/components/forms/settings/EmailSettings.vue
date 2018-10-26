@@ -33,8 +33,8 @@
       <div class="panel-buttons">
         <button class="btn btn-default" v-on:click="test">{{ $t( 'cmd.Test' ) }}</button>
       </div>
-      <Prompt v-if="testResult == true" path="prompt.TestMessageSent" alert-class="alert-success"/>
-      <Prompt v-else-if="testResult == false" path="prompt.TestMessageFailed" alert-class="alert-danger"/>
+      <Prompt v-if="testStatus == true" path="prompt.TestMessageSent" alert-class="alert-success"/>
+      <Prompt v-else-if="testStatus == false" path="prompt.TestMessageFailed" alert-class="alert-danger"/>
     </Panel>
     <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
   </div>
@@ -109,7 +109,7 @@ export default {
     return {
       isEnabled: this.settings.emailEngine != null,
       customServer: this.settings.emailEngine == 'smtp',
-      testResult: null
+      testStatus: null
     };
   },
 
@@ -124,7 +124,7 @@ export default {
 
   methods: {
     submit() {
-      this.testResult = null;
+      this.testStatus = null;
 
       if ( !this.$fields.validate() )
         return;
@@ -165,7 +165,7 @@ export default {
     },
 
     test() {
-      this.testResult = null;
+      this.testStatus = null;
 
       if ( !this.$fields.validate() )
         return;
@@ -181,9 +181,9 @@ export default {
 
       this.$emit( 'block' );
 
-      this.$ajax.post( '/settings/email/test.php', data ).then( result => {
+      this.$ajax.post( '/settings/email/test.php', data ).then( ( { status } ) => {
         this.$emit( 'unblock' );
-        this.testResult = result;
+        this.testStatus = status;
       } ).catch( error => {
         this.$emit( 'error', error );
       } );

@@ -63,11 +63,14 @@ class Server_Api_Settings_Email_Test
             $engine = new System_Mail_Engine();
             $engine->setSettings( $settings );
             $engine->send( $emailFrom, '', $subject, $body );
+            $status = true;
         } catch ( phpmailerException $ex ) {
-            return false;
+            $status = false;
         }
 
-        return true;
+        $result[ 'status' ] = $status;
+
+        return $result;
     }
 }
 
