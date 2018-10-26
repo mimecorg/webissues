@@ -197,7 +197,7 @@ export default {
   computed: {
     ...mapState( 'global', [ 'settings' ] ),
     weekdays() {
-      return [ 'Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa' ].map( d => this.$t( 'calendar.weekday.' + d ) );
+      return [ 'Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa' ].map( d => this.$t( 'calendar.weekday_abbr.' + d ) );
     },
     months() {
       return [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ].map( m => this.$t( 'calendar.month.' + m ) );

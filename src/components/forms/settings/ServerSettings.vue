@@ -78,7 +78,7 @@
     </div>
 
     <FormSection v-bind:title="$t( 'title.RegionalSettings' )">
-      <button type="button" class="btn btn-default"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'cmd.Edit' ) }}</button>
+      <button type="button" class="btn btn-default" v-on:click="regionalSettings"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'cmd.Edit' ) }}</button>
     </FormSection>
     <div class="panel panel-default">
       <div class="panel-body panel-table">
@@ -157,6 +157,9 @@ export default {
     },
     accessSettings() {
       this.$router.push( 'AccessSettings' );
+    },
+    regionalSettings() {
+      this.$router.push( 'RegionalSettings' );
     },
 
     close() {

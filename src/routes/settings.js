@@ -46,6 +46,18 @@ export default function routeSettings( route, ajax, store ) {
     } );
   } );
 
+  route( 'RegionalSettings', '/settings/regional', () => {
+    return ajax.post( '/settings/regional/load.php' ).then( ( { settings, defaultTimeZone, timeZones, formats } ) => {
+      return {
+        form: 'settings/RegionalSettings',
+        settings,
+        defaultTimeZone,
+        timeZones,
+        formats
+      };
+    } );
+  } );
+
   if ( process.env.TARGET == 'electron' ) {
     route( 'ClientSettings', '/settings/client', () => {
       return Promise.resolve( { form: 'client/ClientSettings', size: 'small' } );

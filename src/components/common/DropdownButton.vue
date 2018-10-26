@@ -28,7 +28,7 @@
       <span v-if="text != null" class="caret"></span>
     </button>
     <div v-if="open" class="dropdown-backdrop" v-on:click="close"></div>
-    <ul ref="menu" v-bind:class="[ 'dropdown-menu', menuClass ]" v-on:click="close" v-on:keydown="keyDown">
+    <ul ref="menu" v-bind:class="[ 'dropdown-menu', menuClass ]" v-on:click="click" v-on:keydown="keyDown">
       <slot/>
     </ul>
   </div>
@@ -64,16 +64,23 @@ export default {
       } else {
         this.open = true;
         this.$refs.button.focus();
+        this.$emit( 'open' );
       }
     },
     close() {
       this.open = false;
     },
 
+    click( e ) {
+      if ( e.target.tagName == 'A' )
+        this.close();
+    },
+
     keyDown( e ) {
       if ( e.keyCode == KeyCode.Up || e.keyCode == KeyCode.Down ) {
         if ( !this.open ) {
           this.open = true;
+          this.$emit( 'open' );
         } else {
           const items = this.$refs.menu.querySelectorAll( 'li a' );
           if ( items.length > 0 ) {
