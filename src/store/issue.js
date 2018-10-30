@@ -49,7 +49,7 @@ function makeGetters() {
   return {
     filteredAttributes( state, getters, rootState ) {
       if ( rootState.global.settings.hideEmptyValues )
-        return state.attributes.filter( a => a.value != '' );
+        return state.attributes.filter( a => a.value != null );
       else
         return state.attributes;
     },
