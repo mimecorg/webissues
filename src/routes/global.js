@@ -125,4 +125,10 @@ export default function routeGlobal( route, ajax, store ) {
       };
     } );
   } );
+
+  if ( process.env.TARGET == 'electron' ) {
+    route( 'ClientSettings', '/settings/client', () => {
+      return Promise.resolve( { form: 'client/ClientSettings', size: 'small' } );
+    } );
+  }
 }
