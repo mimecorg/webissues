@@ -21,6 +21,34 @@
   <div class="container-fluid">
     <FormHeader v-bind:title="$t( 'title.ServerSettings' )" v-on:close="close"/>
 
+    <FormSection v-bind:title="$t( 'title.ServerInformation' )">
+      <button type="button" class="btn btn-default"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'cmd.Edit' ) }}</button>
+    </FormSection>
+    <div class="panel panel-default">
+      <div class="panel-body panel-table">
+        <div class="row">
+          <div class="col-xs-4 col-sm-3">{{ $t( 'label.ServerName' ) }}</div>
+          <div class="col-xs-8 col-sm-9">{{ serverName }}</div>
+        </div>
+      </div>
+    </div>
+
+    <FormSection v-bind:title="$t( 'title.RegionalSettings' )">
+      <button type="button" class="btn btn-default" v-on:click="regionalSettings"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'cmd.Edit' ) }}</button>
+    </FormSection>
+    <div class="panel panel-default">
+      <div class="panel-body panel-table">
+        <div class="row">
+          <div class="col-xs-4 col-sm-3">{{ $t( 'label.Language' ) }}</div>
+          <div class="col-xs-8 col-sm-9">{{ languageName }}</div>
+        </div>
+        <div class="row">
+          <div class="col-xs-4 col-sm-3">{{ $t( 'label.TimeZone' ) }}</div>
+          <div class="col-xs-8 col-sm-9">{{ settings.timeZone }}</div>
+        </div>
+      </div>
+    </div>
+
     <FormSection v-bind:title="$t( 'title.EmailSettings' )">
       <button type="button" class="btn btn-default" v-on:click="emailSettings"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'cmd.Edit' ) }}</button>
     </FormSection>
@@ -63,34 +91,6 @@
     </FormSection>
     <div class="alert alert-default">
       {{ $t( 'info.NoEmailInboxes' ) }}
-    </div>
-
-    <FormSection v-bind:title="$t( 'title.ServerInformation' )">
-      <button type="button" class="btn btn-default"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'cmd.Edit' ) }}</button>
-    </FormSection>
-    <div class="panel panel-default">
-      <div class="panel-body panel-table">
-        <div class="row">
-          <div class="col-xs-4 col-sm-3">{{ $t( 'label.ServerName' ) }}</div>
-          <div class="col-xs-8 col-sm-9">{{ serverName }}</div>
-        </div>
-      </div>
-    </div>
-
-    <FormSection v-bind:title="$t( 'title.RegionalSettings' )">
-      <button type="button" class="btn btn-default" v-on:click="regionalSettings"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'cmd.Edit' ) }}</button>
-    </FormSection>
-    <div class="panel panel-default">
-      <div class="panel-body panel-table">
-        <div class="row">
-          <div class="col-xs-4 col-sm-3">{{ $t( 'label.Language' ) }}</div>
-          <div class="col-xs-8 col-sm-9">{{ languageName }}</div>
-        </div>
-        <div class="row">
-          <div class="col-xs-4 col-sm-3">{{ $t( 'label.TimeZone' ) }}</div>
-          <div class="col-xs-8 col-sm-9">{{ settings.timeZone }}</div>
-        </div>
-      </div>
     </div>
 
     <FormSection v-bind:title="$t( 'title.AdvancedSettings' )">
