@@ -228,17 +228,17 @@ describe( 'formatter', () => {
   describe( 'formatTimeDiff', () => {
     it( 'minutes', () => {
       const value = formatter.formatTimeDiff( 15 * 60 );
-      expect( value ).to.equal( '15 text.minutes_ago' );
+      expect( value ).to.equal( '15 text.minutes' );
     } );
 
     it( 'hours', () => {
       const value = formatter.formatTimeDiff( 3 * 60 * 60 );
-      expect( value ).to.equal( '3 text.hours_ago' );
+      expect( value ).to.equal( '3 text.hours' );
     } );
 
     it( 'days', () => {
       const value = formatter.formatTimeDiff( 7 * 24 * 60 * 60 );
-      expect( value ).to.equal( '7 text.days_ago' );
+      expect( value ).to.equal( '7 text.days' );
     } );
   } );
 

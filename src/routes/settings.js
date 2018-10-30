@@ -58,6 +58,15 @@ export default function routeSettings( route, ajax, store ) {
     } );
   } );
 
+  route( 'AdvancedSettings', '/settings/advanced', () => {
+    return ajax.post( '/settings/advanced/load.php' ).then( ( { settings } ) => {
+      return {
+        form: 'settings/AdvancedSettings',
+        settings
+      };
+    } );
+  } );
+
   if ( process.env.TARGET == 'electron' ) {
     route( 'ClientSettings', '/settings/client', () => {
       return Promise.resolve( { form: 'client/ClientSettings', size: 'small' } );

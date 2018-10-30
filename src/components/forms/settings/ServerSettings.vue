@@ -94,7 +94,7 @@
     </div>
 
     <FormSection v-bind:title="$t( 'title.AdvancedSettings' )">
-      <button type="button" class="btn btn-default"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'cmd.Edit' ) }}</button>
+      <button type="button" class="btn btn-default" v-on:click="advancedSettings"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'cmd.Edit' ) }}</button>
     </FormSection>
     <div class="alert alert-default">
       {{ $t( 'prompt.AdvancedSettings' ) }}
@@ -160,6 +160,9 @@ export default {
     },
     regionalSettings() {
       this.$router.push( 'RegionalSettings' );
+    },
+    advancedSettings() {
+      this.$router.push( 'AdvancedSettings' );
     },
 
     close() {

@@ -52,6 +52,9 @@ export default function makeFormatter( store, i18n ) {
     formatTimeDiff( diff ) {
       return formatTimeDiff( diff, i18n, store.state.global.settings );
     },
+    formatDecimalNumber( value, decimal, flags = {} ) {
+      return formatDecimalNumber( value, decimal, flags, store.state.global.settings );
+    },
     formatFileSize( size ) {
       return formatFileSize( size, i18n, store.state.global.settings );
     },
@@ -139,14 +142,14 @@ function convertInitialValue( value, attribute, userName ) {
 function formatTimeDiff( diff, i18n, settings ) {
   diff /= 60;
   if ( diff < 120 )
-    return i18n.t( 'text.minutes_ago', [ formatDecimalNumber( diff, 0, {}, settings ) ] );
+    return i18n.t( 'text.minutes', [ formatDecimalNumber( diff, 0, {}, settings ) ] );
 
   diff /= 60;
   if ( diff < 48 )
-    return i18n.t( 'text.hours_ago', [ formatDecimalNumber( diff, 0, {}, settings ) ] );
+    return i18n.t( 'text.hours', [ formatDecimalNumber( diff, 0, {}, settings ) ] );
 
   diff /= 24;
-  return i18n.t( 'text.days_ago', [ formatDecimalNumber( diff, 0, {}, settings ) ] );
+  return i18n.t( 'text.days', [ formatDecimalNumber( diff, 0, {}, settings ) ] );
 }
 
 function formatFileSize( size, i18n, settings ) {
