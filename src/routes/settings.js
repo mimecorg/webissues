@@ -28,6 +28,16 @@ export default function routeSettings( route, ajax, store ) {
     } );
   } );
 
+  route( 'RenameServer', '/settings/server/rename', () => {
+    return ajax.post( '/settings/load.php' ).then( ( { serverName } ) => {
+      return {
+        form: 'settings/RenameServer',
+        size: 'small',
+        initialName: serverName
+      };
+    } );
+  } );
+
   route( 'EmailSettings', '/settings/email', () => {
     return ajax.post( '/settings/email/load.php' ).then( ( { settings } ) => {
       return {

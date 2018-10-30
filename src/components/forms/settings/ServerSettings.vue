@@ -22,7 +22,10 @@
     <FormHeader v-bind:title="$t( 'title.ServerSettings' )" v-on:close="close"/>
 
     <FormSection v-bind:title="$t( 'title.ServerInformation' )">
-      <button type="button" class="btn btn-default"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'cmd.Edit' ) }}</button>
+      <DropdownButton fa-class="fa-ellipsis-v" menu-class="dropdown-menu-right" v-bind:title="$t( 'title.More' )">
+        <li><HyperLink v-on:click="renameServer"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'cmd.RenameServer' ) }}</HyperLink></li>
+        <li><HyperLink><span class="fa fa-refresh" aria-hidden="true"></span> {{ $t( 'cmd.ResetUniqueID' ) }}</HyperLink></li>
+      </DropdownButton>
     </FormSection>
     <div class="panel panel-default">
       <div class="panel-body panel-table">
@@ -152,6 +155,10 @@ export default {
   },
 
   methods: {
+    renameServer() {
+      this.$router.push( 'RenameServer' );
+    },
+
     emailSettings() {
       this.$router.push( 'EmailSettings' );
     },
