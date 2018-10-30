@@ -17,6 +17,9 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
+import { Access, ErrorCode } from '@/constants'
+import { makeError } from '@/utils/errors'
+
 export default function routeSettings( route, ajax, store ) {
   route( 'ServerSettings', '/settings', () => {
     return ajax.post( '/settings/load.php' ).then( ( { serverName, settings } ) => {
@@ -35,6 +38,15 @@ export default function routeSettings( route, ajax, store ) {
         size: 'small',
         initialName: serverName
       };
+    } );
+  } );
+
+  route( 'ResetUuid', '/settings/server/uuid', () => {
+    if ( store.state.global.userAccess != Access.AdministratorAccess )
+      return Promise.reject( makeError( ErrorCode.AccessDenied ) );
+    return Promise.resolve( {
+      form: 'settings/ResetUuid',
+      size: 'small'
     } );
   } );
 

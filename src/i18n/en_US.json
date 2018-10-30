@@ -396,6 +396,7 @@
     "RenameType": "Enter the new name of type {0}.",
     "ResetOwnPassword": "An email will be sent to you with instructions how to reset your password.",
     "ResetPassword": "An email will be sent to user {0} with instructions how to reset the password.",
+    "ResetUniqueID": "A new, random unique identifier will be assigned to this server.",
     "TestMessageSent": "A test message was successfully sent.",
     "TestMessageFailed": "A test message could not be sent.",
     "TimeZone": "The time zone setting only affects email notifications. The web and desktop applications always use the local time zone.",
