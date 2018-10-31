@@ -59,6 +59,7 @@
     "UnknownEvent": "Event does not exist.",
     "UnknownFile": "Attachment does not exist.",
     "UnknownFolder": "Folder does not exist.",
+    "UnknownInbox": "Email inbox does not exist.",
     "UnknownIssue": "Issue does not exist.",
     "UnknownProject": "Project does not exist.",
     "UnknownSubscription": "Subscription does not exist.",

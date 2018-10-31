@@ -99,6 +99,26 @@ class Setup_Installer extends System_Web_Base
                 'comment_format'    => 'INTEGER size="tiny" default=0',
                 'pk'                => 'PRIMARY columns={"comment_id"}'
             ),
+            'email_inboxes' => array(
+                'inbox_id'          => 'SERIAL',
+                'inbox_engine'      => 'VARCHAR length=40',
+                'inbox_email'       => 'VARCHAR length=255',
+                'inbox_server'      => 'VARCHAR length=255',
+                'inbox_port'        => 'INTEGER',
+                'inbox_encryption'  => 'VARCHAR length=40 null=1',
+                'inbox_user'        => 'VARCHAR length=255 null=1',
+                'inbox_password'    => 'VARCHAR length=255 null=1',
+                'inbox_mailbox'     => 'VARCHAR length=255 null=1',
+                'inbox_no_validate' => 'INTEGER size="tiny"',
+                'inbox_leave_messages' => 'INTEGER size="tiny"',
+                'inbox_allow_external' => 'INTEGER size="tiny"',
+                'inbox_robot'       => 'INTEGER null=1 ref-table="users" ref-column="user_id"',
+                'inbox_map_folder'  => 'INTEGER size="tiny"',
+                'inbox_default_folder' => 'INTEGER null=1 ref-table="folders" ref-column="folder_id" on-delete="set-null"',
+                'inbox_respond'     => 'INTEGER size="tiny"',
+                'inbox_subscribe'   => 'INTEGER size="tiny"',
+                'pk'                => 'PRIMARY columns={"inbox_id"}'
+            ),
             'files' => array(
                 'file_id'           => 'INTEGER ref-table="changes" ref-column="change_id" on-delete="cascade"',
                 'file_name'         => 'VARCHAR length=80',
@@ -247,6 +267,7 @@ class Setup_Installer extends System_Web_Base
                 'user_id'           => 'INTEGER null=1 ref-table="users" ref-column="user_id"',
                 'user_email'        => 'VARCHAR length=255 null=1',
                 'stamp_id'          => 'INTEGER',
+                'inbox_id'          => 'INTEGER null=1 ref-table="email_inboxes" ref-column="inbox_id" on-delete="set-null"',
                 'pk'                => 'PRIMARY columns={"subscription_id"}',
                 'issue_idx'         => 'INDEX columns={"issue_id","user_id"}'
             ),

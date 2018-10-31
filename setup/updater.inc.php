@@ -325,6 +325,65 @@ class Setup_Updater extends System_Web_Base
             $generator->updateReferences();
         }
 
+        if ( version_compare( $version, '2.0.003' ) < 0 ) {
+            $newTables = array(
+                'email_inboxes' => array(
+                    'inbox_id'          => 'SERIAL',
+                    'inbox_engine'      => 'VARCHAR length=40',
+                    'inbox_email'       => 'VARCHAR length=255',
+                    'inbox_server'      => 'VARCHAR length=255',
+                    'inbox_port'        => 'INTEGER',
+                    'inbox_encryption'  => 'VARCHAR length=40 null=1',
+                    'inbox_user'        => 'VARCHAR length=255 null=1',
+                    'inbox_password'    => 'VARCHAR length=255 null=1',
+                    'inbox_mailbox'     => 'VARCHAR length=255 null=1',
+                    'inbox_no_validate' => 'INTEGER size="tiny"',
+                    'inbox_leave_messages' => 'INTEGER size="tiny"',
+                    'inbox_allow_external' => 'INTEGER size="tiny"',
+                    'inbox_robot'       => 'INTEGER null=1 ref-table="users" ref-column="user_id"',
+                    'inbox_map_folder'  => 'INTEGER size="tiny"',
+                    'inbox_default_folder' => 'INTEGER null=1 ref-table="folders" ref-column="folder_id" on-delete="set-null"',
+                    'inbox_respond'     => 'INTEGER size="tiny"',
+                    'inbox_subscribe'   => 'INTEGER size="tiny"',
+                    'pk'                => 'PRIMARY columns={"inbox_id"}'
+                )
+            );
+
+            $newFields = array(
+                'subscriptions' => array(
+                    'inbox_id'          => 'INTEGER null=1 ref-table="email_inboxes" ref-column="inbox_id" on-delete="set-null"'
+                )
+            );
+
+            $generator = $this->connection->getSchemaGenerator();
+
+            foreach ( $newTables as $tableName => $fields )
+                $generator->createTable( $tableName, $fields );
+
+            foreach ( $newFields as $tableName => $fields )
+                $generator->addFields( $tableName, $fields );
+
+            $generator->updateReferences();
+
+            $serverManager = new System_Api_ServerManager();
+            $inbox = $serverManager->getSetting( 'inbox_engine' );
+
+            if ( $inbox != null ) {
+                $settings = $serverManager->getSettings();
+
+                foreach ( $newTables[ 'email_inboxes' ] as $key => $field ) {
+                    if ( $key != 'inbox_id' && $key != 'pk' && !isset( $settings[ $key ] ) )
+                        $settings[ $key ] = null;
+                }
+
+                $inboxManager = new System_Api_InboxManager();
+                $inboxId = $inboxManager->addInbox( $settings );
+
+                $query = 'UPDATE {subscriptions} SET inbox_id = %d';
+                $this->connection->execute( $query, $inboxId );
+            }
+        }
+
         $query = 'DELETE FROM {sessions}';
         $this->connection->execute( $query );
 
