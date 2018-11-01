@@ -58,53 +58,47 @@ export default {
   },
 
   fields() {
-    const fields = {
+    return {
+      hideIdColumn: {
+        value: this.settings.hideIdColumn,
+        type: Boolean
+      },
+      hideEmptyValues: {
+        value: this.settings.hideEmptyValues,
+        type: Boolean
+      },
       historyOrder: {
-        value: '',
+        value: this.settings.historyOrder,
         type: String
       },
       defaultFormat: {
-        value: 0,
+        value: this.settings.defaultFormat,
         type: Number
       },
       commentMaxLength: {
-        value: 0,
+        value: this.settings.commentMaxLength,
         type: Number
       },
       fileMaxSize: {
-        value: 0,
+        value: this.settings.fileMaxSize,
         type: Number
       },
       fileDbMaxSize: {
-        value: 0,
+        value: this.settings.fileDbMaxSize,
         type: Number
       },
       sessionMaxLifetime: {
-        value: 0,
+        value: this.settings.sessionMaxLifetime,
         type: Number
       },
       registerMaxLifetime: {
-        value: 0,
+        value: this.settings.registerMaxLifetime,
         type: Number
       },
       logMaxLifetime: {
-        value: 0,
+        value: this.settings.logMaxLifetime,
         type: Number
       }
-    };
-
-    for ( const key in fields ) {
-      if ( this.settings[ key ] != null )
-        fields[ key ].value = this.settings[ key ];
-    }
-
-    return fields;
-  },
-
-  data() {
-    return {
-      hideIdColumn: this.settings.hideIdColumn,
-      hideEmptyValues: this.settings.hideEmptyValues
     };
   },
 
@@ -171,7 +165,7 @@ export default {
       if ( !this.$fields.validate() )
         return;
 
-      if ( !this.$fields.modified() && this.hideIdColumn == this.settings.hideIdColumn && this.hideEmptyValues == this.settings.hideEmptyValues ) {
+      if ( !this.$fields.modified() ) {
         this.returnToDetails();
         return;
       }

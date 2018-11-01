@@ -49,24 +49,32 @@ export default {
   },
 
   fields() {
-    const fields = {
+    return {
+      isEnabled: {
+        value: this.settings.emailEngine != null,
+        type: Boolean
+      },
       from: {
-        value: '',
+        value: this.settings.emailFrom,
         type: String,
         required: true,
         maxLength: MaxLength.Value,
         parse: this.checkEmailAddress,
         condition: () => this.isEnabled
       },
+      customServer: {
+        value: this.settings.emailEngine == 'smtp',
+        type: Boolean
+      },
       server: {
-        value: '',
+        value: this.settings.smtpServer,
         type: String,
         required: true,
         maxLength: MaxLength.Value,
         condition: () => this.isEnabled && this.customServer
       },
       port: {
-        value: '',
+        value: this.settings.smtpPort,
         type: String,
         required: true,
         maxLength: 5,
@@ -74,41 +82,24 @@ export default {
         condition: () => this.isEnabled && this.customServer
       },
       encryption: {
-        value: '',
+        value: this.settings.smtpEncryption,
         type: String
       },
       user: {
-        value: '',
+        value: this.settings.smtpUser,
         type: String,
         maxLength: MaxLength.Value
       },
       password: {
-        value: '',
+        value: this.settings.smtpPassword,
         type: String,
         maxLength: MaxLength.Value
       }
     };
-
-    if ( this.settings.emailFrom != null )
-      fields.from.value = this.settings.emailFrom;
-    if ( this.settings.smtpServer != null )
-      fields.server.value = this.settings.smtpServer;
-    if ( this.settings.smtpPort != null )
-      fields.port.value = this.settings.smtpPort.toString();
-    if ( this.settings.smtpEncryption != null )
-      fields.encryption.value = this.settings.smtpEncryption;
-    if ( this.settings.smtpUser != null )
-      fields.user.value = this.settings.smtpUser;
-    if ( this.settings.smtpPassword != null )
-      fields.password.value = this.settings.smtpPassword;
-
-    return fields;
   },
 
   data() {
     return {
-      isEnabled: this.settings.emailEngine != null,
-      customServer: this.settings.emailEngine == 'smtp',
       testStatus: null
     };
   },
@@ -129,10 +120,7 @@ export default {
       if ( !this.$fields.validate() )
         return;
 
-      const initialIsEnabled = this.settings.emailEngine != null;
-      const initialCustomServer = this.settings.emailEngine == 'smtp';
-
-      if ( !this.$fields.modified() && this.isEnabled == initialIsEnabled && this.customServer == initialCustomServer ) {
+      if ( !this.$fields.modified() ) {
         this.returnToDetails();
         return;
       }

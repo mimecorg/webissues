@@ -50,27 +50,26 @@ export default {
   },
 
   fields() {
-    const fields = {
+    return {
+      anonymousAccess: {
+        value: this.settings.anonymousAccess,
+        type: Boolean
+      },
+      selfRegister: {
+        value: this.settings.selfRegister,
+        type: Boolean
+      },
+      automaticApproval: {
+        value: this.settings.registerAutoApprove,
+        type: Boolean
+      },
       email: {
-        value: '',
+        value: this.settings.registerNotifyEmail,
         type: String,
         maxLength: MaxLength.Value,
         parse: this.checkEmailAddress,
         condition: () => this.selfRegister && !this.automaticApproval
       }
-    };
-
-    if ( this.settings.registerNotifyEmail != null )
-      fields.email.value = this.settings.registerNotifyEmail;
-
-    return fields;
-  },
-
-  data() {
-    return {
-      anonymousAccess: this.settings.anonymousAccess,
-      selfRegister: !!this.settings.selfRegister,
-      automaticApproval: !!this.settings.registerAutoApprove
     };
   },
 
@@ -85,8 +84,7 @@ export default {
       if ( !this.$fields.validate() )
         return;
 
-      if ( !this.$fields.modified() && this.anonymousAccess == this.settings.anonymousAccess && this.selfRegister == !!this.settings.selfRegister
-           && this.automaticApproval == !!this.settings.automaticApproval ) {
+      if ( !this.$fields.modified() ) {
         this.returnToDetails();
         return;
       }

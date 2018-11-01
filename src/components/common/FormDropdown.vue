@@ -22,8 +22,8 @@
     <div class="dropdown-select">
       <DropdownButton ref="dropdown" v-bind:text="text">
         <div class="dropdown-menu-scroll">
-          <li v-if="defaultName != null" v-bind:class="{ active: value == '' }">
-            <HyperLink v-on:click="select( '' )">{{ defaultName }}</HyperLink>
+          <li v-if="defaultName != null" v-bind:class="{ active: value == null || value == '' }">
+            <HyperLink v-on:click="select( null )">{{ defaultName }}</HyperLink>
           </li>
           <li v-if="defaultName != null" role="separator" class="divider"></li>
           <li v-for="( item, index ) in items" v-bind:key="item" v-bind:class="{ active: item == value }">
@@ -48,7 +48,7 @@ export default {
   },
   computed: {
     text() {
-      if ( this.value == '' && this.defaultName != null )
+      if ( this.defaultName != null && ( this.value == null || this.value == '' ) )
         return this.defaultName;
       return this.itemNames[ this.items.indexOf( this.value ) ];
     }

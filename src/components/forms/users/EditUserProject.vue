@@ -69,11 +69,19 @@ export default {
     accountMode: Boolean
   },
 
+  fields() {
+    return {
+      access: {
+        value: this.initialAccess,
+        type: Number
+      }
+    };
+  },
+
   data() {
     return {
       normalAccess: Access.NormalAccess,
       administratorAccess: Access.AdministratorAccess,
-      access: this.initialAccess,
       selectedProjects: []
     };
   },
@@ -101,7 +109,13 @@ export default {
     },
 
     submit() {
-      this.$emit( 'block' );
+      if ( !this.$fields.validate() )
+        return;
+
+      if ( this.mode == 'edit' && !this.$fields.modified() ) {
+        this.returnToDetails();
+        return;
+      }
 
       const data = { userId: this.userId };
 
@@ -117,10 +131,12 @@ export default {
 
       data.access = this.access;
 
-      if ( this.mode == 'edit' && this.access == this.initialAccess || data.projects.length == 0 ) {
+      if ( data.projects.length == 0 ) {
         this.returnToDetails();
         return;
       }
+
+      this.$emit( 'block' );
 
       this.$ajax.post( '/users/projects/edit.php', data ).then( () => {
         this.returnToDetails();

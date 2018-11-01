@@ -32,9 +32,22 @@ Vue.mixin( {
 
       for ( const name in fields ) {
         const field = fields[ name ];
-        const { condition = true, value } = field;
+        const { condition = true, type } = field;
         if ( condition ) {
-          result[ name ] = value;
+          if ( type == String ) {
+            if ( field.value == null )
+              field.value = '';
+            else if ( typeof field.value == 'number' )
+              field.value = field.value.toString();
+          } else if ( type == Boolean ) {
+            if ( field.value == null )
+              field.value = false;
+            else if ( typeof field.value == 'number' )
+              field.value = field.value == 1;
+          } else if ( type != Number ) {
+            throw new Error( 'Invalid field type: ' + name );
+          }
+          result[ name ] = field.value;
           result[ name + 'Error' ] = null;
           this.$fieldsData[ name ] = field;
         }
@@ -98,8 +111,6 @@ function validate() {
       const { required = false, requiredError } = field;
       if ( required && this[ name ] == null )
         this[ name + 'Error' ] = requiredError || this.$t( 'ErrorCode.' + ErrorCode.EmptyValue );
-    } else {
-      throw new Error( 'Invalid field type: ' + name );
     }
 
     if ( this[ name + 'Error' ] != null ) {

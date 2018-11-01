@@ -116,6 +116,14 @@ export default {
         required: true,
         maxLength: MaxLength.Name,
         condition: this.mode == 'add' || this.mode == 'edit' || this.mode == 'clone'
+      },
+      sortColumn: {
+        value: this.initialView.sortColumn,
+        type: Number
+      },
+      sortAscending: {
+        value: this.initialView.sortAscending,
+        type: Boolean
       }
     };
   },
@@ -123,8 +131,6 @@ export default {
   data() {
     const data = {
       columns: this.initialView.columns,
-      sortColumn: this.initialView.sortColumn,
-      sortAscending: this.initialView.sortAscending,
       filters: [],
       nextId: 1
     };
@@ -190,13 +196,12 @@ export default {
       const columns = this.columns.join( ',' );
       const initialColumns = this.initialView.columns.join( ',' );
 
-      if ( this.mode == 'default' && columns == initialColumns && this.sortColumn == this.initialView.sortColumn && this.sortAscending == this.initialView.sortAscending ) {
+      if ( this.mode == 'default' && !this.$fields.modified() && columns == initialColumns ) {
         this.returnToDetails();
         return;
       }
 
-      if ( this.mode == 'edit' && !this.$fields.modified() && columns == initialColumns && this.sortColumn == this.initialView.sortColumn
-           && this.sortAscending == this.initialView.sortAscending && this.areFiltersEqual( this.initialView.filters, this.filters ) ) {
+      if ( this.mode == 'edit' && !this.$fields.modified() && columns == initialColumns && this.areFiltersEqual( this.initialView.filters, this.filters ) ) {
         this.returnToDetails();
         return;
       }

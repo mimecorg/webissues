@@ -46,25 +46,36 @@ export default {
     initialAccess: Number
   },
 
+  fields() {
+    return {
+      access: {
+        value: this.initialAccess,
+        type: Number
+      }
+    };
+  },
+
   data() {
     return {
       noAccess: Access.NoAccess,
       normalAccess: Access.NormalAccess,
-      administratorAccess: Access.AdministratorAccess,
-      access: this.initialAccess,
+      administratorAccess: Access.AdministratorAccess
     };
   },
 
   methods: {
     submit() {
-      this.$emit( 'block' );
+      if ( !this.$fields.validate() )
+        return;
 
-      if ( this.access == this.initialAccess ) {
+      if ( !this.$fields.modified() ) {
         this.returnToDetails();
         return;
       }
 
       const data = { userId: this.userId, access: this.access };
+
+      this.$emit( 'block' );
 
       this.$ajax.post( '/users/access.php', data ).then( () => {
         this.returnToDetails();

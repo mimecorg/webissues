@@ -70,39 +70,32 @@ export default {
   },
 
   fields() {
-    const fields = {
+    return {
       language: {
-        value: '',
+        value: this.settings.language,
         type: String
       },
       timeZone: {
-        value: '',
+        value: this.settings.timeZone,
         type: String
       },
       numberFormat: {
-        value: '',
+        value: this.settings.numberFormat,
         type: String
       },
       dateFormat: {
-        value: '',
+        value: this.settings.dateFormat,
         type: String
       },
       timeFormat: {
-        value: '',
+        value: this.settings.timeFormat,
         type: String
       },
       firstDay: {
-        value: '',
+        value: this.settings.firstDay,
         type: String
-      },
+      }
     };
-
-    for ( const key in fields ) {
-      if ( this.settings[ key ] != null )
-        fields[ key ].value = this.settings[ key ];
-    }
-
-    return fields;
   },
 
   data() {

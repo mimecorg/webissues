@@ -72,6 +72,9 @@ export default {
         maxLength: MaxLength.Login,
         condition: isAdministrator
       },
+      sendInvitationEmail: {
+        type: Boolean
+      },
       password: {
         type: String,
         required: true,
@@ -85,25 +88,21 @@ export default {
         parse: this.comparePassword,
         condition: () => this.mode == 'add' && !this.sendInvitationEmail
       },
+      mustChangePassword: {
+        type: Boolean
+      },
       email: {
-        value: this.initialEmail != null ? this.initialEmail : '',
+        value: this.initialEmail,
         type: String,
         required: false,
         maxLength: MaxLength.Value,
         parse: this.checkEmailAddress
       },
       language: {
-        value: this.initialLanguage != null ? this.initialLanguage : '',
+        value: this.initialLanguage,
         type: String,
         required: false
       }
-    };
-  },
-
-  data() {
-    return {
-      sendInvitationEmail: false,
-      mustChangePassword: false
     };
   },
 
