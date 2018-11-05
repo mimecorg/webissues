@@ -20,7 +20,7 @@
 <template>
   <FormGroup v-bind:label="label" v-bind:required="required" v-bind:error="error">
     <div class="dropdown-select">
-      <DropdownButton ref="dropdown" v-bind:text="text">
+      <DropdownButton ref="dropdown" v-bind:text="text" v-bind:disabled="disabled">
         <div class="dropdown-menu-scroll">
           <li v-if="defaultName != null" v-bind:class="{ active: value == null || value == '' }">
             <HyperLink v-on:click="select( null )">{{ defaultName }}</HyperLink>
@@ -44,7 +44,8 @@ export default {
     error: String,
     items: Array,
     itemNames: Array,
-    defaultName: String
+    defaultName: String,
+    disabled: Boolean
   },
   computed: {
     text() {

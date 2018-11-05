@@ -90,18 +90,19 @@
     </div>
 
     <FormSection v-bind:title="$t( 'title.EmailInboxes' )">
-      <button type="button" class="btn btn-default"><span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'cmd.Add' ) }}</button>
+      <button type="button" class="btn btn-default" v-on:click="addInbox"><span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'cmd.Add' ) }}</button>
     </FormSection>
-    <div class="alert alert-default">
-      {{ $t( 'info.NoEmailInboxes' ) }}
-    </div>
+    <Grid v-if="inboxes.length > 0" v-bind:items="inboxes" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-large', null ]" v-on:row-click="rowClick">
+      <template slot-scope="{ item, columnIndex, columnClass }">
+        <td v-bind:class="columnClass">{{ getCellValue( columnIndex, item ) }}</td>
+      </template>
+    </Grid>
+    <Prompt v-else path="info.NoEmailInboxes" alert-class="alert-default"/>
 
     <FormSection v-bind:title="$t( 'title.AdvancedSettings' )">
       <button type="button" class="btn btn-default" v-on:click="advancedSettings"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'cmd.Edit' ) }}</button>
     </FormSection>
-    <div class="alert alert-default">
-      {{ $t( 'prompt.AdvancedSettings' ) }}
-    </div>
+    <Prompt path="prompt.AdvancedSettings" alert-class="alert-default"/>
 
   </div>
 </template>
@@ -116,7 +117,8 @@ export default {
 
   props: {
     serverName: String,
-    settings: Object
+    settings: Object,
+    inboxes: Array
   },
 
   computed: {
@@ -151,10 +153,29 @@ export default {
       const language = this.languages.find( l => l.key == this.settings.language );
       if ( language != null )
         return language.name;
+    },
+    columnNames() {
+      return [
+        this.$t( 'title.Email' ),
+        this.$t( 'title.Type' )
+      ];
     }
   },
 
   methods: {
+    getCellValue( columnIndex, inbox ) {
+      switch ( columnIndex ) {
+        case 0:
+          return inbox.email;
+        case 1:
+          if ( inbox.engine == 'imap' )
+            return this.$t( 'text.IMAP' );
+          else if ( inbox.engine == 'pop3' )
+            return this.$t( 'text.POP3' );
+          break;
+      }
+    },
+
     renameServer() {
       this.$router.push( 'RenameServer' );
     },
@@ -173,6 +194,14 @@ export default {
     },
     advancedSettings() {
       this.$router.push( 'AdvancedSettings' );
+    },
+
+    addInbox() {
+      this.$router.push( 'AddInbox' );
+    },
+
+    rowClick( rowIndex ) {
+      this.$router.push( 'EditInbox', { inboxId: this.inboxes[ rowIndex ].id } );
     },
 
     close() {

@@ -24,9 +24,11 @@ class Server_Api_Settings_Load
 {
     public $access = 'admin';
 
-    public $params = array();
+    public $params = array(
+        'inboxes' => array( 'type' => 'bool', 'default' => false )
+    );
 
-    public function run()
+    public function run( $inboxes )
     {
         $serverManager = new System_Api_ServerManager();
         $server = $serverManager->getServer();
@@ -57,6 +59,21 @@ class Server_Api_Settings_Load
         $settings[ 'timeZone' ] = $this->formatTimeZoneName( $timeZone );
 
         $result[ 'settings' ] = $settings;
+
+        if ( $inboxes ) {
+            $inboxManager = new System_Api_InboxManager();
+            $inboxRows = $inboxManager->getInboxes();
+
+            $result[ 'inboxes' ] = array();
+
+            foreach ( $inboxRows as $inbox ) {
+                $resultInbox = array();
+                $resultInbox[ 'id' ] = (int)$inbox[ 'inbox_id' ];
+                $resultInbox[ 'engine' ] = $inbox[ 'inbox_engine' ];
+                $resultInbox[ 'email' ] = $inbox[ 'inbox_email' ];
+                $result[ 'inboxes' ][] = $resultInbox;
+            }
+        }
 
         return $result;
     }

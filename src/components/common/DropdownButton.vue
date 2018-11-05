@@ -21,7 +21,7 @@
   <div class="btn-group" v-bind:class="{ open }" role="group">
     <button ref="button" type="button"
             v-bind:class="[ 'btn', btnClass, 'dropdown-toggle', { 'dropdown-has-caret': text != null } ]" v-bind:title="title"
-            aria-haspopup="true" v-bind:aria-expanded="open ? 'true' : 'false'"
+            aria-haspopup="true" v-bind:aria-expanded="open ? 'true' : 'false'" v-bind:disabled="disabled"
             v-on:click="toggle" v-on:keydown="keyDown">
       <span v-if="faClass != null" v-bind:class="[ 'fa', faClass ]" aria-hidden="true"></span>
       <span v-if="textClass != null && text != null" v-bind:class="textClass">{{ text }}</span><template v-else-if="text != null">{{ text }}</template>
@@ -44,7 +44,8 @@ export default {
     text: String,
     textClass: String,
     menuClass: String,
-    title: String
+    title: String,
+    disabled: Boolean
   },
 
   data() {

@@ -22,11 +22,12 @@ import { makeError } from '@/utils/errors'
 
 export default function routeSettings( route, ajax, store ) {
   route( 'ServerSettings', '/settings', () => {
-    return ajax.post( '/settings/load.php' ).then( ( { serverName, settings } ) => {
+    return ajax.post( '/settings/load.php', { inboxes: true } ).then( ( { serverName, settings, inboxes } ) => {
       return {
         form: 'settings/ServerSettings',
         serverName,
-        settings
+        settings,
+        inboxes
       };
     } );
   } );
@@ -85,6 +86,42 @@ export default function routeSettings( route, ajax, store ) {
       return {
         form: 'settings/AdvancedSettings',
         settings
+      };
+    } );
+  } );
+
+  route( 'AddInbox', '/settings/inboxes/add', () => {
+    return ajax.post( '/settings/load.php' ).then( ( { settings } ) => {
+      return {
+        form: 'settings/EditInbox',
+        mode: 'add',
+        initialEngine: 'imap',
+        emailEngine: settings.emailEngine
+      };
+    } );
+  } );
+
+  route( 'EditInbox', '/settings/inboxes/:inboxId/edit', ( { inboxId } ) => {
+    return ajax.post( '/settings/inboxes/load.php', { inboxId, details: true } ).then( ( { engine, email, details, emailEngine } ) => {
+      return {
+        form: 'settings/EditInbox',
+        mode: 'edit',
+        inboxId,
+        initialEngine: engine,
+        initialEmail: email,
+        initialDetails: details,
+        emailEngine
+      };
+    } );
+  } );
+
+  route( 'DeleteInbox', '/settings/inboxes/:inboxId/delete', ( { inboxId } ) => {
+    return ajax.post( '/settings/inboxes/load.php', { inboxId } ).then( ( { email } ) => {
+      return {
+        form: 'settings/DeleteInbox',
+        size: 'small',
+        inboxId,
+        email
       };
     } );
   } );

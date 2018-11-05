@@ -71,10 +71,14 @@ export default {
         return this.projects;
     },
     availableFolders() {
-      if ( this.project != null )
-        return this.project.folders.filter( f => f.typeId == this.typeId );
-      else
+      if ( this.project != null ) {
+        if ( this.typeId != null )
+          return this.project.folders.filter( f => f.typeId == this.typeId );
+        else
+          return this.project.folders;
+      } else {
         return [];
+      }
     },
     project() {
       if ( this.projectId != null )
