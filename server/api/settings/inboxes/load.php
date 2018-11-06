@@ -46,7 +46,7 @@ class Server_Api_Settings_Inboxes_Load
             $resultDetails[ 'encryption' ] = $inbox[ 'inbox_encryption' ];
             $resultDetails[ 'user' ] = $inbox[ 'inbox_user' ];
             $resultDetails[ 'password' ] = $inbox[ 'inbox_password' ];
-            $resultDetails[ 'mailbox' ] = $inbox[ 'inbox_emailbox' ];
+            $resultDetails[ 'mailbox' ] = $inbox[ 'inbox_mailbox' ];
             $resultDetails[ 'noValidate' ] = $inbox[ 'inbox_no_validate' ] == 1;
             $resultDetails[ 'leaveMessages' ] = $inbox[ 'inbox_leave_messages' ] == 1;
             $resultDetails[ 'allowExternal' ] = $inbox[ 'inbox_allow_external' ] == 1;
