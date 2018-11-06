@@ -35,7 +35,7 @@
         <FormInput id="minLength" v-bind:label="$t( 'label.MinimumLength' )" v-bind="$field( 'minLength' )" v-model="minLength"/>
         <FormInput id="maxLength" v-bind:label="$t( 'label.MaximumLength' )" v-bind="$field( 'maxLength' )" v-model="maxLength"/>
       </template>
-      <template v-if="attributeType == 'ENUM'">
+      <template v-else-if="attributeType == 'ENUM'">
         <FormCheckbox v-bind:label="$t( 'text.AllowCustomValues' )" v-model="editable"/>
         <FormCheckbox v-bind:label="$t( 'text.AllowMultipleItems' )" v-model="multiSelect"/>
         <FormGroup id="items" v-bind:label="$t( 'label.DropdownListItems' )" v-bind:help="$t( 'prompt.EnterDropdownListItems' )" v-bind="$field( 'items' )">
@@ -44,13 +44,14 @@
         <FormInput id="minLength" v-bind:label="$t( 'label.MinimumLength' )" v-bind:disabled="!editable || multiSelect" v-bind="$field( 'minLength' )" v-model="minLength"/>
         <FormInput id="maxLength" v-bind:label="$t( 'label.MaximumLength' )" v-bind:disabled="!editable || multiSelect" v-bind="$field( 'maxLength' )" v-model="maxLength"/>
       </template>
-      <template v-if="attributeType == 'NUMERIC'">
-        <FormInput id="decimal" v-bind:label="$t( 'label.DecimalPlaces' )" v-bind="$field( 'decimal' )" v-model="decimal"/>
+      <template v-else-if="attributeType == 'NUMERIC'">
+        <FormDropdown id="decimal" v-bind:label="$t( 'label.DecimalPlaces' )" v-bind="$field( 'decimal' )"
+                      v-bind:items="decimalItems" v-bind:item-names="decimalNames" v-model="decimal"/>
         <FormInput id="minValue" v-bind:label="$t( 'label.MinimumValue' )" v-bind="$field( 'minValue' )" v-model="minValue"/>
         <FormInput id="maxValue" v-bind:label="$t( 'label.MaximumValue' )" v-bind="$field( 'maxValue' )" v-model="maxValue"/>
-        <FormCheckbox v-bind:label="$t( 'text.StripTrailingZeros' )" v-model="strip"/>
+        <FormCheckbox v-bind:label="$t( 'text.StripTrailingZeros' )" v-bind:disabled="decimal == 0" v-model="strip"/>
       </template>
-      <template v-if="attributeType == 'DATETIME'">
+      <template v-else-if="attributeType == 'DATETIME'">
         <FormGroup v-bind:label="$t( 'label.DateSettings' )">
           <div class="radio">
             <label><input type="radio" v-bind:checked="!time && !local" v-on:change="time = false, local = false"> {{ $t( 'text.DateOnly' ) }}</label>
@@ -63,7 +64,7 @@
           </div>
         </FormGroup>
       </template>
-      <template v-if="attributeType == 'USER'">
+      <template v-else-if="attributeType == 'USER'">
         <FormCheckbox v-bind:label="$t( 'text.AllowOnlyMembers' )" v-model="members"/>
         <FormCheckbox v-bind:label="$t( 'text.AllowMultipleItems' )" v-model="multiSelect"/>
       </template>
@@ -141,10 +142,9 @@ export default {
       },
       decimal: {
         value: details.decimal,
-        type: String,
+        type: Number,
         required: true,
         condition: () => this.attributeType == 'NUMERIC',
-        parse: this.parseDecimal
       },
       minValue: {
         type: String,
@@ -227,6 +227,12 @@ export default {
     },
     hasMinMaxLength() {
       return this.attributeType == 'TEXT' || this.attributeType == 'ENUM' && this.editable && !this.multiSelect;
+    },
+    decimalItems() {
+      return Array( 7 ).fill( 0 ).map( ( x, i ) => i );
+    },
+    decimalNames() {
+      return this.decimalItems.map( n => n.toString() );
     },
     attribute() {
       return {
@@ -327,23 +333,16 @@ export default {
       return items.join( "\n" );
     },
 
-    parseDecimal( value ) {
-      return this.$parser.parseInteger( value, 0, 6 ).toString();
-    },
-
     parseMinValue( value ) {
-      if ( value != '' ) {
-        const decimal = this.decimalError == null ? Number( this.decimal ) : 0;
-        return this.$parser.normalizeAttributeValue( value, { type: 'NUMERIC', decimal, strip: this.strip ? 1 : 0 } );
-      } else {
+      if ( value != '' )
+        return this.$parser.normalizeAttributeValue( value, { type: 'NUMERIC', decimal: this.decimal, strip: this.strip ? 1 : 0 } );
+      else
         return '';
-      }
     },
     parseMaxValue( value ) {
       if ( value != '' ) {
-        const decimal = this.decimalError == null ? Number( this.decimal ) : 0;
-        const min = this.minValueError == null ? this.$parser.convertAttributeValue( this.minValue, { type: 'NUMERIC', decimal } ) : null;
-        return this.$parser.normalizeAttributeValue( value, { type: 'NUMERIC', decimal, 'min-value': min, strip: this.strip ? 1 : 0 } );
+        const min = this.minValueError == null ? this.$parser.convertAttributeValue( this.minValue, { type: 'NUMERIC', decimal: this.decimal } ) : null;
+        return this.$parser.normalizeAttributeValue( value, { type: 'NUMERIC', decimal: this.decimal, 'min-value': min, strip: this.strip ? 1 : 0 } );
       } else {
         return '';
       }
@@ -394,12 +393,12 @@ export default {
           break;
 
         case 'NUMERIC':
-          details.decimal = this.decimalError == null ? Number( this.decimal ) : 0;
+          details.decimal = this.decimal;
           if ( this.minValue != '' && this.minValueError == null )
-            details[ 'min-value' ] = this.$parser.convertAttributeValue( this.minValue, { type: 'NUMERIC', decimal: details.decimal } );
+            details[ 'min-value' ] = this.$parser.convertAttributeValue( this.minValue, { type: 'NUMERIC', decimal: this.decimal } );
           if ( this.maxValue != '' && this.maxValueError == null )
-            details[ 'max-value' ] = this.$parser.convertAttributeValue( this.maxValue, { type: 'NUMERIC', decimal: details.decimal } );
-          if ( this.strip )
+            details[ 'max-value' ] = this.$parser.convertAttributeValue( this.maxValue, { type: 'NUMERIC', decimal: this.decimal } );
+          if ( this.decimal != 0 && this.strip )
             details.strip = 1;
           break;
 
