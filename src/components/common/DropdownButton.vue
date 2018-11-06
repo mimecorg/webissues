@@ -66,6 +66,7 @@ export default {
         this.open = true;
         this.$refs.button.focus();
         this.$emit( 'open' );
+        this.$nextTick( this.scrollMenuToView );
       }
     },
     close() {
@@ -86,6 +87,7 @@ export default {
         if ( !this.open ) {
           this.open = true;
           this.$emit( 'open' );
+          this.$nextTick( this.scrollMenuToView );
         } else {
           const items = this.$refs.menu.querySelectorAll( 'li a' );
           if ( items.length > 0 ) {
@@ -109,6 +111,19 @@ export default {
       } else if ( e.keyCode == KeyCode.Enter ) {
         this.close();
       }
+    },
+
+    scrollMenuToView() {
+      let top = this.$refs.button.offsetTop;
+      let bottom = this.$refs.menu.offsetTop + this.$refs.menu.clientHeight + 3;
+      let element = this.$el;
+      while ( element != null && element.id != 'window-overlay' ) {
+        top += element.offsetTop;
+        bottom += element.offsetTop;
+        element = element.offsetParent;
+      }
+      if ( element != null && bottom > element.scrollTop + element.clientHeight )
+        element.scrollTop = Math.min( top, bottom - element.clientHeight );
     }
   }
 }

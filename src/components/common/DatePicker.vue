@@ -29,7 +29,7 @@
       <button v-if="withTime" class="btn btn-default" type="button" tabindex="-1" v-on:click="toggle( 'time' )" v-on:mousedown.prevent>
         <span class="fa fa-clock-o" aria-hidden="true"></span>
       </button>
-      <div class="dropdown-menu dropdown-menu-right" v-on:mousedown.prevent>
+      <div ref="menu" class="dropdown-menu dropdown-menu-right" v-on:mousedown.prevent>
 
         <template v-if="mode == 'date'">
 
@@ -282,6 +282,7 @@ export default {
           }
         }
         this.$refs.input.focus();
+        this.$nextTick( this.scrollMenuToView );
       }
     },
     openSelector( selector ) {
@@ -499,6 +500,19 @@ export default {
       } catch ( err ) {
         return null;
       }
+    },
+
+    scrollMenuToView() {
+      let top = this.$refs.input.offsetTop;
+      let bottom = this.$refs.menu.offsetTop + this.$refs.menu.clientHeight + 3;
+      let element = this.$el;
+      while ( element != null && element.id != 'window-overlay' ) {
+        top += element.offsetTop;
+        bottom += element.offsetTop;
+        element = element.offsetParent;
+      }
+      if ( element != null && bottom > element.scrollTop + element.clientHeight )
+        element.scrollTop = Math.min( top, bottom - element.clientHeight );
     }
   },
 

@@ -24,7 +24,7 @@
            v-on:input="dropdown" v-on:keydown="keyDown" v-on:blur="close">
     <span v-bind:class="[ 'input-group-btn', 'dropdown-input-group', { open } ]">
       <button class="btn btn-default" type="button" tabindex="-1" v-on:click="toggle()" v-on:mousedown.prevent><span class="fa fa-chevron-down" aria-hidden="true"></span></button>
-      <div v-if="open && matchingItems.length > 0" class="dropdown-menu dropdown-menu-both" v-on:mousedown.prevent>
+      <div ref="menu" v-if="open && matchingItems.length > 0" class="dropdown-menu dropdown-menu-both" v-on:mousedown.prevent>
         <div ref="scroll" class="dropdown-menu-scroll">
           <li v-for="item in matchingItems" v-bind:key="item" v-bind:class="{ active: item == currentItem }"><a v-on:click="select( item )">{{ item }}</a></li>
         </div>
@@ -90,6 +90,7 @@ export default {
         this.matchPrefix = null;
         this.open = true;
         this.$refs.input.focus();
+        this.$nextTick( this.scrollMenuToView );
       }
     },
 
@@ -99,6 +100,7 @@ export default {
       else
         this.matchPrefix = null;
       this.open = true;
+      this.$nextTick( this.scrollMenuToView );
     },
     close() {
       this.open = false;
@@ -155,6 +157,19 @@ export default {
           e.stopPropagation();
         }
       }
+    },
+
+    scrollMenuToView() {
+      let top = this.$refs.input.offsetTop;
+      let bottom = this.$refs.menu.offsetTop + this.$refs.menu.clientHeight + 3;
+      let element = this.$el;
+      while ( element != null && element.id != 'window-overlay' ) {
+        top += element.offsetTop;
+        bottom += element.offsetTop;
+        element = element.offsetParent;
+      }
+      if ( element != null && bottom > element.scrollTop + element.clientHeight )
+        element.scrollTop = Math.min( top, bottom - element.clientHeight );
     }
   }
 }
