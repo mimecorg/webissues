@@ -20,8 +20,8 @@
 <template>
   <FormGroup v-bind:label="label" v-bind:required="required" v-bind:error="error">
     <div class="dropdown-select">
-      <DropdownButton ref="dropdown" v-bind:text="text" v-bind:disabled="disabled">
-        <div class="dropdown-menu-scroll">
+      <DropdownButton ref="dropdown" v-bind:text="text" v-bind:disabled="disabled" v-on:open="open">
+        <div ref="scroll" class="dropdown-menu-scroll">
           <li v-if="defaultName != null" v-bind:class="{ active: value == null || value == '' }">
             <HyperLink v-on:click="select( null )">{{ defaultName }}</HyperLink>
           </li>
@@ -60,6 +60,21 @@ export default {
     },
     select( item ) {
       this.$emit( 'input', item );
+    },
+    open() {
+      this.$nextTick( this.scrollItemToView );
+    },
+    scrollItemToView() {
+      for ( let i = 0; i < this.$refs.scroll.children.length; i++ ) {
+        const item = this.$refs.scroll.children[ i ];
+        if ( item.className == 'active' ) {
+          if ( this.$refs.scroll.scrollTop > item.offsetTop - 5 )
+            this.$refs.scroll.scrollTop = item.offsetTop - 5;
+          else if ( this.$refs.scroll.scrollTop + this.$refs.scroll.clientHeight < item.offsetTop - 5 + item.clientHeight )
+            this.$refs.scroll.scrollTop = item.offsetTop - 5 + item.clientHeight - this.$refs.scroll.clientHeight;
+          break;
+        }
+      }
     }
   }
 }
