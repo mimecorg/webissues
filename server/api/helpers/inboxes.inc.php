@@ -26,13 +26,13 @@ class Server_Api_Helpers_Inboxes
     {
         $validator = new System_Api_Validator();
         $validator->checkString( $engine, System_Const::ValueMaxLength );
-        $validator->checkSetting( 'inbox_engine', $engine );
+        $validator->checkInboxEngine( $engine );
         $validator->checkString( $email, System_Const::ValueMaxLength );
-        $validator->checkSetting( 'inbox_email', $email );
+        $validator->checkEmailAddress( $email );
         $validator->checkString( $server, System_Const::ValueMaxLength );
         $validator->checkIntegerValue( $port, 1, 65536 );
         $validator->checkString( $encryption, System_Const::ValueMaxLength, System_Api_Validator::AllowEmpty );
-        $validator->checkSetting( 'inbox_encryption', $encryption );
+        $validator->checkEncryption( $encryption );
         $validator->checkString( $user, System_Const::ValueMaxLength, System_Api_Validator::AllowEmpty );
         $validator->checkString( $password, System_Const::ValueMaxLength, System_Api_Validator::AllowEmpty );
         $validator->checkString( $mailbox, System_Const::ValueMaxLength, System_Api_Validator::AllowEmpty );

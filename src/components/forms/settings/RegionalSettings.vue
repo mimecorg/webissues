@@ -93,7 +93,7 @@ export default {
       },
       firstDay: {
         value: this.settings.firstDay,
-        type: String
+        type: Number
       }
     };
   },
@@ -133,7 +133,7 @@ export default {
       }
     },
     weekdayItems() {
-      return Array( 7 ).fill( 0 ).map( ( x, i ) => i.toString() );
+      return Array( 7 ).fill( 0 ).map( ( x, i ) => i );
     },
     weekdayNames() {
       return [ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ].map( d => this.$t( 'calendar.weekday.' + d ) );

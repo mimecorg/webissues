@@ -36,7 +36,9 @@ class Server_Api_Settings_Regional_Load
         $settings[ 'numberFormat' ] = $serverManager->getSetting( 'number_format' );
         $settings[ 'dateFormat' ] = $serverManager->getSetting( 'date_format' );
         $settings[ 'timeFormat' ] = $serverManager->getSetting( 'time_format' );
-        $settings[ 'firstDay' ] = $serverManager->getSetting( 'first_day_of_week' );
+
+        $firstDay = $serverManager->getSetting( 'first_day_of_week' );
+        $settings[ 'firstDay' ] = $firstDay != '' ? (int)$firstDay : null;
 
         $result[ 'settings' ] = $settings;
 

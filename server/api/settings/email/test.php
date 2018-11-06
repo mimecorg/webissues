@@ -37,11 +37,11 @@ class Server_Api_Settings_Email_Test
     {
         $validator = new System_Api_Validator();
         $validator->checkString( $emailFrom, System_Const::ValueMaxLength );
-        $validator->checkSetting( 'email_from', $emailFrom );
+        $validator->checkEmailAddress( $emailFrom );
         $validator->checkString( $smtpServer, System_Const::ValueMaxLength );
-        $validator->checkIntegerValue( $smtpPort, 1, 65536 );
+        $validator->checkIntegerValue( $smtpPort, 1, 65535 );
         $validator->checkString( $smtpEncryption, System_Const::ValueMaxLength, System_Api_Validator::AllowEmpty );
-        $validator->checkSetting( 'smtp_encryption', $smtpEncryption );
+        $validator->checkEncryption( $smtpEncryption );
         $validator->checkString( $smtpUser, System_Const::ValueMaxLength, System_Api_Validator::AllowEmpty );
         $validator->checkString( $smtpPassword, System_Const::ValueMaxLength, System_Api_Validator::AllowEmpty );
 

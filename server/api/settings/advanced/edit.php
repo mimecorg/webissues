@@ -42,7 +42,7 @@ class Server_Api_Settings_Advanced_Edit
     {
         $validator = new System_Api_Validator();
         $validator->checkString( $historyOrder, System_Const::ValueMaxLength );
-        $validator->checkSetting( 'history_order', $historyOrder );
+        $validator->checkHistoryOrder( $historyOrder );
         $validator->checkIntegerValue( $defaultFormat, 0, 1 );
         $validator->checkIntegerValue( $commentMaxLength, 1000, 100000 );
         $validator->checkIntegerValue( $fileMaxSize, 16 * 1024, 256 * 1024 * 1024 );

@@ -38,17 +38,23 @@ class Server_Api_Settings_Email_Edit
     {
         $validator = new System_Api_Validator();
         $validator->checkString( $emailEngine, System_Const::ValueMaxLength, System_Api_Validator::AllowEmpty );
-        $validator->checkString( $emailFrom, System_Const::ValueMaxLength, $emailEngine != null ? 0 : System_Api_Validator::AllowEmpty );
-        $validator->checkSetting( 'email_from', $emailFrom );
-        $validator->checkString( $smtpServer, System_Const::ValueMaxLength, $emailEngine == 'smtp' ? 0 : System_Api_Validator::AllowEmpty );
-        if ( $smtpPort != null )
-            $validator->checkIntegerValue( $smtpPort, 1, 65536 );
-        else if ( $emailEngine == 'smtp' )
-            throw new System_Api_Error( System_Api_Error::EmptyValue );
-        $validator->checkString( $smtpEncryption, System_Const::ValueMaxLength, System_Api_Validator::AllowEmpty );
-        $validator->checkSetting( 'smtp_encryption', $smtpEncryption );
-        $validator->checkString( $smtpUser, System_Const::ValueMaxLength, System_Api_Validator::AllowEmpty );
-        $validator->checkString( $smtpPassword, System_Const::ValueMaxLength, System_Api_Validator::AllowEmpty );
+        if ( $emailEngine != '' ) {
+            $validator->checkEmailEngine( $emailEngine );
+            $validator->checkString( $emailFrom, System_Const::ValueMaxLength );
+            $validator->checkEmailAddress( $emailFrom );
+            if ( $emailEngine == 'smtp' ) {
+                $validator->checkString( $smtpServer, System_Const::ValueMaxLength );
+                $validator->checkIntegerValue( $smtpPort, 1, 65535 );
+                $validator->checkString( $smtpEncryption, System_Const::ValueMaxLength, System_Api_Validator::AllowEmpty );
+                $validator->checkEncryption( $smtpEncryption );
+                $validator->checkString( $smtpUser, System_Const::ValueMaxLength, System_Api_Validator::AllowEmpty );
+                $validator->checkString( $smtpPassword, System_Const::ValueMaxLength, System_Api_Validator::AllowEmpty );
+            } else if ( $smtpServer != '' || $smtpPort != null || $smtpEncryption != '' || $smtpUser != '' || $smtpPassword != '' ) {
+                throw new System_Api_Error( System_Api_Error::InvalidSetting );
+            }
+        } else if ( $emailFrom != '' || $smtpServer != '' || $smtpPort != null || $smtpEncryption != '' || $smtpUser != '' || $smtpPassword != '' ) {
+            throw new System_Api_Error( System_Api_Error::InvalidSetting );
+        }
 
         $settings = array(
             'email_engine' => $emailEngine,

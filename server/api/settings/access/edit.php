@@ -33,9 +33,16 @@ class Server_Api_Settings_Access_Edit
 
     public function run( $anonymousAccess, $selfRegister, $registerAutoApprove, $registerNotifyEmail )
     {
-        $validator = new System_Api_Validator();
-        $validator->checkString( $registerNotifyEmail, System_Const::ValueMaxLength, System_Api_Validator::AllowEmpty );
-        $validator->checkSetting( 'register_notify_email', $registerNotifyEmail );
+        if ( !$selfRegister && $registerAutoApprove )
+            throw new System_Api_Error( System_Api_Error::InvalidSetting );
+
+        if ( $registerNotifyEmail != '' ) {
+            if ( !$selfRegister || $registerAutoApprove )
+                throw new System_Api_Error( System_Api_Error::InvalidSetting );
+            $validator = new System_Api_Validator();
+            $validator->checkString( $registerNotifyEmail, System_Const::ValueMaxLength );
+            $validator->checkEmailAddress( $registerNotifyEmail );
+        }
 
         $settings = array(
             'anonymous_access' => $anonymousAccess ? 1 : 0,

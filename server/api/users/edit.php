@@ -38,9 +38,11 @@ class Server_Api_Users_Edit
         $validator->checkString( $name, System_Const::NameMaxLength );
         $validator->checkString( $login, System_Const::LoginMaxLength );
         $validator->checkString( $email, System_Const::ValueMaxLength, System_Api_Validator::AllowEmpty );
+        if ( $email != '' )
+            $validator->checkEmailAddress( $email );
         $validator->checkString( $language, System_Const::ValueMaxLength, System_Api_Validator::AllowEmpty );
-        $validator->checkPreference( 'email', $email );
-        $validator->checkPreference( 'language', $language );
+        if ( $language != '' )
+            $validator->checkLanguage( $language );
 
         $userManager = new System_Api_UserManager();
         $user = $userManager->getUser( $userId );

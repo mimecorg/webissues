@@ -30,24 +30,28 @@ class Server_Api_Settings_Regional_Edit
         'numberFormat' => 'string',
         'dateFormat' => 'string',
         'timeFormat' => 'string',
-        'firstDay' => 'string'
+        'firstDay' => 'int'
     );
 
     public function run( $language, $timeZone, $numberFormat, $dateFormat, $timeFormat, $firstDay )
     {
         $validator = new System_Api_Validator();
         $validator->checkString( $language, System_Const::ValueMaxLength );
-        $validator->checkSetting( 'language', $language );
+        $validator->checkLanguage( $language );
         $validator->checkString( $timeZone, System_Const::ValueMaxLength, System_Api_Validator::AllowEmpty );
-        $validator->checkSetting( 'time_zone', $timeZone );
+        if ( $timeZone != '' )
+            $validator->checkTimeZone( $timeZone );
         $validator->checkString( $numberFormat, System_Const::ValueMaxLength, System_Api_Validator::AllowEmpty );
-        $validator->checkSetting( 'number_format', $numberFormat );
+        if ( $numberFormat != '' )
+            $validator->checkLocaleFormat( 'number_format', $numberFormat );
         $validator->checkString( $dateFormat, System_Const::ValueMaxLength, System_Api_Validator::AllowEmpty );
-        $validator->checkSetting( 'date_format', $dateFormat );
+        if ( $dateFormat != '' )
+            $validator->checkLocaleFormat( 'date_format', $dateFormat );
         $validator->checkString( $timeFormat, System_Const::ValueMaxLength, System_Api_Validator::AllowEmpty );
-        $validator->checkSetting( 'time_format', $timeFormat );
-        $validator->checkString( $firstDay, System_Const::ValueMaxLength, System_Api_Validator::AllowEmpty );
-        $validator->checkSetting( 'first_day_of_week', $firstDay );
+        if ( $timeFormat != '' )
+            $validator->checkLocaleFormat( 'time_format', $timeFormat );
+        if ( $firstDay != null )
+            $validator->checkIntegerValue( $firstDay, 0, 6 );
 
         $settings = array(
             'language' => $language,
