@@ -47,7 +47,7 @@ class Server_Api_Types_Views_Default
         $definition = $info->toString();
 
         $validator = new System_Api_Validator();
-        $validator->checkViewSetting( $type, $attributes, 'default_view', $definition );
+        $validator->checkViewDefinition( $attributes, $definition );
 
         $viewManager = new System_Api_ViewManager();
 

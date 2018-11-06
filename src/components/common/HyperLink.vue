@@ -17,17 +17,20 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<template>
-  <a ref="link" role="link" tabindex="0" v-on:click="click" v-on:keydown.enter="click"><slot/></a>
-</template>
-
 <script>
 export default {
-  methods: {
-    click() {
-      this.$refs.link.blur();
-      this.$emit( 'click' );
-    }
+  functional: true,
+  render( createElement, { listeners, children } ) {
+    const click = e => {
+      e.target.blur();
+      if ( listeners.click != null )
+        listeners.click();
+    };
+    const keydown = e => {
+      if ( e.keyCode == 13 )
+        click( e );
+    };
+    return createElement( 'a', { attrs: { role: "link", tabindex: "0" }, on: { click, keydown } }, children );
   }
 }
 </script>

@@ -97,8 +97,8 @@ class System_Api_Validator
                 throw new System_Api_Error( System_Api_Error::InvalidString );
 
             // no control characters allowed except TAB and LF
-            if ( preg_match( '/[\x00-\x08\x0b-\x1f\x7f]/', $string ) ) 
-                throw new System_Api_Error( System_Api_Error::InvalidString ); 
+            if ( preg_match( '/[\x00-\x08\x0b-\x1f\x7f]/', $string ) )
+                throw new System_Api_Error( System_Api_Error::InvalidString );
         } else {
             if ( mb_substr( $string, -1, 1 ) == ' ' )
                 throw new System_Api_Error( System_Api_Error::InvalidString );
@@ -295,13 +295,68 @@ class System_Api_Validator
     }
 
     /**
+    * Check if the argument is a valid language.
+    */
+    public function checkLanguage( $value )
+    {
+        $languages = $this->locale->getAvailableLanguages();
+        if ( !isset( $languages[ $value ] ) )
+            throw new System_Api_Error( System_Api_Error::InvalidSetting );
+    }
+
+    /**
+    * Check if the argument is a valid format for the given setting.
+    */
+    public function checkLocaleFormat( $key, $value )
+    {
+        $formats = $this->locale->getAvailableFormats( $key );
+        if ( !isset( $formats[ $value ] ) )
+            throw new System_Api_Error( System_Api_Error::InvalidSetting );
+    }
+
+    /**
     * Check if the argument is a valid time zone.
-    * @param $value Name of the time zone.
     */
     public function checkTimeZone( $value )
     {
         if ( array_search( $value, $this->locale->getAvailableTimeZones() ) === false )
-            throw new System_Api_Error( System_Api_Error::NoMatchingItem );
+            throw new System_Api_Error( System_Api_Error::InvalidSetting );
+    }
+
+    /**
+    * Check if the value is a valid encryption type.
+    */
+    public function checkEncryption( $value )
+    {
+        if ( $value != '' && $value != 'ssl' && $value != 'tls' )
+            throw new System_Api_Error( System_Api_Error::InvalidSetting );
+    }
+
+    /**
+    * Check if the value is a valid history order.
+    */
+    public function checkHistoryOrder( $value )
+    {
+        if ( $value != 'asc' && $value != 'desc' )
+            throw new System_Api_Error( System_Api_Error::InvalidSetting );
+    }
+
+    /**
+    * Check if the value is a valid email engine.
+    */
+    public function checkEmailEngine( $value )
+    {
+        if ( $value != 'standard' && $value != 'smtp' )
+            throw new System_Api_Error( System_Api_Error::InvalidSetting );
+    }
+
+    /**
+    * Check if the value is a valid inbox engine.
+    */
+    public function checkInboxEngine( $value )
+    {
+        if ( $value != 'imap' && $value != 'pop3' )
+            throw new System_Api_Error( System_Api_Error::InvalidSetting );
     }
 
     /**
@@ -579,240 +634,6 @@ class System_Api_Validator
     }
 
     /**
-    * Check if the server setting is valid.
-    * @param $key Name of the setting to validate.
-    * @param $value Value of the setting to validate.
-    */
-    public function checkSetting( $key, $value )
-    {
-        $this->checkString( $value, null, self::AllowEmpty );
-
-        switch ( $key ) {
-            case 'language':
-                $this->checkLocale( $key, $value );
-                break;
-
-            case 'number_format':
-            case 'date_format':
-            case 'time_format':
-            case 'first_day_of_week':
-            case 'time_zone':
-                if ( $value != '' )
-                    $this->checkLocale( $key, $value );
-                break;
-
-            case 'project_page_size':
-            case 'folder_page_size':
-            case 'history_page_size':
-            case 'project_page_mobile':
-            case 'folder_page_mobile':
-            case 'history_page_mobile':
-                $this->checkDecimalNumber( $value, 0, 1, 100 );
-                break;
-
-            case 'comment_max_length':
-                $this->checkDecimalNumber( $value, 0, 1000, 100000 );
-                break;
-
-            case 'file_max_size':
-                $this->checkDecimalNumber( $value, 0, 16 * 1024, 256 * 1024 * 1024 );
-                break;
-
-            case 'file_db_max_size':
-                $this->checkDecimalNumber( $value, 0, 0, System_Const::INT_MAX );
-                break;
-
-            case 'session_max_lifetime':
-                $this->checkDecimalNumber( $value, 0, 300, 86400 );
-                break;
-
-            case 'log_max_lifetime':
-            case 'register_max_lifetime':
-                $this->checkDecimalNumber( $value, 0, 300, System_Const::INT_MAX );
-                break;
-
-            case 'gc_divisor':
-                $this->checkDecimalNumber( $value, 0, 0, 10000 );
-                break;
-
-            case 'hide_id_column':
-            case 'hide_empty_values':
-            case 'self_register':
-            case 'register_auto_approve':
-            case 'anonymous_access':
-                if ( $value != '' )
-                    $this->checkDecimalNumber( $value, 0, 0, 1 );
-                break;
-
-            case 'history_order':
-                if ( $value != 'asc' && $value != 'desc' )
-                    throw new System_Api_Error( System_Api_Error::InvalidSetting );
-                break;
-
-            case 'history_filter':
-                $this->checkDecimalNumber( $value, 0, 1, 4 );
-                break;
-
-            case 'default_format':
-                $this->checkDecimalNumber( $value, 0, 0, 1 );
-                break;
-
-            case 'email_engine':
-                if ( $value != '' && $value != 'standard' && $value != 'smtp' )
-                    throw new System_Api_Error( System_Api_Error::InvalidSetting );
-                break;
-
-            case 'inbox_engine':
-                if ( $value != '' && $value != 'imap' && $value != 'pop3' )
-                    throw new System_Api_Error( System_Api_Error::InvalidSetting );
-                break;
-
-            case 'email_from':
-            case 'register_notify_email':
-            case 'inbox_email':
-                if ( $value != '' )
-                    $this->checkEmailAddress( $value );
-                break;
-
-            case 'smtp_server':
-            case 'smtp_user':
-            case 'smtp_password':
-            case 'inbox_server':
-            case 'inbox_user':
-            case 'inbox_password':
-            case 'inbox_mailbox':
-                break;
-
-            case 'smtp_port':
-            case 'inbox_port':
-                if ( $value != '' )
-                    $this->checkDecimalNumber( $value, 0, 1, 65535 );
-                break;
-
-            case 'smtp_encryption':
-            case 'inbox_encryption':
-                if ( $value != '' && $value != 'ssl' && $value != 'tls' )
-                    throw new System_Api_Error( System_Api_Error::InvalidSetting );
-                break;
-
-            case 'base_url':
-                if ( $value != '' )
-                    $this->checkBaseUrl( $value );
-                break;
-
-            case 'inbox_no_validate':
-            case 'inbox_leave_messages':
-            case 'inbox_allow_external':
-            case 'inbox_map_folder':
-            case 'inbox_respond':
-            case 'inbox_subscribe':
-                if ( $value != '' )
-                    $this->checkDecimalNumber( $value, 0, 0, 1 );
-                break;
-
-            case 'inbox_robot':
-            case 'inbox_default_folder':
-                if ( $value != '' )
-                    $this->checkDecimalNumber( $value, 0, 1 );
-                break;
-
-            default:
-                throw new System_Api_Error( System_Api_Error::InvalidSetting );
-        }
-    }
-
-    /**
-    * Check if the user preference is valid.
-    * @param $key Name of the preference to validate.
-    * @param $value Value of the preference to validate.
-    */
-    public function checkPreference( $key, $value )
-    {
-        $this->checkString( $value, null, self::AllowEmpty );
-
-        switch ( $key ) {
-            case 'language':
-            case 'number_format':
-            case 'date_format':
-            case 'time_format':
-            case 'first_day_of_week':
-            case 'time_zone':
-                if ( $value != '' )
-                    $this->checkLocale( $key, $value );
-                break;
-
-            case 'project_page_size':
-            case 'folder_page_size':
-            case 'history_page_size':
-                if ( $value != '' )
-                    $this->checkDecimalNumber( $value, 0, 1, 100 );
-                break;
-
-            case 'history_order':
-                if ( $value != '' && $value != 'asc' && $value != 'desc' )
-                    throw new System_Api_Error( System_Api_Error::InvalidSetting );
-                break;
-
-            case 'history_filter':
-                if ( $value != '' )
-                    $this->checkDecimalNumber( $value, 0, 1, 4 );
-                break;
-
-            case 'default_format':
-                if ( $value != '' )
-                    $this->checkDecimalNumber( $value, 0, 0, 1 );
-                break;
-
-            case 'email':
-                if ( $value != '' )
-                    $this->checkEmailAddress( $value );
-                break;
-
-            case 'notify_details':
-            case 'notify_no_read':
-                if ( $value != '' )
-                    $this->checkDecimalNumber( $value, 0, 0, 1 );
-                break;
-
-            default:
-                throw new System_Api_Error( System_Api_Error::InvalidPreference );
-        }
-    }
-
-    private function checkLocale( $key, $value )
-    {
-        switch ( $key ) {
-            case 'language':
-                $languages = $this->locale->getAvailableLanguages();
-                if ( !isset( $languages[ $value ] ) )
-                    throw new System_Api_Error( System_Api_Error::NoMatchingItem );
-                break;
-
-            case 'number_format':
-            case 'date_format':
-            case 'time_format':
-                $formats = $this->locale->getAvailableFormats( $key );
-                if ( !isset( $formats[ $value ] ) )
-                    throw new System_Api_Error( System_Api_Error::NoMatchingItem );
-                break;
-
-            case 'first_day_of_week':
-                $this->checkDecimalNumber( $value, 0, 0, 6 );
-                break;
-
-            case 'time_zone':
-                $this->checkTimeZone( $value );
-                break;
-        }
-    }
-
-    private function checkBaseUrl( $value )
-    {
-        if ( !preg_match( '/^https?:\/\/[\w+&@#\/\\\\%=~|$?!:,.()-]+\/$/ui', $value ) )
-            throw new System_Api_Error( System_Api_Error::InvalidSetting );
-    }
-
-    /**
     * Check if the view definition is valid.
     * @param $attributes Array of attributes of the issue type related
     * to the view.
@@ -880,51 +701,21 @@ class System_Api_Validator
     }
 
     /**
-    * Check if the view setting is valid.
-    * @param $type Issue type related to the setting.
-    * @param $attributes Array of attributes of the issue type related
-    * to the setting.
-    * @param $key Name of the setting to validate.
-    * @param $value Value of the setting to validate.
+    * Check if the attribute order view setting is valid.
     */
-    public function checkViewSetting( $type, $attributes, $key, $value )
+    public function checkAttributeOrder( $attributes, $value )
     {
-        $this->checkString( $value, null, self::AllowEmpty );
-
-        switch ( $key ) {
-            case 'attribute_order':
-                $attributeIds = $this->convertToIntArray( $value );
-                if ( count( array_unique( $attributeIds ) ) != count( $attributeIds ) )
-                    throw new System_Api_Error( System_Api_Error::DuplicateItems );
-                $allAttributeIds = array();
-                foreach ( $attributes as $attribute )
-                    $allAttributeIds[] = $attribute[ 'attr_id' ];
-                $count = count( array_intersect( $attributeIds, $allAttributeIds ) );
-                if ( $count < count( $attributeIds ) )
-                    throw new System_Api_Error( System_Api_Error::UnknownAttribute );
-                if ( $count < count( $allAttributeIds ) )
-                    throw new System_Api_Error( System_Api_Error::MissingAttribute );
-                break;
-
-            case 'default_view':
-                $info = System_Api_DefinitionInfo::fromString( $value );
-                $this->checkViewDefinitionInfo( $attributes, $info, false );
-                break;
-
-            case 'initial_view':
-                if ( $value != '' ) {
-                    $viewId = (int)$value;
-                    if ( (string)$viewId !== $value )
-                        throw new System_Api_Error( System_Api_Error::InvalidFormat );
-                    $viewManager = new System_Api_ViewManager();
-                    if ( !$viewManager->isPublicViewForIssueType( $type, $viewId ) )
-                        throw new System_Api_Error( System_Api_Error::UnknownView );
-                }
-                break;
-
-            default:
-                throw new System_Api_Error( System_Api_Error::InvalidSetting );
-        }
+        $attributeIds = $this->convertToIntArray( $value );
+        if ( count( array_unique( $attributeIds ) ) != count( $attributeIds ) )
+            throw new System_Api_Error( System_Api_Error::DuplicateItems );
+        $allAttributeIds = array();
+        foreach ( $attributes as $attribute )
+            $allAttributeIds[] = $attribute[ 'attr_id' ];
+        $count = count( array_intersect( $attributeIds, $allAttributeIds ) );
+        if ( $count < count( $attributeIds ) )
+            throw new System_Api_Error( System_Api_Error::UnknownAttribute );
+        if ( $count < count( $allAttributeIds ) )
+            throw new System_Api_Error( System_Api_Error::MissingAttribute );
     }
 
     /**

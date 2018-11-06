@@ -47,13 +47,11 @@ export default {
         required: true,
         maxLength: this.$store.state.global.settings.commentMaxLength,
         multiLine: true
+      },
+      commentFormat: {
+        value: this.initialFormat,
+        type: Number
       }
-    };
-  },
-
-  data() {
-    return {
-      commentFormat: this.initialFormat
     };
   },
 
@@ -71,7 +69,7 @@ export default {
       if ( !this.$fields.validate() )
         return;
 
-      if ( this.mode == 'edit' && !this.$fields.modified() && this.commentFormat == this.initialFormat ) {
+      if ( this.mode == 'edit' && !this.$fields.modified() ) {
         this.returnToDetails( this.commentId );
         return;
       }

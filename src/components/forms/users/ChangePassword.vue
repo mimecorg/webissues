@@ -59,13 +59,10 @@ export default {
         required: true,
         maxLength: MaxLength.Password,
         parse: this.comparePassword
+      },
+      mustChangePassword: {
+        type: Boolean
       }
-    };
-  },
-
-  data() {
-    return {
-      mustChangePassword: false
     };
   },
 

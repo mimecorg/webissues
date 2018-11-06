@@ -69,11 +69,19 @@ export default {
     members: Array
   },
 
+  fields() {
+    return {
+      access: {
+        value: this.initialAccess,
+        type: Number
+      }
+    };
+  },
+
   data() {
     return {
       normalAccess: Access.NormalAccess,
       administratorAccess: Access.AdministratorAccess,
-      access: this.initialAccess,
       selectedUsers: []
     };
   },
@@ -104,7 +112,13 @@ export default {
     },
 
     submit() {
-      this.$emit( 'block' );
+      if ( !this.$fields.validate() )
+        return;
+
+      if ( this.mode == 'edit' && !this.$fields.modified() ) {
+        this.returnToDetails();
+        return;
+      }
 
       const data = { projectId: this.projectId };
 
@@ -120,10 +134,12 @@ export default {
 
       data.access = this.access;
 
-      if ( this.mode == 'edit' && this.access == this.initialAccess || data.users.length == 0 ) {
+      if ( data.users.length == 0 ) {
         this.returnToDetails();
         return;
       }
+
+      this.$emit( 'block' );
 
       this.$ajax.post( '/projects/members/edit.php', data ).then( () => {
         this.returnToDetails();

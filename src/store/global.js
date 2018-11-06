@@ -95,6 +95,9 @@ function makeMutations() {
     setHistoryFilter( state, value ) {
       state.settings.historyFilter = value;
     },
+    setServerName( state, value ) {
+      state.serverName = value;
+    },
     beginUpdate( state ) {
       state.lastUpdate = Date.now();
       state.dirty = false;

@@ -21,14 +21,14 @@
   <div class="btn-group" v-bind:class="{ open }" role="group">
     <button ref="button" type="button"
             v-bind:class="[ 'btn', btnClass, 'dropdown-toggle', { 'dropdown-has-caret': text != null } ]" v-bind:title="title"
-            aria-haspopup="true" v-bind:aria-expanded="open ? 'true' : 'false'"
+            aria-haspopup="true" v-bind:aria-expanded="open ? 'true' : 'false'" v-bind:disabled="disabled"
             v-on:click="toggle" v-on:keydown="keyDown">
       <span v-if="faClass != null" v-bind:class="[ 'fa', faClass ]" aria-hidden="true"></span>
       <span v-if="textClass != null && text != null" v-bind:class="textClass">{{ text }}</span><template v-else-if="text != null">{{ text }}</template>
       <span v-if="text != null" class="caret"></span>
     </button>
     <div v-if="open" class="dropdown-backdrop" v-on:click="close"></div>
-    <ul ref="menu" v-bind:class="[ 'dropdown-menu', menuClass ]" v-on:click="close" v-on:keydown="keyDown">
+    <ul ref="menu" v-bind:class="[ 'dropdown-menu', menuClass ]" v-on:click="click" v-on:keydown="keyDown">
       <slot/>
     </ul>
   </div>
@@ -44,7 +44,8 @@ export default {
     text: String,
     textClass: String,
     menuClass: String,
-    title: String
+    title: String,
+    disabled: Boolean
   },
 
   data() {
@@ -64,16 +65,27 @@ export default {
       } else {
         this.open = true;
         this.$refs.button.focus();
+        this.$emit( 'open' );
       }
     },
     close() {
       this.open = false;
     },
 
+    click( e ) {
+      for ( let el = e.target; el != this.$refs.menu; el = el.parentNode ) {
+        if ( el.tagName == 'A' ) {
+          this.close();
+          break;
+        }
+      }
+    },
+
     keyDown( e ) {
       if ( e.keyCode == KeyCode.Up || e.keyCode == KeyCode.Down ) {
         if ( !this.open ) {
           this.open = true;
+          this.$emit( 'open' );
         } else {
           const items = this.$refs.menu.querySelectorAll( 'li a' );
           if ( items.length > 0 ) {

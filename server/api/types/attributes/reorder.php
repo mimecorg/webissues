@@ -36,7 +36,7 @@ class Server_Api_Types_Attributes_Reorder
         $attributes = $typeManager->getAttributeTypesForIssueType( $type );
 
         $validator = new System_Api_Validator();
-        $validator->checkViewSetting( $type, $attributes, 'attribute_order', $order );
+        $validator->checkAttributeOrder( $attributes, $order );
 
         $viewManager = new System_Api_ViewManager();
 

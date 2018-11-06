@@ -43,22 +43,28 @@ export default {
     initialPublic: Boolean
   },
 
-  data() {
+  fields() {
     return {
-      public: this.initialPublic
+      public: {
+        value: this.initialPublic,
+        type: Boolean
+      }
     };
   },
 
   methods: {
     submit() {
-      this.$emit( 'block' );
+      if ( !this.$fields.validate() )
+        return;
 
-      if ( this.public == this.initialPublic ) {
+      if ( !this.$fields.modified() ) {
         this.returnToDetails();
         return;
       }
 
       const data = { projectId: this.projectId, public: this.public };
+
+      this.$emit( 'block' );
 
       this.$ajax.post( '/projects/access.php', data ).then( () => {
         this.returnToDetails();

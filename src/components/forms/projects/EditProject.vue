@@ -54,13 +54,11 @@ export default {
         required: false,
         maxLength: this.$store.state.global.settings.commentMaxLength,
         multiLine: true
+      },
+      descriptionFormat: {
+        value: this.initialFormat,
+        type: Number
       }
-    };
-  },
-
-  data() {
-    return {
-      descriptionFormat: this.initialFormat
     };
   },
 

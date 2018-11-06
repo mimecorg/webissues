@@ -41,9 +41,11 @@ class Server_Api_Users_Add
         $validator->checkString( $login, System_Const::LoginMaxLength );
         $validator->checkString( $password, System_Const::PasswordMaxLength, $sendInvitationEmail ? System_Api_Validator::AllowEmpty : 0 );
         $validator->checkString( $email, System_Const::ValueMaxLength, $sendInvitationEmail ? 0 : System_Api_Validator::AllowEmpty );
+        if ( $email != '' )
+            $validator->checkEmailAddress( $email );
         $validator->checkString( $language, System_Const::ValueMaxLength, System_Api_Validator::AllowEmpty );
-        $validator->checkPreference( 'email', $email );
-        $validator->checkPreference( 'language', $language );
+        if ( $language != '' )
+            $validator->checkLanguage( $language );
 
         if ( $sendInvitationEmail ) {
             $keyGenerator = new System_Api_KeyGenerator();

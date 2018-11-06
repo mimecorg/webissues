@@ -27,17 +27,8 @@
     <Prompt v-if="mode == 'edit'" path="prompt.ModifyAttribute"><strong>{{ initialName }}</strong></Prompt>
     <Prompt v-else-if="mode == 'add'" path="prompt.AddAttribute"><strong>{{ typeName }}</strong></Prompt>
     <FormInput ref="name" id="name" v-bind:label="$t( 'label.Name' )" v-bind="$field( 'name' )" v-model="name"/>
-    <FormGroup v-bind:label="$t( 'label.AttributeType' )" v-bind="$field( 'attributeType' )">
-      <div class="dropdown-filters">
-        <DropdownButton v-bind:text="attributeTypeName">
-          <div class="dropdown-menu-scroll">
-            <li v-for="t in attributeTypes" v-bind:key="t" v-bind:class="{ active: t == attributeType }">
-              <HyperLink v-on:click="attributeType = t">{{ $t( 'AttributeType.' + t ) }}</HyperLink>
-            </li>
-          </div>
-        </DropdownButton>
-      </div>
-    </FormGroup>
+    <FormDropdown ref="attributeType" v-bind:label="$t( 'label.AttributeType' )" v-bind="$field( 'attributeType' )"
+                  v-bind:items="attributeTypes" v-bind:item-names="attibuteTypeNames" v-model="attributeType"/>
     <Panel v-bind:title="$t( 'title.AttributeDetails' )">
       <template v-if="attributeType == 'TEXT'">
         <FormCheckbox v-bind:label="$t( 'text.AllowMultipleLines' )" v-model="multiLine"/>
@@ -101,6 +92,8 @@ export default {
   },
 
   fields() {
+    const details = this.mode == 'edit' ? this.initialDetails : { decimal: 0 };
+
     const fields = {
       name: {
         value: this.initialName,
@@ -113,17 +106,31 @@ export default {
         type: String,
         required: true
       },
+      multiLine: {
+        value: details[ 'multi-line' ],
+        type: Boolean
+      },
       minLength: {
+        value: details[ 'min-length' ],
         type: String,
         maxLength: 3,
         condition: () => this.hasMinMaxLength,
         parse: this.parseMinLength
       },
       maxLength: {
+        value: details[ 'max-length' ],
         type: String,
         maxLength: 3,
         condition: () => this.hasMinMaxLength,
         parse: this.parseMaxLength
+      },
+      editable: {
+        value: details.editable,
+        type: Boolean,
+      },
+      multiSelect: {
+        value: details[ 'multi-select' ],
+        type: Boolean
       },
       items: {
         type: String,
@@ -133,7 +140,7 @@ export default {
         parse: this.parseItems
       },
       decimal: {
-        value: '0',
+        value: details.decimal,
         type: String,
         required: true,
         condition: () => this.attributeType == 'NUMERIC',
@@ -149,6 +156,26 @@ export default {
         condition: () => this.attributeType == 'NUMERIC',
         parse: this.parseMaxValue
       },
+      strip: {
+        value: details.strip,
+        type: Boolean,
+      },
+      time: {
+        value: details.time,
+        type: Boolean,
+      },
+      local: {
+        value: details.local,
+        type: Boolean,
+      },
+      members: {
+        value: details.members,
+        type: Boolean,
+      },
+      required: {
+        value: details.required,
+        type: Boolean,
+      },
       defaultValue: {
         type: String,
         maxLength: MaxLength.Value,
@@ -156,54 +183,26 @@ export default {
       }
     };
 
-    if ( this.initialDetails != null ) {
-      const details = this.initialDetails;
-      if ( details[ 'min-length' ] != null )
-        fields.minLength.value = details[ 'min-length' ].toString();
-      if ( details[ 'max-length' ] != null )
-        fields.maxLength.value = details[ 'max-length' ].toString();
-      if ( details.items != null )
-        fields.items.value = details.items.join( "\n" );
-      if ( details.decimal != null )
-        fields.decimal.value = details.decimal.toString();
-      if ( details[ 'min-value' ] != null )
-        fields.minValue.value = this.$formatter.convertAttributeValue( details[ 'min-value' ], { type: 'NUMERIC', decimal: details.decimal, strip: details.strip } );
-      if ( details[ 'max-value' ] != null )
-        fields.maxValue.value = this.$formatter.convertAttributeValue( details[ 'max-value' ], { type: 'NUMERIC', decimal: details.decimal, strip: details.strip } );
-      if ( details.default != null )
-        fields.defaultValue.value = this.$formatter.formatExpression( details.default, { type: this.initialType, ...details } );
-    }
+    if ( details.items != null )
+      fields.items.value = details.items.join( "\n" );
+    if ( details[ 'min-value' ] != null )
+      fields.minValue.value = this.$formatter.convertAttributeValue( details[ 'min-value' ], { type: 'NUMERIC', decimal: details.decimal, strip: details.strip } );
+    if ( details[ 'max-value' ] != null )
+      fields.maxValue.value = this.$formatter.convertAttributeValue( details[ 'max-value' ], { type: 'NUMERIC', decimal: details.decimal, strip: details.strip } );
+    if ( details.default != null )
+      fields.defaultValue.value = this.$formatter.formatExpression( details.default, { type: this.initialType, ...details } );
 
     return fields;
   },
 
   data() {
     const data = {
-      required: false,
-      multiLine: false,
-      editable: false,
-      multiSelect: false,
-      strip: false,
-      time: false,
-      local: false,
-      members: false,
       extractedItems: [],
       parsedItems: [],
     };
 
-    if ( this.initialDetails != null ) {
-      const details = this.initialDetails;
-      data.required = details.required == 1;
-      data.multiLine = details[ 'multi-line' ] == 1;
-      data.editable = details.editable == 1;
-      data.multiSelect = details[ 'multi-select' ] == 1;
-      data.strip = details.strip == 1;
-      data.time = details.time == 1;
-      data.local = details.local == 1;
-      data.members = details.members == 1;
-      if ( details.items != null )
-        data.extractedItems = details.items;
-    }
+    if ( this.initialDetails != null && this.initialDetails.items != null )
+        data.extractedItems = this.initialDetails.items;
 
     return data;
   },
@@ -215,9 +214,6 @@ export default {
       else if ( this.mode == 'add' )
         return this.$t( 'cmd.AddAttribute' );
     },
-    attributeTypeName() {
-      return this.$t( 'AttributeType.' + this.attributeType );
-    },
     attributeTypes() {
       if ( this.initialType == 'TEXT' || this.initialType == 'ENUM' || this.initialType == 'USER' )
         return [ 'TEXT', 'ENUM', 'USER' ];
@@ -225,6 +221,9 @@ export default {
         return [ this.initialType ];
       else
         return [ 'TEXT', 'ENUM', 'NUMERIC', 'DATETIME', 'USER' ];
+    },
+    attibuteTypeNames() {
+      return this.attributeTypes.map( t => this.$t( 'AttributeType.' + t ) );
     },
     hasMinMaxLength() {
       return this.attributeType == 'TEXT' || this.attributeType == 'ENUM' && this.editable && !this.multiSelect;

@@ -121,6 +121,10 @@ class Server_Api_Issues_List
 
         $columns = $queryGenerator->getColumnNames();
 
+        $serverManager = new System_Api_ServerManager();
+        if ( $serverManager->getSetting( 'hide_id_column' ) == 1 )
+            unset( $columns[ System_Api_Column::ID ] );
+
         $helper = new System_Web_ColumnHelper();
         $headers = $helper->getColumnHeaders() + $queryGenerator->getUserColumnHeaders();
 

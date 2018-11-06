@@ -130,7 +130,8 @@ export const ErrorCode = {
   UnknownSubscription: 364,
   SubscriptionAlreadyExists: 365,
   LoginAlreadyExists: 366,
-  InvalidResetKey: 367
+  InvalidResetKey: 367,
+  UnknownInbox: 368
 };
 
 export const Reason = {
