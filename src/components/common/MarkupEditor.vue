@@ -277,9 +277,13 @@ export default {
       this.$refs.textarea.focus();
       let text = this.$refs.textarea.value;
       try {
-        text = this.$parser.normalizeString( text, this.maxlength, { multiLine: true } );
+        text = this.$parser.normalizeString( text, this.maxlength, { allowEmpty: true, multiLine: true } );
       } catch ( error ) {
         this.$emit( 'error', error );
+        return;
+      }
+      if ( text == '' ) {
+        this.previewHtml = null;
         return;
       }
       this.$ajax.post( '/issues/preview.php', { text } ).then( html => {
