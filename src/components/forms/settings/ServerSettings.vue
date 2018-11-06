@@ -47,7 +47,7 @@
         </div>
         <div class="row">
           <div class="col-xs-4 col-sm-3">{{ $t( 'label.TimeZone' ) }}</div>
-          <div class="col-xs-8 col-sm-9">{{ settings.timeZone }}</div>
+          <div class="col-xs-8 col-sm-9">{{ timeZoneName }}</div>
         </div>
       </div>
     </div>
@@ -153,6 +153,9 @@ export default {
       const language = this.languages.find( l => l.key == this.settings.language );
       if ( language != null )
         return language.name;
+    },
+    timeZoneName() {
+      return this.settings.timeZone.replace( /_/g, ' ' ).replace( /\//g, ' / ' ).replace( /St /g, 'St. ' );
     },
     columnNames() {
       return [

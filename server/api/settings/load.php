@@ -56,7 +56,7 @@ class Server_Api_Settings_Load
             $date = new DateTime();
             $timeZone = $date->getTimezone()->getName();
         }
-        $settings[ 'timeZone' ] = $this->formatTimeZoneName( $timeZone );
+        $settings[ 'timeZone' ] = $timeZone;
 
         $result[ 'settings' ] = $settings;
 
@@ -76,11 +76,6 @@ class Server_Api_Settings_Load
         }
 
         return $result;
-    }
-
-    private function formatTimeZoneName( $timeZone )
-    {
-        return str_replace( array( '_', '/', 'St ' ), array( ' ', ' / ', 'St. ' ), $timeZone );
     }
 }
 
