@@ -18,14 +18,14 @@
 -->
 
 <template>
-  <div class="container-fluid">
-    <FormHeader v-bind:title="name" v-bind:breadcrumbs="breadcrumbs" v-on:close="close">
+  <BaseForm v-bind:title="name" v-bind:breadcrumbs="breadcrumbs" size="large" auto-close save-position>
+    <template slot="header">
       <button type="button" class="btn btn-default" v-on:click="viewSettings"><span class="fa fa-binoculars" aria-hidden="true"></span> {{ $t( 'title.ViewSettings' ) }}</button>
       <DropdownButton v-if="isAdministrator" fa-class="fa-ellipsis-v" menu-class="dropdown-menu-right" v-bind:title="$t( 'title.More' )">
         <li><HyperLink v-on:click="renameType"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'cmd.RenameType' ) }}</HyperLink></li>
         <li><HyperLink v-on:click="deleteType"><span class="fa fa-trash" aria-hidden="true"></span> {{ $t( 'cmd.DeleteType' ) }}</HyperLink></li>
       </DropdownButton>
-    </FormHeader>
+    </template>
     <FormSection v-bind:title="$t( 'title.Attributes' )">
       <button v-if="isAdministrator" type="button" class="btn btn-success" v-on:click="addAttribute"><span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'cmd.Add' ) }}</button>
       <button v-if="isAdministrator && attributes.length > 1" type="button" class="btn btn-default" v-on:click="reorderAttributes">
@@ -41,17 +41,13 @@
     <div v-else class="alert alert-info">
       {{ $t( 'info.NoAttributes' ) }}
     </div>
-  </div>
+  </BaseForm>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
 
-import savePosition from '@/mixins/save-position'
-
 export default {
-  mixins: [ savePosition ],
-
   props: {
     typeId: Number,
     name: String,
@@ -108,10 +104,6 @@ export default {
 
     rowClick( rowIndex ) {
       this.$router.push( 'EditAttribute', { typeId: this.typeId, attributeId: this.attributes[ rowIndex ].id } );
-    },
-
-    close() {
-      this.$emit( 'close' );
     }
   }
 }

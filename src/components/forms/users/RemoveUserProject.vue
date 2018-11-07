@@ -18,11 +18,9 @@
 -->
 
 <template>
-  <div class="container-fluid">
-    <FormHeader v-bind:title="$t( 'cmd.RemoveProject' )" v-on:close="close"/>
+  <BaseForm v-bind:title="$t( 'cmd.RemoveProject' )" size="small" with-buttons v-on:ok="submit" v-on:cancel="returnToDetails">
     <Prompt path="prompt.RemoveMember"><strong>{{ userName }}</strong><strong>{{ projectName }}</strong></Prompt>
-    <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
-  </div>
+  </BaseForm>
 </template>
 
 <script>
@@ -48,19 +46,11 @@ export default {
       } );
     },
 
-    cancel() {
-      this.returnToDetails();
-    },
-
     returnToDetails() {
       if ( this.accountMode )
         this.$router.push( 'MyAccount' );
       else
         this.$router.push( 'UserDetails', { userId: this.userId } );
-    },
-
-    close() {
-      this.$emit( 'close' );
     }
   }
 }

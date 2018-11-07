@@ -18,12 +18,12 @@
 -->
 
 <template>
-  <div class="container-fluid">
-    <FormHeader v-bind:title="title" v-on:close="close">
+  <BaseForm v-bind:title="title" v-bind:size="size" with-buttons v-on:ok="submit" v-on:cancel="returnToDetails">
+    <template slot="header">
       <button v-if="mode == 'edit' && canEdit" type="button" class="btn btn-default" v-on:click="removeMember">
         <span class="fa fa-ban" aria-hidden="true"></span> {{ $t( 'cmd.Remove' ) }}
       </button>
-    </FormHeader>
+    </template>
     <Prompt v-if="mode == 'edit'" path="prompt.EditMember"><strong>{{ projectName }}</strong><strong>{{ userName }}</strong></Prompt>
     <Prompt v-else-if="mode == 'add'" path="prompt.AddMembers"><strong>{{ projectName }}</strong></Prompt>
     <Panel v-if="mode == 'add' && availableUsers.length > 0" v-bind:title="$t( 'title.Users' )">
@@ -49,8 +49,7 @@
       </div>
     </FormGroup>
     <Prompt v-else path="error.CannotEditOwnAcess" alert-class="alert-warning"/>
-    <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
-  </div>
+  </BaseForm>
 </template>
 
 <script>
@@ -93,6 +92,12 @@ export default {
         return this.$t( 'cmd.EditMember' );
       else if ( this.mode == 'add' )
         return this.$t( 'cmd.AddMembers' );
+    },
+    size() {
+      if ( this.mode == 'edit' )
+        return 'small';
+      else if ( this.mode == 'add' )
+        return 'normal';
     },
     canEdit() {
       return this.mode == 'add' || this.$store.state.global.userAccess == Access.AdministratorAccess || this.userId != this.$store.state.global.userId;
@@ -139,25 +144,17 @@ export default {
         return;
       }
 
-      this.$emit( 'block' );
+      this.$form.block();
 
       this.$ajax.post( '/projects/members/edit.php', data ).then( () => {
         this.returnToDetails();
       } ).catch( error => {
-        this.$emit( 'error', error );
+        this.$form.error( error );
       } );
-    },
-
-    cancel() {
-      this.returnToDetails();
     },
 
     returnToDetails() {
       this.$router.push( 'ProjectPermissions', { projectId: this.projectId } );
-    },
-
-    close() {
-      this.$emit( 'close' );
     }
   }
 }

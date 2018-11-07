@@ -40,6 +40,7 @@
   border: 1px solid @window-border-color;
   border-radius: @border-radius-large;
   .box-shadow( 0 3px 9px rgba( 0, 0, 0, 0.5 ) );
+  cursor: default;
 
   #window-overlay & {
     margin-top: 60px;
@@ -72,4 +73,8 @@
       width: @screen-lg-min - 60px;
     }
   }
+}
+
+.window-auto-close {
+  cursor: pointer;
 }

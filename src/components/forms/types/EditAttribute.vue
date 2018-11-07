@@ -18,12 +18,12 @@
 -->
 
 <template>
-  <div class="container-fluid">
-    <FormHeader v-bind:title="title" v-on:close="close">
+  <BaseForm v-bind:title="title" with-buttons v-on:ok="submit" v-on:cancel="returnToDetails">
+    <template slot="header">
       <button v-if="mode == 'edit'" type="button" class="btn btn-default" v-on:click="deleteAttribute">
         <span class="fa fa-trash" aria-hidden="true"></span> {{ $t( 'cmd.Delete' ) }}
       </button>
-    </FormHeader>
+    </template>
     <Prompt v-if="mode == 'edit'" path="prompt.ModifyAttribute"><strong>{{ initialName }}</strong></Prompt>
     <Prompt v-else-if="mode == 'add'" path="prompt.AddAttribute"><strong>{{ typeName }}</strong></Prompt>
     <FormInput ref="name" id="name" v-bind:label="$t( 'label.Name' )" v-bind="$field( 'name' )" v-model="name"/>
@@ -73,8 +73,7 @@
     <FormGroup id="defaultValue" v-bind:label="$t( 'label.DefaultValue' )" v-bind="$field( 'defaultValue' )">
       <ValueEditor id="defaultValue" v-bind:attribute="attribute" with-expressions v-model="defaultValue"/>
     </FormGroup>
-    <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
-  </div>
+  </BaseForm>
 </template>
 
 <script>
@@ -280,7 +279,7 @@ export default {
 
       data.details = details;
 
-      this.$emit( 'block' );
+      this.$form.block();
 
       this.$ajax.post( '/types/attributes/' + this.mode + '.php', data ).then( ( { attributeId, changed } ) => {
         if ( changed )
@@ -288,13 +287,13 @@ export default {
         this.returnToDetails();
       } ).catch( error => {
         if ( error.reason == Reason.APIError && error.errorCode == ErrorCode.AttributeAlreadyExists ) {
-          this.$emit( 'unblock' );
+          this.$form.unblock();
           this.nameError = this.$t( 'ErrorCode.' + error.errorCode );
           this.$nextTick( () => {
             this.$refs.name.focus();
           } );
         } else {
-          this.$emit( 'error', error );
+          this.$form.error( error );
         }
       } );
     },
@@ -434,20 +433,12 @@ export default {
       this.extractedItems = items;
     },
 
-    cancel() {
-      this.returnToDetails();
-    },
-
     returnToDetails() {
       this.$router.push( 'TypeDetails', { typeId: this.typeId } );
     },
 
     deleteAttribute() {
       this.$router.push( 'DeleteAttribute', { typeId: this.typeId, attributeId: this.attributeId } );
-    },
-
-    close() {
-      this.$emit( 'close' );
     }
   },
 

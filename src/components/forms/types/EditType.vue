@@ -18,13 +18,11 @@
 -->
 
 <template>
-  <div class="container-fluid">
-    <FormHeader v-bind:title="title" v-on:close="close"/>
+  <BaseForm v-bind:title="title" size="small" with-buttons v-on:ok="submit" v-on:cancel="cancel">
     <Prompt v-if="mode == 'rename'" path="prompt.RenameType"><strong>{{ initialName }}</strong></Prompt>
     <Prompt v-else-if="mode == 'add'" path="prompt.AddType"></Prompt>
     <FormInput ref="name" id="name" v-bind:label="$t( 'label.Name' )" v-bind="$field( 'name' )" v-model="name"/>
-    <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
-  </div>
+  </BaseForm>
 </template>
 
 <script>
@@ -72,7 +70,7 @@ export default {
         data.typeId = this.typeId;
       data.name = this.name;
 
-      this.$emit( 'block' );
+      this.$form.block();
 
       this.$ajax.post( '/types/' + this.mode + '.php', data ).then( ( { typeId, changed } ) => {
         if ( changed )
@@ -80,13 +78,13 @@ export default {
         this.returnToDetails( typeId );
       } ).catch( error => {
         if ( error.reason == Reason.APIError && error.errorCode == ErrorCode.TypeAlreadyExists ) {
-          this.$emit( 'unblock' );
+          this.$form.unblock();
           this.nameError = this.$t( 'ErrorCode.' + error.errorCode );
           this.$nextTick( () => {
             this.$refs.name.focus();
           } );
         } else {
-          this.$emit( 'error', error );
+          this.$form.error( error );
         }
       } );
     },
@@ -100,10 +98,6 @@ export default {
 
     returnToDetails( typeId ) {
       this.$router.push( 'TypeDetails', { typeId } );
-    },
-
-    close() {
-      this.$emit( 'close' );
     }
   },
 

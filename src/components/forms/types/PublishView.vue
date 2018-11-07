@@ -18,12 +18,10 @@
 -->
 
 <template>
-  <div class="container-fluid">
-    <FormHeader v-bind:title="title" v-on:close="close"/>
+  <BaseForm v-bind:title="title" size="small" with-buttons v-bind:cancel-hidden="errorPath != null" v-on:ok="submit" v-on:cancel="returnToDetails">
     <Prompt v-if="errorPath == null" v-bind:path="promptPath"><strong>{{ name }}</strong></Prompt>
     <Prompt v-else v-bind:path="errorPath" alert-class="alert-danger"/>
-    <FormButtons v-bind:cancel-hidden="errorPath != null" v-on:ok="submit" v-on:cancel="cancel"/>
-  </div>
+  </BaseForm>
 </template>
 
 <script>
@@ -65,7 +63,7 @@ export default {
         return;
       }
 
-      this.$emit( 'block' );
+      this.$form.block();
 
       const data = { viewId: this.viewId };
 
@@ -75,24 +73,16 @@ export default {
         this.returnToDetails();
       } ).catch( error => {
         if ( error.reason == Reason.APIError && error.errorCode == ErrorCode.ViewAlreadyExists ) {
-          this.$emit( 'unblock' );
+          this.$form.unblock();
           this.errorPath = 'ErrorCode.' + error.errorCode;
         } else {
-          this.$emit( 'error', error );
+          this.$form.error( error );
         }
       } );
     },
 
-    cancel() {
-      this.returnToDetails();
-    },
-
     returnToDetails() {
       this.$router.push( 'ViewSettings', { typeId: this.typeId } );
-    },
-
-    close() {
-      this.$emit( 'close' );
     }
   }
 }

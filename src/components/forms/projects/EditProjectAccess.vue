@@ -18,8 +18,7 @@
 -->
 
 <template>
-  <div class="container-fluid">
-    <FormHeader v-bind:title="$t( 'title.GlobalAccess' )" v-on:close="close"/>
+  <BaseForm v-bind:title="$t( 'title.GlobalAccess' )" size="small" with-buttons v-on:ok="submit" v-on:cancel="returnToDetails">
     <Prompt path="prompt.EditProjectAccess"><strong>{{ name }}</strong></Prompt>
     <FormGroup v-bind:label="$t( 'label.Access' )" required>
       <div class="radio">
@@ -29,8 +28,7 @@
         <label><input type="radio" v-model="public" v-bind:value="true"> {{ $t( 'text.PublicProject' ) }}</label>
       </div>
     </FormGroup>
-    <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
-  </div>
+  </BaseForm>
 </template>
 
 <script>
@@ -64,25 +62,17 @@ export default {
 
       const data = { projectId: this.projectId, public: this.public };
 
-      this.$emit( 'block' );
+      this.$form.block();
 
       this.$ajax.post( '/projects/access.php', data ).then( () => {
         this.returnToDetails();
       } ).catch( error => {
-        this.$emit( 'error', error );
+        this.$form.error( error );
       } );
-    },
-
-    cancel() {
-      this.returnToDetails();
     },
 
     returnToDetails() {
       this.$router.push( 'ProjectPermissions', { projectId: this.projectId } );
-    },
-
-    close() {
-      this.$emit( 'close' );
     }
   }
 }

@@ -18,15 +18,13 @@
 -->
 
 <template>
-  <div class="container-fluid">
-    <FormHeader v-bind:title="title" v-on:close="close"/>
+  <BaseForm v-bind:title="title" v-bind:size="size" with-buttons v-on:ok="submit" v-on:cancel="cancel">
     <Prompt v-if="mode == 'rename'" path="prompt.RenameProject"><strong>{{ initialName }}</strong></Prompt>
     <Prompt v-else-if="mode == 'add'" path="prompt.AddProject"></Prompt>
     <FormInput ref="name" id="name" v-bind:label="$t( 'label.Name' )" v-bind="$field( 'name' )" v-model="name"/>
     <MarkupEditor v-if="mode == 'add'" ref="description" id="description" v-bind:label="$t( 'label.Description' )" v-bind="$field( 'description' )"
-                  v-bind:format.sync="descriptionFormat" v-model="description" v-on:error="error"/>
-    <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
-  </div>
+                  v-bind:format.sync="descriptionFormat" v-model="description"/>
+  </BaseForm>
 </template>
 
 <script>
@@ -68,6 +66,12 @@ export default {
         return this.$t( 'cmd.RenameProject' );
       else if ( this.mode == 'add' )
         return this.$t( 'cmd.AddProject' );
+    },
+    size() {
+      if ( this.mode == 'rename' )
+        return 'small';
+      else if ( this.mode == 'add' )
+        return 'normal';
     }
   },
 
@@ -118,13 +122,6 @@ export default {
 
     returnToDetails( projectId ) {
       this.$router.push( 'ProjectDetails', { projectId } );
-    },
-
-    close() {
-      this.$emit( 'close' );
-    },
-    error( error ) {
-      this.$emit( 'error', error );
     }
   },
 

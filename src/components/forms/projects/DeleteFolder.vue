@@ -18,12 +18,10 @@
 -->
 
 <template>
-  <div class="container-fluid">
-    <FormHeader v-bind:title="$t( 'cmd.DeleteFolder' )" v-on:close="close"/>
+  <BaseForm v-bind:title="$t( 'cmd.DeleteFolder' )" size="small" with-buttons v-on:ok="submit" v-on:cancel="returnToDetails">
     <Prompt path="prompt.DeleteFolder"><strong>{{ name }}</strong></Prompt>
     <Prompt v-if="force" path="prompt.WarningDeleteFolder" alert-class="alert-danger"><strong>{{ $t( 'label.Warning' ) }}</strong></Prompt>
-    <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
-  </div>
+  </BaseForm>
 </template>
 
 <script>
@@ -45,7 +43,7 @@ export default {
 
   methods: {
     submit() {
-      this.$emit( 'block' );
+      this.$form.block();
 
       const data = { folderId: this.folderId, force: this.force };
 
@@ -54,24 +52,16 @@ export default {
         this.returnToDetails();
       } ).catch( error => {
         if ( error.reason == Reason.APIError && error.errorCode == ErrorCode.CannotDeleteFolder ) {
-          this.$emit( 'unblock' );
+          this.$form.unblock();
           this.force = true;
         } else {
-          this.$emit( 'error', error );
+          this.$form.error( error );
         }
       } );
     },
 
-    cancel() {
-      this.returnToDetails();
-    },
-
     returnToDetails() {
       this.$router.push( 'ProjectDetails', { projectId: this.projectId } );
-    },
-
-    close() {
-      this.$emit( 'close' );
     }
   }
 }

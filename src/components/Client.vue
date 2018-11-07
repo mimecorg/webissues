@@ -20,8 +20,7 @@
 <template>
   <div id="application">
     <ClientNavbar v-bind:server-name="serverName" v-bind:server-version="serverVersion" v-on:client-settings="clientSettings"/>
-    <ClientWindow v-bind:child-form="childForm" v-bind:child-props="childProps" v-bind:size="size" v-bind:busy="busy"
-                  v-on:close="close" v-on:block="block" v-on:unblock="unblock" v-on:error="error"/>
+    <ClientWindow v-bind:child-form="childForm" v-bind:child-props="childProps" v-bind:size="size" v-bind:busy="busy"/>
   </div>
 </template>
 
@@ -51,6 +50,10 @@ export default {
   },
 
   methods: {
+    setSize( size ) {
+      this.size = size;
+    },
+
     close() {
       if ( this.childForm == 'ErrorMessage' || !this.loaded )
         this.$client.restartClient();
@@ -69,7 +72,6 @@ export default {
       if ( !this.busy ) {
         this.childForm = 'client/ClientLogin';
         this.childProps = { anonymousAccess: this.settings.anonymousAccess, selfRegister: this.settings.selfRegister, resetPassword: this.settings.resetPassword };
-        this.size = 'small';
       }
     },
 
@@ -77,17 +79,26 @@ export default {
       if ( !this.busy ) {
         this.childForm = 'client/ClientSettings';
         this.childProps = {};
-        this.size = 'small';
       }
     },
 
     error( error ) {
       this.childForm = 'ErrorMessage';
       this.childProps = { error, isAuthenticated: false };
-      this.size = 'small';
       this.busy = false;
       console.error( error );
     }
+  },
+
+  form() {
+    return {
+      setSize: this.setSize,
+      setAutoClose() {},
+      close: this.close,
+      block: this.block,
+      unblock: this.unblock,
+      error: this.error
+    };
   },
 
   mounted() {

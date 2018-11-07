@@ -18,12 +18,10 @@
 -->
 
 <template>
-  <div class="container-fluid">
-    <FormHeader v-bind:title="$t( 'cmd.RenameServer' )" v-on:close="close"/>
+  <BaseForm v-bind:title="$t( 'cmd.RenameServer' )" size="small" with-buttons v-on:ok="submit" v-on:cancel="returnToDetails">
     <Prompt path="prompt.RenameServer"/>
     <FormInput ref="name" id="name" v-bind:label="$t( 'label.Name' )" v-bind="$field( 'name' )" v-model="name"/>
-    <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
-  </div>
+  </BaseForm>
 </template>
 
 <script>
@@ -57,7 +55,7 @@ export default {
 
       const data = { name: this.name };
 
-      this.$emit( 'block' );
+      this.$form.block();
 
       this.$ajax.post( '/settings/server/rename.php', data ).then( ( { changed } ) => {
         if ( changed ) {
@@ -66,20 +64,12 @@ export default {
         }
         this.returnToDetails();
       } ).catch( error => {
-        this.$emit( 'error', error );
+        this.$form.error( error );
       } );
-    },
-
-    cancel() {
-      this.returnToDetails();
     },
 
     returnToDetails() {
       this.$router.push( 'ServerSettings' );
-    },
-
-    close() {
-      this.$emit( 'close' );
     }
   },
 

@@ -18,8 +18,7 @@
 -->
 
 <template>
-  <div class="container-fluid">
-    <FormHeader v-bind:title="$t( 'title.EmailSettings' )" v-on:close="close"/>
+  <BaseForm v-bind:title="$t( 'title.EmailSettings' )" with-buttons v-on:ok="submit" v-on:cancel="returnToDetails">
     <FormCheckbox v-bind:label="$t( 'text.EnableSendingEmails' )" v-model="isEnabled"/>
     <FormInput v-if="isEnabled" ref="from" id="from" v-bind:label="$t( 'label.EmailAddress' )" v-bind="$field( 'from' )" v-model="from"/>
     <FormCheckbox v-if="isEnabled" v-bind:label="$t( 'text.UseCustomSMTPServer' )" v-model="customServer"/>
@@ -36,8 +35,7 @@
       <Prompt v-if="testStatus == true" path="prompt.TestMessageSent" alert-class="alert-success"/>
       <Prompt v-else-if="testStatus == false" path="prompt.TestMessageFailed" alert-class="alert-danger"/>
     </Panel>
-    <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
-  </div>
+  </BaseForm>
 </template>
 
 <script>
@@ -141,14 +139,14 @@ export default {
         data.emailEngine = '';
       }
 
-      this.$emit( 'block' );
+      this.$form.block();
 
       this.$ajax.post( '/settings/email/edit.php', data ).then( ( { changed } ) => {
         if ( changed )
           this.$store.commit( 'global/setDirty' );
         this.returnToDetails();
       } ).catch( error => {
-        this.$emit( 'error', error );
+        this.$form.error( error );
       } );
     },
 
@@ -167,13 +165,13 @@ export default {
         smtpPassword: this.password
       };
 
-      this.$emit( 'block' );
+      this.$form.block();
 
       this.$ajax.post( '/settings/email/test.php', data ).then( ( { status } ) => {
-        this.$emit( 'unblock' );
+        this.$form.unblock();
         this.testStatus = status;
       } ).catch( error => {
-        this.$emit( 'error', error );
+        this.$form.error( error );
       } );
     },
 
@@ -187,16 +185,8 @@ export default {
       return port.toString();
     },
 
-    cancel() {
-      this.returnToDetails();
-    },
-
     returnToDetails() {
       this.$router.push( 'ServerSettings' );
-    },
-
-    close() {
-      this.$emit( 'close' );
     }
   },
 

@@ -18,11 +18,9 @@
 -->
 
 <template>
-  <div class="container-fluid">
-    <FormHeader v-bind:title="$t( 'cmd.DeleteDescription' )" v-on:close="close"/>
+  <BaseForm v-bind:title="$t( 'cmd.DeleteDescription' )" size="small" with-buttons v-on:ok="submit" v-on:cancel="returnToDetails">
     <Prompt path="prompt.DeleteProjectDescription"><strong>{{ projectName }}</strong></Prompt>
-    <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
-  </div>
+  </BaseForm>
 </template>
 
 <script>
@@ -34,25 +32,17 @@ export default {
 
   methods: {
     submit() {
-      this.$emit( 'block' );
+      this.$form.block();
 
       this.$ajax.post( '/projects/description/delete.php', { projectId: this.projectId } ).then( () => {
         this.returnToDetails();
       } ).catch( error => {
-        this.$emit( 'error', error );
+        this.$form.error( error );
       } );
-    },
-
-    cancel() {
-      this.returnToDetails();
     },
 
     returnToDetails() {
       this.$router.push( 'ProjectDetails', { projectId: this.projectId } );
-    },
-
-    close() {
-      this.$emit( 'close' );
     }
   }
 }

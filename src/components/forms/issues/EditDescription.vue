@@ -18,14 +18,12 @@
 -->
 
 <template>
-  <div class="container-fluid">
-    <FormHeader v-bind:title="title" v-on:close="close"/>
+  <BaseForm v-bind:title="title" with-buttons v-on:ok="submit" v-on:cancel="returnToDetails">
     <Prompt v-if="mode == 'edit'" path="prompt.EditDescription"><strong>{{ issueName }}</strong></Prompt>
     <Prompt v-else-if="mode == 'add'" path="prompt.AddDescription"><strong>{{ issueName }}</strong></Prompt>
     <MarkupEditor ref="description" id="description" v-bind:label="$t( 'label.Description' )" v-bind="$field( 'description' )"
-                  v-bind:format.sync="descriptionFormat" v-model="description" v-on:error="error"/>
-    <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
-  </div>
+                  v-bind:format.sync="descriptionFormat" v-model="description"/>
+  </BaseForm>
 </template>
 
 <script>
@@ -75,30 +73,19 @@ export default {
 
       const data = { issueId: this.issueId, description: this.description, descriptionFormat: this.descriptionFormat };
 
-      this.$emit( 'block' );
+      this.$form.block();
 
       this.$ajax.post( '/issues/description/' + this.mode + '.php', data ).then( ( { stampId } ) => {
         if ( stampId != false )
           this.$store.commit( 'list/setDirty' );
         this.returnToDetails();
       } ).catch( error => {
-        this.$emit( 'error', error );
+        this.$form.error( error );
       } );
-    },
-
-    cancel() {
-      this.returnToDetails();
     },
 
     returnToDetails() {
       this.$router.push( 'IssueDetails', { issueId: this.issueId } );
-    },
-
-    close() {
-      this.$emit( 'close' );
-    },
-    error( error ) {
-      this.$emit( 'error', error );
     }
   },
 

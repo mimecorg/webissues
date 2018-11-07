@@ -18,13 +18,11 @@
 -->
 
 <template>
-  <div class="container-fluid">
-    <FormHeader v-bind:title="title" v-on:close="close"/>
+  <BaseForm v-bind:title="title" size="small" with-buttons cancel-hidden v-on:ok="close">
     <div class="alert alert-danger">
       <p>{{ message }}</p>
     </div>
-    <FormButtons cancel-hidden v-on:ok="close"/>
-  </div>
+  </BaseForm>
 </template>
 
 <script>
@@ -99,7 +97,7 @@ export default {
   },
   methods: {
     close() {
-      this.$emit( 'close' );
+      this.$form.close();
     }
   }
 }

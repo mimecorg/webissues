@@ -18,9 +18,9 @@
 -->
 
 <template>
-  <div class="container-fluid">
+  <BaseForm v-bind:title="details.name" size="large" auto-close>
 
-    <FormHeader v-bind:title="details.name" v-on:close="close">
+    <template slot="header">
       <button v-if="isAuthenticated" type="button" class="btn btn-primary" v-on:click="editIssue"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'cmd.Edit' ) }}</button>
       <DropdownButton v-if="isAuthenticated" fa-class="fa-ellipsis-v" menu-class="dropdown-menu-right" v-bind:title="$t( 'title.More' )">
         <li><HyperLink v-on:click="cloneIssue"><span class="fa fa-clone" aria-hidden="true"></span> {{ $t( 'cmd.CloneIssue' ) }}</HyperLink></li>
@@ -32,7 +32,7 @@
         <li role="separator" class="divider"></li>
         <li><HyperLink><span class="fa fa-envelope" aria-hidden="true"></span> {{ $t( 'cmd.Subscribe' ) }}</HyperLink></li>
       </DropdownButton>
-    </FormHeader>
+    </template>
 
     <div class="row">
       <div class="col-sm-4 col-sm-push-8">
@@ -143,13 +143,13 @@
         </div>
       </div>
     </div>
-  </div>
+  </BaseForm>
 </template>
 
 <script>
 import { mapState, mapGetters } from 'vuex'
 
-import { Access, Change, History, KeyCode } from '@/constants'
+import { Access, Change, History } from '@/constants'
 
 export default {
   computed: {
@@ -414,41 +414,26 @@ export default {
       this.update();
     },
     update() {
-      this.$emit( 'block' );
+      this.$form.block();
       this.$store.dispatch( 'issue/load' ).then( () => {
-        this.$emit( 'unblock' );
+        this.$form.unblock();
       } ).catch( error => {
-        this.$emit( 'error', error );
+        this.$form.error( error );
       } );
-    },
-
-    close() {
-      this.$emit( 'close' );
-    },
-
-    handleKeyDown( e ) {
-      if ( e.keyCode == KeyCode.Esc )
-        this.close();
     }
   },
 
   mounted() {
     const route = this.$router.route;
     if ( route != null && route.name == 'IssueItem' && route.params.issueId == this.issueId )
-      this.$emit( 'scrollToAnchor', 'item' + route.params.itemId );
+      this.$form.scrollToAnchor( 'item' + route.params.itemId );
     else
-      this.$emit( 'loadPosition', '/issues/' + this.issueId );
-
-    document.addEventListener( 'keydown', this.handleKeyDown );
-  },
-
-  beforeDestroy() {
-    document.removeEventListener( 'keydown', this.handleKeyDown );
+      this.$form.loadPosition( '/issues/' + this.issueId );
   },
 
   routeChanged( route ) {
     if ( route != null && route.name == 'IssueDetails' && route.params.issueId == this.issueId ) {
-      this.$emit( 'loadPosition', '/issues/' + this.issueId );
+      this.$form.loadPosition( '/issues/' + this.issueId );
       return true;
     }
 
@@ -456,24 +441,24 @@ export default {
       const itemId = route.params.itemId;
 
       if ( itemId == this.issueId ) {
-        this.$emit( 'resetPosition', '/issues/' + this.issueId );
+        this.$form.resetPosition( '/issues/' + this.issueId );
         this.$router.replace( 'IssueDetails', { issueId: this.issueId } );
         return true;
       }
 
       if ( this.isItemInHistory( itemId ) ) {
-        this.$emit( 'savePosition', '/issues/' + this.issueId );
+        this.$form.savePosition( '/issues/' + this.issueId );
         this.$router.replace( 'IssueItem', { issueId: this.issueId, itemId } );
         return true;
       }
 
-      this.$emit( 'resetPosition', '/issues/' + itemId );
+      this.$form.resetPosition( '/issues/' + itemId );
     }
 
-    this.$emit( 'savePosition', '/issues/' + this.issueId );
+    this.$form.savePosition( '/issues/' + this.issueId );
 
     if ( route != null && route.name == 'IssueItem' && route.params.issueId == this.issueId ) {
-      this.$emit( 'scrollToAnchor', 'item' + route.params.itemId );
+      this.$form.scrollToAnchor( 'item' + route.params.itemId );
       return true;
     }
 

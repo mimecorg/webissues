@@ -18,8 +18,7 @@
 -->
 
 <template>
-  <div class="container-fluid">
-    <FormHeader v-bind:title="$t( 'title.ServerSettings' )" v-on:close="close"/>
+  <BaseForm v-bind:title="$t( 'title.ServerSettings' )" auto-close save-position>
 
     <FormSection v-bind:title="$t( 'title.ServerInformation' )">
       <DropdownButton fa-class="fa-ellipsis-v" menu-class="dropdown-menu-right" v-bind:title="$t( 'title.More' )">
@@ -104,17 +103,13 @@
     </FormSection>
     <Prompt path="prompt.AdvancedSettings" alert-class="alert-default"/>
 
-  </div>
+  </BaseForm>
 </template>
 
 <script>
 import { mapState } from 'vuex'
 
-import savePosition from '@/mixins/save-position'
-
 export default {
-  mixins: [ savePosition ],
-
   props: {
     serverName: String,
     settings: Object,
@@ -205,10 +200,6 @@ export default {
 
     rowClick( rowIndex ) {
       this.$router.push( 'EditInbox', { inboxId: this.inboxes[ rowIndex ].id } );
-    },
-
-    close() {
-      this.$emit( 'close' );
     }
   }
 }

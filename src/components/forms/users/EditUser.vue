@@ -18,8 +18,7 @@
 -->
 
 <template>
-  <div class="container-fluid">
-    <FormHeader v-bind:title="title" v-on:close="close"/>
+  <BaseForm v-bind:title="title" with-buttons v-on:ok="submit" v-on:cancel="cancel">
     <Prompt v-if="mode == 'edit'" path="prompt.EditUser"><strong>{{ initialName }}</strong></Prompt>
     <Prompt v-else-if="mode == 'account'" path="prompt.EditAccount"></Prompt>
     <Prompt v-else-if="mode == 'add'" path="prompt.AddUser"></Prompt>
@@ -34,8 +33,7 @@
     <FormInput ref="email" id="email" v-bind:label="$t( 'label.EmailAddress' )" v-bind="$field( 'email' )" v-model="email"/>
     <FormDropdown v-bind:label="$t( 'label.Language' )" v-bind:items="languageItems" v-bind:item-names="languageNames"
                   v-bind:default-name="$t( 'text.DefaultLanguage' )" v-model="language"/>
-    <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
-  </div>
+  </BaseForm>
 </template>
 
 <script>
@@ -154,7 +152,7 @@ export default {
       data.email = this.email;
       data.language = this.language;
 
-      this.$emit( 'block' );
+      this.$form.block();
 
       let url;
       if ( this.mode == 'account' ) {
@@ -179,25 +177,25 @@ export default {
         }
       } ).catch( error => {
         if ( error.reason == Reason.APIError && error.errorCode == ErrorCode.UserAlreadyExists ) {
-          this.$emit( 'unblock' );
+          this.$form.unblock();
           this.nameError = this.$t( 'ErrorCode.' + error.errorCode );
           this.$nextTick( () => {
             this.$refs.name.focus();
           } );
         } else if ( error.reason == Reason.APIError && error.errorCode == ErrorCode.LoginAlreadyExists ) {
-          this.$emit( 'unblock' );
+          this.$form.unblock();
           this.loginError = this.$t( 'ErrorCode.' + error.errorCode );
           this.$nextTick( () => {
             this.$refs.login.focus();
           } );
         } else if ( error.reason == Reason.APIError && error.errorCode == ErrorCode.EmailAlreadyExists ) {
-          this.$emit( 'unblock' );
+          this.$form.unblock();
           this.emailError = this.$t( 'ErrorCode.' + error.errorCode );
           this.$nextTick( () => {
             this.$refs.email.focus();
           } );
         } else {
-          this.$emit( 'error', error );
+          this.$form.error( error );
         }
       } );
     },
@@ -214,10 +212,6 @@ export default {
         this.$router.push( 'MyAccount' );
       else
         this.$router.push( 'UserDetails', { userId } );
-    },
-
-    close() {
-      this.$emit( 'close' );
     },
 
     comparePassword( value ) {

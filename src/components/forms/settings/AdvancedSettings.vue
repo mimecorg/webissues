@@ -18,8 +18,7 @@
 -->
 
 <template>
-  <div class="container-fluid">
-    <FormHeader v-bind:title="$t( 'title.AdvancedSettings' )" v-on:close="close"/>
+  <BaseForm v-bind:title="$t( 'title.AdvancedSettings' )" with-buttons v-on:ok="submit" v-on:cancel="returnToDetails">
     <Panel v-bind:title="$t( 'title.ViewSettings' )">
       <FormCheckbox v-bind:label="$t( 'text.HideIDColumn' )" v-model="hideIdColumn"/>
       <FormCheckbox v-bind:label="$t( 'text.HideEmptyAttributes' )" v-model="hideEmptyValues"/>
@@ -41,8 +40,7 @@
       <FormDropdown v-bind:label="$t( 'label.RegistrationRequestLifetime' )" v-bind:items="registerItems" v-bind:item-names="registerNames" v-model="registerMaxLifetime"/>
       <FormDropdown v-bind:label="$t( 'label.EventLogLifetime' )" v-bind:items="logItems" v-bind:item-names="logNames" v-model="logMaxLifetime"/>
     </Panel>
-    <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
-  </div>
+  </BaseForm>
 </template>
 
 <script>
@@ -183,27 +181,19 @@ export default {
         logMaxLifetime: this.logMaxLifetime
       };
 
-      this.$emit( 'block' );
+      this.$form.block();
 
       this.$ajax.post( '/settings/advanced/edit.php', data ).then( ( { changed } ) => {
         if ( changed )
           this.$store.commit( 'global/setDirty' );
         this.returnToDetails();
       } ).catch( error => {
-        this.$emit( 'error', error );
+        this.$form.error( error );
       } );
-    },
-
-    cancel() {
-      this.returnToDetails();
     },
 
     returnToDetails() {
       this.$router.push( 'ServerSettings' );
-    },
-
-    close() {
-      this.$emit( 'close' );
     }
   }
 }

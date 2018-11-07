@@ -38,15 +38,10 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
-
 export default {
   props: {
     title: String,
     breadcrumbs: Array
-  },
-  computed: {
-    ...mapState( 'global', [ 'serverName' ] )
   },
   methods: {
     breadcrumbClicked( breadcrumb ) {
@@ -55,9 +50,6 @@ export default {
     close() {
       this.$emit( 'close' );
     }
-  },
-  mounted() {
-    document.title = this.title + ' | ' + this.serverName;
   }
 }
 </script>

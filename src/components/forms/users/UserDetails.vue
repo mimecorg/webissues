@@ -18,14 +18,14 @@
 -->
 
 <template>
-  <div class="container-fluid">
-    <FormHeader v-bind:title="name" v-bind:breadcrumbs="breadcrumbs" v-on:close="close">
+  <BaseForm v-bind:title="name" v-bind:breadcrumbs="breadcrumbs" auto-close save-position>
+    <template slot="header">
       <DropdownButton v-if="canResetPassword" fa-class="fa-ellipsis-v" menu-class="dropdown-menu-right" v-bind:title="$t( 'title.More' )">
         <li><HyperLink v-on:click="changePassword"><span class="fa fa-key" aria-hidden="true"></span> {{ $t( 'cmd.ChangePassword' ) }}</HyperLink></li>
         <li><HyperLink v-on:click="resetPassword"><span class="fa fa-unlock-alt" aria-hidden="true"></span> {{ $t( 'cmd.ResetPassword' ) }}</HyperLink></li>
       </DropdownButton>
       <button v-else type="button" class="btn btn-default" v-on:click="changePassword"><span class="fa fa-key" aria-hidden="true"></span> {{ $t( 'cmd.ChangePassword' ) }}</button>
-    </FormHeader>
+    </template>
     <FormSection v-bind:title="$t( 'title.Account' )">
       <button type="button" class="btn btn-default" v-on:click="editUser"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'cmd.Edit' ) }}</button>
     </FormSection>
@@ -67,18 +67,15 @@
     <div v-else class="alert alert-info">
       {{ isCurrentUser ? $t( 'info.NoOwnProjects' ) : $t( 'info.NoUserProjects' ) }}
     </div>
-  </div>
+  </BaseForm>
 </template>
 
 <script>
 import { mapState, mapGetters } from 'vuex'
 
 import { Access } from '@/constants'
-import savePosition from '@/mixins/save-position'
 
 export default {
-  mixins: [ savePosition ],
-
   props: {
     userId: Number,
     name: String,
@@ -167,10 +164,6 @@ export default {
 
     rowClick( rowIndex ) {
       this.$router.push( this.accountMode ? 'EditAccountProject' : 'EditUserProject', { userId: this.userId, projectId: this.sortedProjects[ rowIndex ].id } );
-    },
-
-    close() {
-      this.$emit( 'close' );
     }
   }
 }

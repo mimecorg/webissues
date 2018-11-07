@@ -18,8 +18,7 @@
 -->
 
 <template>
-  <div class="container-fluid">
-    <FormHeader v-bind:title="$t( 'title.RegistrationRequests' )" v-bind:breadcrumbs="breadcrumbs" v-on:close="close"/>
+  <BaseForm v-bind:title="$t( 'title.RegistrationRequests' )" v-bind:breadcrumbs="breadcrumbs" v-bind:size="size" auto-close save-position>
     <Grid v-if="requests.length > 0" v-bind:items="requests" v-bind:column-names="columnNames"
           v-bind:column-classes="[ 'column-medium', 'column-medium', 'column-medium', null ]" v-on:row-click="rowClick">
       <template slot-scope="{ item, columnIndex, columnClass }">
@@ -27,15 +26,11 @@
       </template>
     </Grid>
     <Prompt v-else path="info.NoRegistrationRequests"/>
-  </div>
+  </BaseForm>
 </template>
 
 <script>
-import savePosition from '@/mixins/save-position'
-
 export default {
-  mixins: [ savePosition ],
-
   props: {
     requests: Array
   },
@@ -45,6 +40,12 @@ export default {
       return [
         { label: this.$t( 'title.UserAccounts' ), route: 'ManageUsers' }
       ];
+    },
+    size() {
+      if ( this.requests.length > 0 )
+        return 'large';
+      else
+        return 'small';
     },
     columnNames() {
       return [
@@ -72,10 +73,6 @@ export default {
 
     rowClick( rowIndex ) {
       this.$router.push( 'RequestDetails', { requestId: this.requests[ rowIndex ].id } );
-    },
-
-    close() {
-      this.$emit( 'close' );
     }
   }
 }

@@ -18,8 +18,7 @@
 -->
 
 <template>
-  <div class="container-fluid">
-    <FormHeader v-bind:title="title" v-on:close="close"/>
+  <BaseForm v-bind:title="title" with-buttons v-on:ok="submit" v-on:cancel="returnToDetails">
     <Prompt v-if="mode == 'edit'" path="prompt.EditFile"><strong>{{ initialName }}</strong></Prompt>
     <Prompt v-else-if="mode == 'add'" path="prompt.AttachFile"><strong>{{ issueName }}</strong></Prompt>
     <FormGroup v-if="mode == 'add'" v-bind:error="fileError">
@@ -30,8 +29,7 @@
     </FormGroup>
     <FormInput ref="name" id="name" v-bind:label="$t( 'label.FileName' )" v-bind="$field( 'name' )" v-model="name"/>
     <FormInput ref="description" id="description" v-bind:label="$t( 'label.Description' )" v-bind="$field( 'description' )" v-model="description"/>
-    <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
-  </div>
+  </BaseForm>
 </template>
 
 <script>
@@ -118,14 +116,14 @@ export default {
       data.name = this.name;
       data.description = this.description;
 
-      this.$emit( 'block' );
+      this.$form.block();
 
       this.$ajax.post( '/issues/files/' + this.mode + '.php', data, file ).then( ( { stampId } ) => {
         if ( stampId != false )
           this.$store.commit( 'list/setDirty' );
         this.returnToDetails();
       } ).catch( error => {
-        this.$emit( 'error', error );
+        this.$form.error( error );
       } );
     },
 
@@ -145,16 +143,8 @@ export default {
       return value;
     },
 
-    cancel() {
-      this.returnToDetails();
-    },
-
     returnToDetails() {
       this.$router.push( 'IssueDetails', { issueId: this.issueId } );
-    },
-
-    close() {
-      this.$emit( 'close' );
     },
 
     handleDragDrop( e ) {

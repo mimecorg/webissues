@@ -19,7 +19,7 @@
 
 <template>
   <div id="window" v-bind:class="'window-' + size">
-    <component v-if="childForm != null" v-bind:is="getForm( childForm )" v-bind="childProps" v-on="$listeners"/>
+    <component v-if="childForm != null" v-bind:is="getForm( childForm )" v-bind="childProps"/>
     <BusyOverlay v-if="busy"/>
   </div>
 </template>

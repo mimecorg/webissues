@@ -18,27 +18,23 @@
 -->
 
 <template>
-  <div class="container-fluid">
-    <FormHeader v-bind:title="$t( 'title.IssueTypes' )" v-on:close="close">
+  <BaseForm v-bind:title="$t( 'title.IssueTypes' )" auto-close save-position>
+    <template slot="header">
       <button v-if="isAdministrator" type="button" class="btn btn-success" v-on:click="addType"><span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'cmd.Add' ) }}</button>
-    </FormHeader>
+    </template>
     <Grid v-if="types.length > 0" v-bind:items="types" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-large' ]" v-on:row-click="rowClick">
       <template slot-scope="{ item, columnIndex, columnClass }">
         <td v-bind:class="columnClass">{{ getCellValue( columnIndex, item ) }}</td>
       </template>
     </Grid>
     <Prompt v-else path="info.NoIssueTypes"/>
-  </div>
+  </BaseForm>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
 
-import savePosition from '@/mixins/save-position'
-
 export default {
-  mixins: [ savePosition ],
-
   props: {
     types: Array
   },
@@ -64,10 +60,6 @@ export default {
 
     rowClick( rowIndex ) {
       this.$router.push( 'TypeDetails', { typeId: this.types[ rowIndex ].id } );
-    },
-
-    close() {
-      this.$emit( 'close' );
     }
   }
 }

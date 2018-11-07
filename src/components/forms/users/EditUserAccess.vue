@@ -18,8 +18,7 @@
 -->
 
 <template>
-  <div class="container-fluid">
-    <FormHeader v-bind:title="$t( 'title.GlobalAccess' )" v-on:close="close"/>
+  <BaseForm v-bind:title="$t( 'title.GlobalAccess' )" size="small" with-buttons v-on:ok="submit" v-on:cancel="returnToDetails">
     <Prompt path="prompt.EditUserAccess"><strong>{{ name }}</strong></Prompt>
     <FormGroup v-bind:label="$t( 'label.Access' )" required>
       <div class="radio">
@@ -32,8 +31,7 @@
         <label><input type="radio" v-model="access" v-bind:value="administratorAccess"> {{ $t( 'text.SystemAdministrator' ) }}</label>
       </div>
     </FormGroup>
-    <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
-  </div>
+  </BaseForm>
 </template>
 
 <script>
@@ -75,25 +73,17 @@ export default {
 
       const data = { userId: this.userId, access: this.access };
 
-      this.$emit( 'block' );
+      this.$form.block();
 
       this.$ajax.post( '/users/access.php', data ).then( () => {
         this.returnToDetails();
       } ).catch( error => {
-        this.$emit( 'error', error );
+        this.$form.error( error );
       } );
-    },
-
-    cancel() {
-      this.returnToDetails();
     },
 
     returnToDetails() {
       this.$router.push( 'UserDetails', { userId: this.userId } );
-    },
-
-    close() {
-      this.$emit( 'close' );
     }
   }
 }

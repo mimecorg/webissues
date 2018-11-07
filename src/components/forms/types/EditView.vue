@@ -18,15 +18,15 @@
 -->
 
 <template>
-  <div class="container-fluid">
-    <FormHeader v-bind:title="title" v-on:close="close">
+  <BaseForm v-bind:title="title" with-buttons v-on:ok="submit" v-on:cancel="returnToDetails">
+    <template slot="header">
       <DropdownButton v-if="mode == 'edit'" fa-class="fa-ellipsis-v" menu-class="dropdown-menu-right" v-bind:title="$t( 'title.More' )">
         <li><HyperLink v-on:click="cloneView"><span class="fa fa-clone" aria-hidden="true"></span> {{ $t( 'cmd.CloneView' ) }}</HyperLink></li>
         <li v-if="isPublic"><HyperLink v-on:click="unpublishView"><span class="fa fa-lock" aria-hidden="true"></span> {{ $t( 'cmd.UnpublishView' ) }}</HyperLink></li>
         <li v-else-if="isAdministrator"><HyperLink v-on:click="publishView"><span class="fa fa-upload" aria-hidden="true"></span> {{ $t( 'cmd.PublishView' ) }}</HyperLink></li>
         <li><HyperLink v-on:click="deleteView"><span class="fa fa-trash" aria-hidden="true"></span> {{ $t( 'cmd.DeleteView' ) }}</HyperLink></li>
       </DropdownButton>
-    </FormHeader>
+    </template>
     <Prompt v-if="mode == 'default' || mode == 'add'" v-bind:path="promptPath"><strong>{{ typeName }}</strong></Prompt>
     <Prompt v-else v-bind:path="promptPath"><strong>{{ initialName }}</strong></Prompt>
     <FormInput v-if="mode == 'add' || mode == 'edit' || mode == 'clone'" ref="name" id="name" v-bind:label="$t( 'label.Name' )" v-bind="$field( 'name' )" v-model="name"/>
@@ -87,8 +87,7 @@
         {{ $t( 'info.NoFilters' ) }}
       </div>
     </template>
-    <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
-  </div>
+  </BaseForm>
 </template>
 
 <script>
@@ -221,7 +220,7 @@ export default {
       if ( this.mode == 'add' || this.mode == 'edit' || this.mode == 'clone' )
         data.filters = this.filters.map( f => ( { column: f.column, operator: f.operator, value: f.value } ) );
 
-      this.$emit( 'block' );
+      this.$form.block();
 
       this.$ajax.post( '/types/views/' + ( this.mode == 'clone' ? 'add' : this.mode ) + '.php', data ).then( ( { changed } ) => {
         if ( changed )
@@ -229,13 +228,13 @@ export default {
         this.returnToDetails();
       } ).catch( error => {
         if ( error.reason == Reason.APIError && error.errorCode == ErrorCode.ViewAlreadyExists ) {
-          this.$emit( 'unblock' );
+          this.$form.unblock();
           this.nameError = this.$t( 'ErrorCode.' + error.errorCode );
           this.$nextTick( () => {
             this.$refs.name.focus();
           } );
         } else {
-          this.$emit( 'error', error );
+          this.$form.error( error );
         }
       } );
     },
@@ -411,16 +410,8 @@ export default {
       this.$router.push( 'DeleteView', { typeId: this.typeId, viewId: this.viewId } );
     },
 
-    cancel() {
-      this.returnToDetails();
-    },
-
     returnToDetails() {
       this.$router.push( 'ViewSettings', { typeId: this.typeId } );
-    },
-
-    close() {
-      this.$emit( 'close' );
     }
   },
 

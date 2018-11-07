@@ -18,8 +18,7 @@
 -->
 
 <template>
-  <div class="container-fluid">
-    <FormHeader v-bind:title="title" v-on:close="close"/>
+  <BaseForm v-bind:title="title" with-buttons v-on:ok="submit" v-on:cancel="cancel">
     <Prompt v-if="mode == 'edit'" path="prompt.EditAttributes"><strong>{{ initialName }}</strong></Prompt>
     <Prompt v-else-if="mode == 'add'" path="prompt.AddIssue"/>
     <Prompt v-else-if="mode == 'clone'" path="prompt.CloneIssue"><strong>{{ initialName }}</strong></Prompt>
@@ -36,9 +35,8 @@
       </FormGroup>
     </Panel>
     <MarkupEditor v-if="mode == 'add' || mode == 'clone'" ref="description" id="description" v-bind:label="$t( 'label.Description' )" v-bind="$field( 'description' )"
-                  v-bind:format.sync="descriptionFormat" v-model="description" v-on:error="error"/>
-    <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
-  </div>
+                  v-bind:format.sync="descriptionFormat" v-model="description"/>
+  </BaseForm>
 </template>
 
 <script>
@@ -206,14 +204,14 @@ export default {
         data.descriptionFormat = this.descriptionFormat;
       }
 
-      this.$emit( 'block' );
+      this.$form.block();
 
       this.$ajax.post( '/issues/' + this.mode + '.php', data ).then( ( { issueId, stampId } ) => {
         if ( stampId != false )
           this.$store.commit( 'list/setDirty' );
         this.returnToDetails( issueId );
       } ).catch( error => {
-        this.$emit( 'error', error );
+        this.$form.error( error );
       } );
     },
 
@@ -221,18 +219,11 @@ export default {
       if ( this.mode == 'edit' || this.mode == 'clone' )
         this.returnToDetails( this.issueId );
       else
-        this.close();
+        this.$form.close();
     },
 
     returnToDetails( issueId ) {
       this.$router.push( 'IssueDetails', { issueId } );
-    },
-
-    close() {
-      this.$emit( 'close' );
-    },
-    error( error ) {
-      this.$emit( 'error', error );
     }
   },
 

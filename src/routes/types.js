@@ -35,7 +35,6 @@ export default function routeTypes( route, ajax, store ) {
       return Promise.reject( makeError( ErrorCode.AccessDenied ) );
     return Promise.resolve( {
       form: 'types/EditType',
-      size: 'small',
       mode: 'add'
     } );
   } );
@@ -44,7 +43,6 @@ export default function routeTypes( route, ajax, store ) {
     return ajax.post( '/types/load.php', { typeId, attributes: true } ).then( ( { name, attributes } ) => {
       return {
         form: 'types/TypeDetails',
-        size: 'large',
         typeId,
         name,
         attributes
@@ -58,7 +56,6 @@ export default function routeTypes( route, ajax, store ) {
     return ajax.post( '/types/load.php', { typeId } ).then( ( { name } ) => {
       return {
         form: 'types/EditType',
-        size: 'small',
         mode: 'rename',
         typeId,
         initialName: name
@@ -72,7 +69,6 @@ export default function routeTypes( route, ajax, store ) {
     return ajax.post( '/types/load.php', { typeId, used: true } ).then( ( { name, used } ) => {
       return {
         form: 'types/DeleteType',
-        size: 'small',
         typeId,
         name,
         used
@@ -111,7 +107,6 @@ export default function routeTypes( route, ajax, store ) {
     return ajax.post( '/types/attributes/load.php', { typeId, attributeId, used: true } ).then( ( { name, used } ) => {
       return {
         form: 'types/DeleteAttribute',
-        size: 'small',
         typeId,
         attributeId,
         name,
@@ -139,7 +134,6 @@ export default function routeTypes( route, ajax, store ) {
     return ajax.post( '/types/load.php', data ).then( ( { name, defaultView, publicViews, personalViews } ) => {
       return {
         form: 'types/ViewSettings',
-        size: 'large',
         typeId,
         name,
         defaultView,
@@ -225,7 +219,6 @@ export default function routeTypes( route, ajax, store ) {
     return ajax.post( '/types/views/load.php', { typeId, viewId } ).then( ( { name } ) => {
       return {
         form: 'types/PublishView',
-        size: 'small',
         mode: 'publish',
         typeId,
         viewId,
@@ -240,7 +233,6 @@ export default function routeTypes( route, ajax, store ) {
     return ajax.post( '/types/views/load.php', { typeId, viewId } ).then( ( { name } ) => {
       return {
         form: 'types/PublishView',
-        size: 'small',
         mode: 'unpublish',
         typeId,
         viewId,
@@ -253,7 +245,6 @@ export default function routeTypes( route, ajax, store ) {
     return ajax.post( '/types/views/load.php', { typeId, viewId } ).then( ( { name, isPublic } ) => {
       return {
         form: 'types/DeleteView',
-        size: 'small',
         typeId,
         viewId,
         isPublic,

@@ -18,8 +18,7 @@
 -->
 
 <template>
-  <div class="container-fluid">
-    <FormHeader v-bind:title="$t( 'title.RegionalSettings' )" v-on:close="close"/>
+  <BaseForm v-bind:title="$t( 'title.RegionalSettings' )" with-buttons v-on:ok="submit" v-on:cancel="returnToDetails">
     <FormDropdown v-bind:label="$t( 'label.Language' )" v-bind:items="languageItems" v-bind:item-names="languageNames" v-model="language"/>
     <p>{{ $t( 'prompt.TimeZone' ) }}</p>
     <FormGroup v-bind:label="$t( 'label.TimeZone' )">
@@ -54,8 +53,7 @@
       <FormDropdown v-bind:label="$t( 'label.FirstDayOfWeek' )" v-bind:items="weekdayItems" v-bind:item-names="weekdayNames"
                     v-bind:default-name="$t( 'text.DefaultFormat' )" v-model="firstDay"/>
     </Panel>
-    <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
-  </div>
+  </BaseForm>
 </template>
 
 <script>
@@ -159,7 +157,7 @@ export default {
         firstDay: this.firstDay
       };
 
-      this.$emit( 'block' );
+      this.$form.block();
 
       this.$ajax.post( '/settings/regional/edit.php', data ).then( ( { changed, updateLanguage } ) => {
         if ( changed )
@@ -172,7 +170,7 @@ export default {
           this.returnToDetails();
         }
       } ).catch( error => {
-        this.$emit( 'error', error );
+        this.$form.error( error );
       } );
     },
 
@@ -193,16 +191,8 @@ export default {
       return this.formats[ key ].map( l => l.name );
     },
 
-    cancel() {
-      this.returnToDetails();
-    },
-
     returnToDetails() {
       this.$router.push( 'ServerSettings' );
-    },
-
-    close() {
-      this.$emit( 'close' );
     }
   }
 }

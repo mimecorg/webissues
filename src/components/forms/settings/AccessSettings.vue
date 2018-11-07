@@ -18,8 +18,7 @@
 -->
 
 <template>
-  <div class="container-fluid">
-    <FormHeader v-bind:title="$t( 'title.AccessSettings' )" v-on:close="close"/>
+  <BaseForm v-bind:title="$t( 'title.AccessSettings' )" with-buttons v-on:ok="submit" v-on:cancel="returnToDetails">
     <Panel v-bind:title="$t( 'title.AnonymousAccess' )">
       <p>{{ $t( 'prompt.AnonymousAccess' ) }}</p>
       <FormCheckbox v-bind:label="$t( 'text.EnableAnonymousAccess' )" v-model="anonymousAccess"/>
@@ -37,8 +36,7 @@
       </template>
       <p v-else>{{ $t( 'prompt.UserRegistrationRequiresEmail' ) }}</p>
     </Panel>
-    <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
-  </div>
+  </BaseForm>
 </template>
 
 <script>
@@ -97,14 +95,14 @@ export default {
           data.registerNotifyEmail = this.email;
       }
 
-      this.$emit( 'block' );
+      this.$form.block();
 
       this.$ajax.post( '/settings/access/edit.php', data ).then( ( { changed } ) => {
         if ( changed )
           this.$store.commit( 'global/setDirty' );
         this.returnToDetails();
       } ).catch( error => {
-        this.$emit( 'error', error );
+        this.$form.error( error );
       } );
     },
 
@@ -114,16 +112,8 @@ export default {
       return value;
     },
 
-    cancel() {
-      this.returnToDetails();
-    },
-
     returnToDetails() {
       this.$router.push( 'ServerSettings' );
-    },
-
-    close() {
-      this.$emit( 'close' );
     }
   }
 }

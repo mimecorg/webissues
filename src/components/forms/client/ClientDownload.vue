@@ -18,8 +18,7 @@
 -->
 
 <template>
-  <div class="container-fluid">
-    <FormHeader v-bind:title="$t( 'title.DownloadFile' )" v-on:close="close"/>
+  <BaseForm v-bind:title="$t( 'title.DownloadFile' )">
     <Prompt path="prompt.DownloadFile"><strong>{{ name }}</strong></Prompt>
     <div class="progress">
       <div v-bind:class="[ 'progress-bar', error != null ? 'progress-bar-danger' : 'progress-bar-success' ]" v-bind:style="{ width: receivedPercent }"></div>
@@ -31,9 +30,9 @@
     <div class="form-buttons">
       <button v-if="path != null" class="btn btn-primary" v-on:click="open">{{ $t( 'cmd.Open' ) }}</button>
       <button v-if="path != null" class="btn btn-primary" v-on:click="saveAs">{{ $t( 'cmd.SaveAs' ) }}</button>
-      <button class="btn btn-default" v-on:click="cancel">{{ $t( 'cmd.Cancel' ) }}</button>
+      <button class="btn btn-default" v-on:click="returnToDetails">{{ $t( 'cmd.Cancel' ) }}</button>
     </div>
-  </div>
+  </BaseForm>
 </template>
 
 <script>
@@ -77,29 +76,21 @@ export default {
     },
 
     saveAs() {
-      this.$emit( 'block' );
+      this.$form.block();
       this.$client.saveAttachment( this.path, this.name ).then( targetPath => {
         if ( targetPath != null )
           this.returnToDetails();
         else
-        this.$emit( 'unblock' );
+          this.$form.unblock();
       } ).catch( error => {
         console.error( error );
-        this.$emit( 'unblock' );
+        this.$form.unblock();
         this.error = this.$t( 'error.SaveError' );
       } );
     },
 
-    cancel() {
-      this.returnToDetails();
-    },
-
     returnToDetails() {
       this.$router.push( 'IssueDetails', { issueId: this.issueId } );
-    },
-
-    close() {
-      this.$emit( 'close' );
     },
 
     progress( received ) {

@@ -18,12 +18,10 @@
 -->
 
 <template>
-  <div class="container-fluid">
-    <FormHeader v-bind:title="$t( 'cmd.GoToItem' )" v-on:close="close"/>
+  <BaseForm v-bind:title="$t( 'cmd.GoToItem' )" size="small" with-buttons v-on:ok="submit" v-on:cancel="cancel">
     <Prompt path="prompt.GoToItem"/>
     <FormInput ref="item" id="item" v-bind:label="$t( 'label.ID' )" v-bind="$field( 'item' )" v-model="item" v-on:keydown.enter="submit"/>
-    <FormButtons v-on:ok="submit" v-on:cancel="close"/>
-  </div>
+  </BaseForm>
 </template>
 
 <script>
@@ -52,7 +50,7 @@ export default {
       if ( !this.$fields.validate() )
         return;
 
-      this.$emit( 'block' );
+      this.$form.block();
 
       this.$ajax.post( '/issues/find.php', { itemId: this.itemId } ).then( issueId => {
         if ( this.itemId == issueId )
@@ -61,13 +59,13 @@ export default {
           this.$router.push( 'IssueItem', { issueId, itemId: this.itemId } );
       } ).catch( error => {
         if ( error.reason == Reason.APIError && error.errorCode == ErrorCode.ItemNotFound ) {
-          this.$emit( 'unblock' );
+          this.$form.unblock();
           this.itemError = this.$t( 'ErrorCode.' + error.errorCode );
           this.$nextTick( () => {
             this.$refs.item.focus();
           } );
         } else {
-          this.$emit( 'error', error );
+          this.$form.error( error );
         }
       } );
     },
@@ -77,8 +75,8 @@ export default {
       return this.itemId.toString();
     },
 
-    close() {
-      this.$emit( 'close' );
+    cancel() {
+      this.$form.close();
     }
   },
 

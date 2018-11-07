@@ -18,14 +18,10 @@
 -->
 
 <template>
-  <div class="container-fluid">
-    <FormHeader v-if="isConfigured" v-bind:title="$t( 'title.WebIssuesSettings' )" v-on:close="close"/>
-    <div v-else class="form-header">
-      <h1>{{ $t( 'title.WebIssuesSettings' ) }}</h1>
-    </div>
+  <BaseForm v-bind:title="$t( 'title.WebIssuesSettings' )" size="small" with-buttons v-bind:close-hidden="!isConfigured" v-bind:cancel-hidden="!isConfigured"
+            v-on:ok="submit" v-on:cancel="cancel">
     <FormInput ref="baseURL" id="baseURL" v-bind:label="$t( 'label.ServerURL' )" v-bind="$field( 'baseURL' )" v-model="baseURL"/>
-    <FormButtons v-bind:cancel-hidden="!isConfigured" v-on:ok="submit" v-on:cancel="cancel"/>
-  </div>
+  </BaseForm>
 </template>
 
 <script>
@@ -57,13 +53,13 @@ export default {
         return;
 
       if ( !this.$fields.modified() ) {
-        this.$emit( 'close' );
+        this.$form.close();
         return;
       }
 
       const baseURL = this.baseURL.replace( /\/$/, '' );
 
-      this.$emit( 'block' );
+      this.$form.block();
 
       this.$ajax.withBaseURL( baseURL ).post( '/info.php' ).then( ( { serverName, serverVersion } ) => {
         if ( !this.$client.isSupportedVersion( serverVersion ) )
@@ -75,8 +71,8 @@ export default {
 
         this.$client.restartClient();
       } ).catch( error => {
-        this.$emit( 'unblock' );
-        this.baseURLError = this.errorMessage( error );
+        this.$form.unblock();
+        this.baseURLError = this.getErrorMessage( error );
         this.$nextTick( () => {
           this.$refs.baseURL.focus();
         } );
@@ -84,10 +80,7 @@ export default {
     },
 
     cancel() {
-      this.$emit( 'close' );
-    },
-    close() {
-      this.$emit( 'close' );
+      this.$form.close();
     },
 
     parseURL( value ) {
@@ -100,7 +93,7 @@ export default {
       return value + '/';
     },
 
-    errorMessage( error ) {
+    getErrorMessage( error ) {
       switch ( error.reason ) {
         case Reason.NetworkError:
           return this.$t( 'error.NetworkError' );

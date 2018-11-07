@@ -36,7 +36,6 @@ export default function routeSettings( route, ajax, store ) {
     return ajax.post( '/settings/load.php' ).then( ( { serverName } ) => {
       return {
         form: 'settings/RenameServer',
-        size: 'small',
         initialName: serverName
       };
     } );
@@ -46,8 +45,7 @@ export default function routeSettings( route, ajax, store ) {
     if ( store.state.global.userAccess != Access.AdministratorAccess )
       return Promise.reject( makeError( ErrorCode.AccessDenied ) );
     return Promise.resolve( {
-      form: 'settings/ResetUuid',
-      size: 'small'
+      form: 'settings/ResetUuid'
     } );
   } );
 
@@ -119,7 +117,6 @@ export default function routeSettings( route, ajax, store ) {
     return ajax.post( '/settings/inboxes/load.php', { inboxId } ).then( ( { email } ) => {
       return {
         form: 'settings/DeleteInbox',
-        size: 'small',
         inboxId,
         email
       };
@@ -128,7 +125,7 @@ export default function routeSettings( route, ajax, store ) {
 
   if ( process.env.TARGET == 'electron' ) {
     route( 'ClientSettings', '/settings/client', () => {
-      return Promise.resolve( { form: 'client/ClientSettings', size: 'small' } );
+      return Promise.resolve( { form: 'client/ClientSettings' } );
     } );
   }
 }

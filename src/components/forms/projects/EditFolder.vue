@@ -18,13 +18,13 @@
 -->
 
 <template>
-  <div class="container-fluid">
-    <FormHeader v-bind:title="title" v-on:close="close">
+  <BaseForm v-bind:title="title" size="small" with-buttons v-on:ok="submit" v-on:cancel="returnToDetails">
+    <template slot="header">
       <DropdownButton v-if="mode == 'rename'" fa-class="fa-ellipsis-v" menu-class="dropdown-menu-right" v-bind:title="$t( 'title.More' )">
         <li><HyperLink v-on:click="moveFolder"><span class="fa fa-exchange" aria-hidden="true"></span> {{ $t( 'cmd.MoveFolder' ) }}</HyperLink></li>
         <li><HyperLink v-on:click="deleteFolder"><span class="fa fa-trash" aria-hidden="true"></span> {{ $t( 'cmd.DeleteFolder' ) }}</HyperLink></li>
       </DropdownButton>
-    </FormHeader>
+    </template>
     <Prompt v-if="mode == 'rename'" path="prompt.RenameFolder"><strong>{{ initialName }}</strong></Prompt>
     <Prompt v-else-if="mode == 'add'" path="prompt.AddFolder"><strong>{{ projectName }}</strong></Prompt>
     <FormInput ref="name" id="name" v-bind:label="$t( 'label.Name' )" v-bind="$field( 'name' )" v-model="name"/>
@@ -45,8 +45,7 @@
         </DropdownButton>
       </div>
     </FormGroup>
-    <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
-  </div>
+  </BaseForm>
 </template>
 
 <script>
@@ -141,7 +140,7 @@ export default {
       if ( this.mode == 'add' )
         data.typeId = this.typeId;
 
-      this.$emit( 'block' );
+      this.$form.block();
 
       this.$ajax.post( '/projects/folders/' + this.mode + '.php', data ).then( ( { folderId, changed } ) => {
         if ( changed )
@@ -149,27 +148,19 @@ export default {
         this.returnToDetails();
       } ).catch( error => {
         if ( error.reason == Reason.APIError && error.errorCode == ErrorCode.FolderAlreadyExists ) {
-          this.$emit( 'unblock' );
+          this.$form.unblock();
           this.nameError = this.$t( 'ErrorCode.' + error.errorCode );
           this.$nextTick( () => {
             this.$refs.name.focus();
           } );
         } else {
-          this.$emit( 'error', error );
+          this.$form.error( error );
         }
       } );
     },
 
-    cancel() {
-      this.returnToDetails();
-    },
-
     returnToDetails() {
       this.$router.push( 'ProjectDetails', { projectId: this.projectId } );
-    },
-
-    close() {
-      this.$emit( 'close' );
     }
   },
 

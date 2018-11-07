@@ -18,14 +18,12 @@
 -->
 
 <template>
-  <div class="container-fluid">
-    <FormHeader v-bind:title="$t( 'cmd.MoveIssue' )" v-on:close="close"/>
+  <BaseForm v-bind:title="$t( 'cmd.MoveIssue' )" size="small" with-buttons v-on:ok="submit" v-on:cancel="returnToDetails">
     <Prompt path="prompt.MoveIssue"><strong>{{ name }}</strong></Prompt>
     <FormGroup v-bind:label="$t( 'label.Location' )" v-bind="$field( 'folderId' )">
       <LocationFilters ref="folderId" v-bind:typeId="typeId" v-bind:projectId.sync="projectId" v-bind:folderId.sync="folderId" require-admin folder-visible/>
     </FormGroup>
-    <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
-  </div>
+  </BaseForm>
 </template>
 
 <script>
@@ -75,27 +73,19 @@ export default {
 
       const data = { issueId: this.issueId, folderId: this.folderId };
 
-      this.$emit( 'block' );
+      this.$form.block();
 
       this.$ajax.post( '/issues/move.php', data ).then( ( { stampId } ) => {
         if ( stampId != false )
           this.$store.commit( 'list/setDirty' );
         this.returnToDetails();
       } ).catch( error => {
-        this.$emit( 'error', error );
+        this.$form.error( error );
       } );
-    },
-
-    cancel() {
-      this.returnToDetails();
     },
 
     returnToDetails() {
       this.$router.push( 'IssueDetails', { issueId: this.issueId } );
-    },
-
-    close() {
-      this.$emit( 'close' );
     }
   }
 }

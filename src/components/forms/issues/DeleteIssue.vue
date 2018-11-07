@@ -18,12 +18,10 @@
 -->
 
 <template>
-  <div class="container-fluid">
-    <FormHeader v-bind:title="$t( 'cmd.DeleteIssue' )" v-on:close="close"/>
+  <BaseForm v-bind:title="$t( 'cmd.DeleteIssue' )" size="small" with-buttons v-on:ok="submit" v-on:cancel="returnToDetails">
     <Prompt path="prompt.DeleteIssue"><strong>{{ name }}</strong></Prompt>
     <Prompt path="prompt.WarningDeleteIssue" alert-class="alert-danger"><strong>{{ $t( 'label.Warning' ) }}</strong></Prompt>
-    <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
-  </div>
+  </BaseForm>
 </template>
 
 <script>
@@ -35,26 +33,18 @@ export default {
 
   methods: {
     submit() {
-      this.$emit( 'block' );
+      this.$form.block();
 
       this.$ajax.post( '/issues/delete.php', { issueId: this.issueId } ).then( () => {
         this.$store.commit( 'list/setDirty' );
-        this.close();
+        this.$form.close();
       } ).catch( error => {
-        this.$emit( 'error', error );
+        this.$form.error( error );
       } );
-    },
-
-    cancel() {
-      this.returnToDetails();
     },
 
     returnToDetails() {
       this.$router.push( 'IssueDetails', { issueId: this.issueId } );
-    },
-
-    close() {
-      this.$emit( 'close' );
     }
   }
 }

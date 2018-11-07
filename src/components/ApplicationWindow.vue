@@ -18,11 +18,9 @@
 -->
 
 <template>
-  <div ref="overlay" id="window-overlay" tabindex="-1" v-bind:class="{ 'window-busy': busy }" v-on:click.self="close">
+  <div ref="overlay" id="window-overlay" tabindex="-1" v-bind:class="{ 'window-busy': busy, 'window-auto-close': autoClose }" v-on:click.self="overlayClick">
     <div id="window" v-bind:class="'window-' + size">
-      <component v-if="childForm != null" v-bind:is="getForm( childForm )" v-bind="childProps"
-                 v-on:close="close" v-on:block="block" v-on:unblock="unblock" v-on:scrollToAnchor="scrollToAnchor"
-                 v-on:loadPosition="loadPosition" v-on:savePosition="savePosition" v-on:resetPosition="resetPosition" v-on:error="error"/>
+      <component v-if="childForm != null" v-bind:is="getForm( childForm )" v-bind="childProps"/>
       <BusyOverlay v-if="busy"/>
     </div>
   </div>
@@ -37,15 +35,25 @@ export default {
   data() {
     return {
       top: 0,
-      savedPositions: []
+      savedPositions: [],
+      size: 'small',
+      autoClose: false
     };
   },
 
   computed: {
-    ...mapState( 'window', [ 'childForm', 'childProps', 'size', 'busy' ] )
+    ...mapState( 'window', [ 'childForm', 'childProps', 'busy' ] )
   },
 
   watch: {
+    childForm( value ) {
+      if ( value != null ) {
+        this.size = 'normal';
+      } else {
+        this.size = 'small';
+        this.autoClose = false;
+      }
+    },
     busy( value ) {
       if ( value ) {
         this.top = this.$refs.overlay.scrollTop;
@@ -62,6 +70,18 @@ export default {
 
   methods: {
     getForm,
+
+    setSize( size ) {
+      this.size = size;
+    },
+    setAutoClose( autoClose ) {
+      this.autoClose = autoClose;
+    },
+
+    overlayClick() {
+      if ( this.autoClose )
+        this.close();
+    },
 
     close() {
       this.$store.dispatch( 'window/close' );
@@ -116,10 +136,26 @@ export default {
     }
   },
 
+  form() {
+    return {
+      setSize: this.setSize,
+      setAutoClose: this.setAutoClose,
+      close: this.close,
+      block: this.block,
+      unblock: this.unblock,
+      scrollToAnchor: this.scrollToAnchor,
+      loadPosition: this.loadPosition,
+      savePosition: this.savePosition,
+      resetPosition: this.resetPosition,
+      error: this.error
+    };
+  },
+
   mounted() {
     this.$refs.overlay.focus();
     document.addEventListener( 'focusin', this.handleFocusIn );
   },
+
   beforeDestroy() {
     document.removeEventListener( 'focusin', this.handleFocusIn );
   }

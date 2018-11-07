@@ -18,13 +18,11 @@
 -->
 
 <template>
-  <div class="container-fluid">
-    <FormHeader v-bind:title="$t( 'cmd.ResetPassword' )" v-on:close="close"/>
+  <BaseForm v-bind:title="$t( 'cmd.ResetPassword' )" size="small" with-buttons v-bind:cancel-hidden="!hasEmail" v-on:ok="submit" v-on:cancel="returnToDetails">
     <Prompt v-if="!hasEmail" alert-class="alert-danger" path="error.ResetPasswordNoEmail"></Prompt>
     <Prompt v-else-if="isOwn" path="prompt.ResetOwnPassword"></Prompt>
     <Prompt v-else path="prompt.ResetPassword"><strong>{{ name }}</strong></Prompt>
-    <FormButtons v-bind:cancel-hidden="!hasEmail" v-on:ok="submit" v-on:cancel="cancel"/>
-  </div>
+  </BaseForm>
 </template>
 
 <script>
@@ -62,22 +60,18 @@ export default {
       if ( !this.isOwn )
         data.userId = this.userId;
 
-      this.$emit( 'block' );
+      this.$form.block();
 
       this.$ajax.post( this.isOwn ? '/account/password/reset.php' : '/users/password/reset.php', data ).then( () => {
         this.returnToDetails();
       } ).catch( error => {
         if ( error.reason == Reason.APIError && error.errorCode == ErrorCode.UnknownUser ) {
-          this.$emit( 'unblock' );
+          this.$form.unblock();
           this.hasEmail = false;
         } else {
-          this.$emit( 'error', error );
+          this.$form.error( error );
         }
       } );
-    },
-
-    cancel() {
-      this.returnToDetails();
     },
 
     returnToDetails() {
@@ -85,10 +79,6 @@ export default {
         this.$router.push( 'MyAccount' );
       else
         this.$router.push( 'UserDetails', { userId: this.userId } );
-    },
-
-    close() {
-      this.$emit( 'close' );
     }
   }
 }

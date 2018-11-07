@@ -18,8 +18,7 @@
 -->
 
 <template>
-  <div class="container-fluid">
-    <FormHeader v-bind:title="$t( 'title.ViewSettings' )" v-bind:breadcrumbs="breadcrumbs" v-on:close="close"/>
+  <BaseForm v-bind:title="$t( 'title.ViewSettings' )" v-bind:breadcrumbs="breadcrumbs" size="large" auto-close save-position>
     <template v-if="isAdministrator">
       <FormSection v-bind:title="$t( 'title.DefaultView' )">
         <button type="button" class="btn btn-default" v-on:click="editDefaultView" v-bind:title="$t( 'cmd.EditDefaultView' )">
@@ -67,18 +66,15 @@
     <div v-else class="alert alert-info">
       {{ $t( 'info.NoPersonalViews' ) }}
     </div>
-  </div>
+  </BaseForm>
 </template>
 
 <script>
 import { mapState, mapGetters } from 'vuex'
 
-import savePosition from '@/mixins/save-position'
 import { getColumnName } from '@/utils/columns'
 
 export default {
-  mixins: [ savePosition ],
-
   props: {
     typeId: Number,
     name: String,
@@ -147,10 +143,6 @@ export default {
     },
     rowClickPersonal( rowIndex ) {
       this.$router.push( 'EditView', { typeId: this.typeId, viewId: this.personalViews[ rowIndex ].id } );
-    },
-
-    close() {
-      this.$emit( 'close' );
     }
   }
 }

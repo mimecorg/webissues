@@ -18,37 +18,27 @@
 -->
 
 <template>
-  <div class="container-fluid">
-    <FormHeader v-bind:title="$t( 'cmd.ResetUniqueID' )" v-on:close="close"/>
+  <BaseForm v-bind:title="$t( 'cmd.ResetUniqueID' )" size="small" with-buttons v-on:ok="submit" v-on:cancel="returnToDetails">
     <Prompt path="prompt.ResetUniqueID"/>
-    <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
-  </div>
+  </BaseForm>
 </template>
 
 <script>
 export default {
   methods: {
     submit() {
-      this.$emit( 'block' );
+      this.$form.block();
 
       this.$ajax.post( '/settings/server/uuid.php' ).then( () => {
         this.$store.commit( 'global/setDirty' );
         this.returnToDetails();
       } ).catch( error => {
-        this.$emit( 'error', error );
+        this.$form.error( error );
       } );
-    },
-
-    cancel() {
-      this.returnToDetails();
     },
 
     returnToDetails() {
       this.$router.push( 'ServerSettings' );
-    },
-
-    close() {
-      this.$emit( 'close' );
     }
   }
 }

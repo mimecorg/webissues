@@ -29,7 +29,7 @@ export default function routeIssues( route, i18n, ajax, store, formatter ) {
       store.commit( 'issue/setIssueId', issueId );
     }
     return store.dispatch( 'issue/load' ).then( () => {
-      return { form: 'issues/IssueDetails', size: 'large' };
+      return { form: 'issues/IssueDetails' };
     } );
   }
 
@@ -42,7 +42,7 @@ export default function routeIssues( route, i18n, ajax, store, formatter ) {
   } );
 
   route( 'GoToItem', '/items/goto', () => {
-    return Promise.resolve( { form: 'issues/GoToItem', size: 'small' } );
+    return Promise.resolve( { form: 'issues/GoToItem' } );
   } );
 
   route( 'Item', '/items/:itemId', ( { itemId } ) => {
@@ -117,7 +117,6 @@ export default function routeIssues( route, i18n, ajax, store, formatter ) {
     return ajax.post( '/issues/load.php', { issueId, access: 'admin' } ).then( ( { details } ) => {
       return {
         form: 'issues/MoveIssue',
-        size: 'small',
         issueId,
         typeId: details.typeId,
         initialFolderId: details.folderId,
@@ -130,7 +129,6 @@ export default function routeIssues( route, i18n, ajax, store, formatter ) {
     return ajax.post( '/issues/load.php', { issueId, access: 'admin' } ).then( ( { details } ) => {
       return {
         form: 'issues/DeleteIssue',
-        size: 'small',
         issueId,
         name: details.name
       };
@@ -189,7 +187,6 @@ export default function routeIssues( route, i18n, ajax, store, formatter ) {
         return Promise.reject( makeError( ErrorCode.UnknownDescription ) );
       return {
         form: 'issues/DeleteDescription',
-        size: 'small',
         issueId,
         issueName: details.name
       };
@@ -244,7 +241,6 @@ export default function routeIssues( route, i18n, ajax, store, formatter ) {
     return ajax.post( '/issues/comments/load.php', { issueId, commentId, access: 'adminOrOwner' } ).then( () => {
       return {
         form: 'issues/DeleteComment',
-        size: 'small',
         issueId,
         commentId
       };
@@ -281,7 +277,6 @@ export default function routeIssues( route, i18n, ajax, store, formatter ) {
     return ajax.post( '/issues/files/load.php', { issueId, fileId, access: 'adminOrOwner' } ).then( ( { name } ) => {
       return {
         form: 'issues/DeleteFile',
-        size: 'small',
         issueId,
         fileId,
         name

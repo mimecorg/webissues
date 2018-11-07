@@ -18,15 +18,15 @@
 -->
 
 <template>
-  <div class="container-fluid">
-    <FormHeader v-bind:title="name" v-bind:breadcrumbs="breadcrumbs" v-on:close="close">
+  <BaseForm v-bind:title="name" v-bind:breadcrumbs="breadcrumbs" auto-close save-position>
+    <template slot="header">
       <button v-if="isProjectAdministrator" type="button" class="btn btn-default" v-on:click="projectPermissions"><span class="fa fa-unlock-alt" aria-hidden="true"></span> {{ $t( 'title.Permissions' ) }}</button>
       <DropdownButton v-if="isAdministrator" fa-class="fa-ellipsis-v" menu-class="dropdown-menu-right" v-bind:title="$t( 'title.More' )">
         <li><HyperLink v-on:click="renameProject"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'cmd.RenameProject' ) }}</HyperLink></li>
         <li><HyperLink v-on:click="archiveProject"><span class="fa fa-archive" aria-hidden="true"></span> {{ $t( 'cmd.ArchiveProject' ) }}</HyperLink></li>
         <li><HyperLink v-on:click="deleteProject"><span class="fa fa-trash" aria-hidden="true"></span> {{ $t( 'cmd.DeleteProject' ) }}</HyperLink></li>
       </DropdownButton>
-    </FormHeader>
+    </template>
     <FormSection v-bind:title="$t( 'title.Description' )">
       <DropdownButton v-if="isProjectAdministrator && description != null" fa-class="fa-ellipsis-v" menu-class="dropdown-menu-right" v-bind:title="$t( 'title.Menu' )">
         <li><HyperLink v-on:click="editDescription"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'cmd.Edit' ) }}</HyperLink></li>
@@ -59,18 +59,15 @@
     <div v-else class="alert alert-info">
       {{ $t( 'info.NoFolders' ) }}
     </div>
-  </div>
+  </BaseForm>
 </template>
 
 <script>
 import { mapState, mapGetters } from 'vuex'
 
 import { Access } from '@/constants'
-import savePosition from '@/mixins/save-position'
 
 export default {
-  mixins: [ savePosition ],
-
   props: {
     projectId: Number,
     name: String,
@@ -154,10 +151,6 @@ export default {
 
     rowClick( rowIndex ) {
       this.$router.push( 'RenameFolder', { projectId: this.projectId, folderId: this.folders[ rowIndex ].id } );
-    },
-
-    close() {
-      this.$emit( 'close' );
     }
   }
 }

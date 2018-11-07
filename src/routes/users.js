@@ -25,7 +25,6 @@ export default function routeUsers( route, ajax, store ) {
     return ajax.post( '/users/list.php' ).then( ( { users } ) => {
       return {
         form: 'users/ManageUsers',
-        size: 'large',
         users
       };
     } );
@@ -70,7 +69,6 @@ export default function routeUsers( route, ajax, store ) {
     return ajax.post( '/users/load.php', { userId } ).then( ( { details } ) => {
       return {
         form: 'users/EditUserAccess',
-        size: 'small',
         userId,
         name: details.name,
         initialAccess: details.access
@@ -95,7 +93,6 @@ export default function routeUsers( route, ajax, store ) {
     return ajax.post( '/users/projects/load.php', { userId, projectId } ).then( ( { userName, projectName, access } ) => {
       return {
         form: 'users/EditUserProject',
-        size: 'small',
         mode: 'edit',
         userId,
         projectId,
@@ -110,7 +107,6 @@ export default function routeUsers( route, ajax, store ) {
     return ajax.post( '/users/projects/load.php', { userId, projectId } ).then( ( { userName, projectName } ) => {
       return {
         form: 'users/RemoveUserProject',
-        size: 'small',
         userId,
         projectId,
         userName,
@@ -133,7 +129,6 @@ export default function routeUsers( route, ajax, store ) {
     return ajax.post( '/users/load.php', { userId } ).then( ( { details } ) => {
       return {
         form: 'users/ResetPassword',
-        size: 'small',
         userId,
         name: details.name,
         email: details.email
@@ -145,7 +140,6 @@ export default function routeUsers( route, ajax, store ) {
     return ajax.post( '/users/requests/list.php' ).then( ( { requests } ) => {
       return {
         form: 'users/RegistrationRequests',
-        size: 'large',
         requests
       };
     } );
@@ -178,7 +172,6 @@ export default function routeUsers( route, ajax, store ) {
     return ajax.post( '/users/requests/load.php', { requestId } ).then( ( { details } ) => {
       return {
         form: 'users/RejectRequest',
-        size: 'small',
         requestId,
         name: details.name
       };

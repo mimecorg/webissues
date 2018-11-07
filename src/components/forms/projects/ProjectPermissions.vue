@@ -18,8 +18,7 @@
 -->
 
 <template>
-  <div class="container-fluid">
-    <FormHeader v-bind:title="$t( 'title.ProjectPermissions' )" v-bind:breadcrumbs="breadcrumbs" v-on:close="close"/>
+  <BaseForm v-bind:title="$t( 'title.ProjectPermissions' )" v-bind:breadcrumbs="breadcrumbs" auto-close save-position>
     <FormSection v-bind:title="$t( 'title.GlobalAccess' )">
       <button type="button" class="btn btn-default" v-on:click="editAccess"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'cmd.Edit' ) }}</button>
     </FormSection>
@@ -37,18 +36,15 @@
     <div v-else class="alert alert-info">
       {{ $t( 'info.NoMembers' ) }}
     </div>
-  </div>
+  </BaseForm>
 </template>
 
 <script>
 import { mapState } from 'vuex'
 
 import { Access } from '@/constants'
-import savePosition from '@/mixins/save-position'
 
 export default {
-  mixins: [ savePosition ],
-
   props: {
     projectId: Number,
     name: String,
@@ -104,10 +100,6 @@ export default {
 
     rowClick( rowIndex ) {
       this.$router.push( 'EditMember', { projectId: this.projectId, userId: this.sortedMembers[ rowIndex ].id } );
-    },
-
-    close() {
-      this.$emit( 'close' );
     }
   }
 }

@@ -18,27 +18,23 @@
 -->
 
 <template>
-  <div class="container-fluid">
-    <FormHeader v-bind:title="$t( 'title.Projects' )" v-on:close="close">
+  <BaseForm v-bind:title="$t( 'title.Projects' )" auto-close save-position>
+    <template slot="header">
       <button v-if="isAdministrator" type="button" class="btn btn-success" v-on:click="addProject"><span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'cmd.Add' ) }}</button>
-    </FormHeader>
+    </template>
     <Grid v-if="projects.length > 0" v-bind:items="projects" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-large', null ]" v-on:row-click="rowClick">
       <template slot-scope="{ item, columnIndex, columnClass }">
         <td v-bind:class="columnClass">{{ getCellValue( columnIndex, item ) }}</td>
       </template>
     </Grid>
     <Prompt v-else v-bind:path="isAdministrator ? 'info.NoProjects' : 'info.NoAvailableProjects'"/>
-  </div>
+  </BaseForm>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
 
-import savePosition from '@/mixins/save-position'
-
 export default {
-  mixins: [ savePosition ],
-
   props: {
     projects: Array
   },
@@ -69,10 +65,6 @@ export default {
 
     rowClick( rowIndex ) {
       this.$router.push( 'ProjectDetails', { projectId: this.projects[ rowIndex ].id } );
-    },
-
-    close() {
-      this.$emit( 'close' );
     }
   }
 }

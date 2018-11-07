@@ -279,7 +279,7 @@ export default {
       try {
         text = this.$parser.normalizeString( text, this.maxlength, { allowEmpty: true, multiLine: true } );
       } catch ( error ) {
-        this.$emit( 'error', error );
+        this.$form.error( error );
         return;
       }
       if ( text == '' ) {
@@ -289,7 +289,7 @@ export default {
       this.$ajax.post( '/issues/preview.php', { text } ).then( html => {
         this.previewHtml = html;
       } ).catch ( error => {
-        this.$emit( 'error', error );
+        this.$form.error( error );
       } );
     },
 

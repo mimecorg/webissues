@@ -18,28 +18,25 @@
 -->
 
 <template>
-  <div class="container-fluid">
-    <FormHeader v-bind:title="$t( 'title.UserAccounts' )" v-on:close="close">
+  <BaseForm v-bind:title="$t( 'title.UserAccounts' )" size="large" auto-close save-position>
+    <template slot="header">
       <button type="button" class="btn btn-success" v-on:click="addUser"><span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'cmd.Add' ) }}</button>
       <button v-if="hasRegistrationRequests" type="button" class="btn btn-default" v-on:click="registrationRequests">
         <span class="fa fa-user-plus" aria-hidden="true"></span> {{ $t( 'title.RegistrationRequests' ) }}
       </button>
-    </FormHeader>
+    </template>
     <Grid v-bind:items="users" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-medium', 'column-medium', 'column-medium', null ]" v-on:row-click="rowClick">
       <template slot-scope="{ item, columnIndex, columnClass }">
         <td v-bind:class="columnClass">{{ getCellValue( columnIndex, item ) }}</td>
       </template>
     </Grid>
-  </div>
+  </BaseForm>
 </template>
 
 <script>
 import { Access } from '@/constants'
-import savePosition from '@/mixins/save-position'
 
 export default {
-  mixins: [ savePosition ],
-
   props: {
     users: Array
   },
@@ -88,10 +85,6 @@ export default {
 
     rowClick( rowIndex ) {
       this.$router.push( 'UserDetails', { userId: this.users[ rowIndex ].id } );
-    },
-
-    close() {
-      this.$emit( 'close' );
     }
   }
 }

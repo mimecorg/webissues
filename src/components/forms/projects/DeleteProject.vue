@@ -18,14 +18,12 @@
 -->
 
 <template>
-  <div class="container-fluid">
-    <FormHeader v-bind:title="title" v-on:close="close"/>
+  <BaseForm v-bind:title="title" size="small" with-buttons v-on:ok="submit" v-on:cancel="returnToDetails">
     <Prompt v-if="mode == 'archive'" path="prompt.ArchiveProject"><strong>{{ name }}</strong></Prompt>
     <Prompt v-else-if="mode == 'delete'" path="prompt.DeleteProject"><strong>{{ name }}</strong></Prompt>
     <Prompt v-if="mode == 'archive'" path="prompt.NoteArchiveProject" alert-class="alert-success"><strong>{{ $t( 'label.Note' ) }}</strong></Prompt>
     <Prompt v-else-if="mode == 'delete' && force" path="prompt.WarningDeleteProject" alert-class="alert-danger"><strong>{{ $t( 'label.Warning' ) }}</strong></Prompt>
-    <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
-  </div>
+  </BaseForm>
 </template>
 
 <script>
@@ -56,7 +54,7 @@ export default {
 
   methods: {
     submit() {
-      this.$emit( 'block' );
+      this.$form.block();
 
       const data = { projectId: this.projectId };
 
@@ -68,24 +66,16 @@ export default {
         this.$router.push( 'ManageProjects' );
       } ).catch( error => {
         if ( error.reason == Reason.APIError && error.errorCode == ErrorCode.CannotDeleteProject ) {
-          this.$emit( 'unblock' );
+          this.$form.unblock();
           this.force = true;
         } else {
-          this.$emit( 'error', error );
+          this.$form.error( error );
         }
       } );
     },
 
-    cancel() {
-      this.returnToDetails();
-    },
-
     returnToDetails() {
       this.$router.push( 'ProjectDetails', { projectId: this.projectId } );
-    },
-
-    close() {
-      this.$emit( 'close' );
     }
   }
 }

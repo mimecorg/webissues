@@ -76,7 +76,6 @@ export default function routeGlobal( route, ajax, store ) {
     return ajax.post( '/users/projects/load.php', { userId: store.state.global.userId, projectId } ).then( ( { userName, projectName, access } ) => {
       return {
         form: 'users/EditUserProject',
-        size: 'small',
         mode: 'edit',
         userId: store.state.global.userId,
         projectId,
@@ -92,7 +91,6 @@ export default function routeGlobal( route, ajax, store ) {
     return ajax.post( '/users/projects/load.php', { userId: store.state.global.userId, projectId } ).then( ( { userName, projectName } ) => {
       return {
         form: 'users/RemoveUserProject',
-        size: 'small',
         userId: store.state.global.userId,
         projectId,
         userName,
@@ -117,7 +115,6 @@ export default function routeGlobal( route, ajax, store ) {
     return ajax.post( '/account/load.php' ).then( ( { details } ) => {
       return {
         form: 'users/ResetPassword',
-        size: 'small',
         userId: details.id,
         name: details.name,
         email: details.email,

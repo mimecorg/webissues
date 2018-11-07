@@ -17,11 +17,16 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-export default {
-  mounted() {
-    this.$emit( 'loadPosition', this.$router.path );
+import Vue from 'vue'
+
+Vue.mixin( {
+  beforeCreate() {
+    const options = this.$options;
+    if ( options.parent != null && options.parent.$form != null )
+      this.$form = options.parent.$form;
   },
-  routeChanged( route, fromRoute ) {
-    this.$emit( 'savePosition', fromRoute.path );
-  }
-}
+  created() {
+    if ( this.$options.form != null )
+      this.$form = this.$options.form.call( this );
+  },
+} );

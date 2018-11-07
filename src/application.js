@@ -28,6 +28,7 @@ import makeParser from '@/mixins/parser'
 import makeFormatter from '@/mixins/formatter'
 import makeRouter from '@/mixins/router'
 import '@/mixins/fields'
+import '@/mixins/form'
 
 import '@/directives/hljs'
 

@@ -18,16 +18,14 @@
 -->
 
 <template>
-  <div class="container-fluid">
-    <FormHeader v-bind:title="$t( 'cmd.ChangeOrder' )" v-on:close="close"/>
+  <BaseForm v-bind:title="$t( 'cmd.ChangeOrder' )" with-buttons v-on:ok="submit" v-on:cancel="returnToDetails">
     <Prompt path="prompt.ChangeOrder"><strong>{{ name }}</strong></Prompt>
     <Draggable class="draggable-container" v-bind:options="{ handle: '.draggable-handle' }" v-model="attributes">
       <div v-for="attribute in attributes" v-bind:key="attribute.id" class="draggable-item">
         <div class="draggable-handle"><span class="fa fa-bars" aria-hidden="true"></span> {{ attribute.name }}</div>
       </div>
     </Draggable>
-    <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
-  </div>
+  </BaseForm>
 </template>
 
 <script>
@@ -60,27 +58,19 @@ export default {
 
       const data = { typeId: this.typeId, order };
 
-      this.$emit( 'block' );
+      this.$form.block();
 
       this.$ajax.post( '/types/attributes/reorder.php', data ).then( ( { changed } ) => {
         if ( changed )
           this.$store.commit( 'global/setDirty' );
         this.returnToDetails();
       } ).catch( error => {
-        this.$emit( 'error', error );
+        this.$form.error( error );
       } );
-    },
-
-    cancel() {
-      this.returnToDetails();
     },
 
     returnToDetails() {
       this.$router.push( 'TypeDetails', { typeId: this.typeId } );
-    },
-
-    close() {
-      this.$emit( 'close' );
     }
   }
 }

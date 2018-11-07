@@ -18,12 +18,10 @@
 -->
 
 <template>
-  <div class="container-fluid">
-    <FormHeader v-bind:title="$t( 'cmd.DeleteType' )" v-on:close="close"/>
+  <BaseForm v-bind:title="$t( 'cmd.DeleteType' )" size="small" with-buttons v-on:ok="submit" v-on:cancel="returnToDetails">
     <Prompt path="prompt.DeleteType"><strong>{{ name }}</strong></Prompt>
     <Prompt v-if="force" path="prompt.WarningDeleteType" alert-class="alert-danger"><strong>{{ $t( 'label.Warning' ) }}</strong></Prompt>
-    <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
-  </div>
+  </BaseForm>
 </template>
 
 <script>
@@ -44,7 +42,7 @@ export default {
 
   methods: {
     submit() {
-      this.$emit( 'block' );
+      this.$form.block();
 
       const data = { typeId: this.typeId, force: this.force };
 
@@ -53,10 +51,10 @@ export default {
         this.$router.push( 'ManageTypes' );
       } ).catch( error => {
         if ( error.reason == Reason.APIError && error.errorCode == ErrorCode.CannotDeleteType ) {
-          this.$emit( 'unblock' );
+          this.$form.unblock();
           this.force = true;
         } else {
-          this.$emit( 'error', error );
+          this.$form.error( error );
         }
       } );
     },
@@ -67,10 +65,6 @@ export default {
 
     returnToDetails() {
       this.$router.push( 'TypeDetails', { typeId: this.typeId } );
-    },
-
-    close() {
-      this.$emit( 'close' );
     }
   }
 }

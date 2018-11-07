@@ -32,6 +32,7 @@ import Client from '@/components/Client'
 import makeAjax from '@/mixins/ajax'
 import { makeClientParser } from '@/mixins/parser'
 import '@/mixins/fields'
+import '@/mixins/form'
 
 import makeI18n, { fromSystemLocale } from '@/i18n'
 

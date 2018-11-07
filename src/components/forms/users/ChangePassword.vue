@@ -18,16 +18,14 @@
 -->
 
 <template>
-  <div class="container-fluid">
-    <FormHeader v-bind:title="$t( 'cmd.ChangePassword' )" v-on:close="close"/>
+  <BaseForm v-bind:title="$t( 'cmd.ChangePassword' )" with-buttons v-on:ok="submit" v-on:cancel="returnToDetails">
     <Prompt v-if="isOwn" path="prompt.ChangeOwnPassword"></Prompt>
     <Prompt v-else path="prompt.ChangePassword"><strong>{{ name }}</strong></Prompt>
     <FormInput v-if="isOwn" ref="password" id="password" type="password" v-bind:label="$t( 'label.CurrentPassword' )" v-bind="$field( 'password' )" v-model="password"/>
     <FormInput ref="newPassword" id="newPassword" type="password" v-bind:label="$t( 'label.NewPassword' )" v-bind="$field( 'newPassword' )" v-model="newPassword"/>
     <FormInput ref="confirmPassword" id="confirmPassword" type="password" v-bind:label="$t( 'label.ConfirmPassword' )" v-bind="$field( 'confirmPassword' )" v-model="confirmPassword"/>
     <FormCheckbox v-if="!isOwn" v-bind:label="$t( 'text.UserMustChangePassword' )" v-model="mustChangePassword"/>
-    <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
-  </div>
+  </BaseForm>
 </template>
 
 <script>
@@ -87,31 +85,27 @@ export default {
         data.mustChangePassword = this.mustChangePassword;
       }
 
-      this.$emit( 'block' );
+      this.$form.block();
 
       this.$ajax.post( this.isOwn ? '/account/password/edit.php' : '/users/password/edit.php', data ).then( () => {
         this.returnToDetails();
       } ).catch( error => {
         if ( error.reason == Reason.APIError && error.errorCode == ErrorCode.IncorrectLogin ) {
-          this.$emit( 'unblock' );
+          this.$form.unblock();
           this.passwordError = this.$t( 'ErrorCode.' + error.errorCode );
           this.$nextTick( () => {
             this.$refs.password.focus();
           } );
         } else if ( error.reason == Reason.APIError && error.errorCode == ErrorCode.CannotReusePassword ) {
-          this.$emit( 'unblock' );
+          this.$form.unblock();
           this.newPasswordError = this.$t( 'ErrorCode.' + error.errorCode );
           this.$nextTick( () => {
             this.$refs.newPassword.focus();
           } );
         } else {
-          this.$emit( 'error', error );
+          this.$form.error( error );
         }
       } );
-    },
-
-    cancel() {
-      this.returnToDetails();
     },
 
     returnToDetails() {
@@ -119,10 +113,6 @@ export default {
         this.$router.push( 'MyAccount' );
       else
         this.$router.push( 'UserDetails', { userId: this.userId } );
-    },
-
-    close() {
-      this.$emit( 'close' );
     },
 
     comparePassword( value ) {

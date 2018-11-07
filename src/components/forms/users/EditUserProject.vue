@@ -18,12 +18,12 @@
 -->
 
 <template>
-  <div class="container-fluid">
-    <FormHeader v-bind:title="title" v-on:close="close">
+  <BaseForm v-bind:title="title" v-bind:size="size" with-buttons v-on:ok="submit" v-on:cancel="returnToDetails">
+    <template slot="header">
       <button v-if="mode == 'edit'" type="button" class="btn btn-default" v-on:click="removeProject">
         <span class="fa fa-ban" aria-hidden="true"></span> {{ $t( 'cmd.Remove' ) }}
       </button>
-    </FormHeader>
+    </template>
     <Prompt v-if="mode == 'edit'" path="prompt.EditMember"><strong>{{ projectName }}</strong><strong>{{ userName }}</strong></Prompt>
     <Prompt v-else-if="mode == 'add'" path="prompt.AddUserProjects"><strong>{{ userName }}</strong></Prompt>
     <Panel v-if="mode == 'add' && availableProjects.length > 0" v-bind:title="$t( 'title.Projects' )">
@@ -48,8 +48,7 @@
         <label><input type="radio" v-model="access" v-bind:value="administratorAccess"> {{ $t( 'text.ProjectAdministrator' ) }}</label>
       </div>
     </FormGroup>
-    <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
-  </div>
+  </BaseForm>
 </template>
 
 <script>
@@ -94,6 +93,12 @@ export default {
       else if ( this.mode == 'add' )
         return this.$t( 'cmd.AddProjects' );
     },
+    size() {
+      if ( this.mode == 'edit' )
+        return 'small';
+      else if ( this.mode == 'add' )
+        return 'normal';
+    },
     availableProjects() {
       return this.userProjects != null ? this.projects.filter( p => this.userProjects.every( up => up.id != p.id ) ) : [];
     }
@@ -136,17 +141,13 @@ export default {
         return;
       }
 
-      this.$emit( 'block' );
+      this.$form.block();
 
       this.$ajax.post( '/users/projects/edit.php', data ).then( () => {
         this.returnToDetails();
       } ).catch( error => {
-        this.$emit( 'error', error );
+        this.$form.error( error );
       } );
-    },
-
-    cancel() {
-      this.returnToDetails();
     },
 
     returnToDetails() {
@@ -154,10 +155,6 @@ export default {
         this.$router.push( 'MyAccount' );
       else
         this.$router.push( 'UserDetails', { userId: this.userId } );
-    },
-
-    close() {
-      this.$emit( 'close' );
     }
   }
 }

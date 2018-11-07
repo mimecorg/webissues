@@ -18,10 +18,7 @@
 -->
 
 <template>
-  <div class="container-fluid">
-    <div class="form-header">
-      <h1>{{ $t( 'title.LogInToWebIssues' ) }}</h1>
-    </div>
+  <BaseForm v-bind:title="$t( 'title.LogInToWebIssues' )" size="small" close-hidden>
     <template v-if="!changePassword">
       <FormInput ref="login" id="login" v-bind:label="$t( 'label.Login' )" v-bind="$field( 'login' )" v-model="login" v-on:keydown.enter="submit"/>
       <FormInput ref="password" id="password" type="password" v-bind:label="$t( 'label.Password' )" v-bind="$field( 'password' )" v-model="password" v-on:keydown.enter="submit"/>
@@ -43,7 +40,7 @@
       <FormInput ref="confirmPassword" id="confirmPassword" type="password" v-bind:label="$t( 'label.ConfirmPassword' )" v-bind="$field( 'confirmPassword' )" v-model="confirmPassword"/>
       <FormButtons v-on:ok="submit" v-on:cancel="cancelPassword"/>
     </template>
-  </div>
+  </BaseForm>
 </template>
 
 <script>
@@ -101,32 +98,32 @@ export default {
       if ( this.changePassword )
         data.newPassword = this.newPassword;
 
-      this.$emit( 'block' );
+      this.$form.block();
 
       this.$ajax.post( '/login.php', data ).then( ( { userId, userName, userAccess, csrfToken, locale } ) => {
         this.$client.startApplication( { userId, userName, userAccess, csrfToken, locale } );
       } ).catch( error => {
         if ( error.reason == Reason.APIError && error.errorCode == ErrorCode.IncorrectLogin ) {
-          this.$emit( 'unblock' );
+          this.$form.unblock();
           this.changePassword = false;
           this.passwordError = this.$t( 'ErrorCode.' + error.errorCode );
           this.$nextTick( () => {
             this.$refs.password.focus();
           } );
         } else if ( error.reason == Reason.APIError && error.errorCode == ErrorCode.MustChangePassword ) {
-          this.$emit( 'unblock' );
+          this.$form.unblock();
           this.changePassword = true;
           this.$nextTick( () => {
             this.$refs.newPassword.focus();
           } );
         } else if ( error.reason == Reason.APIError && error.errorCode == ErrorCode.CannotReusePassword ) {
-          this.$emit( 'unblock' );
+          this.$form.unblock();
           this.newPasswordError = this.$t( 'ErrorCode.' + error.errorCode );
           this.$nextTick( () => {
             this.$refs.newPassword.focus();
           } );
         } else {
-          this.$emit( 'error', error );
+          this.$form.error( error );
         }
       } );
     },

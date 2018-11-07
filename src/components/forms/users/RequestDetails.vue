@@ -18,11 +18,11 @@
 -->
 
 <template>
-  <div class="container-fluid">
-    <FormHeader v-bind:title="name" v-bind:breadcrumbs="breadcrumbs" v-on:close="close">
+  <BaseForm v-bind:title="name" v-bind:breadcrumbs="breadcrumbs" auto-close save-position>
+    <template slot="header">
       <button type="button" class="btn btn-primary" v-on:click="approveRequest"><span class="fa fa-check" aria-hidden="true"></span> {{ $t( 'cmd.Approve' ) }}</button>
       <button type="button" class="btn btn-default" v-on:click="rejectRequest"><span class="fa fa-ban" aria-hidden="true"></span> {{ $t( 'cmd.Reject' ) }}</button>
-    </FormHeader>
+    </template>
     <FormSection v-bind:title="$t( 'title.Details' )"/>
     <div class="panel panel-default">
       <div class="panel-body panel-table">
@@ -40,15 +40,11 @@
         </div>
       </div>
     </div>
-  </div>
+  </BaseForm>
 </template>
 
 <script>
-import savePosition from '@/mixins/save-position'
-
 export default {
-  mixins: [ savePosition ],
-
   props: {
     requestId: Number,
     name: String,
@@ -75,10 +71,6 @@ export default {
     },
     rejectRequest() {
       this.$router.push( 'RejectRequest', { requestId: this.requestId } );
-    },
-
-    close() {
-      this.$emit( 'close' );
     }
   }
 }

@@ -18,11 +18,9 @@
 -->
 
 <template>
-  <div class="container-fluid">
-    <FormHeader v-bind:title="$t( 'cmd.RejectRequest' )" v-on:close="close"/>
+  <BaseForm v-bind:title="$t( 'cmd.RejectRequest' )" size="small" with-buttons v-on:ok="submit" v-on:cancel="returnToDetails">
     <Prompt path="prompt.RejectRequest"><strong>{{ name }}</strong></Prompt>
-    <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
-  </div>
+  </BaseForm>
 </template>
 
 <script>
@@ -34,23 +32,19 @@ export default {
 
   methods: {
     submit() {
-      this.$emit( 'block' );
+      this.$form.block();
 
       const data = { requestId: this.requestId };
 
       this.$ajax.post( '/users/requests/reject.php', data ).then( () => {
         this.$router.push( 'RegistrationRequests' );
       } ).catch( error => {
-        this.$emit( 'error', error );
+        this.$form.error( error );
       } );
     },
 
-    cancel() {
-        this.$router.push( 'RequestDetails', { requestId: this.requestId } );
-    },
-
-    close() {
-      this.$emit( 'close' );
+    returnToDetails() {
+      this.$router.push( 'RequestDetails', { requestId: this.requestId } );
     }
   }
 }

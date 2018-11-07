@@ -18,14 +18,12 @@
 -->
 
 <template>
-  <div class="container-fluid">
-    <FormHeader v-bind:title="$t( 'cmd.MoveFolder' )" v-on:close="close"/>
+  <BaseForm v-bind:title="$t( 'cmd.MoveFolder' )" size="small" with-buttons v-on:ok="submit" v-on:cancel="returnToDetails">
     <Prompt path="prompt.MoveFolder"><strong>{{ name }}</strong></Prompt>
     <FormGroup v-bind:label="$t( 'label.Project' )" v-bind="$field( 'projectId' )">
       <LocationFilters ref="projectId" v-bind:projectId.sync="projectId" require-admin/>
     </FormGroup>
-    <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
-  </div>
+  </BaseForm>
 </template>
 
 <script>
@@ -61,7 +59,7 @@ export default {
 
       const data = { folderId: this.folderId, projectId: this.projectId };
 
-      this.$emit( 'block' );
+      this.$form.block();
 
       this.$ajax.post( '/projects/folders/move.php', data ).then( ( { changed } ) => {
         if ( changed )
@@ -69,27 +67,19 @@ export default {
         this.returnToDetails();
       } ).catch( error => {
         if ( error.reason == Reason.APIError && error.errorCode == ErrorCode.FolderAlreadyExists ) {
-          this.$emit( 'unblock' );
+          this.$form.unblock();
           this.projectIdError = this.$t( 'ErrorCode.' + error.errorCode );
           this.$nextTick( () => {
             this.$refs.projectId.focus();
           } );
         } else {
-          this.$emit( 'error', error );
+          this.$form.error( error );
         }
       } );
     },
 
-    cancel() {
-      this.returnToDetails();
-    },
-
     returnToDetails() {
       this.$router.push( 'ProjectDetails', { projectId: this.initialProjectId } );
-    },
-
-    close() {
-      this.$emit( 'close' );
     }
   }
 }

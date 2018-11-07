@@ -18,12 +18,12 @@
 -->
 
 <template>
-  <div class="container-fluid">
-    <FormHeader v-bind:title="title" v-on:close="close">
+  <BaseForm v-bind:title="title" with-buttons v-on:ok="submit" v-on:cancel="returnToDetails">
+    <template slot="header">
       <button v-if="mode == 'edit'" type="button" class="btn btn-default" v-on:click="deleteInbox">
         <span class="fa fa-trash" aria-hidden="true"></span> {{ $t( 'cmd.Delete' ) }}
       </button>
-    </FormHeader>
+    </template>
     <Prompt v-if="mode == 'edit'" path="prompt.EditEmailInbox"><strong>{{ initialEmail }}</strong></Prompt>
     <Prompt v-else-if="mode == 'add'" path="prompt.AddEmailInbox"/>
     <FormGroup v-bind:label="$t( 'label.ServerType' )">
@@ -66,8 +66,7 @@
       <FormCheckbox v-bind:label="$t( 'text.SendResponses' )" v-model="respond"/>
       <FormCheckbox v-bind:label="$t( 'text.SubscribeSenders' )" v-model="subscribe"/>
     </Panel>
-    <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
-  </div>
+  </BaseForm>
 </template>
 
 <script>
@@ -249,12 +248,12 @@ export default {
         data.subscribe = this.subscribe;
       }
 
-      this.$emit( 'block' );
+      this.$form.block();
 
       this.$ajax.post( '/settings/inboxes/' + this.mode + '.php', data ).then( () => {
         this.returnToDetails();
       } ).catch( error => {
-        this.$emit( 'error', error );
+        this.$form.error( error );
       } );
     },
 
@@ -278,13 +277,13 @@ export default {
       if ( this.encryption != '' )
         data.noValidate = this.noValidate;
 
-      this.$emit( 'block' );
+      this.$form.block();
 
       this.$ajax.post( '/settings/inboxes/test.php', data ).then( ( { status } ) => {
-        this.$emit( 'unblock' );
+        this.$form.unblock();
         this.testStatus = status;
       } ).catch( error => {
-        this.$emit( 'error', error );
+        this.$form.error( error );
       } );
     },
 
@@ -314,16 +313,8 @@ export default {
       this.$router.push( 'DeleteInbox', { inboxId: this.inboxId } );
     },
 
-    cancel() {
-      this.returnToDetails();
-    },
-
     returnToDetails() {
       this.$router.push( 'ServerSettings' );
-    },
-
-    close() {
-      this.$emit( 'close' );
     }
   },
 

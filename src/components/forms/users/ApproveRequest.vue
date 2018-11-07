@@ -18,8 +18,7 @@
 -->
 
 <template>
-  <div class="container-fluid">
-    <FormHeader v-bind:title="$t( 'cmd.ApproveRequest' )" v-on:close="close"/>
+  <BaseForm v-bind:title="$t( 'cmd.ApproveRequest' )" with-buttons v-on:ok="submit" v-on:cancel="returnToDetails">
     <Prompt path="prompt.ApproveRequest"><strong>{{ name }}</strong></Prompt>
     <Panel v-if="projects.length > 0" v-bind:title="$t( 'title.Projects' )">
       <div slot="heading" class="panel-links">
@@ -34,9 +33,8 @@
         </div>
       </div>
     </Panel>
-    <Prompt v-else path="info.NoAvailableProjects" alert-class="alert-warning"/>
-    <FormButtons v-on:ok="submit" v-on:cancel="cancel"/>
-  </div>
+    <Prompt v-else path="info.NoAvailableProjects"/>
+  </BaseForm>
 </template>
 
 <script>
@@ -64,7 +62,7 @@ export default {
     },
 
     submit() {
-      this.$emit( 'block' );
+      this.$form.block();
 
       const data = { requestId: this.requestId, projects: [] };
 
@@ -76,16 +74,12 @@ export default {
       this.$ajax.post( '/users/requests/approve.php', data ).then( () => {
         this.$router.push( 'RegistrationRequests' );
       } ).catch( error => {
-        this.$emit( 'error', error );
+        this.$form.error( error );
       } );
     },
 
-    cancel() {
-        this.$router.push( 'RequestDetails', { requestId: this.requestId } );
-    },
-
-    close() {
-      this.$emit( 'close' );
+    returnToDetails() {
+      this.$router.push( 'RequestDetails', { requestId: this.requestId } );
     }
   }
 }
