@@ -71,7 +71,12 @@ export default {
     clientLogin() {
       if ( !this.busy ) {
         this.childForm = 'client/ClientLogin';
-        this.childProps = { anonymousAccess: this.settings.anonymousAccess, selfRegister: this.settings.selfRegister, resetPassword: this.settings.resetPassword };
+        this.childProps = {
+          anonymousAccess: this.settings.anonymousAccess,
+          selfRegister: this.settings.selfRegister,
+          resetPassword: this.settings.resetPassword,
+          locale: this.settings.locale
+        };
       }
     },
 

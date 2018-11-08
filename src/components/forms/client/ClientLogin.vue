@@ -51,7 +51,8 @@ export default {
   props: {
     anonymousAccess: Boolean,
     selfRegister: Boolean,
-    resetPassword: Boolean
+    resetPassword: Boolean,
+    locale: String
   },
 
   fields() {
@@ -129,7 +130,7 @@ export default {
     },
 
     startAnonymous() {
-      this.$client.startApplication( { userId: 0, userName: '', userAccess: 0, csrfToken: null } );
+      this.$client.startApplication( { userId: 0, userName: '', userAccess: 0, csrfToken: null, locale: this.locale } );
     },
 
     openRegister() {
