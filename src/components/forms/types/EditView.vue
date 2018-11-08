@@ -104,7 +104,8 @@ export default {
     viewId: Number,
     isPublic: Boolean,
     initialName: String,
-    initialView: Object
+    initialView: Object,
+    attributes: Array
   },
 
   fields() {
@@ -141,7 +142,6 @@ export default {
   },
 
   computed: {
-    ...mapState( 'global', [ 'types' ] ),
     ...mapGetters( 'global', [ 'isAdministrator' ] ),
     title() {
       if ( this.mode == 'default' )
@@ -163,16 +163,11 @@ export default {
       else if ( this.mode == 'clone' )
         return this.isPublic ? 'prompt.ClonePublicView' : 'prompt.ClonePersonalView';
     },
-    type() {
-      return this.types.find( t => t.id == this.typeId );
-    },
     allColumns() {
-      let columns = [
-        Column.ID, Column.Name, Column.CreatedDate, Column.CreatedBy, Column.ModifiedDate, Column.ModifiedBy
+      return [
+        Column.ID, Column.Name, Column.CreatedDate, Column.CreatedBy, Column.ModifiedDate, Column.ModifiedBy,
+        ...this.attributes.map( a => Column.UserDefined + a.id )
       ];
-      if ( this.type != null )
-        columns = [ ...columns, ...this.type.attributes.map( a => Column.UserDefined + a.id ) ];
-      return columns;
     },
     availableColumns() {
       return this.allColumns.filter( c => !this.columns.includes( c ) );
@@ -276,7 +271,7 @@ export default {
 
         default:
           if ( column > Column.UserDefined ) {
-            const attribute = this.type.attributes.find( a => a.id == column - Column.UserDefined );
+            const attribute = this.attributes.find( a => a.id == column - Column.UserDefined );
             if ( attribute != null )
               return attribute.type;
           }
@@ -289,7 +284,7 @@ export default {
       const result = { type };
 
       if ( type == 'ENUM' ) {
-        const attribute = this.type.attributes.find( a => a.id == column - Column.UserDefined );
+        const attribute = this.attributes.find( a => a.id == column - Column.UserDefined );
         if ( attribute != null )
           result.items = attribute.items;
       }
@@ -311,7 +306,7 @@ export default {
 
         case 'NUMERIC':
           if ( filter.column > Column.UserDefined ) {
-            const attribute = this.type.attributes.find( a => a.id == filter.column - Column.UserDefined );
+            const attribute = this.attributes.find( a => a.id == filter.column - Column.UserDefined );
             if ( attribute != null ) {
               result.decimal = attribute.decimal;
               result.strip = attribute.strip;

@@ -130,15 +130,16 @@ export default function routeTypes( route, ajax, store ) {
 
   route( 'ViewSettings', '/types/:typeId/views', ( { typeId } ) => {
     const isAdministrator = store.state.global.userAccess == Access.AdministratorAccess;
-    const data = { typeId, defaultView: isAdministrator, publicViews: isAdministrator, personalViews: true };
-    return ajax.post( '/types/load.php', data ).then( ( { name, defaultView, publicViews, personalViews } ) => {
+    const data = { typeId, defaultView: isAdministrator, publicViews: isAdministrator, personalViews: true, attributes: true };
+    return ajax.post( '/types/load.php', data ).then( ( { name, defaultView, publicViews, personalViews, attributes } ) => {
       return {
         form: 'types/ViewSettings',
         typeId,
         name,
         defaultView,
         publicViews,
-        personalViews
+        personalViews,
+        attributes
       };
     } );
   } );
@@ -146,13 +147,14 @@ export default function routeTypes( route, ajax, store ) {
   route( 'EditDefaultView', '/types/:typeId/views/default/edit', ( { typeId } ) => {
     if ( store.state.global.userAccess != Access.AdministratorAccess )
       return Promise.reject( makeError( ErrorCode.AccessDenied ) );
-    return ajax.post( '/types/load.php', { typeId, defaultView: true } ).then( ( { name, defaultView } ) => {
+    return ajax.post( '/types/load.php', { typeId, defaultView: true, attributes: true } ).then( ( { name, defaultView, attributes } ) => {
       return {
         form: 'types/EditView',
         mode: 'default',
         typeId,
         typeName: name,
-        initialView: defaultView
+        initialView: defaultView,
+        attributes
       };
     } );
   } );
@@ -160,56 +162,64 @@ export default function routeTypes( route, ajax, store ) {
   route( 'AddPublicView', '/types/:typeId/views/public/add', ( { typeId } ) => {
     if ( store.state.global.userAccess != Access.AdministratorAccess )
       return Promise.reject( makeError( ErrorCode.AccessDenied ) );
-    return ajax.post( '/types/load.php', { typeId, defaultView: true } ).then( ( { name, defaultView } ) => {
+    return ajax.post( '/types/load.php', { typeId, defaultView: true, attributes: true } ).then( ( { name, defaultView, attributes } ) => {
       return {
         form: 'types/EditView',
         mode: 'add',
         typeId,
         typeName: name,
         isPublic: true,
-        initialView: defaultView
+        initialView: defaultView,
+        attributes
       };
     } );
   } );
 
   route( 'AddPersonalView', '/types/:typeId/views/personal/add', ( { typeId } ) => {
-    return ajax.post( '/types/load.php', { typeId, defaultView: true } ).then( ( { name, defaultView } ) => {
+    return ajax.post( '/types/load.php', { typeId, defaultView: true, attributes: true } ).then( ( { name, defaultView, attributes } ) => {
       return {
         form: 'types/EditView',
         mode: 'add',
         typeId,
         typeName: name,
         isPublic: false,
-        initialView: defaultView
+        initialView: defaultView,
+        attributes
       };
     } );
   } );
 
   route( 'EditView', '/types/:typeId/views/:viewId/edit', ( { typeId, viewId } ) => {
     return ajax.post( '/types/views/load.php', { typeId, viewId, details: true } ).then( ( { name, isPublic, details } ) => {
-      return {
-        form: 'types/EditView',
-        mode: 'edit',
-        typeId,
-        viewId,
-        isPublic,
-        initialName: name,
-        initialView: details
-      };
+      return ajax.post( '/types/load.php', { typeId, attributes: true } ).then( ( { attributes } ) => {
+        return {
+          form: 'types/EditView',
+          mode: 'edit',
+          typeId,
+          viewId,
+          isPublic,
+          initialName: name,
+          initialView: details,
+          attributes
+        };
+      } );
     } );
   } );
 
   route( 'CloneView', '/types/:typeId/views/:viewId/clone', ( { typeId, viewId } ) => {
     return ajax.post( '/types/views/load.php', { typeId, viewId, details: true } ).then( ( { name, isPublic, details } ) => {
-      return {
-        form: 'types/EditView',
-        mode: 'clone',
-        typeId,
-        viewId,
-        isPublic,
-        initialName: name,
-        initialView: details
-      };
+      return ajax.post( '/types/load.php', { typeId, attributes: true } ).then( ( { attributes } ) => {
+        return {
+          form: 'types/EditView',
+          mode: 'clone',
+          typeId,
+          viewId,
+          isPublic,
+          initialName: name,
+          initialView: details,
+          attributes
+        };
+      } );
     } );
   } );
 

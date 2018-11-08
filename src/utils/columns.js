@@ -34,8 +34,8 @@ export function getColumnName( column ) {
     case Column.ModifiedDate:
       return this.$t( 'title.ModifiedDate' );
     default:
-      if ( column > Column.UserDefined && this.type != null ) {
-        const attribute = this.type.attributes.find( a => a.id == column - Column.UserDefined );
+      if ( column > Column.UserDefined ) {
+        const attribute = this.attributes.find( a => a.id == column - Column.UserDefined );
         if ( attribute != null )
           return attribute.name;
       }

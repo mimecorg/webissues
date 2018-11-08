@@ -81,10 +81,10 @@ export default {
     defaultView: Object,
     publicViews: Array,
     personalViews: Array,
+    attributes: Array
   },
 
   computed: {
-    ...mapState( 'global', [ 'types' ] ),
     ...mapGetters( 'global', [ 'isAdministrator' ] ),
     breadcrumbs() {
       return [
@@ -98,9 +98,6 @@ export default {
         this.$t( 'title.Columns' ),
         this.$t( 'title.SortBy' )
       ];
-    },
-    type() {
-      return this.types.find( t => t.id == this.typeId );
     },
     defaultColumns() {
       return this.defaultView.columns.map( c => this.getColumnName( c ) ).join( ', ' );
