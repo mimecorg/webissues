@@ -18,6 +18,8 @@
 -->
 
 <script>
+import { KeyCode } from '@/constants'
+
 export default {
   functional: true,
   render( createElement, { listeners, children } ) {
@@ -27,7 +29,7 @@ export default {
         listeners.click();
     };
     const keydown = e => {
-      if ( e.keyCode == 13 )
+      if ( e.keyCode == KeyCode.Enter )
         click( e );
     };
     return createElement( 'a', { attrs: { role: "link", tabindex: "0" }, on: { click, keydown } }, children );
