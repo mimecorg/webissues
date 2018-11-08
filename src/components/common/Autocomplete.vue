@@ -160,16 +160,8 @@ export default {
     },
 
     scrollMenuToView() {
-      let top = this.$refs.input.offsetTop;
-      let bottom = this.$refs.menu.offsetTop + this.$refs.menu.clientHeight + 3;
-      let element = this.$el;
-      while ( element != null && element.id != 'window-overlay' ) {
-        top += element.offsetTop;
-        bottom += element.offsetTop;
-        element = element.offsetParent;
-      }
-      if ( element != null && bottom > element.scrollTop + element.clientHeight )
-        element.scrollTop = Math.min( top, bottom - element.clientHeight );
+      if ( this.$form != null )
+        this.$form.scrollMenuToView( this.$el, this.$refs.menu );
     }
   }
 }

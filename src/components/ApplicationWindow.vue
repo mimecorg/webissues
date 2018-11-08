@@ -97,13 +97,22 @@ export default {
     scrollToAnchor( anchor ) {
       let element = document.getElementById( anchor );
       let top = 0;
-      if ( element != null ) {
-        while ( element != null && element != this.$refs.overlay ) {
-          top += element.offsetTop;
-          element = element.offsetParent;
-        }
-        this.$refs.overlay.scrollTop = top;
+      while ( element != null && element != this.$refs.overlay ) {
+        top += element.offsetTop;
+        element = element.offsetParent;
       }
+      if ( element != null )
+        element.scrollTop = top;
+    },
+    scrollMenuToView( element, menu ) {
+      const height = menu.offsetTop + menu.clientHeight + 3;
+      let top = 0;
+      while ( element != null && element != this.$refs.overlay ) {
+        top += element.offsetTop;
+        element = element.offsetParent;
+      }
+      if ( element != null && top + height > element.scrollTop + element.clientHeight )
+        element.scrollTop = Math.min( top, top + height - element.clientHeight );
     },
 
     loadPosition( key ) {
@@ -144,6 +153,7 @@ export default {
       block: this.block,
       unblock: this.unblock,
       scrollToAnchor: this.scrollToAnchor,
+      scrollMenuToView: this.scrollMenuToView,
       loadPosition: this.loadPosition,
       savePosition: this.savePosition,
       resetPosition: this.resetPosition,
