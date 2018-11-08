@@ -21,7 +21,7 @@
   <BaseForm v-bind:title="$t( 'cmd.MoveFolder' )" size="small" with-buttons v-on:ok="submit" v-on:cancel="returnToDetails">
     <Prompt path="prompt.MoveFolder"><strong>{{ name }}</strong></Prompt>
     <FormGroup v-bind:label="$t( 'label.Project' )" v-bind="$field( 'projectId' )">
-      <LocationFilters ref="projectId" v-bind:projectId.sync="projectId" require-admin/>
+      <LocationFilters ref="projectId" v-bind:projectId.sync="projectId" v-bind:projects="projects" require-admin/>
     </FormGroup>
   </BaseForm>
 </template>
@@ -33,7 +33,8 @@ export default {
   props: {
     initialProjectId: Number,
     folderId: Number,
-    name: String
+    name: String,
+    projects: Array
   },
 
   fields() {

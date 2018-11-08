@@ -59,16 +59,18 @@ export default {
     projectId: Number,
     folderId: Number,
     requireAdmin: Boolean,
-    folderVisible: Boolean
+    folderVisible: Boolean,
+    projects: Array
   },
 
   computed: {
-    ...mapState( 'global', [ 'userAccess', 'projects' ] ),
+    ...mapState( 'global', [ 'userAccess' ] ),
     availableProjects() {
+      const projects = this.projects != null ? this.projects : this.$store.state.global.projects;
       if ( this.requireAdmin && this.userAccess != Access.AdministratorAccess )
-        return this.projects.filter( p => p.access == Access.AdministratorAccess );
+        return projects.filter( p => p.access == Access.AdministratorAccess );
       else
-        return this.projects;
+        return projects;
     },
     availableFolders() {
       if ( this.project != null ) {

@@ -159,12 +159,15 @@ export default function routeProjects( route, ajax, store ) {
 
   route( 'MoveFolder', '/projects/:projectId/folders/:folderId/move', ( { projectId, folderId } ) => {
     return ajax.post( '/projects/folders/load.php', { projectId, folderId, access: 'admin' } ).then( ( { name } ) => {
-      return {
-        form: 'projects/MoveFolder',
-        initialProjectId: projectId,
-        folderId,
-        name
-      };
+      return ajax.post( '/projects/list.php' ).then( ( { projects } ) => {
+        return {
+          form: 'projects/MoveFolder',
+          initialProjectId: projectId,
+          folderId,
+          name,
+          projects
+        };
+      } );
     } );
   } );
 
