@@ -53,7 +53,7 @@ export default {
   },
   methods: {
     updateTitle() {
-      if ( this.route == null ) {
+      if ( process.env.TARGET == 'web' && this.route == null ) {
         if ( this.title != null )
           document.title = this.title + ' | ' + this.serverName;
         else
