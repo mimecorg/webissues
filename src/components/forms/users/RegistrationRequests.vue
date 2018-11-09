@@ -21,8 +21,8 @@
   <BaseForm v-bind:title="$t( 'title.RegistrationRequests' )" v-bind:breadcrumbs="breadcrumbs" v-bind:size="size" auto-close save-position>
     <Grid v-if="requests.length > 0" v-bind:items="requests" v-bind:column-names="columnNames"
           v-bind:column-classes="[ 'column-medium', 'column-medium', 'column-medium', null ]" v-on:row-click="rowClick">
-      <template slot-scope="{ item, columnIndex, columnClass }">
-        <td v-bind:class="columnClass">{{ getCellValue( columnIndex, item ) }}</td>
+      <template slot-scope="{ item, columnIndex, columnClass, columnKey }">
+        <td v-bind:key="columnKey" v-bind:class="columnClass" v-html="getCellValue( columnIndex, item )"></td>
       </template>
     </Grid>
     <Prompt v-else path="info.NoRegistrationRequests"/>

@@ -23,7 +23,8 @@
       <div ref="headerScroll" class="grid-header-scroll">
         <table v-bind:class="[ 'grid-header-table', { 'grid-header-sort': sortEnabled } ]">
           <thead v-if="sortEnabled">
-            <th v-for="( columnName, columnIndex ) in columnNames" v-bind:key="columnIndex" v-bind:class="getColumnClass( columnIndex )" v-on:click="sort( columnIndex )">
+            <th v-for="( columnName, columnIndex ) in columnNames" v-bind:key="getColumnKey( columnIndex )" v-bind:class="getColumnClass( columnIndex )"
+                v-on:click="sort( columnIndex )">
               {{ columnName }} <span v-if="columnIndex == sortColumn" v-bind:class="sortClass" aria-hidden="true"></span>
             </th>
             <th class="column-fill"></th>
@@ -41,7 +42,7 @@
           <tbody>
             <tr v-for="( item, rowIndex ) in items" v-bind:key="item.id" v-on:click="rowClick( rowIndex )">
               <slot v-for="( columnName, columnIndex ) in columnNames" v-bind:item="item" v-bind:column-index="columnIndex"
-                    v-bind:row-index="rowIndex" v-bind:column-class="getColumnClass( columnIndex )"/>
+                    v-bind:row-index="rowIndex" v-bind:column-class="getColumnClass( columnIndex )" v-bind:column-key="getColumnKey( columnIndex )"/>
               <td class="column-fill"></td>
             </tr>
           </tbody>
@@ -75,6 +76,7 @@ export default {
     items: Array,
     columnNames: Array,
     columnClasses: Array,
+    columnKeys: Array,
     sortEnabled: Boolean,
     sortColumn: Number,
     sortAscending: Boolean,
@@ -118,6 +120,9 @@ export default {
 
     getColumnClass( columnIndex ) {
       return this.columnClasses != null ? this.columnClasses[ columnIndex ] : null
+    },
+    getColumnKey( columnIndex ) {
+      return this.columnKeys != null ? this.columnKeys[ columnIndex ] : columnIndex
     },
 
     sort( columnIndex ) {

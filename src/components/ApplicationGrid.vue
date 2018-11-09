@@ -19,12 +19,12 @@
 
 <template>
   <Grid id="application-grid" v-bind:items="convertedIssues" v-bind:column-names="columnNames" v-bind:column-classes="columnClasses"
-        sort-enabled v-bind:sort-column="sortColumnIndex" v-bind:sort-ascending="sortAscending"
+        v-bind:column-keys="columnKeys" sort-enabled v-bind:sort-column="sortColumnIndex" v-bind:sort-ascending="sortAscending"
         footer-visible v-bind:previous-enabled="previousEnabled" v-bind:next-enabled="nextEnabled"
         v-bind:status-text="statusText" v-bind:busy="busy" v-on:sort="sort" v-on:previous="previous" v-on:next="next"
         v-on:row-click="rowClick">
-    <template slot-scope="{ item, columnIndex, columnClass }">
-      <td v-bind:class="columnClass" v-html="getCellValue( columnIndex, item )"></td>
+    <template slot-scope="{ item, columnIndex, columnClass, columnKey }">
+      <td v-bind:key="columnKey" v-bind:class="columnClass" v-html="getCellValue( columnIndex, item )"></td>
     </template>
   </Grid>
 </template>
@@ -51,6 +51,9 @@ export default {
         else if ( column.id == Column.Location )
           return 'column-medium';
       } );
+    },
+    columnKeys() {
+      return this.columns.map( column => column.id );
     },
     columnAttributes() {
       return this.columns.map( column => {

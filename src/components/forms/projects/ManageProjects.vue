@@ -23,8 +23,8 @@
       <button v-if="isAdministrator" type="button" class="btn btn-success" v-on:click="addProject"><span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'cmd.Add' ) }}</button>
     </template>
     <Grid v-if="projects.length > 0" v-bind:items="projects" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-large', null ]" v-on:row-click="rowClick">
-      <template slot-scope="{ item, columnIndex, columnClass }">
-        <td v-bind:class="columnClass">{{ getCellValue( columnIndex, item ) }}</td>
+      <template slot-scope="{ item, columnIndex, columnClass, columnKey }">
+        <td v-bind:key="columnKey" v-bind:class="columnClass" v-html="getCellValue( columnIndex, item )"></td>
       </template>
     </Grid>
     <Prompt v-else v-bind:path="isAdministrator ? 'info.NoProjects' : 'info.NoAvailableProjects'"/>

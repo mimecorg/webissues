@@ -92,8 +92,8 @@
       <button type="button" class="btn btn-default" v-on:click="addInbox"><span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'cmd.Add' ) }}</button>
     </FormSection>
     <Grid v-if="inboxes.length > 0" v-bind:items="inboxes" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-large', null ]" v-on:row-click="rowClick">
-      <template slot-scope="{ item, columnIndex, columnClass }">
-        <td v-bind:class="columnClass">{{ getCellValue( columnIndex, item ) }}</td>
+      <template slot-scope="{ item, columnIndex, columnClass, columnKey }">
+        <td v-bind:key="columnKey" v-bind:class="columnClass" v-html="getCellValue( columnIndex, item )"></td>
       </template>
     </Grid>
     <Prompt v-else path="info.NoEmailInboxes" alert-class="alert-default"/>

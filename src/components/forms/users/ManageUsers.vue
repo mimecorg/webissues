@@ -26,8 +26,8 @@
       </button>
     </template>
     <Grid v-bind:items="users" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-medium', 'column-medium', 'column-medium', null ]" v-on:row-click="rowClick">
-      <template slot-scope="{ item, columnIndex, columnClass }">
-        <td v-bind:class="columnClass">{{ getCellValue( columnIndex, item ) }}</td>
+      <template slot-scope="{ item, columnIndex, columnClass, columnKey }">
+        <td v-bind:key="columnKey" v-bind:class="columnClass" v-html="getCellValue( columnIndex, item )"></td>
       </template>
     </Grid>
   </BaseForm>

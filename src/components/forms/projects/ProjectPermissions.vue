@@ -29,8 +29,8 @@
       <button type="button" class="btn btn-success" v-on:click="addMembers"><span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'cmd.Add' ) }}</button>
     </FormSection>
     <Grid v-if="sortedMembers.length > 0" v-bind:items="sortedMembers" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-large', null ]" v-on:row-click="rowClick">
-      <template slot-scope="{ item, columnIndex, columnClass }">
-        <td v-bind:class="columnClass">{{ getCellValue( columnIndex, item ) }}</td>
+      <template slot-scope="{ item, columnIndex, columnClass, columnKey }">
+        <td v-bind:key="columnKey" v-bind:class="columnClass" v-html="getCellValue( columnIndex, item )"></td>
       </template>
     </Grid>
     <div v-else class="alert alert-info">
