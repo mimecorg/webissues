@@ -48,12 +48,12 @@
             <table class="datepicker datepicker-7-cols">
               <thead>
                 <tr>
-                  <th v-for="col in 7">{{ getWeekDay( col ) }}</th>
+                  <th v-for="col in 7" v-bind:key="col">{{ getWeekDay( col ) }}</th>
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="row in calendarRows">
-                  <td v-for="col in 7" v-bind:class="getDayClass( row, col )" v-on:click="selectDay( row, col )">{{ getDayCell( row, col ) }}</td>
+                <tr v-for="row in calendarRows" v-bind:key="row">
+                  <td v-for="col in 7" v-bind:key="col" v-bind:class="getDayClass( row, col )" v-on:click="selectDay( row, col )">{{ getDayCell( row, col ) }}</td>
                 </tr>
                 <tr>
                   <td colspan="2"></td>
@@ -78,8 +78,8 @@
             </table>
             <table class="datepicker datepicker-3-cols">
               <tbody>
-                <tr v-for="row in 4">
-                  <td v-for="col in 3" class="datepicker-btn" v-on:click="selectMonth( row, col )">{{ getMonthCell( row, col ) }}</td>
+                <tr v-for="row in 4" v-bind:key="row">
+                  <td v-for="col in 3" v-bind:key="col" class="datepicker-btn" v-on:click="selectMonth( row, col )">{{ getMonthCell( row, col ) }}</td>
                 </tr>
               </tbody>
             </table>
@@ -99,8 +99,8 @@
             </table>
             <table class="datepicker datepicker-5-cols">
               <tbody>
-                <tr v-for="row in 2">
-                  <td v-for="col in 5" v-bind:class="getYearClass( row, col )" v-on:click="selectYear( row, col )">{{ getYearCell( row, col ) }}</td>
+                <tr v-for="row in 2" v-bind:key="row">
+                  <td v-for="col in 5" v-bind:key="col" v-bind:class="getYearClass( row, col )" v-on:click="selectYear( row, col )">{{ getYearCell( row, col ) }}</td>
                 </tr>
               </tbody>
             </table>
@@ -141,8 +141,8 @@
           <template v-else-if="selector == 'hours'">
             <table class="datepicker datepicker-time datepicker-4-cols">
               <tbody>
-                <tr v-for="row in hoursRows">
-                  <td v-for="col in 4" class="datepicker-btn" v-on:click="selectHours( row, col )">{{ getHoursCell( row, col ) }}</td>
+                <tr v-for="row in hoursRows" v-bind:key="row">
+                  <td v-for="col in 4" v-bind:key="col" class="datepicker-btn" v-on:click="selectHours( row, col )">{{ getHoursCell( row, col ) }}</td>
                 </tr>
               </tbody>
             </table>
@@ -153,8 +153,8 @@
           <template v-else-if="selector == 'minutes'">
             <table class="datepicker datepicker-time datepicker-4-cols">
               <tbody>
-                <tr v-for="row in 3">
-                  <td v-for="col in 4" class="datepicker-btn" v-on:click="selectMinutes( row, col )">{{ getMinutesCell( row, col ) }}</td>
+                <tr v-for="row in 3" v-bind:key="row">
+                  <td v-for="col in 4" v-bind:key="col" class="datepicker-btn" v-on:click="selectMinutes( row, col )">{{ getMinutesCell( row, col ) }}</td>
                 </tr>
               </tbody>
             </table>

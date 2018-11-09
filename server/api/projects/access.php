@@ -26,15 +26,15 @@ class Server_Api_Projects_Access
 
     public $params = array(
         'projectId' => array( 'type' => 'int', 'required' => true ),
-        'public' => array( 'type' => 'bool', 'required' => true )
+        'isPublic' => array( 'type' => 'bool', 'required' => true )
     );
 
-    public function run( $projectId, $public )
+    public function run( $projectId, $isPublic )
     {
         $projectManager = new System_Api_ProjectManager();
         $project = $projectManager->getProject( $projectId, System_Api_ProjectManager::RequireAdministrator );
 
-        $changed = $projectManager->setProjectAccess( $project, $public );
+        $changed = $projectManager->setProjectAccess( $project, $isPublic );
 
         $result[ 'changed' ] = $changed;
 

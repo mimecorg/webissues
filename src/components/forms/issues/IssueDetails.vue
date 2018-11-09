@@ -54,8 +54,8 @@
         <div v-if="filteredAttributes.length > 0" class="issue-details">
           <div class="issue-header">{{ $t( 'title.Attributes' ) }}</div>
           <template v-for="attribute in filteredAttributes">
-            <div class="issue-details-title">{{ getAttributeName( attribute.id ) }}</div>
-            <div class="issue-details-value" v-html="convertAttributeValue( attribute.value, attribute.id, { multiLine: true } )"></div>
+            <div v-bind:key="'t' + attribute.id" class="issue-details-title">{{ getAttributeName( attribute.id ) }}</div>
+            <div v-bind:key="'v' + attribute.id" class="issue-details-value" v-html="convertAttributeValue( attribute.value, attribute.id, { multiLine: true } )"></div>
           </template>
         </div>
 
@@ -91,7 +91,9 @@
             <span class="fa fa-paperclip" aria-hidden="true"></span> <span class="hidden-xs auto-tooltip">{{ $t( 'cmd.Attach' ) }}</span>
           </button>
           <DropdownButton fa-class="fa-cog" menu-class="dropdown-menu-right" v-bind:title="$t( 'title.Filter' )">
-            <li v-for="item in allFilters" v-bind:class="{ active: filter == item }"><HyperLink v-on:click="setFilter( item )">{{ getFilterText( item ) }}</HyperLink></li>
+            <li v-for="item in allFilters" v-bind:key="item" v-bind:class="{ active: filter == item }">
+              <HyperLink v-on:click="setFilter( item )">{{ getFilterText( item ) }}</HyperLink>
+            </li>
           </DropdownButton>
         </FormSection>
 

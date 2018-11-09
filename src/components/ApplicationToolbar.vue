@@ -85,12 +85,12 @@
               <div class="input-group" v-bind:class="{ 'has-error': searchError }">
                 <DropdownButton class="input-group-btn" fa-class="fa-chevron-down" v-bind:title="searchTitle">
                   <div class="dropdown-menu-scroll">
-                    <li v-for="c in systemColumns" v-bind:class="{ active: isSearchColumn( c ) }">
+                    <li v-for="c in systemColumns" v-bind:key="'c' + c.id" v-bind:class="{ active: isSearchColumn( c ) }">
                       <HyperLink v-on:click="setSearchColumn( c )">{{ c.name }}</HyperLink>
                     </li>
                     <template v-if="type.attributes.length > 0">
                       <li role="separator" class="divider"></li>
-                      <li v-for="a in type.attributes" v-bind:class="{ active: isSearchAttribute( a ) }">
+                      <li v-for="a in type.attributes" v-bind:key="'a' + a.id" v-bind:class="{ active: isSearchAttribute( a ) }">
                         <HyperLink v-on:click="setSearchAttribute( a )">{{ a.name }}</HyperLink>
                       </li>
                     </template>

@@ -22,10 +22,10 @@
     <Prompt path="prompt.EditProjectAccess"><strong>{{ name }}</strong></Prompt>
     <FormGroup v-bind:label="$t( 'label.Access' )" required>
       <div class="radio">
-        <label><input type="radio" v-model="public" v-bind:value="false"> {{ $t( 'text.RegularProject' ) }}</label>
+        <label><input type="radio" v-model="isPublic" v-bind:value="false"> {{ $t( 'text.RegularProject' ) }}</label>
       </div>
       <div class="radio">
-        <label><input type="radio" v-model="public" v-bind:value="true"> {{ $t( 'text.PublicProject' ) }}</label>
+        <label><input type="radio" v-model="isPublic" v-bind:value="true"> {{ $t( 'text.PublicProject' ) }}</label>
       </div>
     </FormGroup>
   </BaseForm>
@@ -43,7 +43,7 @@ export default {
 
   fields() {
     return {
-      public: {
+      isPublic: {
         value: this.initialPublic,
         type: Boolean
       }
@@ -60,7 +60,7 @@ export default {
         return;
       }
 
-      const data = { projectId: this.projectId, public: this.public };
+      const data = { projectId: this.projectId, isPublic: this.isPublic };
 
       this.$form.block();
 

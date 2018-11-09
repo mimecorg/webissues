@@ -27,7 +27,7 @@
       <LocationFilters ref="folderId" v-bind:typeId="typeId" v-bind:projectId.sync="projectId" v-bind:folderId.sync="folderId" folder-visible/>
     </FormGroup>
     <Panel v-if="attributes.length > 0" v-bind:title="$t( 'title.Attributes' )">
-      <FormGroup v-for="( attribute, index ) in attributes" v-bind:key="attribute.id" v-bind:id="'attribute' + attribute.id"
+      <FormGroup v-for="attribute in attributes" v-bind:key="attribute.id" v-bind:id="'attribute' + attribute.id"
                  v-bind:label="$t( 'label.Attribute', [ getAttributeName( attribute.id ) ] )"
                  v-bind:required="isAttributeRequired( attribute.id )" v-bind:error="$data[ 'attribute' + attribute.id + 'Error' ]">
         <ValueEditor ref="attribute" v-bind:id="'attribute' + attribute.id" v-bind:attribute="getAttribute( attribute.id )"
