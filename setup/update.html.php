@@ -72,15 +72,15 @@ case 'update': ?>
 <div class="panel-body panel-table">
 
 <div class="row">
-  <div class="col-sm-4"><strong><?php echo $this->t( 'HostName' ) ?></strong></div>
+  <div class="col-sm-4"><strong><?php echo $this->t( 'label.HostName' ) ?></strong></div>
   <div class="col-sm-8"><?php echo $host ?></div>
 </div>
 <div class="row">
-  <div class="col-sm-4"><strong><?php echo $this->t( 'DatabaseName' ) ?></strong></div>
+  <div class="col-sm-4"><strong><?php echo $this->t( 'label.DatabaseName' ) ?></strong></div>
   <div class="col-sm-8"><?php echo $database ?></div>
 </div>
 <div class="row">
-  <div class="col-sm-4"><strong><?php echo $this->t( 'TablePrefix' ) ?></strong></div>
+  <div class="col-sm-4"><strong><?php echo $this->t( 'label.TablePrefix' ) ?></strong></div>
   <div class="col-sm-8"><?php echo $prefix ?></div>
 </div>
 
