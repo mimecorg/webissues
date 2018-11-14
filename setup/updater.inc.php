@@ -385,6 +385,10 @@ class Setup_Updater extends System_Web_Base
         }
 
         if ( version_compare( $version, '2.0.004' ) < 0 ) {
+            $modifiedFields = array(
+                'user_email'        => 'VARCHAR length=255',
+            );
+
             $newFields = array(
                 'user_email'        => 'VARCHAR length=255 null=1',
                 'user_language'     => 'VARCHAR length=10 ascii=1 null=1'
@@ -392,6 +396,7 @@ class Setup_Updater extends System_Web_Base
 
             $generator = $this->connection->getSchemaGenerator();
 
+            $generator->modifyFieldsType( 'register_requests', $modifiedFields );
             $generator->addFields( 'users', $newFields );
 
             $generator->updateReferences();

@@ -90,6 +90,11 @@ class System_Db_Mssql_SchemaGenerator extends System_Db_SchemaGenerator
         $this->alters[] = 'ALTER COLUMN ' . $fieldName . ' ' . $this->getFieldType( $info );
     }
 
+    protected function prepareModifyFieldType( $tableName, $fieldName, $info )
+    {
+        $this->alters[] = 'ALTER COLUMN ' . $fieldName . ' ' . $this->getFieldType( $info );
+    }
+
     protected function prepareModifyIndexColumns( $tableName, $fieldName, $info )
     {
         $columns = $info->getMetadata( 'columns' );
@@ -140,12 +145,12 @@ class System_Db_Mssql_SchemaGenerator extends System_Db_SchemaGenerator
             case 'CHAR':
                 return $this->getCharType( 'char', $info->getMetadata( 'length', 255 ),
                     $info->getMetadata( 'ascii', 0 ), $info->getMetadata( 'null', 0 ),
-                    $info->getMetadata( 'default' ) );                            
+                    $info->getMetadata( 'default' ) );
 
             case 'VARCHAR':
                 return $this->getCharType( 'varchar', $info->getMetadata( 'length', 255 ),
                     $info->getMetadata( 'ascii', 0 ), $info->getMetadata( 'null', 0 ),
-                    $info->getMetadata( 'default' ) );                            
+                    $info->getMetadata( 'default' ) );
 
             case 'TEXT':
                 return $this->getCharType( 'varchar', 'max',

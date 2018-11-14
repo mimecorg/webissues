@@ -55,7 +55,7 @@ class System_Db_Pgsql_SchemaGenerator extends System_Db_SchemaGenerator
                 break;
 
             default:
-                $this->fields[] = $fieldName . ' ' . $this->getFieldType( $info );
+                $this->fields[] = $fieldName . ' ' . $this->getFieldType( $info, true );
                 $this->processReference( $tableName, $fieldName, $info );
                 break;
         }
@@ -89,6 +89,11 @@ class System_Db_Pgsql_SchemaGenerator extends System_Db_SchemaGenerator
             $this->alters[] = 'ALTER ' . $fieldName . ' DROP NOT NULL';
         else
             $this->alters[] = 'ALTER ' . $fieldName . ' SET NOT NULL';
+    }
+
+    protected function prepareModifyFieldType( $tableName, $fieldName, $info )
+    {
+        $this->alters[] = 'ALTER COLUMN ' . $fieldName . ' TYPE ' . $this->getFieldType( $info, false );
     }
 
     protected function prepareModifyIndexColumns( $tableName, $fieldName, $info )
@@ -126,29 +131,29 @@ class System_Db_Pgsql_SchemaGenerator extends System_Db_SchemaGenerator
         }
     }
 
-    private function getFieldType( $info )
+    private function getFieldType( $info, $add )
     {
+        $null = $add ? $info->getMetadata( 'null', 0 ) : 1;
+        $default = $add ? $info->getMetadata( 'default' ) : null;
+
         switch ( $info->getType() ) {
             case 'SERIAL':
                 return 'serial';
 
             case 'INTEGER':
-                return $this->getIntegerType( $info->getMetadata( 'size', 'normal' ),
-                    $info->getMetadata( 'null', 0 ), $info->getMetadata( 'default' ) );
+                return $this->getIntegerType( $info->getMetadata( 'size', 'normal' ), $null, $default );
 
             case 'CHAR':
-                return $this->getCharType( 'char', $info->getMetadata( 'length', 255 ),
-                    $info->getMetadata( 'null', 0 ), $info->getMetadata( 'default' ) );                            
+                return $this->getCharType( 'char', $info->getMetadata( 'length', 255 ), $null, $default );
 
             case 'VARCHAR':
-                return $this->getCharType( 'varchar', $info->getMetadata( 'length', 255 ),
-                    $info->getMetadata( 'null', 0 ), $info->getMetadata( 'default' ) );                            
+                return $this->getCharType( 'varchar', $info->getMetadata( 'length', 255 ), $null, $default );
 
             case 'TEXT':
-                return $this->getTextType( 'text', $info->getMetadata( 'null', 0 ) );
+                return $this->getTextType( 'text', $null );
 
             case 'BLOB':
-                return $this->getTextType( 'bytea', $info->getMetadata( 'null', 0 ) );
+                return $this->getTextType( 'bytea', $null );
 
             default:
                 throw new System_Db_Exception( "Unknown field type '" . $info->getType() . "'" );

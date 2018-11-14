@@ -227,7 +227,7 @@ class Setup_Installer extends System_Web_Base
                 'request_id'        => 'SERIAL',
                 'user_login'        => 'VARCHAR length=40',
                 'user_name'         => 'VARCHAR length=40',
-                'user_email'        => 'VARCHAR length=40',
+                'user_email'        => 'VARCHAR length=255',
                 'user_passwd'       => 'VARCHAR length=255 ascii=1',
                 'request_key'       => 'CHAR length=8 ascii=1',
                 'created_time'      => 'INTEGER',

@@ -88,6 +88,21 @@ abstract class System_Db_SchemaGenerator
     }
 
     /**
+    * Modify the types of existing fields.
+    * @param $tableName The name of the table.
+    * @param $fields An associative array of field definitions.
+    */
+    public function modifyFieldsType( $tableName, $fields )
+    {
+        foreach ( $fields as $fieldName => $definition ) {
+            $info = System_Api_DefinitionInfo::fromString( $definition );
+            $this->prepareModifyFieldType( $tableName, $fieldName, $info );
+        }
+
+        $this->executeAlterTable( $tableName );
+    }
+
+    /**
     * Modify the columns of an existing index.
     * @param $tableName The name of the table.
     * @param $fields An associative array of index definitions.
@@ -120,6 +135,8 @@ abstract class System_Db_SchemaGenerator
     protected abstract function executeAddFields( $tableName );
 
     protected abstract function prepareModifyFieldNull( $tableName, $fieldName, $info );
+
+    protected abstract function prepareModifyFieldType( $tableName, $fieldName, $info );
 
     protected abstract function prepareModifyIndexColumns( $tableName, $fieldName, $info );
 
