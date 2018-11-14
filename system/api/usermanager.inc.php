@@ -49,12 +49,11 @@ class System_Api_UserManager extends System_Api_Base
     */
     public function getUsers()
     {
-        $query = 'SELECT u.user_id, u.user_login, u.user_name, u.user_access, p.pref_value AS user_email'
-            . ' FROM {users} AS u'
-            . ' LEFT OUTER JOIN {preferences} AS p ON p.user_id = u.user_id AND p.pref_key = %s'
+        $query = 'SELECT user_id, user_login, user_name, user_access, user_email'
+            . ' FROM {users}'
             . ' ORDER BY user_name COLLATE LOCALE';
 
-        return $this->connection->queryTable( $query, 'email' );
+        return $this->connection->queryTable( $query );
     }
 
     /**
@@ -64,7 +63,7 @@ class System_Api_UserManager extends System_Api_Base
     */
     public function getUser( $userId )
     {
-        $query = 'SELECT user_id, user_login, user_name, user_access FROM {users} WHERE user_id = %d';
+        $query = 'SELECT user_id, user_login, user_name, user_access, user_email, user_language FROM {users} WHERE user_id = %d';
 
         if ( !( $user = $this->connection->queryRow( $query, $userId ) ) )
             throw new System_Api_Error( System_Api_Error::UnknownUser );
@@ -145,15 +144,14 @@ class System_Api_UserManager extends System_Api_Base
     */
     public function getUsersPage( $type, $orderBy, $limit, $offset )
     {
-        $query = 'SELECT u.user_id, u.user_login, u.user_name, u.user_access, p.pref_value AS user_email'
-            . ' FROM {users} AS u'
-            . ' LEFT OUTER JOIN {preferences} AS p ON p.user_id = u.user_id AND p.pref_key = %s';
+        $query = 'SELECT user_id, user_login, user_name, user_access, user_email'
+            . ' FROM {users}';
         if ( $type == self::Active )
-            $query .= ' WHERE u.user_access <> %d';
+            $query .= ' WHERE user_access <> %d';
         else if ( $type == self::Disabled )
-            $query .= ' WHERE u.user_access = %d';
+            $query .= ' WHERE user_access = %d';
 
-        return $this->connection->queryPage( $query, $orderBy, $limit, $offset, 'email', System_Const::NoAccess );
+        return $this->connection->queryPage( $query, $orderBy, $limit, $offset, System_Const::NoAccess );
     }
 
     /**
@@ -258,7 +256,7 @@ class System_Api_UserManager extends System_Api_Base
     {
         $principal = System_Api_Principal::getCurrent();
 
-        $query = 'SELECT u.user_id, u.user_login, u.user_name, u.user_access'
+        $query = 'SELECT u.user_id, u.user_name'
             . ' FROM {users} AS u';
         if ( !$principal->isAuthenticated() ) {
             $query .= ' WHERE u.user_id IN ( SELECT r1.user_id FROM {rights} AS r1'
@@ -298,12 +296,11 @@ class System_Api_UserManager extends System_Api_Base
     */
     public function getUsersWithEmail()
     {
-        $query = 'SELECT u.user_id, u.user_name, u.user_access'
-            . ' FROM {users} AS u'
-            . ' JOIN {preferences} AS p ON p.user_id = u.user_id AND p.pref_key = %s'
-            . ' WHERE u.user_access > %d';
+        $query = 'SELECT user_id, user_name, user_access'
+            . ' FROM {users}'
+            . ' WHERE user_access > %d AND user_email IS NOT NULL';
 
-        return $this->connection->queryTable( $query, 'email', System_Const::NoAccess );
+        return $this->connection->queryTable( $query, System_Const::NoAccess );
     }
 
     /**
@@ -313,12 +310,11 @@ class System_Api_UserManager extends System_Api_Base
     */
     public function getUserByEmail( $email )
     {
-        $query = 'SELECT u.user_id, u.user_login, u.user_name, u.user_access'
-            . ' FROM {users} AS u'
-            . ' JOIN {preferences} AS p ON p.user_id = u.user_id AND p.pref_key = %s'
-            . ' WHERE UPPER( p.pref_value ) = %s AND u.user_access > %d';
+        $query = 'SELECT user_id, user_login, user_name, user_access, user_email, user_language'
+            . ' FROM {users}'
+            . ' WHERE UPPER( user_email ) = %s AND user_access > %d';
 
-        if ( !( $user = $this->connection->queryRow( $query, 'email', mb_strtoupper( $email ), System_Const::NoAccess ) ) )
+        if ( !( $user = $this->connection->queryRow( $query, mb_strtoupper( $email ), System_Const::NoAccess ) ) )
             throw new System_Api_Error( System_Api_Error::UnknownUser );
 
         return $user;
@@ -351,8 +347,8 @@ class System_Api_UserManager extends System_Api_Base
                 throw new System_Api_Error( System_Api_Error::LoginAlreadyExists );
 
             if ( $email != '' ) {
-                $query = 'SELECT user_id FROM {preferences} WHERE pref_key = %s AND UPPER( pref_value ) = %s';
-                if ( $this->connection->queryScalar( $query, 'email', mb_strtoupper( $email ) ) !== false )
+                $query = 'SELECT user_id FROM {users} WHERE UPPER( user_email ) = %s';
+                if ( $this->connection->queryScalar( $query, mb_strtoupper( $email ) ) !== false )
                     throw new System_Api_Error( System_Api_Error::EmailAlreadyExists );
             }
 
@@ -360,22 +356,16 @@ class System_Api_UserManager extends System_Api_Base
                 $passwordHash = new System_Core_PasswordHash();
                 $hash = $passwordHash->hashPassword( $password );
 
-                $query = 'INSERT INTO {users} ( user_login, user_name, user_passwd, user_access, passwd_temp ) VALUES ( %s, %s, %s, %d, %d )';
-                $this->connection->execute( $query, $login, $name, $hash, System_Const::NormalAccess, $isTemp );
+                $query = 'INSERT INTO {users} ( user_login, user_name, user_passwd, user_access, passwd_temp, user_email, user_language )'
+                    . ' VALUES ( %s, %s, %s, %d, %d, %s?, %s? )';
+                $this->connection->execute( $query, $login, $name, $hash, System_Const::NormalAccess, $isTemp, $email, $language );
             } else {
-                $query = 'INSERT INTO {users} ( user_login, user_name, user_access, passwd_temp, reset_key, reset_time ) VALUES ( %s, %s, %d, %d, %s, %d )';
-                $this->connection->execute( $query, $login, $name, System_Const::NormalAccess, 0, $invitationKey, time() );
+                $query = 'INSERT INTO {users} ( user_login, user_name, user_access, passwd_temp, reset_key, reset_time, user_email, user_language )'
+                    . ' VALUES ( %s, %s, %d, %d, %s, %d, %s?, %s? )';
+                $this->connection->execute( $query, $login, $name, System_Const::NormalAccess, 0, $invitationKey, time(), $email, $language );
             }
 
             $userId = $this->connection->getInsertId( 'users', 'user_id' );
-
-            $query = 'INSERT INTO {preferences} ( user_id, pref_key, pref_value ) VALUES ( %d, %s, %s )';
-
-            if ( $email != '' )
-                $this->connection->execute( $query, $userId, 'email', $email );
-
-            if ( $language != '' )
-                $this->connection->execute( $query, $userId, 'language', $language );
 
             $transaction->commit();
         } catch ( Exception $ex ) {
@@ -466,7 +456,7 @@ class System_Api_UserManager extends System_Api_Base
 
     public function getUserWithResetKey( $key )
     {
-        $query = 'SELECT user_id, user_login, user_name, user_access, reset_time FROM {users} WHERE reset_key = %s';
+        $query = 'SELECT user_id, user_login, user_name, user_access, user_email, user_language, reset_time FROM {users} WHERE reset_key = %s';
 
         if ( !( $user = $this->connection->queryRow( $query, $key ) ) )
             throw new System_Api_Error( System_Api_Error::InvalidResetKey );
@@ -569,28 +559,15 @@ class System_Api_UserManager extends System_Api_Base
         $userId = $user[ 'user_id' ];
         $oldName = $user[ 'user_name' ];
         $oldLogin = $user[ 'user_login' ];
+        $oldEmail = $user[ 'user_email' ];
+        $oldLanguage = $user[ 'user_language' ];
+
+        if ( $newName == $oldName && $newLogin == $oldLogin && $newEmail == $oldEmail && $newLanguage == $oldLanguage )
+            return false;
 
         $transaction = $this->connection->beginTransaction( System_Db_Transaction::RepeatableRead, 'users' );
 
         try {
-            $oldEmail = '';
-            $oldLanguage = '';
-
-            $query = 'SELECT pref_key, pref_value FROM {preferences} WHERE user_id = %d AND ( pref_key = %s OR pref_key = %s )';
-            $table = $this->connection->queryTable( $query, $userId, 'email', 'language' );
-
-            foreach ( $table as $row ) {
-                if ( $row[ 'pref_key' ] == 'email' )
-                    $oldEmail = $row[ 'pref_value' ];
-                else if ( $row[ 'pref_key' ] == 'language' )
-                    $oldLanguage = $row[ 'pref_value' ];
-            }
-
-            if ( $newName == $oldName && $newLogin == $oldLogin && $newEmail == $oldEmail && $newLanguage == $oldLanguage ) {
-                $transaction->commit();
-                return false;
-            }
-
             if ( $newName != $oldName ) {
                 $query = 'SELECT user_id FROM {users} WHERE user_name = %s';
                 if ( $this->connection->queryScalar( $query, $newName ) !== false )
@@ -604,37 +581,13 @@ class System_Api_UserManager extends System_Api_Base
             }
 
             if ( $newEmail != '' && mb_strtoupper( $newEmail ) != mb_strtoupper( $oldEmail ) ) {
-                $query = 'SELECT user_id FROM {preferences} WHERE pref_key = %s AND UPPER( pref_value ) = %s';
-                if ( $this->connection->queryScalar( $query, 'email', mb_strtoupper( $newEmail ) ) !== false )
+                $query = 'SELECT user_id FROM {users} WHERE UPPER( user_email ) = %s';
+                if ( $this->connection->queryScalar( $query, mb_strtoupper( $newEmail ) ) !== false )
                     throw new System_Api_Error( System_Api_Error::EmailAlreadyExists );
             }
 
-            if ( $newName != $oldName || $newLogin != $oldLogin ) {
-                $query = 'UPDATE {users} SET user_name = %s, user_login = %s WHERE user_id = %d';
-                $this->connection->execute( $query, $newName, $newLogin, $userId );
-            }
-
-            if ( $newEmail != $oldEmail ) {
-                if ( $oldEmail == '' )
-                    $query = 'INSERT INTO {preferences} ( user_id, pref_key, pref_value ) VALUES ( %1d, %2s, %3s )';
-                else if ( $newEmail == '' )
-                    $query = 'DELETE FROM {preferences} WHERE user_id = %1d AND pref_key = %2s';
-                else
-                    $query = 'UPDATE {preferences} SET pref_value = %3s WHERE user_id = %1d AND pref_key = %2s';
-
-                $this->connection->execute( $query, $userId, 'email', $newEmail );
-            }
-
-            if ( $newLanguage != $oldLanguage ) {
-                if ( $oldLanguage == '' )
-                    $query = 'INSERT INTO {preferences} ( user_id, pref_key, pref_value ) VALUES ( %1d, %2s, %3s )';
-                else if ( $newLanguage == '' )
-                    $query = 'DELETE FROM {preferences} WHERE user_id = %1d AND pref_key = %2s';
-                else
-                    $query = 'UPDATE {preferences} SET pref_value = %3s WHERE user_id = %1d AND pref_key = %2s';
-
-                $this->connection->execute( $query, $userId, 'language', $newLanguage );
-            }
+            $query = 'UPDATE {users} SET user_name = %s, user_login = %s, user_email = %s!, user_language = %s! WHERE user_id = %d';
+            $this->connection->execute( $query, $newName, $newLogin, $newEmail, $newLanguage, $userId );
 
             $transaction->commit();
         } catch ( Exception $ex ) {

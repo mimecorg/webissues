@@ -38,10 +38,8 @@ class Server_Api_Users_Load
         $resultDetails[ 'name' ] = $user[ 'user_name' ];
         $resultDetails[ 'login' ] = $user[ 'user_login' ];
         $resultDetails[ 'access' ] = $user[ 'user_access' ];
-
-        $preferencesManager = new System_Api_PreferencesManager( $user );
-        $resultDetails[ 'email' ] = $preferencesManager->getPreference( 'email' );
-        $resultDetails[ 'language' ] = $preferencesManager->getPreference( 'language' );
+        $resultDetails[ 'email' ] = $user[ 'user_email' ];
+        $resultDetails[ 'language' ] = $user[ 'user_language' ];
 
         $result[ 'details' ] = $resultDetails;
 

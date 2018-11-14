@@ -34,6 +34,7 @@ class System_Api_Principal
     private $userId = 0;
     private $userName = '';
     private $userAccess = System_Const::NoAccess;
+    private $language = null;
 
     /**
     * Constructor.
@@ -45,6 +46,7 @@ class System_Api_Principal
             $this->userId = $user[ 'user_id' ];
             $this->userName = $user[ 'user_name' ];
             $this->userAccess = $user[ 'user_access' ];
+            $this->language = $user[ 'user_language' ];
         }
     }
 
@@ -92,6 +94,14 @@ class System_Api_Principal
     }
 
     /**
+    * Return the preferred language of the user.
+    */
+    public function getLanguage()
+    {
+        return $this->language;
+    }
+
+    /**
     * Return @c true if the user is authenticated (has valid session).
     */
     public function isAuthenticated()
@@ -100,7 +110,7 @@ class System_Api_Principal
     }
 
     /**
-    * Return @c true if the user has System_Const::AdministratorAccess 
+    * Return @c true if the user has System_Const::AdministratorAccess
     * to the server.
     */
     public function isAdministrator()

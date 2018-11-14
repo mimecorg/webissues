@@ -63,8 +63,15 @@ class System_Api_Locale
         if ( !isset( self::$cache[ $this->userId ] ) ) {
             $preferencesManager = new System_Api_PreferencesManager();
 
-            if ( $this->language == null )
-                $this->language = $preferencesManager->getPreferenceOrSetting( 'language' );
+            if ( $this->language == null ) {
+                $language = System_Api_Principal::getCurrent()->getLanguage();
+                if ( $language != null ) {
+                    $this->language = $language;
+                } else {
+                    $serverManager = new System_Api_ServerManager();
+                    $this->language = $serverManager->getSetting( 'language' );
+                }
+            }
 
             $locale = System_Core_IniFile::parseExtended( '/common/data/locale.ini', '/data/locale.ini' );
 

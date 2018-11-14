@@ -37,11 +37,7 @@ class Server_Api_Account_Password_Reset
         $userManager = new System_Api_UserManager();
         $user = $userManager->getUser( $userId );
 
-        $preferencesManager = new System_Api_PreferencesManager();
-        $email = $preferencesManager->getPreference( 'email' );
-        $language = $preferencesManager->getPreference( 'language' );
-
-        if ( $email == null )
+        if ( $user[ 'user_email' ] == null )
             throw new System_Api_Error( System_Api_Error::UnknownUser );
 
         $keyGenerator = new System_Api_KeyGenerator();
@@ -49,10 +45,10 @@ class Server_Api_Account_Password_Reset
 
         $userManager->setPasswordResetKey( $user, $key );
 
-        $data = array( 'user_login' => $user[ 'user_login' ], 'user_name' => $user[ 'user_name' ], 'user_email' => $email, 'reset_key' => $key );
+        $data = array( 'user_login' => $user[ 'user_login' ], 'user_name' => $user[ 'user_name' ], 'user_email' => $user[ 'user_email' ], 'reset_key' => $key );
 
         $helper = new System_Mail_Helper();
-        $helper->send( $email, $user[ 'user_name' ], $language, 'Common_Mail_ResetPassword', $data );
+        $helper->send( $user[ 'user_email' ], $user[ 'user_name' ], $user[ 'user_language' ], 'Common_Mail_ResetPassword', $data );
     }
 }
 

@@ -55,8 +55,10 @@ class Server_Api_Login
 
         $sessionManager->initializePrincipal();
 
-        $preferencesManager = new System_Api_PreferencesManager();
-        $result[ 'locale' ] = $preferencesManager->getPreferenceOrSetting( 'language' );
+        if ( $user[ 'user_language' ] != null )
+            $result[ 'locale' ] = $user[ 'user_language' ];
+        else
+            $result[ 'locale' ] = $serverManager->getSetting( 'language' );
 
         return $result;
     }
