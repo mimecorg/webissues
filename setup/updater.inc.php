@@ -384,6 +384,25 @@ class Setup_Updater extends System_Web_Base
             }
         }
 
+        if ( version_compare( $version, '2.0.004' ) < 0 ) {
+            $newFields = array(
+                'user_email'        => 'VARCHAR length=255 null=1',
+                'user_language'     => 'VARCHAR length=10 ascii=1 null=1'
+            );
+
+            $generator = $this->connection->getSchemaGenerator();
+
+            $generator->addFields( 'users', $newFields );
+
+            $generator->updateReferences();
+
+            $query = 'UPDATE {users} SET user_email = ( SELECT pref_value FROM {preferences} AS p WHERE p.user_id = {users}.user_id AND p.pref_key = %s )';
+            $this->connection->execute( $query, 'email' );
+
+            $query = 'UPDATE {users} SET user_language = ( SELECT pref_value FROM {preferences} AS p WHERE p.user_id = {users}.user_id AND p.pref_key = %s )';
+            $this->connection->execute( $query, 'language' );
+        }
+
         $query = 'DELETE FROM {sessions}';
         $this->connection->execute( $query );
 
