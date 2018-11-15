@@ -71,15 +71,16 @@
   vertical-align: middle;
 }
 
+@navbar-logo-margin: ( 34px - @navbar-logo-size ) / 2;
+
 .navbar-brand-img {
   float: left;
-  .image( '~@/images/webissues-logo.png'; 20px; 20px );
-  margin-left: 15px;
+  .image( '~@/images/webissues-logo.png'; @navbar-logo-size; @navbar-logo-size );
+  margin: @navbar-logo-margin 0 @navbar-logo-margin 15px;
 }
 
 .navbar-brand-name {
-  margin-left: 40px;
-  margin-right: 15px;
+  margin: 7px 15px 7px 20px + @navbar-logo-size;
   color: @navbar-text-color;
   .ellipsis();
 }
@@ -182,6 +183,10 @@
 
     .navbar-brand-img {
       margin-left: 0;
+    }
+
+    .navbar-brand-name {
+      margin-left: 5px + @navbar-logo-size;
     }
 
     .navbar-version {

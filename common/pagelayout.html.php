@@ -6,7 +6,8 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title><?php echo $siteName ?></title>
-  <link rel="shortcut icon" href="<?php echo $this->url( $icon ) ?>" type="image/vnd.microsoft.icon">
+  <link rel="shortcut icon" href="<?php echo $this->url( $icon ) ?>">
+  <link rel="apple-touch-icon" href="<?php echo $this->url( $touchIcon ) ?>">
 <?php $assets->render() ?>
 </head>
 <body>

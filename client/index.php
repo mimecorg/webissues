@@ -51,6 +51,7 @@ class Client_Index extends System_Web_Component
         $this->siteName = $server[ 'server_name' ];
 
         $this->icon = '/common/images/webissues.ico';
+        $this->touchIcon = '/common/images/apple-touch-icon.png';
 
         $locale = $this->translator->getLanguage( System_Core_Translator::UserLanguage );
 
