@@ -31,6 +31,9 @@ class Server_Api_Settings_Inboxes_Load
 
     public function run( $inboxId, $details )
     {
+        if ( !function_exists( 'imap_open' ) )
+            throw new System_Api_Error( System_Api_Error::AccessDenied );
+
         $serverManager = new System_Api_ServerManager();
         $engine = $serverManager->getSetting( 'email_engine' );
 

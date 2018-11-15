@@ -75,6 +75,8 @@ class Server_Api_Settings_Load
             }
         }
 
+        $result[ 'hasImap' ] = function_exists( 'imap_open' );
+
         return $result;
     }
 }

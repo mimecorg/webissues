@@ -89,14 +89,15 @@
     </div>
 
     <FormSection v-bind:title="$t( 'title.EmailInboxes' )">
-      <button type="button" class="btn btn-default" v-on:click="addInbox"><span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'cmd.Add' ) }}</button>
+      <button v-if="hasImap" type="button" class="btn btn-default" v-on:click="addInbox"><span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'cmd.Add' ) }}</button>
     </FormSection>
-    <Grid v-if="inboxes.length > 0" v-bind:items="inboxes" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-large', null ]" v-on:row-click="rowClick">
+    <Grid v-if="hasImap && inboxes.length > 0" v-bind:items="inboxes" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-large', null ]" v-on:row-click="rowClick">
       <template slot-scope="{ item, columnIndex, columnClass, columnKey }">
         <td v-bind:key="columnKey" v-bind:class="columnClass" v-html="getCellValue( columnIndex, item )"></td>
       </template>
     </Grid>
-    <Prompt v-else path="info.NoEmailInboxes" alert-class="alert-default"/>
+    <Prompt v-else-if="hasImap" path="info.NoEmailInboxes" alert-class="alert-default"/>
+    <Prompt v-else path="prompt.EmailInboxesNotAvailable" alert-class="alert-default"/>
 
     <FormSection v-bind:title="$t( 'title.AdvancedSettings' )">
       <button type="button" class="btn btn-default" v-on:click="advancedSettings"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'cmd.Edit' ) }}</button>
@@ -113,7 +114,8 @@ export default {
   props: {
     serverName: String,
     settings: Object,
-    inboxes: Array
+    inboxes: Array,
+    hasImap: Boolean
   },
 
   computed: {

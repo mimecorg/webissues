@@ -22,12 +22,13 @@ import { makeError } from '@/utils/errors'
 
 export default function routeSettings( route, ajax, store ) {
   route( 'ServerSettings', '/settings', () => {
-    return ajax.post( '/settings/load.php', { inboxes: true } ).then( ( { serverName, settings, inboxes } ) => {
+    return ajax.post( '/settings/load.php', { inboxes: true } ).then( ( { serverName, settings, inboxes, hasImap } ) => {
       return {
         form: 'settings/ServerSettings',
         serverName,
         settings,
-        inboxes
+        inboxes,
+        hasImap
       };
     } );
   } );
@@ -89,7 +90,9 @@ export default function routeSettings( route, ajax, store ) {
   } );
 
   route( 'AddInbox', '/settings/inboxes/add', () => {
-    return ajax.post( '/settings/load.php' ).then( ( { settings } ) => {
+    return ajax.post( '/settings/load.php' ).then( ( { settings, hasImap } ) => {
+      if ( !hasImap )
+        return Promise.reject( makeError( ErrorCode.AccessDenied ) );
       return {
         form: 'settings/EditInbox',
         mode: 'add',
