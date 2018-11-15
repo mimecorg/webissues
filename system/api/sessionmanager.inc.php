@@ -131,7 +131,7 @@ class System_Api_SessionManager extends System_Api_Base
     */
     public function checkAccess( $login, $password, $flags = 0 )
     {
-        $query = 'SELECT user_id, user_name, user_passwd, user_access, user_language FROM {users}'
+        $query = 'SELECT user_id, user_name, user_passwd, user_access FROM {users}'
             . ' WHERE user_login = %s AND user_access > %d';
 
         $user = $this->connection->queryRow( $query, $login, System_Const::NoAccess );
