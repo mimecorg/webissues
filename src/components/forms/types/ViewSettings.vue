@@ -45,7 +45,7 @@
       <Grid v-if="publicViews.length > 0" v-bind:items="publicViews" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-medium', 'column-xlarge', null ]"
             v-on:row-click="rowClickPublic">
         <template slot-scope="{ item, columnIndex, columnClass, columnKey }">
-          <td v-bind:key="columnKey" v-bind:class="columnClass" v-html="getCellValue( columnIndex, item )"></td>
+          <td v-bind:key="columnKey" v-bind:class="columnClass">{{ getCellValue( columnIndex, item ) }}</td>
         </template>
       </Grid>
       <div v-else class="alert alert-info">
@@ -60,7 +60,7 @@
     <Grid v-if="personalViews.length > 0" v-bind:items="personalViews" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-medium', 'column-xlarge', null ]"
           v-on:row-click="rowClickPersonal">
       <template slot-scope="{ item, columnIndex, columnClass, columnKey }">
-        <td v-bind:key="columnKey" v-bind:class="columnClass" v-html="getCellValue( columnIndex, item )"></td>
+        <td v-bind:key="columnKey" v-bind:class="columnClass">{{ getCellValue( columnIndex, item ) }}</td>
       </template>
     </Grid>
     <div v-else class="alert alert-info">

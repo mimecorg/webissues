@@ -24,7 +24,7 @@
     </template>
     <Grid v-if="projects.length > 0" v-bind:items="projects" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-large', null ]" v-on:row-click="rowClick">
       <template slot-scope="{ item, columnIndex, columnClass, columnKey }">
-        <td v-bind:key="columnKey" v-bind:class="columnClass" v-html="getCellValue( columnIndex, item )"></td>
+        <td v-bind:key="columnKey" v-bind:class="columnClass">{{ getCellValue( columnIndex, item ) }}</td>
       </template>
     </Grid>
     <Prompt v-else v-bind:path="isAdministrator ? 'info.NoProjects' : 'info.NoAvailableProjects'"/>

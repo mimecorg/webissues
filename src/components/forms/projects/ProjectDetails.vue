@@ -53,7 +53,7 @@
     <Grid v-if="folders.length > 0" v-bind:items="folders" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-large', null ]"
           v-bind:row-click-disabled="!isProjectAdministrator" v-on:row-click="rowClick">
       <template slot-scope="{ item, columnIndex, columnClass, columnKey }">
-        <td v-bind:key="columnKey" v-bind:class="columnClass" v-html="getCellValue( columnIndex, item )"></td>
+        <td v-bind:key="columnKey" v-bind:class="columnClass">{{ getCellValue( columnIndex, item ) }}</td>
       </template>
     </Grid>
     <div v-else class="alert alert-info">

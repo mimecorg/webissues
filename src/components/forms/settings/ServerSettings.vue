@@ -93,7 +93,7 @@
     </FormSection>
     <Grid v-if="hasImap && inboxes.length > 0" v-bind:items="inboxes" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-large', null ]" v-on:row-click="rowClick">
       <template slot-scope="{ item, columnIndex, columnClass, columnKey }">
-        <td v-bind:key="columnKey" v-bind:class="columnClass" v-html="getCellValue( columnIndex, item )"></td>
+        <td v-bind:key="columnKey" v-bind:class="columnClass">{{ getCellValue( columnIndex, item ) }}</td>
       </template>
     </Grid>
     <Prompt v-else-if="hasImap" path="info.NoEmailInboxes" alert-class="alert-default"/>

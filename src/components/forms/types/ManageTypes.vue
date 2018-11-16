@@ -24,7 +24,7 @@
     </template>
     <Grid v-if="types.length > 0" v-bind:items="types" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-large' ]" v-on:row-click="rowClick">
       <template slot-scope="{ item, columnIndex, columnClass, columnKey }">
-        <td v-bind:key="columnKey" v-bind:class="columnClass" v-html="getCellValue( columnIndex, item )"></td>
+        <td v-bind:key="columnKey" v-bind:class="columnClass">{{ getCellValue( columnIndex, item ) }}</td>
       </template>
     </Grid>
     <Prompt v-else path="info.NoIssueTypes"/>
