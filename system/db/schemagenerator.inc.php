@@ -118,6 +118,18 @@ abstract class System_Db_SchemaGenerator
     }
 
     /**
+    * Remove the columns from an existing table.
+    * @param $tableName The name of the table.
+    * @param $fields An array of names of fields to remove.
+    */
+    public function removeFields( $tableName, $fields ) {
+        foreach ( $fields as $fieldName )
+            $this->prepareRemoveField( $tableName, $fieldName );
+
+        $this->executeAlterTable( $tableName );
+    }
+
+    /**
     * Create a view.
     * @param $viewName The name of the view.
     * @param $query The query defining the view.
@@ -139,6 +151,8 @@ abstract class System_Db_SchemaGenerator
     protected abstract function prepareModifyFieldType( $tableName, $fieldName, $info );
 
     protected abstract function prepareModifyIndexColumns( $tableName, $fieldName, $info );
+
+    protected abstract function prepareRemoveField( $tableName, $fieldName );
 
     protected abstract function executeAlterTable( $tableName );
 

@@ -95,6 +95,11 @@ class System_Db_Mysqli_SchemaGenerator extends System_Db_SchemaGenerator
         $this->alters[] = 'ADD ' . $type . ' ' . $fieldName . ' ( ' . join( ', ', $columns ) . ' )';
     }
 
+    protected function prepareRemoveField( $tableName, $fieldName )
+    {
+        $this->alters[] = 'DROP COLUMN ' . $fieldName;
+    }
+
     protected function executeAlterTable( $tableName )
     {
         $query = 'ALTER TABLE {' . $tableName . '} ' . join( ', ', $this->alters );

@@ -408,6 +408,48 @@ class Setup_Updater extends System_Web_Base
             $this->connection->execute( $query, 'language' );
         }
 
+        if ( version_compare( $version, '2.0.005' ) < 0 ) {
+            $newFields = array(
+                'project_id'        => 'INTEGER null=1 ref-table="projects" ref-column="project_id" on-delete="cascade" trigger=1',
+                'alert_type'        => 'INTEGER size="tiny" null=1',
+                'alert_frequency'   => 'INTEGER size="tiny" null=1',
+                'project_idx'       => 'INDEX columns={"project_id"}'
+            );
+
+            $generator = $this->connection->getSchemaGenerator();
+
+            $generator->addFields( 'alerts', $newFields );
+
+            $generator->updateReferences();
+
+            $query = 'UPDATE {alerts} SET type_id = ( SELECT f.type_id FROM {folders} AS f WHERE f.folder_id = {alerts}.folder_id ) WHERE folder_id IS NOT NULL';
+            $this->connection->execute( $query );
+
+            $query = 'UPDATE {alerts} SET alert_type = alert_email WHERE alert_email > 0';
+            $this->connection->execute( $query );
+
+            $query = 'UPDATE {alerts} SET alert_type = 1 WHERE alert_email = 0';
+            $this->connection->execute( $query );
+
+            $query = 'UPDATE {alerts} SET alert_frequency = 0 WHERE alert_email > 1';
+            $this->connection->execute( $query );
+
+            $modifiedFields = array(
+                'type_id'           => 'INTEGER',
+                'alert_type'        => 'INTEGER size="tiny"'
+            );
+
+            $modifiedIndexes = array(
+                'alert_idx'         => 'INDEX columns={"user_id","project_id","folder_id","type_id","view_id"} unique=1'
+            );
+
+            $generator->modifyFieldsNull( 'alerts', $modifiedFields );
+            $generator->modifyIndexColumns( 'alerts', $modifiedIndexes );
+            $generator->removeFields( 'alerts', array( 'alert_email', 'summary_days', 'summary_hours' ) );
+
+            $generator->updateReferences();
+        }
+
         $query = 'DELETE FROM {sessions}';
         $this->connection->execute( $query );
 

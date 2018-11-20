@@ -108,6 +108,11 @@ class System_Db_Mssql_SchemaGenerator extends System_Db_SchemaGenerator
         }
     }
 
+    protected function prepareRemoveField( $tableName, $fieldName )
+    {
+        $this->alters[] = 'DROP COLUMN ' . $fieldName;
+    }
+
     protected function executeAlterTable( $tableName )
     {
         foreach ( $this->alters as $alter ) {

@@ -109,6 +109,11 @@ class System_Db_Pgsql_SchemaGenerator extends System_Db_SchemaGenerator
         }
     }
 
+    protected function prepareRemoveField( $tableName, $fieldName )
+    {
+        $this->alters[] = 'DROP COLUMN ' . $fieldName;
+    }
+
     protected function executeAlterTable( $tableName )
     {
         if ( !empty( $this->alters ) ) {
