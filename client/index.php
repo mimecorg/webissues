@@ -54,6 +54,8 @@ class Client_Index extends System_Web_Component
         $this->touchIcon = '/common/images/apple-touch-icon.png';
 
         $locale = $this->translator->getLanguage( System_Core_Translator::UserLanguage );
+        if ( $locale == null )
+            $locale = $this->translator->getLanguage( System_Core_Translator::SystemLanguage );
 
         $this->assets = new System_Web_Assets();
         $this->assets->add( 'common' );
