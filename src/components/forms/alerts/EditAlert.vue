@@ -19,6 +19,9 @@
 
 <template>
   <BaseForm v-bind:title="title" with-buttons v-on:ok="submit" v-on:cancel="returnToDetails">
+    <template slot="header">
+      <button type="button" class="btn btn-default" v-on:click="deleteAlert"><span class="fa fa-trash" aria-hidden="true"></span> {{ $t( 'cmd.Delete' ) }}</button>
+    </template>
     <Prompt v-if="mode == 'add'" v-bind:path="promptPath"/>
     <Prompt v-else v-bind:path="promptPath"><strong v-html="view"></strong><strong v-html="location"></strong></Prompt>
     <FormGroup v-if="mode == 'add'" v-bind:label="$t( 'label.Filter' )" v-bind="$field( 'typeId' )">
@@ -173,6 +176,10 @@ export default {
 
     returnToDetails() {
       this.$router.push( 'ManageAlerts' );
+    },
+
+    deleteAlert() {
+      this.$router.push( 'DeleteAlert', { alertId: this.alertId } );
     }
   }
 }

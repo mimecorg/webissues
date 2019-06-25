@@ -64,4 +64,16 @@ export default function routeAlerts( route, ajax, store ) {
       };
     } );
   } );
+
+  route( 'DeleteAlert', '/alerts/:alertId/delete', ( { alertId } ) => {
+    return ajax.post( '/alerts/load.php', { alertId, details: true } ).then( ( { isPublic, view, location } ) => {
+      return {
+        form: 'alerts/DeleteAlert',
+        alertId,
+        isPublic,
+        view,
+        location
+      };
+    } );
+  } );
 }
