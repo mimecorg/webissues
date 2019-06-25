@@ -97,7 +97,10 @@ function createWindow() {
     minHeight: 120,
     show: !position.maximized,
     title: 'WebIssues',
-    icon
+    icon,
+    webPreferences: {
+      nodeIntegration: true
+    }
   } );
 
   if ( position.maximized ) {
@@ -160,4 +163,6 @@ function createWindow() {
 
   if ( process.platform == 'darwin' )
     makeDarwinMenu();
+  else
+    mainWindow.removeMenu();
 }

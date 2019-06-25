@@ -29,15 +29,6 @@ module.exports = function( { electron, production } = {} ) {
   if ( production )
     process.env.NODE_ENV = 'production';
 
-  const styleLoader = production ? MiniCssExtractPlugin.loader : 'vue-style-loader';
-
-  const cssLoader = {
-    loader: 'css-loader',
-    options: {
-      minimize: production
-    }
-  };
-
   const config = {
     mode: production ? 'production' : 'development',
     entry: electron ? {
@@ -78,11 +69,20 @@ module.exports = function( { electron, production } = {} ) {
         },
         {
           test: /\.css$/,
-          use: [ styleLoader, cssLoader ]
+          use: [
+            production ? MiniCssExtractPlugin.loader : 'vue-style-loader',
+            'css-loader',
+            production ? 'postcss-loader' : null
+          ].filter( x => x != null )
         },
         {
           test: /\.less$/,
-          use: [ styleLoader, cssLoader, 'less-loader' ]
+          use: [
+            production ? MiniCssExtractPlugin.loader : 'vue-style-loader',
+            'css-loader',
+            production ? 'postcss-loader' : null,
+            'less-loader'
+          ].filter( x => x != null )
         }
       ]
     },
@@ -108,7 +108,8 @@ module.exports = function( { electron, production } = {} ) {
       contentBase: false,
       noInfo: true,
       hot: true,
-      overlay: true
+      overlay: true,
+      sockPort: 8080
     },
     performance: {
       hints: false

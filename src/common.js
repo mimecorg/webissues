@@ -17,7 +17,7 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-import 'babel-polyfill'
+import 'core-js/stable'
 import 'whatwg-fetch'
 
 import '@/styles/global.less'

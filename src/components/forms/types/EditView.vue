@@ -37,7 +37,7 @@
         </div>
       </DropdownButton>
     </FormSection>
-    <Draggable class="draggable-container" v-bind:options="{ handle: '.draggable-handle' }" v-bind:move="canMoveColumn" v-model="columns">
+    <Draggable class="draggable-container" handle=".draggable-handle" v-bind:move="canMoveColumn" v-model="columns">
       <div v-for="column in columns" v-bind:key="column" class="draggable-item">
         <button v-if="!isFixedColumn( column )" class="btn btn-default" v-bind:title="$t( 'cmd.Remove' )" v-on:click="removeColumn( column )">
           <span class="fa fa-remove" aria-hidden="true"></span>

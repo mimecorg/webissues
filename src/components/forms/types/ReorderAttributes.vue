@@ -20,7 +20,7 @@
 <template>
   <BaseForm v-bind:title="$t( 'cmd.ChangeOrder' )" with-buttons v-on:ok="submit" v-on:cancel="returnToDetails">
     <Prompt path="prompt.ChangeOrder"><strong>{{ name }}</strong></Prompt>
-    <Draggable class="draggable-container" v-bind:options="{ handle: '.draggable-handle' }" v-model="attributes">
+    <Draggable class="draggable-container" handle=".draggable-handle" v-model="attributes">
       <div v-for="attribute in attributes" v-bind:key="attribute.id" class="draggable-item">
         <div class="draggable-handle"><span class="fa fa-bars" aria-hidden="true"></span> {{ attribute.name }}</div>
       </div>
