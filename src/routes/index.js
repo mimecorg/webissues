@@ -22,6 +22,7 @@ import routeIssues from '@/routes/issues'
 import routeProjects from '@/routes/projects'
 import routeTypes from '@/routes/types'
 import routeUsers from '@/routes/users'
+import routeAlerts from '@/routes/alerts'
 import routeSettings from '@/routes/settings'
 
 export default function registerRoutes( router, i18n, ajax, store, formatter ) {
@@ -31,13 +32,14 @@ export default function registerRoutes( router, i18n, ajax, store, formatter ) {
     routeProjects( route, ajax, store );
     routeTypes( route, ajax, store );
     routeUsers( route, ajax, store );
+    routeAlerts( route, ajax, store );
     routeSettings( route, ajax, store );
   }
 
   router.register( routeAll );
 
   if ( process.env.NODE_ENV != 'production' && module.hot != null ) {
-    module.hot.accept( [ '@/routes/global', '@/routes/issues', '@/routes/projects', '@/routes/types', '@/routes/users', '@/routes/settings' ], () => {
+    module.hot.accept( [ '@/routes/global', '@/routes/issues', '@/routes/projects', '@/routes/types', '@/routes/users', '@/routes/alerts', '@/routes/settings' ], () => {
       router.hotUpdate( routeAll );
     } );
   }

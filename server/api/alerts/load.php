@@ -1,0 +1,65 @@
+<?php
+/**************************************************************************
+* This file is part of the WebIssues Server program
+* Copyright (C) 2006 Michał Męciński
+* Copyright (C) 2007-2017 WebIssues Team
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU Affero General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Affero General Public License for more details.
+*
+* You should have received a copy of the GNU Affero General Public License
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.
+**************************************************************************/
+
+require_once( '../../../system/bootstrap.inc.php' );
+
+class Server_Api_Alerts_Load
+{
+    public $access = '*';
+
+    public $params = array(
+        'alertId' => array( 'type' => 'int', 'required' => true ),
+        'details' => array( 'type' => 'bool', 'default' => false )
+    );
+
+    public function run( $alertId, $details )
+    {
+        $alertManager = new System_Api_AlertManager();
+        $alert = $alertManager->getAlert( $alertId, System_Api_AlertManager::AllowEdit );
+
+        $result[ 'id' ] = $alert[ 'alert_id' ];
+        $result[ 'isPublic' ] = $alert[ 'is_public' ] != 0;
+
+        if ( $alert[ 'view_name' ] != null )
+            $result[ 'view' ] = htmlspecialchars( $alert[ 'type_name' ] ) . ' &mdash; ' . htmlspecialchars( $alert[ 'view_name' ] );
+        else
+            $result[ 'view' ] = htmlspecialchars( $alert[ 'type_name' ] );
+        if ( $alert[ 'folder_name' ] != null && $alert[ 'project_name' ] != null )
+            $result[ 'location' ] = htmlspecialchars( $alert[ 'project_name' ] ) . ' &mdash; ' . htmlspecialchars( $alert[ 'folder_name' ] );
+        else if ( $alert[ 'project_name' ] != null )
+            $result[ 'location' ] = htmlspecialchars( $alert[ 'project_name' ] );
+        else
+            $result[ 'location' ] = null;
+
+        if ( $details ) {
+            $resultDetails = array();
+
+            $resultDetails[ 'type' ] = (int)$alert[ 'alert_type' ];
+            if ( $alert[ 'alert_type' ] >= System_Const::ChangeReport )
+                $resultDetails[ 'frequency' ] = (int)$alert[ 'alert_frequency' ];
+
+            $result[ 'details' ] = $resultDetails;
+        }
+
+        return $result;
+    }
+}
+
+System_Bootstrap::run( 'Server_Api_Application', 'Server_Api_Alerts_Load' );

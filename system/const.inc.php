@@ -46,17 +46,25 @@ class System_Const
     /*@}*/
 
     /**
-    * @name Alert Emails
+    * @name Alert Types
     */
     /*@{*/
-    /** No emails are sent for the alert. */
-    const NoEmail = 0;
-    /** Immediate notifications are sent for the alert. */
-    const ImmediateNotificationEmail = 1;
-    /** Summary notifications are sent for the alert. */
-    const SummaryNotificationEmail = 2;
-    /** Summary reports are sent for the alert. */
-    const SummaryReportEmail = 3;
+    /** Immediate notification. */
+    const Notification = 1;
+    /** Report of issue changes. */
+    const ChangeReport = 2;
+    /** Report of issues. */
+    const IssueReport = 3;
+    /*@}*/
+
+    /**
+    * @name Alert Frequencies
+    */
+    /*@{*/
+    /** Daily alert. */
+    const Daily = 0;
+    /** Weekly alert. */
+    const Weekly = 1;
     /*@}*/
 
     /**

@@ -40,7 +40,7 @@
             <li><HyperLink v-on:click="manageTypes"><span class="fa fa-table" aria-hidden="true"></span> {{ $t( 'title.IssueTypes' ) }}</HyperLink></li>
             <li v-if="isAdministrator"><HyperLink v-on:click="manageUsers"><span class="fa fa-users" aria-hidden="true"></span> {{ $t( 'title.UserAccounts' ) }}</HyperLink></li>
             <li role="separator" class="divider"></li>
-            <li><HyperLink><span class="fa fa-bell-o" aria-hidden="true"></span> {{ $t( 'title.Alerts' ) }}</HyperLink></li>
+            <li><HyperLink v-on:click="manageAlerts"><span class="fa fa-bell-o" aria-hidden="true"></span> {{ $t( 'title.Alerts' ) }}</HyperLink></li>
             <template v-if="isAdministrator">
               <li role="separator" class="divider"></li>
               <li><HyperLink v-on:click="serverSettings"><span class="fa fa-wrench" aria-hidden="true"></span> {{ $t( 'title.ServerSettings' ) }}</HyperLink></li>
@@ -141,6 +141,9 @@ export default {
     },
     manageUsers() {
       this.$router.push( 'ManageUsers' );
+    },
+    manageAlerts() {
+      this.$router.push( 'ManageAlerts' );
     },
     serverSettings() {
       this.$router.push( 'ServerSettings' );

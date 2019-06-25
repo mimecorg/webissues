@@ -20,6 +20,8 @@
     "InvalidAccessLevel": "Access level is invalid.",
     "InvalidActivationKey": "The activation key is invalid.",
     "InvalidAlertEmail": "Invalid alert email setting.",
+    "InvalidAlertFrequency": "Invalid alert frequency.",
+    "InvalidAlertType": "Invalid alert type.",
     "InvalidDate": "Date is not correct.",
     "InvalidDefinition": "Definition is invalid.",
     "InvalidEmail": "Email address is invalid.",

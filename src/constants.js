@@ -23,6 +23,17 @@ export const Access = {
   AdministratorAccess: 2
 };
 
+export const AlertType = {
+  Notification: 1,
+  ChangeReport: 2,
+  IssueReport: 3
+};
+
+export const AlertFrequency = {
+  Daily: 0,
+  Weekly: 1
+};
+
 export const Change = {
   IssueCreated: 0,
   IssueRenamed: 1,
@@ -131,7 +142,9 @@ export const ErrorCode = {
   SubscriptionAlreadyExists: 365,
   LoginAlreadyExists: 366,
   InvalidResetKey: 367,
-  UnknownInbox: 368
+  UnknownInbox: 368,
+  InvalidAlertType: 369,
+  InvalidAlertFrequency: 370
 };
 
 export const Reason = {

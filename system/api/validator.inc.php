@@ -124,14 +124,25 @@ class System_Api_Validator
     }
 
     /**
-    * Check if the argument is a valid alert email constant as defined in
+    * Check if the argument is a valid alert type constant as defined in
     * System_Const.
     * @param $access The integer argument to validate.
     */
-    public function checkAlertEmail( $email )
+    public function checkAlertType( $type )
     {
-        if ( !is_int( $email ) || $email < System_Const::NoEmail || $email > System_Const::SummaryReportEmail )
-            throw new System_Api_Error( System_Api_Error::InvalidAlertEmail );
+        if ( !is_int( $type ) || $type < System_Const::Notification || $email > System_Const::IssueReport )
+            throw new System_Api_Error( System_Api_Error::InvalidAlertType );
+    }
+
+    /**
+    * Check if the argument is a valid alert frequency constant as defined in
+    * System_Const.
+    * @param $access The integer argument to validate.
+    */
+    public function checkAlertFrequency( $frequency )
+    {
+        if ( !is_int( $frequency ) || $frequency < System_Const::Daily || $email > System_Const::Weekly )
+            throw new System_Api_Error( System_Api_Error::InvalidAlertFrequency );
     }
 
     /**

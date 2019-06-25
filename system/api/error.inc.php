@@ -97,6 +97,8 @@ class System_Api_Error extends System_Core_Exception
     const LoginAlreadyExists = '366 Login Already Exists';
     const InvalidResetKey = '367 Invalid Reset Key';
     const UnknownInbox = '368 Unknown Inbox';
+    const InvalidAlertType = '369 Invalid Alert Type';
+    const InvalidAlertFrequency = '370 Invalid Alert Frequency';
 
     public function __construct( $message, $wrappedException = null )
     {
