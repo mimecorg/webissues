@@ -20,7 +20,7 @@
 <template>
   <BaseForm v-bind:title="$t( 'title.WebIssuesSettings' )" size="small" with-buttons v-bind:close-hidden="!isConfigured" v-bind:cancel-hidden="!isConfigured"
             v-on:ok="submit" v-on:cancel="cancel">
-    <FormInput ref="baseURL" id="baseURL" v-bind:label="$t( 'label.ServerURL' )" v-bind="$field( 'baseURL' )" v-model="baseURL"/>
+    <FormInput ref="baseURL" id="baseURL" v-bind:label="$t( 'label.ServerURL' )" v-bind="$field( 'baseURL' )" v-model="baseURL" v-on:keydown.enter="submit"/>
   </BaseForm>
 </template>
 
