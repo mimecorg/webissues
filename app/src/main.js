@@ -163,6 +163,6 @@ function createWindow() {
 
   if ( process.platform == 'darwin' )
     makeDarwinMenu();
-  else
+  else if ( process.env.NODE_ENV == 'production' )
     mainWindow.removeMenu();
 }
