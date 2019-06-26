@@ -503,7 +503,7 @@ export default {
     },
 
     scrollMenuToView() {
-      if ( this.$form != null )
+      if ( this.$form != null && this.$refs.menu != null )
         this.$form.scrollMenuToView( this.$el, this.$refs.menu );
     }
   },

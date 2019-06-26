@@ -20,8 +20,8 @@
 <template>
   <div v-bind:class="[ 'input-group', className ]">
     <input ref="input" type="text" class="form-control" autocomplete="off"
-           v-bind:id="id" v-bind:maxlength="maxlength" v-model="text"
-           v-on:input="dropdown" v-on:keydown="keyDown" v-on:blur="close">
+           v-bind:id="id" v-bind:maxlength="maxlength" v-bind:value="text"
+           v-on:input="setText( $event.target.value )" v-on:keydown="keyDown" v-on:blur="close">
     <span v-bind:class="[ 'input-group-btn', 'dropdown-input-group', { open } ]">
       <button class="btn btn-default" type="button" tabindex="-1" v-on:click="toggle()" v-on:mousedown.prevent><span class="fa fa-chevron-down" aria-hidden="true"></span></button>
       <div ref="menu" v-if="open && matchingItems.length > 0" class="dropdown-menu dropdown-menu-both" v-on:mousedown.prevent>
@@ -94,6 +94,11 @@ export default {
       }
     },
 
+    setText( text ) {
+      this.text = text;
+      this.dropdown();
+    },
+
     dropdown() {
       if ( this.currentItem != '' )
         this.matchPrefix = this.currentItem.toLowerCase();
@@ -102,6 +107,7 @@ export default {
       this.open = true;
       this.$nextTick( this.scrollMenuToView );
     },
+
     close() {
       this.open = false;
     },
@@ -110,6 +116,7 @@ export default {
       this.setItem( item );
       this.close();
     },
+
     setItem( item ) {
       if ( this.multiSelect ) {
         let parts = this.text.split( /,\s*/ );
@@ -137,10 +144,7 @@ export default {
               index = 0;
           }
           this.setItem( this.matchingItems[ index ] );
-          if ( this.$refs.scroll.scrollTop > index * 26 )
-            this.$refs.scroll.scrollTop = index * 26
-          else if ( this.$refs.scroll.scrollTop < ( index - 9 ) * 26 )
-            this.$refs.scroll.scrollTop = ( index - 9 ) * 26;
+          this.scrollItemToView( index );
         }
         e.preventDefault();
       } else if ( e.keyCode == KeyCode.Tab || e.keyCode == KeyCode.Enter ) {
@@ -160,8 +164,17 @@ export default {
     },
 
     scrollMenuToView() {
-      if ( this.$form != null )
+      if ( this.$form != null && this.$refs.menu != null )
         this.$form.scrollMenuToView( this.$el, this.$refs.menu );
+    },
+
+    scrollItemToView( index ) {
+      const scroll = this.$refs.scroll;
+      const child = scroll.children[ index ];
+      if ( scroll.scrollTop > child.offsetTop - 5 )
+        scroll.scrollTop = child.offsetTop - 5;
+      else if ( scroll.scrollTop + scroll.clientHeight < child.offsetTop - 5 + child.clientHeight )
+        scroll.scrollTop = child.offsetTop - 5 + child.clientHeight - scroll.clientHeight;
     }
   }
 }
