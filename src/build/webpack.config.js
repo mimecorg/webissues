@@ -31,11 +31,8 @@ module.exports = function( { electron, production } = {} ) {
 
   const config = {
     mode: production ? 'production' : 'development',
-    entry: electron ? {
-      client: './src/client.js'
-    } : {
-      common: './src/common.js',
-      application: './src/application.js'
+    entry: {
+      client: electron ? './src/client.js' : './src/index.js'
     },
     output: {
       path: path.resolve( __dirname, electron ? '../../app/assets' : '../../assets' ),
@@ -133,7 +130,8 @@ module.exports = function( { electron, production } = {} ) {
       config.plugins.push( new AssetsPlugin( {
         filename: 'assets.json',
         path: config.output.path,
-        fullPath: false
+        fullPath: false,
+        includeAllFileTypes: false
       } ) );
     }
   } else {

@@ -43,9 +43,6 @@ export function startApplication( { baseURL, csrfToken, locale, ...initialState 
   if ( app != null )
     throw new Error( 'Application already started' );
 
-  if ( process.env.NODE_ENV == 'production' && process.env.TARGET == 'web' )
-    __webpack_public_path__ = baseURL + '/assets/';
-
   makeI18n( locale ).then( i18n => {
     const ajax = makeAjax( baseURL, csrfToken );
     const router = makeRouter();
@@ -75,6 +72,3 @@ export function destroyApplication() {
   app.$options.router.destroy();
   app = null;
 }
-
-if ( process.env.TARGET == 'web' )
-  window.WebIssues = Object.assign( window.WebIssues || {}, { startApplication } );

@@ -58,8 +58,8 @@ class Client_Index extends System_Web_Component
             $locale = $this->translator->getLanguage( System_Core_Translator::SystemLanguage );
 
         $this->assets = new System_Web_Assets();
-        $this->assets->add( 'common' );
-        $this->assets->add( 'application' );
+        $this->assets->add( 'client' );
+        $this->assets->add( 'application', System_Web_Assets::ProductionOnly );
         $this->assets->add( 'i18n-' . $locale, System_Web_Assets::ProductionOnly );
 
         $options[ 'baseURL' ] = WI_BASE_URL;

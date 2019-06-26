@@ -24,6 +24,15 @@ import '@/styles/global.less'
 
 let expanded = false;
 
+function loadApplication( { baseURL, csrfToken, locale, ...initialState } ) {
+  if ( process.env.NODE_ENV == 'production' )
+    __webpack_public_path__ = baseURL + '/assets/';
+
+  import( /* webpackChunkName: "application" */ '@/application' ).then( ( { startApplication } ) => {
+    startApplication( { baseURL, csrfToken, locale, ...initialState } );
+  } );
+}
+
 function initializePage() {
   const toggleButton = document.getElementById( 'toggle-button' );
   if ( toggleButton != null )
@@ -84,4 +93,4 @@ function displayBusyOverlay() {
     overlayDivs[ 0 ].style.display = 'block';
 }
 
-window.WebIssues = Object.assign( window.WebIssues || {}, { initializePage } );
+window.WebIssues = Object.assign( window.WebIssues || {}, { loadApplication, initializePage } );

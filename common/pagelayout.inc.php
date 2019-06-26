@@ -46,7 +46,7 @@ class Common_PageLayout extends System_Web_Component
         $this->touchIcon = '/common/images/apple-touch-icon.png';
 
         $this->assets = new System_Web_Assets();
-        $this->assets->add( 'common' );
+        $this->assets->add( 'client' );
 
         $this->manualUrl = 'http://doc.mimec.org/webissues/1.1/en/index.html';
     }
