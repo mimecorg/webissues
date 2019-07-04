@@ -56,28 +56,15 @@ class System_Api_QueryGenerator extends System_Api_Base
     {
         parent::__construct();
 
-        $this->columns[] = System_Api_Column::ID;
-        $this->columns[] = System_Api_Column::Name;
-        $this->columns[] = System_Api_Column::ModifiedDate;
-        $this->columns[] = System_Api_Column::ModifiedBy;
+        $this->columns = array(
+            System_Api_Column::ID, System_Api_Column::Name, System_Api_Column::Location,
+            System_Api_Column::ModifiedDate, System_Api_Column::ModifiedBy
+        );
 
         $this->sortColumn = $this->getColumnName( System_Api_Column::ID );
         $this->sortOrder = System_Const::Ascending;
 
         $this->locale = new System_Api_Locale();
-    }
-
-    /**
-    * Set the folder containing issues.
-    */
-    public function setFolder( $folder )
-    {
-        $this->folderId = $folder[ 'folder_id' ];
-
-        $typeManager = new System_Api_TypeManager();
-        $type = $typeManager->getIssueTypeForFolder( $folder );
-
-        $this->loadAttributes( $type );
     }
 
     /**
@@ -87,13 +74,6 @@ class System_Api_QueryGenerator extends System_Api_Base
     {
         $this->typeId = $type[ 'type_id' ];
 
-        $this->loadAttributes( $type );
-
-        $this->columns = array_merge( array_slice( $this->columns, 0, 2 ), array( System_Api_Column::Location ), array_slice( $this->columns, 2 ) );
-    }
-
-    private function loadAttributes( $type )
-    {
         $typeManager = new System_Api_TypeManager();
         $attributes = $typeManager->getAttributeTypesForIssueType( $type );
 
@@ -118,7 +98,7 @@ class System_Api_QueryGenerator extends System_Api_Base
 
         $this->columns = array_intersect( $columns, $allColumns );
 
-        if ( $this->typeId != 0 )
+        if ( $this->folderId == 0 )
             $this->columns = array_merge( array_slice( $this->columns, 0, 2 ), array( System_Api_Column::Location ), array_slice( $this->columns, 2 ) );
 
         $sortColumn = $info->getMetadata( 'sort-column' );
@@ -146,7 +126,7 @@ class System_Api_QueryGenerator extends System_Api_Base
     {
         $this->columns = $this->getAvailableColumns();
 
-        if ( $this->typeId != 0 )
+        if ( $this->folderId == 0 )
             $this->columns = array_merge( array_slice( $this->columns, 0, 2 ), array( System_Api_Column::Location ), array_slice( $this->columns, 2 ) );
     }
 
@@ -158,19 +138,6 @@ class System_Api_QueryGenerator extends System_Api_Base
             System_Api_Column::ModifiedDate, System_Api_Column::ModifiedBy
         );
         return array_merge( $systemColumns, array_keys( $this->attributes ) );
-    }
-
-    /**
-    * Set the quick search text for the list.
-    */
-    public function setSearchText( $column, $text )
-    {
-        $info = new System_Api_DefinitionInfo();
-        $info->setType( $column == System_Api_Column::ID ? 'EQ' : 'CON' );
-        $info->setMetadata( 'column', $column );
-        $info->setMetadata( 'value', $text );
-
-        $this->filters[] = $info;
     }
 
     /**
@@ -195,6 +162,16 @@ class System_Api_QueryGenerator extends System_Api_Base
     public function setProject( $project )
     {
         $this->projectId = $project[ 'project_id' ];
+    }
+
+    /**
+    * Only include issues from specified folder.
+    */
+    public function setFolder( $folder )
+    {
+        $this->folderId = $folder[ 'folder_id' ];
+
+        $this->columns = array_diff( $this->columns, array( System_Api_Column::Location ) );
     }
 
     /**
@@ -254,17 +231,6 @@ class System_Api_QueryGenerator extends System_Api_Base
         return 'SELECT ' . $this->generateSelect( self::AllColumns | self::WithState )
             . ' FROM ' . $this->generateJoins( self::AllColumns | self::WithState )
             . ' WHERE ' . $this->generateConditions();
-    }
-
-    /**
-    * Return a query for extracting issues for alerts.
-    */
-    public function generateAlertQuery()
-    {
-        return 'SELECT COUNT(*) AS s_count, SIGN( i.stamp_id - s.read_id ) AS s_sign'
-            . ' FROM ' . $this->generateJoins( self::WithState )
-            . ' WHERE ' . $this->generateConditions()
-            . ' GROUP BY SIGN( i.stamp_id - s.read_id )';
     }
 
     /**

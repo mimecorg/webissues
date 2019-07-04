@@ -144,6 +144,12 @@ function makeGetters() {
         }
       }
       return title;
+    },
+    isIssueModified( state ) {
+      return issueId => {
+        const issue = state.issues.find( i => i.id == issueId );
+        return issue != null && issue.read < issue.stamp;
+      };
     }
   };
 }

@@ -73,7 +73,9 @@ function makeActions( router ) {
           commit( 'setMainRoute', route );
           commit( 'list/setFilters', route.params );
         }
-        dispatch( 'updateGlobal' );
+        dispatch( 'updateGlobal' ).then( () => {
+          dispatch( 'alerts/update' );
+        } );
       }
     },
 
@@ -93,6 +95,8 @@ function makeActions( router ) {
               dispatch( 'updateGlobal' );
             else if ( getters[ 'list/checkUpdate' ]() )
               dispatch( 'updateList' );
+            else if ( state.alerts.dirty )
+              dispatch( 'alerts/update' );
           }
         } else {
           commit( 'list/clear' );
@@ -126,7 +130,7 @@ function makeActions( router ) {
     updateGlobal( { getters, commit, dispatch } ) {
       commit( 'setLoadingState', LoadingState.GlobalUpdate );
       commit( 'list/cancel' );
-      dispatch( 'global/load' ).then( () => {
+      return dispatch( 'global/load' ).then( () => {
         if ( getters[ 'list/hasFilters' ] )
           dispatch( 'updateList' );
         else
@@ -146,14 +150,18 @@ function makeActions( router ) {
       } );
     },
 
-    finishLoading( { commit, dispatch } ) {
+    finishLoading( { state, commit, dispatch } ) {
       commit( 'setLoadingState', LoadingState.Idle );
       const route = router.route;
-      if ( route != null && route.handler != null ) {
-        Vue.nextTick( () => {
-          commit( 'window/clear' );
-          dispatch( 'window/handleRoute', route );
-        } );
+      if ( route != null ) {
+        if ( route.handler != null ) {
+          Vue.nextTick( () => {
+            commit( 'window/clear' );
+            dispatch( 'window/handleRoute', route );
+          } );
+        } else if ( state.alerts.dirty ) {
+          dispatch( 'alerts/update' );
+        }
       }
     },
 

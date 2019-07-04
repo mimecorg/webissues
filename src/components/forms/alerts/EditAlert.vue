@@ -160,6 +160,8 @@ export default {
       this.$form.block();
 
       this.$ajax.post( '/alerts/' + this.mode + '.php', data ).then( ( { alertId, changed } ) => {
+        if ( changed )
+          this.$store.commit( 'alerts/setDirty' );
         this.returnToDetails();
       } ).catch( error => {
         if ( error.reason == Reason.APIError && error.errorCode == ErrorCode.AlertAlreadyExists ) {

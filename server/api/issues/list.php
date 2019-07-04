@@ -79,11 +79,11 @@ class Server_Api_Issues_List
 
         $queryGenerator = new System_Api_QueryGenerator();
 
+        $queryGenerator->setIssueType( $type );
+
         if ( $folder != null )
             $queryGenerator->setFolder( $folder );
-        else if ( $type != null )
-            $queryGenerator->setIssueType( $type );
-        if ( $project != null )
+        else if ( $project != null )
             $queryGenerator->setProject( $project );
 
         if ( $view != null )

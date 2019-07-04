@@ -62,6 +62,7 @@
           <button v-else type="button" class="btn btn-default" v-bind:title="$t( 'cmd.LogIn' )" v-on:click="restartClient">
             <span class="fa fa-sign-in" aria-hidden="true"></span> <span class="hidden-sm hidden-md">{{ $t( 'cmd.LogIn' ) }}</span>
           </button>
+          <AlertsButton v-if="isAuthenticated" class="hidden-xs"/>
           <div class="navbar-sub-group">
             <div class="navbar-sub-element navbar-sub-element-wide">
               <div class="navbar-brand-img"></div>
@@ -82,9 +83,10 @@
           </div>
         </div>
         <div id="navbar-element-toggle" class="navbar-element">
-          <button v-if="type != null" type="button" class="btn btn-success" v-bind:title="$t( 'cmd.AddIssue' )" v-on:click="addIssue">
-            <span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'cmd.Add' ) }}
+          <button v-if="type != null && isAuthenticated" type="button" class="btn btn-success" v-bind:title="$t( 'cmd.AddIssue' )" v-on:click="addIssue">
+            <span class="fa fa-plus" aria-hidden="true"></span>
           </button>
+          <AlertsButton v-if="isAuthenticated"/>
           <button type="button" class="btn btn-info" v-bind:title="$t( 'cmd.ToggleNavigation' )" v-on:click="toggle">
             <span class="fa fa-bars" aria-hidden="true"></span>
           </button>

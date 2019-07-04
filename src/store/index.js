@@ -22,6 +22,7 @@ import Vuex from 'vuex'
 
 import makeStoreRoot from '@/store/root'
 import makeGlobalModule from '@/store/global'
+import makeAlertsModule from '@/store/alerts'
 import makeIssueModule from '@/store/issue'
 import makeListModule from '@/store/list'
 import makeWindowModule from '@/store/window'
@@ -34,6 +35,7 @@ export default function makeStore( baseURL, initialState, ajax, router ) {
       ...makeStoreRoot( router ),
       modules: {
         global: makeGlobalModule( baseURL, initialState, ajax ),
+        alerts: makeAlertsModule( ajax ),
         issue: makeIssueModule( ajax ),
         list: makeListModule( ajax ),
         window: makeWindowModule( router )
@@ -45,7 +47,7 @@ export default function makeStore( baseURL, initialState, ajax, router ) {
   const store = new Vuex.Store( makeStoreOptions() );
 
   if ( process.env.NODE_ENV != 'production' && module.hot != null ) {
-    module.hot.accept( [ '@/store/root', '@/store/global', '@/store/issue', '@/store/list', '@/store/window' ], () => {
+    module.hot.accept( [ '@/store/root', '@/store/global', '@/store/alerts', '@/store/issue', '@/store/list', '@/store/window' ], () => {
       store.hotUpdate( makeStoreOptions() );
     } );
   }

@@ -24,6 +24,7 @@
             aria-haspopup="true" v-bind:aria-expanded="open ? 'true' : 'false'" v-bind:disabled="disabled"
             v-on:click="toggle" v-on:keydown="keyDown">
       <span v-if="faClass != null" v-bind:class="[ 'fa', faClass ]" aria-hidden="true"></span>
+      <slot name="button"/>
       <span v-if="textClass != null && text != null" v-bind:class="textClass">{{ text }}</span><template v-else-if="text != null">{{ text }}</template>
       <span v-if="text != null" class="caret"></span>
     </button>

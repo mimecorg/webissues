@@ -235,6 +235,77 @@ class System_Api_AlertManager extends System_Api_Base
     }
 
     /**
+    * Return all notification alerts for current user.
+    * @return An array of associative arrays representing alerts.
+    */
+    public function getNotificationAlerts()
+    {
+        $principal = System_Api_Principal::getCurrent();
+
+        $query = 'SELECT a.alert_id, a.type_id, a.view_id, a.project_id, a.folder_id,'
+            . ' t.type_name, v.view_name, p.project_name, f.folder_name, ( CASE WHEN a.user_id IS NULL THEN 1 ELSE 0 END ) AS is_public, v.view_def'
+            . ' FROM {alerts} AS a'
+            . ' JOIN {issue_types} AS t ON t.type_id = a.type_id'
+            . ' LEFT OUTER JOIN {views} AS v ON v.view_id = a.view_id'
+            . ' LEFT OUTER JOIN {folders} AS f ON f.folder_id = a.folder_id'
+            . ' LEFT OUTER JOIN {projects} AS p ON p.project_id = COALESCE( a.project_id, f.project_id )';
+        if ( !$principal->isAdministrator() ) {
+            $query .= ' LEFT OUTER JOIN {effective_rights} AS r ON r.project_id = p.project_id'
+                . ' WHERE ( a.user_id = %1d OR a.user_id IS NULL ) AND a.alert_type = %2d AND ( p.is_archived = 0 AND r.project_id IS NOT NULL OR '
+                . ' p.project_id IS NULL AND EXISTS ( SELECT f2.folder_id FROM {folders} AS f2'
+                . ' JOIN {projects} AS p2 ON p2.project_id = f2.folder_id'
+                . ' JOIN {effective_rights} AS r2 ON r2.project_id = f2.project_id AND r2.user_id = %1d'
+                . ' WHERE f2.type_id = a.type_id AND p2.is_archived = 0 ) )';
+        } else {
+            $query .= ' WHERE ( a.user_id = %1d OR a.user_id IS NULL ) AND a.alert_type = %2d AND ( p.is_archived = 0 OR p.project_id IS NULL )';
+        }
+        $query .= ' ORDER BY t.type_name, v.view_name, p.project_name, f.folder_name';
+
+        return $this->connection->queryTable( $query, $principal->getUserId(), System_Const::Notification );
+    }
+
+    public function getIssueTypeFromAlert( $alert )
+    {
+        $type[ 'type_id' ] = $alert[ 'type_id' ];
+        $type[ 'type_name' ] = $alert[ 'type_name' ];
+        return $type;
+    }
+
+    public function getViewFromAlert( $alert )
+    {
+        if ( $alert[ 'view_id' ] != null ) {
+            $view[ 'view_id' ] = $alert[ 'view_id' ];
+            $view[ 'view_name' ] = $alert[ 'view_name' ];
+            $view[ 'view_def' ] = $alert[ 'view_def' ];
+            return $view;
+        } else {
+            return null;
+        }
+    }
+
+    public function getProjectFromAlert( $alert )
+    {
+        if ( $alert[ 'project_id' ] != null ) {
+            $project[ 'project_id' ] = $alert[ 'project_id' ];
+            $project[ 'project_name' ] = $alert[ 'project_name' ];
+        } else {
+            return null;
+        }
+    }
+
+    public function getFolderFromAlert( $alert )
+    {
+        if ( $alert[ 'folder_id' ] != null ) {
+            $folder[ 'folder_id' ] = $alert[ 'folder_id' ];
+            $folder[ 'folder_name' ] = $alert[ 'folder_name' ];
+            $folder[ 'type_id' ] = $alert[ 'type_id' ];
+            return $folder;
+        } else {
+            return null;
+        }
+    }
+
+    /**
     * Return alerts for which emails should be sent.
     * @param $includeSummary If @c true, the summary notifications and reports are
     * included in addition to immediate notifications.

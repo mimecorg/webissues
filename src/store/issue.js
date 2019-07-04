@@ -127,7 +127,7 @@ function makeMutations() {
 
 function makeActions( ajax ) {
   return {
-    load( { state, rootState, commit } ) {
+    load( { state, rootState, rootGetters, commit } ) {
       if ( state.filter != rootState.global.settings.historyFilter )
         commit( 'setFilter', rootState.global.settings.historyFilter );
 
@@ -192,6 +192,8 @@ function makeActions( ajax ) {
         promise.then( data => {
           if ( promise == state.lastPromise ) {
             commit( 'setData', data );
+            if ( !state.unread && rootGetters[ 'list/isIssueModified' ]( state.issueId ) )
+              commit( 'alerts/setDirty', null, { root: true } );
             commit( 'list/setIssueRead', { issueId: state.issueId, stamp: state.unread ? 0 : data.details.stamp }, { root: true } );
             commit( 'setLastPromise', null );
             resolve();

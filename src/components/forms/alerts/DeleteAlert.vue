@@ -48,6 +48,7 @@ export default {
       const data = { alertId: this.alertId };
 
       this.$ajax.post( '/alerts/delete.php', data ).then( () => {
+        this.$store.commit( 'alerts/setDirty' );
         this.returnToDetails();
       } ).catch( error => {
         this.$form.error( error );
