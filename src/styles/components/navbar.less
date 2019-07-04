@@ -82,14 +82,13 @@
 .navbar-brand-name {
   margin: 7px 15px 7px 20px + @navbar-logo-size;
   color: @navbar-text-color;
-  .ellipsis();
 }
 
 #navbar-element-toggle {
   display: none;
 
   @media ( max-width: @screen-xs-max ) {
-    display: table-cell;
+    display: block;
   }
 }
 
@@ -145,12 +144,11 @@
     }
 
     .navbar-sub-group {
-      display: table;
+      display: flex;
       margin: 5px 0 8px 0;
     }
 
     .navbar-sub-element {
-      display: table-cell;
       white-space: nowrap;
     }
 
@@ -172,7 +170,7 @@
   }
 
   @media ( min-width: @screen-sm-min ) {
-    display: table-cell!important;
+    display: block!important;
     height: auto!important;
     overflow: visible!important;
   }

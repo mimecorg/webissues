@@ -44,13 +44,12 @@
 }
 
 .group() {
-  display: table;
+  display: flex;
   margin-left: -8px;
   margin-right: -8px;
 }
 
 .element() {
-  display: table-cell;
   padding-left: 8px;
   padding-right: 8px;
   vertical-align: top;
@@ -58,6 +57,6 @@
 }
 
 .element-wide() {
-  width: 100%;
-  max-width: 0;
+  flex-grow: 1;
+  min-width: 0;
 }
