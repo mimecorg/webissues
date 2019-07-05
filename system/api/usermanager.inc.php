@@ -261,16 +261,16 @@ class System_Api_UserManager extends System_Api_Base
         if ( !$principal->isAuthenticated() ) {
             $query .= ' WHERE u.user_id IN ( SELECT r1.user_id FROM {rights} AS r1'
                 . ' INNER JOIN {projects} AS p ON p.project_id = r1.project_id'
-                . ' WHERE p.is_archived = 0 AND p.is_public = 1 )';
+                . ' WHERE p.is_archived = 0 AND p.is_public = 1 ) OR u.user_access = %2d';
         } else if ( !$principal->isAdministrator() ) {
             $query .= ' WHERE u.user_id IN ( SELECT r1.user_id FROM {rights} AS r1'
                 . ' INNER JOIN {projects} AS p ON p.project_id = r1.project_id'
-                . ' INNER JOIN {effective_rights} AS r2 ON r2.project_id = p.project_id AND r2.user_id = %d'
-                . ' WHERE p.is_archived = 0 )';
+                . ' INNER JOIN {effective_rights} AS r2 ON r2.project_id = p.project_id AND r2.user_id = %1d'
+                . ' WHERE p.is_archived = 0 ) OR u.user_access = %2d';
         }
         $query .= ' ORDER BY u.user_name COLLATE LOCALE';
 
-        return $this->connection->queryTable( $query, $principal->getUserId() );
+        return $this->connection->queryTable( $query, $principal->getUserId(), System_Const::AdministratorAccess );
     }
 
     /**
