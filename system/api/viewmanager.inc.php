@@ -61,7 +61,8 @@ class System_Api_ViewManager extends System_Api_Base
 
         $query = 'SELECT view_id, type_id, view_name, view_def, ( CASE WHEN user_id IS NULL THEN 1 ELSE 0 END ) AS is_public'
             . ' FROM {views}'
-            . ' WHERE user_id = %d OR user_id IS NULL';
+            . ' WHERE user_id = %d OR user_id IS NULL'
+            . ' ORDER BY view_name';
 
         return $this->connection->queryTable( $query, $principal->getUserId() );
     }
@@ -79,7 +80,8 @@ class System_Api_ViewManager extends System_Api_Base
 
         $query = 'SELECT view_id, view_name, view_def'
             . ' FROM {views}'
-            . ' WHERE type_id = %d AND user_id = %d';
+            . ' WHERE type_id = %d AND user_id = %d'
+            . ' ORDER BY view_name';
 
         return $this->connection->queryTable( $query, $typeId, $principal->getUserId() );
     }
