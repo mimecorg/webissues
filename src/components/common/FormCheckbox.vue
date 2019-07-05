@@ -20,7 +20,7 @@
 <template>
   <div class="form-group">
     <div v-bind:class="[ 'checkbox', { disabled } ]">
-      <label><input ref="input" type="checkbox" v-bind:checked="value" v-bind:disabled="disabled" v-on="inputListeners"> {{ label }}</label>
+      <label><input ref="input" type="checkbox" v-bind:checked="value" v-bind:disabled="disabled" v-on:change="valueChanged"> {{ label }}</label>
     </div>
   </div>
 </template>
@@ -31,14 +31,6 @@ export default {
     value: Boolean,
     label: String,
     disabled: Boolean
-  },
-  computed: {
-    inputListeners() {
-      return {
-        ...this.$listeners,
-        change: this.valueChanged
-      };
-    }
   },
   methods: {
     focus() {
