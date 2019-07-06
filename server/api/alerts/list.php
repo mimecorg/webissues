@@ -68,9 +68,6 @@ class Server_Api_Alerts_List
             $resultAlert[ 'location' ] = htmlspecialchars( $alert[ 'project_name' ] );
         else
             $resultAlert[ 'location' ] = null;
-        $resultAlert[ 'type' ] = (int)$alert[ 'alert_type' ];
-        if ( $alert[ 'alert_type' ] >= System_Const::ChangeReport )
-            $resultAlert[ 'frequency' ] = (int)$alert[ 'alert_frequency' ];
         return $resultAlert;
     }
 }

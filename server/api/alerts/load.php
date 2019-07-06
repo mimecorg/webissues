@@ -25,8 +25,7 @@ class Server_Api_Alerts_Load
     public $access = '*';
 
     public $params = array(
-        'alertId' => array( 'type' => 'int', 'required' => true ),
-        'details' => array( 'type' => 'bool', 'default' => false )
+        'alertId' => array( 'type' => 'int', 'required' => true )
     );
 
     public function run( $alertId, $details )
@@ -47,16 +46,6 @@ class Server_Api_Alerts_Load
             $result[ 'location' ] = htmlspecialchars( $alert[ 'project_name' ] );
         else
             $result[ 'location' ] = null;
-
-        if ( $details ) {
-            $resultDetails = array();
-
-            $resultDetails[ 'type' ] = (int)$alert[ 'alert_type' ];
-            if ( $alert[ 'alert_type' ] >= System_Const::ChangeReport )
-                $resultDetails[ 'frequency' ] = (int)$alert[ 'alert_frequency' ];
-
-            $result[ 'details' ] = $resultDetails;
-        }
 
         return $result;
     }

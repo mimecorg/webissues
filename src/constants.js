@@ -24,7 +24,7 @@ export const Access = {
 };
 
 export const AlertType = {
-  Notification: 1,
+  Alert: 1,
   ChangeReport: 2,
   IssueReport: 3
 };

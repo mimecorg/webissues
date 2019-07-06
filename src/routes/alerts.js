@@ -35,8 +35,7 @@ export default function routeAlerts( route, ajax, store ) {
     if ( store.state.global.userAccess != Access.AdministratorAccess )
       return Promise.reject( makeError( ErrorCode.AccessDenied ) );
     return Promise.resolve( {
-      form: 'alerts/EditAlert',
-      mode: 'add',
+      form: 'alerts/AddAlert',
       isPublic: true
     } );
   } );
@@ -45,31 +44,85 @@ export default function routeAlerts( route, ajax, store ) {
     if ( !store.getters[ 'global/isAuthenticated' ] )
       return Promise.reject( makeError( ErrorCode.LoginRequired ) );
     return Promise.resolve( {
-      form: 'alerts/EditAlert',
-      mode: 'add',
+      form: 'alerts/AddAlert',
       isPublic: false
     } );
   } );
 
-  route( 'EditAlert', '/alerts/:alertId/edit', ( { alertId } ) => {
-    return ajax.post( '/alerts/load.php', { alertId, details: true } ).then( ( { isPublic, view, location, details } ) => {
+  route( 'AlertDetails', '/alerts/:alertId', ( { alertId } ) => {
+    return ajax.post( '/alerts/load.php', { alertId } ).then( ( { isPublic, view, location } ) => {
       return {
-        form: 'alerts/EditAlert',
-        mode: 'edit',
+        form: 'alerts/AlertDetails',
         alertId,
         isPublic,
         view,
-        location,
-        initialAlert: details
+        location
       };
     } );
   } );
 
   route( 'DeleteAlert', '/alerts/:alertId/delete', ( { alertId } ) => {
-    return ajax.post( '/alerts/load.php', { alertId, details: true } ).then( ( { isPublic, view, location } ) => {
+    return ajax.post( '/alerts/load.php', { alertId } ).then( ( { isPublic, view, location } ) => {
       return {
         form: 'alerts/DeleteAlert',
         alertId,
+        isPublic,
+        view,
+        location
+      };
+    } );
+  } );
+
+  route( 'ManageReports', '/reports', () => {
+    const isAdministrator = store.state.global.userAccess == Access.AdministratorAccess;
+    return ajax.post( '/reports/list.php', { publicReports: isAdministrator, personalReports: true } ).then( ( { publicReports, personalReports } ) => {
+      return {
+        form: 'alerts/ManageReports',
+        publicReports,
+        personalReports
+      };
+    } );
+  } );
+
+  route( 'AddPublicReport', '/reports/public/add', () => {
+    if ( store.state.global.userAccess != Access.AdministratorAccess )
+      return Promise.reject( makeError( ErrorCode.AccessDenied ) );
+    return Promise.resolve( {
+      form: 'alerts/EditReport',
+      mode: 'add',
+      isPublic: true
+    } );
+  } );
+
+  route( 'AddPersonalReport', '/reports/personal/add', () => {
+    if ( !store.getters[ 'global/isAuthenticated' ] )
+      return Promise.reject( makeError( ErrorCode.LoginRequired ) );
+    return Promise.resolve( {
+      form: 'alerts/EditReport',
+      mode: 'add',
+      isPublic: false
+    } );
+  } );
+
+  route( 'EditReport', '/reports/:reportId/edit', ( { reportId } ) => {
+    return ajax.post( '/reports/load.php', { reportId, details: true } ).then( ( { isPublic, view, location, details } ) => {
+      return {
+        form: 'alerts/EditReport',
+        mode: 'edit',
+        reportId,
+        isPublic,
+        view,
+        location,
+        initialReport: details
+      };
+    } );
+  } );
+
+  route( 'DeleteReport', '/reports/:reportId/delete', ( { reportId } ) => {
+    return ajax.post( '/reports/load.php', { reportId } ).then( ( { isPublic, view, location } ) => {
+      return {
+        form: 'alerts/DeleteReport',
+        reportId,
         isPublic,
         view,
         location

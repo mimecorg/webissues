@@ -18,14 +18,14 @@
 -->
 
 <template>
-  <BaseForm v-bind:title="$t( 'title.Alerts' )" v-bind:size="size" auto-close save-position>
+  <BaseForm v-bind:title="$t( 'title.Alerts' )" auto-close save-position>
     <template v-if="isAdministrator">
       <FormSection v-bind:title="$t( 'title.PublicAlerts' )">
         <button type="button" class="btn btn-success" v-on:click="addPublicAlert" v-bind:title="$t( 'cmd.AddPublicAlert' )">
           <span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'cmd.Add' ) }}
         </button>
       </FormSection>
-      <Grid v-if="publicAlerts.length > 0" v-bind:items="publicAlerts" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-medium', 'column-medium', null, null ]"
+      <Grid v-if="publicAlerts.length > 0" v-bind:items="publicAlerts" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-medium', 'column-medium' ]"
             v-on:row-click="rowClickPublic">
         <template slot-scope="{ item, columnIndex, columnClass, columnKey }">
           <td v-bind:key="columnKey" v-bind:class="columnClass" v-html="getCellValue( columnIndex, item )"></td>
@@ -38,7 +38,7 @@
         <span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'cmd.Add' ) }}
       </button>
     </FormSection>
-    <Grid v-if="personalAlerts.length > 0" v-bind:items="personalAlerts" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-medium', 'column-medium', null, null ]"
+    <Grid v-if="personalAlerts.length > 0" v-bind:items="personalAlerts" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-medium', 'column-medium' ]"
           v-on:row-click="rowClickPersonal">
       <template slot-scope="{ item, columnIndex, columnClass, columnKey }">
         <td v-bind:key="columnKey" v-bind:class="columnClass" v-html="getCellValue( columnIndex, item )"></td>
@@ -61,18 +61,10 @@ export default {
 
   computed: {
     ...mapGetters( 'global', [ 'isAdministrator' ] ),
-    size() {
-      if ( this.isAdministrator && this.publicAlerts.length > 0 || this.personalAlerts.length > 0 )
-        return 'large';
-      else
-        return 'normal';
-    },
     columnNames() {
       return [
         this.$t( 'title.Filter' ),
-        this.$t( 'title.Location' ),
-        this.$t( 'title.Type' ),
-        this.$t( 'title.Frequency' )
+        this.$t( 'title.Location' )
       ];
     }
   },
@@ -84,20 +76,6 @@ export default {
           return alert.view;
         case 1:
           return alert.location;
-        case 2:
-          if ( alert.type == AlertType.Notification )
-            return this.$t( 'text.Notification' );
-          else if ( alert.type == AlertType.ChangeReport )
-            return this.$t( 'text.ChangeReport' );
-          else if ( alert.type == AlertType.IssueReport )
-            return this.$t( 'text.IssueReport' );
-          break;
-        case 3:
-          if ( alert.frequency == AlertFrequency.Daily )
-            return this.$t( 'text.Daily' );
-          else if ( alert.frequency == AlertFrequency.Weekly )
-            return this.$t( 'text.Weekly' );
-          break;
       }
     },
 
@@ -109,10 +87,10 @@ export default {
     },
 
     rowClickPublic( rowIndex ) {
-      this.$router.push( 'EditAlert', { alertId: this.publicAlerts[ rowIndex ].id } );
+      this.$router.push( 'AlertDetails', { alertId: this.publicAlerts[ rowIndex ].id } );
     },
     rowClickPersonal( rowIndex ) {
-      this.$router.push( 'EditAlert', { alertId: this.personalAlerts[ rowIndex ].id } );
+      this.$router.push( 'AlertDetails', { alertId: this.personalAlerts[ rowIndex ].id } );
     }
   }
 }

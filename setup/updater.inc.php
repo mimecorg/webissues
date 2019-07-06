@@ -440,7 +440,7 @@ class Setup_Updater extends System_Web_Base
             );
 
             $modifiedIndexes = array(
-                'alert_idx'         => 'INDEX columns={"user_id","project_id","folder_id","type_id","view_id"} unique=1'
+                'alert_idx'         => 'INDEX columns={"user_id","project_id","folder_id","type_id","view_id","alert_type"} unique=1'
             );
 
             $generator->modifyFieldsNull( 'alerts', $modifiedFields );

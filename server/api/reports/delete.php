@@ -20,21 +20,25 @@
 
 require_once( '../../../system/bootstrap.inc.php' );
 
-class Server_Api_Alerts_Delete
+class Server_Api_Reports_Delete
 {
     public $access = '*';
 
     public $params = array(
-        'alertId' => array( 'type' => 'int', 'required' => true )
+        'reportId' => array( 'type' => 'int', 'required' => true )
     );
 
-    public function run( $alertId )
+    public function run( $reportId )
     {
-        $alertManager = new System_Api_AlertManager();
-        $alert = $alertManager->getAlert( $alertId, System_Api_AlertManager::AllowEdit );
+        $serverManager = new System_Api_ServerManager();
+        if ( $serverManager->getSetting( 'email_engine' ) == null )
+            throw new System_Api_Error( System_Api_Error::AccessDenied );
 
-        $alertManager->deleteAlert( $alert );
+        $alertManager = new System_Api_AlertManager();
+        $report = $alertManager->getReport( $reportId, System_Api_AlertManager::AllowEdit );
+
+        $alertManager->deleteAlert( $report );
     }
 }
 
-System_Bootstrap::run( 'Server_Api_Application', 'Server_Api_Alerts_Delete' );
+System_Bootstrap::run( 'Server_Api_Application', 'Server_Api_Reports_Delete' );

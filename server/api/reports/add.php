@@ -20,7 +20,7 @@
 
 require_once( '../../../system/bootstrap.inc.php' );
 
-class Server_Api_Alerts_Add
+class Server_Api_Reports_Add
 {
     public $access = '*';
 
@@ -29,11 +29,17 @@ class Server_Api_Alerts_Add
         'viewId' => array( 'type' => 'int' ),
         'projectId' => array( 'type' => 'int' ),
         'folderId' => array( 'type' => 'int' ),
-        'isPublic' => array( 'type' => 'bool', 'required' => true )
+        'isPublic' => array( 'type' => 'bool', 'required' => true ),
+        'alertType' => array( 'type' => 'int', 'required' => true ),
+        'alertFrequency' => array( 'type' => 'int' ),
     );
 
-    public function run( $typeId, $viewId, $projectId, $folderId, $isPublic )
+    public function run( $typeId, $viewId, $projectId, $folderId, $isPublic, $alertType, $alertFrequency )
     {
+        $serverManager = new System_Api_ServerManager();
+        if ( $serverManager->getSetting( 'email_engine' ) == null )
+            throw new System_Api_Error( System_Api_Error::AccessDenied );
+
         if ( $isPublic && !System_Api_Principal::getCurrent()->isAdministrator() )
             throw new System_Api_Error( System_Api_Error::AccessDenied );
 
@@ -59,13 +65,19 @@ class Server_Api_Alerts_Add
             }
         }
 
+        if ( $alertType < System_Const::ChangeReport || $alertType > System_Const::IssueReport )
+            throw new System_Api_Error( System_Api_Error::InvalidAlertType );
+
+        if ( $alertFrequency < System_Const::Daily || $alertFrequency > System_Const::Weekly )
+            throw new System_Api_Error( System_Api_Error::InvalidAlertFrequency );
+
         $alertManager = new System_Api_AlertManager();
 
-        $result[ 'alertId' ] = $alertManager->addAlert( $type, $view, $project, $folder, System_Const::Alert, 0, $isPublic ? System_Api_AlertManager::IsPublic : 0 );
+        $result[ 'reportId' ] = $alertManager->addAlert( $type, $view, $project, $folder, $alertType, $alertFrequency, $isPublic ? System_Api_AlertManager::IsPublic : 0 );
         $result[ 'changed' ] = true;
 
         return $result;
     }
 }
 
-System_Bootstrap::run( 'Server_Api_Application', 'Server_Api_Alerts_Add' );
+System_Bootstrap::run( 'Server_Api_Application', 'Server_Api_Reports_Add' );

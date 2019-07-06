@@ -47,7 +47,7 @@ class Setup_Installer extends System_Web_Base
                 'alert_frequency'   => 'INTEGER size="tiny" null=1',
                 'stamp_id'          => 'INTEGER null=1',
                 'pk'                => 'PRIMARY columns={"alert_id"}',
-                'alert_idx'         => 'INDEX columns={"user_id","project_id","folder_id","type_id","view_id"} unique=1',
+                'alert_idx'         => 'INDEX columns={"user_id","project_id","folder_id","type_id","view_id","alert_type"} unique=1',
                 'project_idx'       => 'INDEX columns={"project_id"}',
                 'folder_idx'        => 'INDEX columns={"folder_id"}',
                 'type_idx'          => 'INDEX columns={"type_id"}',

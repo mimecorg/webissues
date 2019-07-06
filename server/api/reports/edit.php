@@ -20,40 +20,38 @@
 
 require_once( '../../../system/bootstrap.inc.php' );
 
-class Server_Api_Alerts_Edit
+class Server_Api_Reports_Edit
 {
     public $access = '*';
 
     public $params = array(
-        'alertId' => array( 'type' => 'int', 'required' => true ),
+        'reportId' => array( 'type' => 'int', 'required' => true ),
         'alertType' => array( 'type' => 'int', 'required' => true ),
         'alertFrequency' => array( 'type' => 'int' ),
     );
 
-    public function run( $alertId, $alertType, $alertFrequency )
+    public function run( $reportId, $alertType, $alertFrequency )
     {
-        $alertManager = new System_Api_AlertManager();
-        $alert = $alertManager->getAlert( $alertId, System_Api_AlertManager::AllowEdit );
-
-        $validator = new System_Api_Validator();
-        $validator->checkAlertType( $alertType );
-
-        if ( $alertType == System_Const::Notification ) {
-            if ( $alertFrequency != null )
-                throw new Server_Error( Server_Error::InvalidArguments );
-        } else {
-            $validator->checkAlertFrequency( $alertFrequency );
-        }
+        $serverManager = new System_Api_ServerManager();
+        if ( $serverManager->getSetting( 'email_engine' ) == null )
+            throw new System_Api_Error( System_Api_Error::AccessDenied );
 
         $alertManager = new System_Api_AlertManager();
+        $report = $alertManager->getReport( $reportId, System_Api_AlertManager::AllowEdit );
 
-        $changed = $alertManager->modifyAlert( $alert, $alertType, $alertFrequency );
+        if ( $alertType < System_Const::ChangeReport || $alertType > System_Const::IssueReport )
+            throw new System_Api_Error( System_Api_Error::InvalidAlertType );
 
-        $result[ 'alertId' ] = $alertId;
+        if ( $alertFrequency < System_Const::Daily || $alertFrequency > System_Const::Weekly )
+            throw new System_Api_Error( System_Api_Error::InvalidAlertFrequency );
+
+        $changed = $alertManager->modifyAlert( $report, $alertType, $alertFrequency );
+
+        $result[ 'reportId' ] = $reportId;
         $result[ 'changed' ] = $changed;
 
         return $result;
     }
 }
 
-System_Bootstrap::run( 'Server_Api_Application', 'Server_Api_Alerts_Edit' );
+System_Bootstrap::run( 'Server_Api_Application', 'Server_Api_Reports_Edit' );

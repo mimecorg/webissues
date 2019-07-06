@@ -49,8 +49,8 @@ class System_Const
     * @name Alert Types
     */
     /*@{*/
-    /** Immediate notification. */
-    const Notification = 1;
+    /** Immediate alert. */
+    const Alert = 1;
     /** Report of issue changes. */
     const ChangeReport = 2;
     /** Report of issues. */
@@ -58,12 +58,12 @@ class System_Const
     /*@}*/
 
     /**
-    * @name Alert Frequencies
+    * @name Report Frequencies
     */
     /*@{*/
-    /** Daily alert. */
+    /** Daily report. */
     const Daily = 0;
-    /** Weekly alert. */
+    /** Weekly report. */
     const Weekly = 1;
     /*@}*/
 

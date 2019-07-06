@@ -170,6 +170,7 @@ class Server_Api_Global
         $settings[ 'selfRegister' ] = $serverManager->getSetting( 'self_register' ) == 1 && $serverManager->getSetting( 'email_engine' ) != null;
         $settings[ 'registerAutoApprove' ] = $serverManager->getSetting( 'register_auto_approve' ) == 1;
         $settings[ 'resetPassword' ] = $serverManager->getSetting( 'email_engine' ) != null;
+        $settings[ 'reports' ] = $serverManager->getSetting( 'email_engine' ) != null;
 
         $preferencesManager = new System_Api_PreferencesManager();
         $historyFilter = $preferencesManager->getPreference( 'history_filter' );

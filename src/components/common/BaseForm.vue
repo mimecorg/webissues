@@ -20,7 +20,7 @@ import { throws } from 'assert';
 
 <template>
   <div class="container-fluid">
-    <FormHeader v-if="!closeHidden" v-bind:title="title" v-bind:breadcrumbs="breadcrumbs" v-on:close="close">
+    <FormHeader v-if="!closeHidden" v-bind:title="title" v-bind:title-html="titleHtml" v-bind:breadcrumbs="breadcrumbs" v-on:close="close">
       <slot name="header"/>
     </FormHeader>
     <div v-else class="form-header">
@@ -37,6 +37,7 @@ import { KeyCode } from '@/constants'
 export default {
   props: {
     title: String,
+    titleHtml: Boolean,
     breadcrumbs: Array,
     size: { type: String, default: 'normal' },
     closeHidden: Boolean,

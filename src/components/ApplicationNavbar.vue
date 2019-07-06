@@ -41,6 +41,7 @@
             <li v-if="isAdministrator"><HyperLink v-on:click="manageUsers"><span class="fa fa-users" aria-hidden="true"></span> {{ $t( 'title.UserAccounts' ) }}</HyperLink></li>
             <li role="separator" class="divider"></li>
             <li><HyperLink v-on:click="manageAlerts"><span class="fa fa-bell-o" aria-hidden="true"></span> {{ $t( 'title.Alerts' ) }}</HyperLink></li>
+            <li v-if="settings.reports"><HyperLink v-on:click="manageReports"><span class="fa fa-calendar-check-o" aria-hidden="true"></span> {{ $t( 'title.Reports' ) }}</HyperLink></li>
             <template v-if="isAdministrator">
               <li role="separator" class="divider"></li>
               <li><HyperLink v-on:click="serverSettings"><span class="fa fa-wrench" aria-hidden="true"></span> {{ $t( 'title.ServerSettings' ) }}</HyperLink></li>
@@ -107,7 +108,7 @@ export default {
   },
 
   computed: {
-    ...mapState( 'global', [ 'baseURL', 'serverName', 'serverVersion', 'userName' ] ),
+    ...mapState( 'global', [ 'baseURL', 'serverName', 'serverVersion', 'userName', 'settings' ] ),
     ...mapGetters( 'global', [ 'isAuthenticated', 'isAdministrator' ] ),
     ...mapGetters( 'list', [ 'type' ] ),
     userTitle() {
@@ -146,6 +147,9 @@ export default {
     },
     manageAlerts() {
       this.$router.push( 'ManageAlerts' );
+    },
+    manageReports() {
+      this.$router.push( 'ManageReports' );
     },
     serverSettings() {
       this.$router.push( 'ServerSettings' );

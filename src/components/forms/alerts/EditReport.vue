@@ -20,7 +20,7 @@
 <template>
   <BaseForm v-bind:title="title" with-buttons v-on:ok="submit" v-on:cancel="returnToDetails">
     <template slot="header">
-      <button type="button" class="btn btn-default" v-on:click="deleteAlert"><span class="fa fa-trash" aria-hidden="true"></span> {{ $t( 'cmd.Delete' ) }}</button>
+      <button v-if="mode == 'edit'" type="button" class="btn btn-default" v-on:click="deleteReport"><span class="fa fa-trash" aria-hidden="true"></span> {{ $t( 'cmd.Delete' ) }}</button>
     </template>
     <Prompt v-if="mode == 'add'" v-bind:path="promptPath"/>
     <Prompt v-else v-bind:path="promptPath"><strong v-html="view"></strong><strong v-html="location"></strong></Prompt>
@@ -33,16 +33,13 @@
     </FormGroup>
     <FormGroup v-bind:label="$t( 'label.Type' )" required>
       <div class="radio">
-        <label><input type="radio" v-model="type" v-bind:value="alertType.notification"> {{ $t( 'text.Notification' ) }}</label>
-      </div>
-      <div class="radio">
         <label><input type="radio" v-model="type" v-bind:value="alertType.changeReport"> {{ $t( 'text.ChangeReport' ) }}</label>
       </div>
       <div class="radio">
         <label><input type="radio" v-model="type" v-bind:value="alertType.issueReport"> {{ $t( 'text.IssueReport' ) }}</label>
       </div>
     </FormGroup>
-    <FormGroup v-if="type != alertType.notification" v-bind:label="$t( 'label.Frequency' )" required>
+    <FormGroup v-bind:label="$t( 'label.Frequency' )" required>
       <div class="radio">
         <label><input type="radio" v-model="frequency" v-bind:value="alertFrequency.daily"> {{ $t( 'text.Daily' ) }}</label>
       </div>
@@ -61,11 +58,11 @@ import { AlertType, AlertFrequency, ErrorCode, Reason } from '@/constants'
 export default {
   props: {
     mode: String,
-    alertId: Number,
+    reportId: Number,
     isPublic: Boolean,
     view: String,
     location: String,
-    initialAlert: Object
+    initialReport: Object
   },
 
   fields() {
@@ -78,11 +75,11 @@ export default {
         condition: this.mode == 'add'
       },
       type: {
-        value: ( this.initialAlert != null ) ? this.initialAlert.type : AlertType.Notification,
+        value: ( this.initialReport != null ) ? this.initialReport.type : AlertType.ChangeReport,
         type: Number
       },
       frequency: {
-        value: ( this.initialAlert != null && this.initialAlert.type != AlertType.Notification ) ? this.initialAlert.frequency : AlertFrequency.Daily,
+        value: ( this.initialReport != null ) ? this.initialReport.frequency : AlertFrequency.Daily,
         type: Number
       }
     };
@@ -94,7 +91,6 @@ export default {
       projectId: null,
       folderId: null,
       alertType: {
-        notification: AlertType.Notification,
         changeReport: AlertType.ChangeReport,
         issueReport: AlertType.IssueReport
       },
@@ -109,17 +105,17 @@ export default {
     ...mapState( 'global', [ 'projects' ] ),
     title() {
       if ( this.mode == 'add' )
-        return this.isPublic ? this.$t( 'cmd.AddPublicAlert' ) : this.$t( 'cmd.AddPersonalAlert' );
+        return this.isPublic ? this.$t( 'cmd.AddPublicReport' ) : this.$t( 'cmd.AddPersonalReport' );
       else
-        return this.$t( 'cmd.EditAlert' );
+        return this.$t( 'cmd.EditReport' );
     },
     promptPath() {
       if ( this.mode == 'add' )
-        return this.isPublic ? 'prompt.AddPublicAlert' : 'prompt.AddPersonalAlert';
+        return this.isPublic ? 'prompt.AddPublicReport' : 'prompt.AddPersonalReport';
       else if ( this.location == null )
-        return this.isPublic ? 'prompt.EditPublicAlert' : 'prompt.EditPersonalAlert';
+        return this.isPublic ? 'prompt.EditPublicReport' : 'prompt.EditPersonalReport';
       else
-        return this.isPublic ? 'prompt.EditPublicAlertWithLocation' : 'prompt.EditPersonalAlertWithLocation';
+        return this.isPublic ? 'prompt.EditPublicReportWithLocation' : 'prompt.EditPersonalReportWithLocation';
     }
   },
 
@@ -152,16 +148,14 @@ export default {
         data.folderId = this.folderId;
         data.isPublic = this.isPublic;
       } else {
-        data.alertId = this.alertId;
+        data.reportId = this.reportId;
       }
       data.alertType = this.type;
-      data.alertFrequency = this.type != AlertType.Notification ? this.frequency : null;
+      data.alertFrequency = this.frequency;
 
       this.$form.block();
 
-      this.$ajax.post( '/alerts/' + this.mode + '.php', data ).then( ( { alertId, changed } ) => {
-        if ( changed )
-          this.$store.commit( 'alerts/setDirty' );
+      this.$ajax.post( '/reports/' + this.mode + '.php', data ).then( ( { reportId, changed } ) => {
         this.returnToDetails();
       } ).catch( error => {
         if ( error.reason == Reason.APIError && error.errorCode == ErrorCode.AlertAlreadyExists ) {
@@ -177,11 +171,11 @@ export default {
     },
 
     returnToDetails() {
-      this.$router.push( 'ManageAlerts' );
+      this.$router.push( 'ManageReports' );
     },
 
-    deleteAlert() {
-      this.$router.push( 'DeleteAlert', { alertId: this.alertId } );
+    deleteReport() {
+      this.$router.push( 'DeleteReport', { reportId: this.reportId } );
     }
   }
 }

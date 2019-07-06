@@ -29,7 +29,7 @@ class Server_Api_Alerts_Status
     public function run()
     {
         $alertManager = new System_Api_AlertManager();
-        $alertRows = $alertManager->getNotificationAlerts();
+        $alertRows = $alertManager->getAlerts();
 
         $result[ 'publicAlerts' ] = array();
         $result[ 'personalAlerts' ] = array();
