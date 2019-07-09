@@ -232,7 +232,8 @@
     "Today": "Today",
     "ToggleNavigation": "Toggle Navigation",
     "UnpublishView": "Unpublish View",
-    "UnselectAll": "Unselect All"
+    "UnselectAll": "Unselect All",
+    "Unsubscribe": "Unsubscribe"
   },
   "error": {
     "AccessDenied": "You have insufficient permissions to perform the requested operation.",
@@ -442,10 +443,12 @@
     "ResetOwnPassword": "An email will be sent to you with instructions how to reset your password.",
     "ResetPassword": "An email will be sent to user {0} with instructions how to reset the password.",
     "ResetUniqueID": "A new, random unique identifier will be assigned to this server.",
+    "SubscribeIssue": "Do you want to subscribe to issue {0}?",
     "TestMessageSent": "A test message was successfully sent.",
     "TestMessageFailed": "A test message could not be sent.",
     "TimeZone": "The time zone setting only affects email notifications. The web and desktop applications always use the local time zone.",
     "UnpublishView": "Are you sure you want to convert public view {0} to your personal view?",
+    "UnsubscribeIssue": "Do you want to unsubscribe from issue {0}?",
     "UserRegistration": "This option allows users to register new accounts.",
     "UserRegistrationAutomaticApproval": "This option allows users to register without administrator's approval. Registered users only have access to public projects by default.",
     "UserRegistrationNotifyEmail": "Optionally send email notifications about pending registration requests to this address.",

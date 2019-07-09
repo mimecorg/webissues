@@ -96,15 +96,20 @@
     bottom: 0;
   }
 
-  .grid-body-table td .fa {
-    margin-right: 5px;
-
-    &.issue-unread {
+  .grid-body-table td {
+    .issue-unread {
+      margin-right: 5px;
       color: @brand-primary;
     }
 
-    &.issue-modified {
+    .issue-modified {
+      margin-right: 5px;
       color: @brand-success;
+    }
+
+    .issue-subscribed {
+      margin-left: 5px;
+      color: #aaa;
     }
   }
 }

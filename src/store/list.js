@@ -219,10 +219,12 @@ function makeMutations() {
     setDirty( state ) {
       state.dirty = true;
     },
-    setIssueRead( state, { issueId, stamp } ) {
+    setIssueState( state, { issueId, stamp, subscribed } ) {
       const issue = state.issues.find( i => i.id == issueId );
-      if ( issue != null )
+      if ( issue != null ) {
         issue.read = stamp;
+        issue.subscribed = subscribed;
+      }
     },
     setData( state, { sortColumn, sortAscending, columns, issues, totalCount } ) {
       state.sortColumn = sortColumn;

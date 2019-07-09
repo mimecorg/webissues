@@ -194,7 +194,7 @@ function makeActions( ajax ) {
             commit( 'setData', data );
             if ( !state.unread && rootGetters[ 'list/isIssueModified' ]( state.issueId ) )
               commit( 'alerts/setDirty', null, { root: true } );
-            commit( 'list/setIssueRead', { issueId: state.issueId, stamp: state.unread ? 0 : data.details.stamp }, { root: true } );
+            commit( 'list/setIssueState', { issueId: state.issueId, stamp: state.unread ? 0 : data.details.stamp, subscribed: data.details.subscribed }, { root: true } );
             commit( 'setLastPromise', null );
             resolve();
           }

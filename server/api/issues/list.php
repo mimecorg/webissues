@@ -163,6 +163,7 @@ class Server_Api_Issues_List
             $resultIssue[ 'id' ] = $row[ 'issue_id' ];
             $resultIssue[ 'read' ] = $row[ 'read_id' ];
             $resultIssue[ 'stamp' ] = $row[ 'stamp_id' ];
+            $resultIssue[ 'subscribed' ] = $row[ 'subscription_id' ] != null;
 
             $cells = array();
 

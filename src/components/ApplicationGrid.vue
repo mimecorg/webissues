@@ -37,6 +37,7 @@ import { Column } from '@/constants'
 export default {
   computed: {
     ...mapGetters( [ 'busy' ] ),
+    ...mapState( 'global', [ 'settings' ] ),
     ...mapState( 'list', [ 'sortColumn', 'sortAscending', 'columns', 'issues', 'totalCount' ] ),
     ...mapGetters( 'list', [ 'type', 'firstIndex', 'lastIndex' ] ),
     columnNames() {
@@ -103,10 +104,14 @@ export default {
 
   methods: {
     getCellValue( columnIndex, issue ) {
-      if ( this.columns[ columnIndex ].id == Column.Name && issue.read < issue.stamp )
-        return '<span class="fa fa-circle issue-' + ( issue.read > 0 ? 'modified' : 'unread' ) + '" aria-hidden="true"></span> ' + issue.cells[ columnIndex ];
-      else
-        return issue.cells[ columnIndex ];
+      let value = issue.cells[ columnIndex ];
+      if ( this.columns[ columnIndex ].id == Column.Name ) {
+        if ( issue.read < issue.stamp )
+          value = '<span class="fa fa-circle issue-' + ( issue.read > 0 ? 'modified' : 'unread' ) + '" aria-hidden="true"></span> ' + value;
+        if ( issue.subscribed && this.settings.subscriptions )
+          value += ' <span class="fa fa-envelope-o issue-subscribed" aria-hidden="true"></span>';
+      }
+      return value;
     },
 
     sort( columnIndex ) {

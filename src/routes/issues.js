@@ -135,6 +135,26 @@ export default function routeIssues( route, i18n, ajax, store, formatter ) {
     } );
   } );
 
+  route( 'SubscribeIssue', '/issues/:issueId/subscribe', ( { issueId } ) => {
+    return ajax.post( '/issues/load.php', { issueId } ).then( ( { details } ) => {
+      return {
+        form: 'issues/SubscribeIssue',
+        issueId,
+        name: details.name
+      };
+    } );
+  } );
+
+  route( 'UnsubscribeIssue', '/issues/:issueId/unsubscribe', ( { issueId } ) => {
+    return ajax.post( '/issues/load.php', { issueId } ).then( ( { details } ) => {
+      return {
+        form: 'issues/UnsubscribeIssue',
+        issueId,
+        name: details.name
+      };
+    } );
+  } );
+
   route( 'AddDescription', '/issues/:issueId/description/add', ( { issueId } ) => {
     return ajax.post( '/issues/load.php', { issueId, description: true, access: 'adminOrOwner' } ).then( ( { details, description } ) => {
       if ( description != null )

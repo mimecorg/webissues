@@ -63,6 +63,7 @@ class Server_Api_Issues_Load
         $resultDetails[ 'modifiedDate' ] = $issue[ 'modified_date' ];
         $resultDetails[ 'modifiedBy' ] = $issue[ 'modified_user' ];
         $resultDetails[ 'stamp' ] = $issue[ 'stamp_id' ];
+        $resultDetails[ 'subscribed' ] = $issue[ 'subscription_id' ] != null;
 
         $result[ 'details' ] = $resultDetails;
 

@@ -29,8 +29,11 @@
         <li role="separator" class="divider"></li>
         <li v-if="unread"><HyperLink v-on:click="setUnread( false )"><span class="fa fa-check-circle-o" aria-hidden="true"></span> {{ $t( 'cmd.MarkAsRead' ) }}</HyperLink></li>
         <li v-if="!unread"><HyperLink v-on:click="setUnread( true )"><span class="fa fa-check-circle" aria-hidden="true"></span> {{ $t( 'cmd.MarkAsUnread' ) }}</HyperLink></li>
-        <li role="separator" class="divider"></li>
-        <li><HyperLink><span class="fa fa-envelope" aria-hidden="true"></span> {{ $t( 'cmd.Subscribe' ) }}</HyperLink></li>
+        <template v-if="settings.subscriptions">
+          <li role="separator" class="divider"></li>
+          <li v-if="details.subscribed"><HyperLink v-on:click="unsubscribe"><span class="fa fa-envelope" aria-hidden="true"></span> {{ $t( 'cmd.Unsubscribe' ) }}</HyperLink></li>
+          <li v-else><HyperLink v-on:click="subscribe"><span class="fa fa-envelope-o" aria-hidden="true"></span> {{ $t( 'cmd.Subscribe' ) }}</HyperLink></li>
+        </template>
       </DropdownButton>
     </template>
 
@@ -155,7 +158,7 @@ import { Access, Change, History } from '@/constants'
 
 export default {
   computed: {
-    ...mapState( 'global', [ 'baseURL', 'userId', 'projects', 'types', 'users' ] ),
+    ...mapState( 'global', [ 'baseURL', 'userId', 'projects', 'types', 'users', 'settings' ] ),
     ...mapGetters( 'global', [ 'isAuthenticated' ] ),
     ...mapState( 'issue', [ 'issueId', 'filter', 'unread', 'details', 'description' ] ),
     ...mapGetters( 'issue', [ 'filteredAttributes', 'isItemInHistory', 'processedHistory' ] ),
@@ -365,6 +368,12 @@ export default {
     },
     deleteIssue() {
       this.$router.push( 'DeleteIssue', { issueId: this.issueId } );
+    },
+    subscribe() {
+      this.$router.push( 'SubscribeIssue', { issueId: this.issueId } );
+    },
+    unsubscribe() {
+      this.$router.push( 'UnsubscribeIssue', { issueId: this.issueId } );
     },
 
     addDescription() {
