@@ -335,6 +335,7 @@
     "PortNumber": "Port number:",
     "Project": "Project:",
     "RegistrationRequestLifetime": "Registration and reset password request lifetime:",
+    "ReportHour": "Report hour:",
     "RobotUser": "Robot user:",
     "ServerName": "Server name:",
     "ServerType": "Server type:",
@@ -347,6 +348,7 @@
     "Type": "Type:",
     "UserName": "User name:",
     "UserRegistration": "User registration:",
+    "WeeklyReportDay": "Weekly report day:",
     "Warning": "Warning:"
   },
   "prompt": {
@@ -582,6 +584,7 @@
     "CreatedBy": "Created By",
     "CreatedDate": "Created Date",
     "CronJob": "Cron Job",
+    "CronSettings": "Cron Settings",
     "DefaultValue": "Default Value",
     "DefaultView": "Default View",
     "Description": "Description",
@@ -632,6 +635,7 @@
     "RegionalSettings": "Regional Settings",
     "RegistrationRequests": "Registration Requests",
     "Reports": "Reports",
+    "ReportSchedule": "Report Schedule",
     "Required": "Required",
     "SMTPConfiguration": "SMTP Configuration",
     "SendingEmails": "Sending Emails",

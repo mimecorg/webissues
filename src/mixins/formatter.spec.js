@@ -242,6 +242,18 @@ describe( 'formatter', () => {
     } );
   } );
 
+  describe( 'formatHour', () => {
+    it( 'invariant', () => {
+      const value = formatter.formatHour( 8 );
+      expect( value ).to.equal( '08:00' );
+    } );
+
+    it( 'en', () => {
+      const value = enFormatter.formatHour( 8 );
+      expect( value ).to.equal( '8:00 am' );
+    } );
+  } );
+
   describe( 'formatFileSize', () => {
     it( 'bytes', () => {
       const value = formatter.formatFileSize( 123 );

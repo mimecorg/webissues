@@ -21,7 +21,7 @@ import Vue from 'vue'
 
 import { ErrorCode } from '@/constants'
 import { makeError } from '@/utils/errors'
-import { invariantSettings, parseDecimalNumber, formatDecimalNumber, parseDate, formatDate } from '@/utils/locale'
+import { invariantSettings, parseDecimalNumber, formatDecimalNumber, parseDate, formatDate, formatHour } from '@/utils/locale'
 
 Vue.mixin( {
   beforeCreate() {
@@ -51,6 +51,9 @@ export default function makeFormatter( store, i18n ) {
     },
     formatTimeDiff( diff ) {
       return formatTimeDiff( diff, i18n, store.state.global.settings );
+    },
+    formatHour( hours ) {
+      return formatHour( hours, store.state.global.settings );
     },
     formatDecimalNumber( value, decimal, flags = {} ) {
       return formatDecimalNumber( value, decimal, flags, store.state.global.settings );

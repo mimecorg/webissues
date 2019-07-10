@@ -450,6 +450,17 @@ class Setup_Updater extends System_Web_Base
             $generator->updateReferences();
         }
 
+        if ( version_compare( $version, '2.0.006' ) < 0 ) {
+            $settings = array(
+                'report_hour'           => 8,
+                'report_day'            => 1
+            );
+
+            $query = 'INSERT INTO {settings} ( set_key, set_value ) VALUES ( %s, %s )';
+            foreach ( $settings as $key => $value )
+                $this->connection->execute( $query, $key, $value );
+        }
+
         $query = 'DELETE FROM {sessions}';
         $this->connection->execute( $query );
 

@@ -64,7 +64,9 @@
     </div>
     <Prompt v-else path="prompt.WarningEmailsDisabled" alert-class="alert-warning"><strong>{{ $t( 'label.Warning' ) }}</strong></Prompt>
 
-    <FormSection v-bind:title="$t( 'title.CronJob' )"/>
+    <FormSection v-bind:title="$t( 'title.CronJob' )">
+      <button v-if="hasEmail" type="button" class="btn btn-default" v-on:click="cronSettings"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'cmd.Edit' ) }}</button>
+    </FormSection>
     <Prompt v-if="hasCronWarning && cronLastRun != null" path="prompt.WarningCronJobStarted" alert-class="alert-warning">
       <strong>{{ $t( 'label.Warning' ) }}</strong>{{ cronLastRun }}
     </Prompt>
@@ -194,6 +196,9 @@ export default {
     },
     advancedSettings() {
       this.$router.push( 'AdvancedSettings' );
+    },
+    cronSettings() {
+      this.$router.push( 'CronSettings' );
     },
 
     addInbox() {

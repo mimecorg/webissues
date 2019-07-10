@@ -89,6 +89,15 @@ export default function routeSettings( route, ajax, store ) {
     } );
   } );
 
+  route( 'CronSettings', '/settings/cron', () => {
+    return ajax.post( '/settings/cron/load.php' ).then( ( { settings } ) => {
+      return {
+        form: 'settings/CronSettings',
+        settings
+      };
+    } );
+  } );
+
   route( 'AddInbox', '/settings/inboxes/add', () => {
     return ajax.post( '/settings/load.php' ).then( ( { settings, hasImap } ) => {
       if ( !hasImap )

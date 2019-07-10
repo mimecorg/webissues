@@ -361,7 +361,9 @@ class Setup_Installer extends System_Web_Base
             'session_max_lifetime'  => 7200,
             'log_max_lifetime'      => 604800,
             'register_max_lifetime' => 86400,
-            'gc_divisor'            => 100
+            'gc_divisor'            => 100,
+            'report_hour'           => 8,
+            'report_day'            => 1
         );
 
         $query = 'INSERT INTO {settings} ( set_key, set_value ) VALUES ( %s, %s )';

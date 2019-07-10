@@ -184,6 +184,20 @@ export function formatDate( date, { withTime = false, toUTC = false }, { dateOrd
   return value;
 }
 
+export function formatHour( hours, { timeMode, timeSeparator, padHours } ) {
+  let amPm = '';
+
+  if ( timeMode == 12 ) {
+    amPm = hours >= 12 ? ' pm' :' am';
+    hours = ( hours + 11 ) % 12 + 1;
+  }
+
+  if ( padHours )
+    hours = hours.toString().padStart( 2, '0' );
+
+  return hours + timeSeparator + '00' + amPm;
+}
+
 function makeDatePattern( dateOrder, dateSeparator ) {
   dateSeparator = escape( dateSeparator );
   if ( dateOrder.charAt( 0 ) == 'y' )
