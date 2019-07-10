@@ -66,7 +66,7 @@ class System_Api_SessionManager extends System_Api_Base
         $transaction = $this->connection->beginTransaction( System_Db_Transaction::RepeatableRead, 'users' );
 
         try {
-            $query = 'SELECT user_id, user_name, user_passwd, user_access, passwd_temp, user_language FROM {users}'
+            $query = 'SELECT user_id, user_name, user_passwd, user_access, passwd_temp, user_email, user_language FROM {users}'
                 . ' WHERE user_login = %s AND user_access > %d';
 
             $user = $this->connection->queryRow( $query, $login, System_Const::NoAccess );
@@ -157,7 +157,7 @@ class System_Api_SessionManager extends System_Api_Base
     */
     public function loginAs( $login )
     {
-        $query = 'SELECT user_id, user_name, user_access, user_language FROM {users}'
+        $query = 'SELECT user_id, user_name, user_access, user_email, user_language FROM {users}'
             . ' WHERE user_login = %s';
 
         $user = $this->connection->queryRow( $query, $login );
@@ -192,6 +192,7 @@ class System_Api_SessionManager extends System_Api_Base
         self::$user[ 'user_id' ] = $user[ 'user_id' ];
         self::$user[ 'user_name' ] = $user[ 'user_name' ];
         self::$user[ 'user_access' ] = $user[ 'user_access' ];
+        self::$user[ 'user_email' ] = $user[ 'user_email' ];
         self::$user[ 'user_language' ] = $user[ 'user_language' ];
 
         $this->initializePrincipal();
@@ -220,7 +221,7 @@ class System_Api_SessionManager extends System_Api_Base
     */
     public function readSession( $id, &$data )
     {
-        $query = 'SELECT s.session_id, s.session_data, s.last_access, u.user_id, u.user_name, u.user_access, u.user_language'
+        $query = 'SELECT s.session_id, s.session_data, s.last_access, u.user_id, u.user_name, u.user_access, u.user_email, u.user_language'
             . ' FROM {sessions} AS s'
             . ' JOIN {users} AS u ON u.user_id = s.user_id'
             . ' WHERE s.session_id = %s';
@@ -241,6 +242,7 @@ class System_Api_SessionManager extends System_Api_Base
         self::$user[ 'user_id' ] = $session[ 'user_id' ];
         self::$user[ 'user_name' ] = $session[ 'user_name' ];
         self::$user[ 'user_access' ] = $session[ 'user_access' ];
+        self::$user[ 'user_email' ] = $session[ 'user_email' ];
         self::$user[ 'user_language' ] = $session[ 'user_language' ];
 
         $data = $session[ 'session_data' ];

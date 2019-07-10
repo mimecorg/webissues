@@ -20,14 +20,21 @@
 <template>
   <BaseForm v-bind:title="$t( 'cmd.Subscribe' )" size="small" with-buttons v-on:ok="submit" v-on:cancel="returnToDetails">
     <Prompt path="prompt.SubscribeIssue"><strong>{{ name }}</strong></Prompt>
+    <Prompt v-if="userEmail == null" path="prompt.WarningNoEmailAddress" alert-class="alert-warning"><strong>{{ $t( 'label.Warning' ) }}</strong></Prompt>
   </BaseForm>
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
   props: {
     issueId: Number,
     name: String
+  },
+
+  computed: {
+    ...mapState( 'global', [ 'userEmail' ] )
   },
 
   methods: {

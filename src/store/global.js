@@ -40,6 +40,7 @@ function makeState( baseURL, { serverName, serverVersion, serverUUID, userId, us
     userId,
     userName,
     userAccess,
+    userEmail: null,
     projects: [],
     types: [],
     users: [],
@@ -74,13 +75,14 @@ function makeMutations() {
     setDirty( state ) {
       state.dirty = true;
     },
-    setData( state, { serverName, serverVersion, serverUUID, userId, userName, userAccess, projects, types, users, settings, languages } ) {
+    setData( state, { serverName, serverVersion, serverUUID, userId, userName, userAccess, userEmail, projects, types, users, settings, languages } ) {
       state.serverName = serverName;
       state.serverVersion = serverVersion;
       state.serverUUID = serverUUID;
       state.userId = userId;
       state.userName = userName;
       state.userAccess = userAccess;
+      state.userEmail = userEmail;
       state.projects = projects;
       state.types = types;
       state.users = users;

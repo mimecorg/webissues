@@ -460,7 +460,8 @@
     "WarningDeleteIssue": "{0} The entire issue history will be permanently deleted.",
     "WarningDeleteProject": "{0} All folders and issues in this project will be permanently deleted.",
     "WarningDeleteType": "{0} All folders and issues of this type will be permanently deleted.",
-    "WarningEmailsDisabled": "{0} Sending emails is disabled. Some features are not available."
+    "WarningEmailsDisabled": "{0} Sending emails is disabled. Some features are not available.",
+    "WarningNoEmailAddress": "{0} You will not receive any emails until you add an email address to your account."
   },
   "text": {
     "AcceptExternalUsers": "Accept messages from external users",

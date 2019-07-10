@@ -34,6 +34,7 @@ class System_Api_Principal
     private $userId = 0;
     private $userName = '';
     private $userAccess = System_Const::NoAccess;
+    private $userEmail = null;
     private $language = null;
 
     /**
@@ -46,6 +47,7 @@ class System_Api_Principal
             $this->userId = $user[ 'user_id' ];
             $this->userName = $user[ 'user_name' ];
             $this->userAccess = $user[ 'user_access' ];
+            $this->userEmail = $user[ 'user_email' ];
             $this->language = $user[ 'user_language' ];
         }
     }
@@ -91,6 +93,14 @@ class System_Api_Principal
     public function getUserAccess()
     {
         return $this->userAccess;
+    }
+
+    /**
+    * Return the email of the user.
+    */
+    public function getUserEmail()
+    {
+        return $this->userEmail;
     }
 
     /**

@@ -40,6 +40,7 @@ class Server_Api_Global
         $result[ 'userId' ] = $principal->getUserId();
         $result[ 'userName' ] = $principal->getUserName();
         $result[ 'userAccess' ] = $principal->getUserAccess();
+        $result[ 'userEmail' ] = $principal->getUserEmail();
 
         $projectManager = new System_Api_ProjectManager();
         $projects = $projectManager->getProjects();

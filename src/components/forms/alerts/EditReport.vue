@@ -24,6 +24,7 @@
     </template>
     <Prompt v-if="mode == 'add'" v-bind:path="promptPath"/>
     <Prompt v-else v-bind:path="promptPath"><strong v-html="view"></strong><strong v-html="location"></strong></Prompt>
+    <Prompt v-if="userEmail == null" path="prompt.WarningNoEmailAddress" alert-class="alert-warning"><strong>{{ $t( 'label.Warning' ) }}</strong></Prompt>
     <FormGroup v-if="mode == 'add'" v-bind:label="$t( 'label.Filter' )" v-bind="$field( 'typeId' )">
       <ViewFilters ref="typeId" v-bind:typeId.sync="typeId" v-bind:viewId.sync="viewId" v-bind:show-personal="!isPublic"/>
     </FormGroup>
@@ -102,7 +103,7 @@ export default {
   },
 
   computed: {
-    ...mapState( 'global', [ 'projects' ] ),
+    ...mapState( 'global', [ 'userEmail', 'projects' ] ),
     title() {
       if ( this.mode == 'add' )
         return this.isPublic ? this.$t( 'cmd.AddPublicReport' ) : this.$t( 'cmd.AddPersonalReport' );
