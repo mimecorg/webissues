@@ -131,8 +131,17 @@ class System_Mail_InboxEngine
         $headers = imap_rfc822_parse_headers( $raw );
 
         $result = array();
-        
-        $result[ 'from' ] = $this->convertAddress( $headers->from[ 0 ] );
+
+        if ( !empty( $headers->from[ 0 ]->mailbox ) && !empty( $headers->from[ 0 ]->host ) ) {
+            $result[ 'from' ] = $this->convertAddress( $headers->from[ 0 ] );
+        } else {
+            foreach ( $headers->from as $addr ) {
+                if ( !empty( $addr->mailbox ) && !empty( $addr->host ) ) {
+                    $result[ 'from' ][ 'email' ] = $addr->mailbox . '@' . $addr->host;
+                    break;
+                }
+            }
+        }
 
         $result[ 'subject' ] = $this->decodeHeader( $headers->subject );
 
@@ -148,7 +157,7 @@ class System_Mail_InboxEngine
                 $result[ 'cc' ][] = $this->convertAddress( $addr );
         }
 
-        if ( !empty( $headers->reply_to[ 0 ] ) )
+        if ( !empty( $headers->reply_to[ 0 ]->mailbox ) && !empty( $headers->reply_to[ 0 ]->host ) )
             $result[ 'reply_to' ] = $this->convertAddress( $headers->reply_to[ 0 ] );
 
         return $result;
@@ -227,15 +236,24 @@ class System_Mail_InboxEngine
 
         $result[ 'body' ] = $body;
 
-        if ( $structure->ifdisposition && ( strtoupper( $structure->disposition ) == 'ATTACHMENT' || strtoupper( $structure->disposition ) == 'INLINE' ) ) {
+        $allParameters = array();
+
+        if ( $structure->ifparameters ) {
+            foreach ( $structure->parameters as $param )
+                $allParameters[ strtoupper( $param->attribute ) ] = $param->value;
+        }
+
+        if ( $structure->ifdparameters ) {
+            foreach ( $structure->dparameters as $param )
+                $allParameters[ strtoupper( $param->attribute ) ] = $param->value;
+        }
+
+        if ( isset( $allParameters[ 'FILENAME' ] ) || isset( $allParameters[ 'NAME' ] ) ) {
             $result[ 'type' ] = 'attachment';
-            $result[ 'name' ] = $this->getParameter( $structure, 'NAME' );
-        } else if ( $structure->type == 5 && $structure->ifid ) { // inline images without disposition
-            $result[ 'type' ] = 'attachment';
-            $result[ 'name' ] = $this->getParameter( $structure, 'NAME' );
+            $result[ 'name' ] = $this->decodeHeader( isset( $allParameters[ 'FILENAME' ] ) ? $allParameters[ 'FILENAME' ] : $allParameters[ 'NAME' ] );
         } else if ( $structure->type == 0 && $structure->ifsubtype && strtoupper( $structure->subtype ) == 'PLAIN' ) {
             $result[ 'type' ] = 'plain';
-            $result[ 'charset' ] = $this->getParameter( $structure, 'CHARSET' );
+            $result[ 'charset' ] = isset( $allParameters[ 'CHARSET' ] ) ? $allParameters[ 'CHARSET' ] : null;
         } else if ( $structure->type == 0 && $structure->ifsubtype && strtoupper( $structure->subtype ) == 'HTML' ) {
             $result[ 'type' ] = 'html';
         } else {
@@ -243,17 +261,6 @@ class System_Mail_InboxEngine
         }
 
         return $result;
-    }
-
-    private function getParameter( $structure, $name )
-    {
-        if ( $structure->ifparameters ) {
-            foreach ( $structure->parameters as $param ) {
-                if ( strtoupper( $param->attribute ) == $name )
-                    return $param->value;
-            }
-        }
-        return null;
     }
 
     /**
