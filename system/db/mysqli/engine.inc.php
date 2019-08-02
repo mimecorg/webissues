@@ -105,9 +105,9 @@ class System_Db_Mysqli_Engine implements System_Db_IEngine
 
     private function executeStatement( $query, $params )
     {
-        $this->statement = $this->connection->prepare( $query );
-        if ( !$this->statement )
-            $this->handleError( $this->connection );
+        $this->statement = $this->connection->stmt_init();
+        if ( !$this->statement->prepare( $query ) )
+            $this->handleError( $this->statement );
 
         $types = '';
         foreach ( $params as $param ) {
