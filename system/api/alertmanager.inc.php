@@ -37,6 +37,10 @@ class System_Api_AlertManager extends System_Api_Base
     const AllowEdit = 1;
     /** Indicate a public alert. */
     const IsPublic = 2;
+    /** Include daily reports. */
+    const WithDaily = 4;
+    /** Include weekly reports. */
+    const WithWeekly = 8;
     /*@}*/
 
     /**
@@ -341,56 +345,64 @@ class System_Api_AlertManager extends System_Api_Base
 
     /**
     * Return alerts for which emails should be sent.
-    * @param $includeSummary If @c true, the summary notifications and reports are
-    * included in addition to immediate notifications.
+    * @param $flags If WithDaily is passed, daily reports are included.
+    * If WithWeekly is passed, weekly reports are included.
     * @return An array of associative arrays representing alerts.
     */
-    public function getAlertsToEmail( $includeSummary )
+    public function getAlertsToEmail( $flags )
     {
         $principal = System_Api_Principal::getCurrent();
 
-        $query = 'SELECT a.alert_id, a.folder_id, a.type_id, a.view_id, a.alert_email, a.summary_days, a.summary_hours, a.stamp_id'
-            . ' FROM {alerts} AS a'
-            . ' WHERE a.user_id = %1d AND EXISTS ( SELECT f.folder_id FROM {folders} AS f'
-            . ' JOIN {projects} AS p ON p.project_id = f.project_id';
-        if ( !$principal->isAdministrator() )
-            $query .= ' JOIN {effective_rights} AS r ON r.project_id = f.project_id AND r.user_id = %1d';
-        $query .= ' WHERE ( f.folder_id = a.folder_id OR f.type_id = a.type_id ) AND p.is_archived = 0';
+        $query = 'SELECT a.alert_id, a.type_id, a.view_id, a.project_id, a.folder_id, a.alert_type, a.alert_frequency, a.stamp_id'
+            . ' FROM {alerts} AS a WHERE ' . $this->generateAlertsToEmailConditions( $flags, $principal );
 
-        if ( $includeSummary ) {
-            $query .= ' AND ( a.alert_email > %2d AND f.stamp_id > COALESCE( a.stamp_id, 0 ) OR a.alert_email = %3d ) )';
-
-            return $this->connection->queryTable( $query, $principal->getUserId(), System_Const::NoEmail, System_Const::SummaryReportEmail );
-        } else {
-            $query .= ' AND ( a.alert_email = %2d AND f.stamp_id > COALESCE( a.stamp_id, 0 ) ) )';
-
-            return $this->connection->queryTable( $query, $principal->getUserId(), System_Const::ImmediateNotificationEmail );
-        }
+        return $this->connection->queryTable( $query, $principal->getUserId(), System_Const::Alert, System_Const::Daily, System_Const::IssueReport );
     }
 
     /**
     * Return public alerts for which emails should be sent.
-    * @param $includeSummary If @c true, the summary notifications and reports are
-    * included in addition to immediate notifications.
+    * @param $flags If WithDaily is passed, daily reports are included.
+    * If WithWeekly is passed, weekly reports are included.
     * @return An array of associative arrays representing alerts.
     */
-    public function getPublicAlertsToEmail( $includeSummary )
+    public function getPublicAlertsToEmail( $flags )
     {
-        $query = 'SELECT a.alert_id, a.folder_id, a.type_id, a.view_id, a.alert_email, a.summary_days, a.summary_hours, a.stamp_id'
-            . ' FROM {alerts} AS a'
-            . ' WHERE a.user_id IS NULL AND EXISTS ( SELECT f.folder_id FROM {folders} AS f'
-            . ' JOIN {projects} AS p ON p.project_id = f.project_id'
-            . ' WHERE ( f.folder_id = a.folder_id OR f.type_id = a.type_id ) AND p.is_archived = 0';
+        $query = 'SELECT a.alert_id, a.type_id, a.view_id, a.project_id, a.folder_id, a.alert_type, a.alert_frequency, a.stamp_id'
+            . ' FROM {alerts} AS a WHERE ' . $this->generateAlertsToEmailConditions( $flags, null );
 
-        if ( $includeSummary ) {
-            $query .= ' AND ( a.alert_email > %1d AND f.stamp_id > COALESCE( a.stamp_id, 0 ) OR a.alert_email = %2d ) )';
+        return $this->connection->queryTable( $query, null, System_Const::Alert, System_Const::Daily, System_Const::IssueReport );
+    }
 
-            return $this->connection->queryTable( $query, System_Const::NoEmail, System_Const::SummaryReportEmail );
+    private function generateAlertsToEmailConditions( $flags, $principal )
+    {
+        if ( $principal != null )
+            $conditions = 'a.user_id = %1d';
+        else
+            $conditions = 'a.user_id IS NULL';
+
+        if ( $flags & self::WithDaily ) {
+            if ( !( $flags & self::WithWeekly ) )
+                $conditions .= ' AND a.alert_frequency = %3d';
         } else {
-            $query .= ' AND ( a.alert_email = %1d AND f.stamp_id > COALESCE( a.stamp_id, 0 ) ) )';
-
-            return $this->connection->queryTable( $query, System_Const::ImmediateNotificationEmail );
+            $conditions .= ' AND a.alert_type = %2d';
         }
+
+        $conditions .= ' AND EXISTS ( SELECT f.folder_id FROM {folders} AS f'
+            . ' JOIN {projects} AS p ON p.project_id = f.project_id';
+
+        if ( $principal != null && !$principal->isAdministrator() )
+            $conditions .= ' JOIN {effective_rights} AS r ON r.project_id = p.project_id AND r.user_id = %1d';
+
+        $conditions .= ' WHERE f.type_id = a.type_id AND ( f.folder_id = a.folder_id OR f.project_id = a.project_id OR a.folder_id IS NULL AND a.project_id IS NULL )';
+
+        if ( $flags & self::WithDaily )
+            $conditions .= ' AND ( f.stamp_id > COALESCE( a.stamp_id, 0 ) OR a.alert_type = %4d )';
+        else
+            $conditions .= ' AND f.stamp_id > COALESCE( a.stamp_id, 0 )';
+
+        $conditions .= ' AND p.is_archived = 0 )';
+
+        return $conditions;
     }
 
     /**
@@ -400,26 +412,29 @@ class System_Api_AlertManager extends System_Api_Base
     */
     public function getAlertRecipients( $alert )
     {
-        $folderId = $alert[ 'folder_id' ];
         $typeId = $alert[ 'type_id' ];
-        $alertEmail = $alert[ 'alert_email' ];
+        $projectId = $alert[ 'project_id' ];
+        $folderId = $alert[ 'folder_id' ];
+        $alertType = $alert[ 'alert_type' ];
         $stampId = $alert[ 'stamp_id' ];
 
-        $query = 'SELECT u.user_id, u.user_name, u.user_access'
+        $query = 'SELECT u.user_id, u.user_name, u.user_access, u.user_email, u.user_language'
             . ' FROM {users} AS u'
-            . ' JOIN {preferences} AS p ON p.user_id = u.user_id AND p.pref_key = %1s'
-            . ' WHERE u.user_access > %2d AND EXISTS ( SELECT f.folder_id FROM {folders} AS f'
+            . ' WHERE u.user_access > %1d AND EXISTS ( SELECT f.folder_id FROM {folders} AS f'
             . ' JOIN {projects} AS p ON p.project_id = f.project_id';
-        if ( $folderId )
-            $query .= ' WHERE f.folder_id = %4d';
-        else
-            $query .= ' WHERE f.type_id = %5d';
-        $query .= ' AND ( u.user_access = %3d OR EXISTS ( SELECT r.project_id FROM {effective_rights} AS r WHERE r.project_id = f.project_id AND r.user_id = u.user_id ) )';
-        if ( $alertEmail != System_Const::SummaryReportEmail && $stampId > 0 )
+        if ( $folderId != null ) {
+            $query .= ' WHERE f.folder_id = %5d';
+        } else {
+            $query .= ' WHERE f.type_id = %3d';
+            if ( $projectId != null )
+                $query .= ' AND f.project_id = %4d';
+        }
+        $query .= ' AND ( u.user_access = %2d OR EXISTS ( SELECT r.project_id FROM {effective_rights} AS r WHERE r.project_id = f.project_id AND r.user_id = u.user_id ) )';
+        if ( $alertType != System_Const::IssueReport && $stampId != null )
             $query .= ' AND f.stamp_id > %6d';
         $query .= ' AND p.is_archived = 0 )';
 
-        return $this->connection->queryTable( $query, 'email', System_Const::NoAccess, System_Const::AdministratorAccess, $folderId, $typeId, $stampId );
+        return $this->connection->queryTable( $query, System_Const::NoAccess, System_Const::AdministratorAccess, $typeId, $projectId, $folderId, $stampId );
     }
 
     /**

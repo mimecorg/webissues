@@ -32,14 +32,12 @@ class System_Web_Base
     * @name Link Modes
     */
     /*@{*/
-    /** Use configured server URL only in mailLink(). */
+    /** Use WI_BASE_URL in System_Web_LinkLocator and mailLink(). */
     const AutoLinks = 0;
-    /** Use configured server URL in System_Web_LinkLocator and mailLink(). */
-    const MailLinks = 1;
     /** Do not use internal links in System_Web_LinkLocator and mailLink(). */
-    const NoInternalLinks = 2;
+    const NoInternalLinks = 1;
     /** Use route links in System_Web_LinkLocator. */
-    const RouteLinks = 3;
+    const RouteLinks = 2;
     /*@}*/
 
     protected $request = null;
@@ -304,14 +302,12 @@ class System_Web_Base
     }
 
     /**
-    * Create an HTML link if the server URL for emails is configured. Only the text
-    * is returned if server URL is not configured or link mode is set to NoInternalLinks.
+    * Create an HTML link unless link mode is set to NoInternalLinks.
     */
     protected function mailLink( $url, $text, $attributes = array(), $settingOnly = false )
     {
-        $baseUrl = self::getBaseUrl( $settingOnly );
-        if ( $baseUrl != '' )
-            return $this->link( $baseUrl . $url, $text, $attributes );
+        if ( self::$linkMode != self::NoInternalLinks )
+            return $this->link( $this->url( $url ), $text, $attributes );
         else
             return $text;
     }
@@ -330,25 +326,5 @@ class System_Web_Base
     public static function getLinkMode()
     {
         return self::$linkMode;
-    }
-
-    /**
-    * Return the server URL for emails unless the mode is set to NoInternalLinks.
-    */
-    public static function getBaseUrl()
-    {
-        if ( self::$linkMode == self::NoInternalLinks )
-            return '';
-
-        if ( self::$baseUrl === null ) {
-            $serverManager = new System_Api_ServerManager();
-            $baseUrl = $serverManager->getSetting( 'base_url' );
-            if ( $baseUrl != '' )
-                self::$baseUrl = rtrim( $baseUrl, '/' );
-            else
-                self::$baseUrl = '';
-        }
-
-        return self::$baseUrl;
     }
 }

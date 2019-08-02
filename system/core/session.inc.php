@@ -64,13 +64,13 @@ class System_Core_Session
         ini_set( 'session.hash_bits_per_character', 5 );
 
         $serverManager = new System_Api_ServerManager();
-        $divisor = $serverManager->getSetting( 'gc_divisor' );
+        $cronLast = $serverManager->getSetting( 'cron_last' );
 
-        if ( $divisor == 0 ) {
+        if ( $cronLast != null && ( time() - $cronLast ) < 7200 ) {
             ini_set( 'session.gc_probability', 0 );
         } else {
             ini_set( 'session.gc_probability', 1 );
-            ini_set( 'session.gc_divisor', $divisor );
+            ini_set( 'session.gc_divisor', 100 );
         }
 
         session_name( 'WebIssuesSID' );

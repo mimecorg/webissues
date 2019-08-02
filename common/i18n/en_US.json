@@ -316,6 +316,7 @@
     "UseExistingTables": "Use existing database tables",
     "bytes": "{0} bytes",
     "empty": "empty",
+    "in": "in",
     "kB": "{0} kB",
     "unknown": "unknown"
   },

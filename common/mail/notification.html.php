@@ -3,9 +3,11 @@
 <h1>
 <?php
     if ( !empty( $folderName ) ):
-        echo $this->mailLink( '/client/index.php#/views/' . $linkViewId . '/folders/' . $folderId, $projectName . ' &raquo; ' . $folderName . ' &raquo; ' . $viewName );
+        echo $this->mailLink( '/client/index.php#' . $viewUrl, $typeName . ' &mdash; ' . $viewName . ' ' . $this->t( 'text.in' ) . ' ' . $projectName . ' &mdash; ' . $folderName );
+    elseif ( !empty( $projectName ) ):
+        echo $this->mailLink( '/client/index.php#' . $viewUrl, $typeName . ' &mdash; ' . $viewName . ' ' . $this->t( 'text.in' ) . ' ' . $projectName );
     else:
-        echo $this->mailLink( '/client/index.php#/views/' . $linkViewId, $typeName . ' &raquo; ' . $viewName );
+        echo $this->mailLink( '/client/index.php#' . $viewUrl, $typeName . ' &mdash; ' . $viewName );
     endif
 ?>
 </h1>
@@ -22,7 +24,7 @@
 <td>
 <?php
     if ( $column == System_Api_Column::Name ):
-        echo $this->mailLink( '/client/index.php/#issues/' . $issueId, $issue[ $name ] );
+        echo $this->mailLink( '/client/index.php#/issues/' . $issueId, $issue[ $name ] );
     elseif ( $column == System_Api_Column::Location ):
         echo $issue[ 'project_name' ] . ' &mdash; ' . $issue[ 'folder_name' ];
     else:
@@ -38,7 +40,7 @@
 <?php foreach ( $details as $issueId => $issue ): ?>
 
 <h2>
-<?php echo $this->mailLink( '/client/index.php/#issues/' . $issueId, $issue[ 'issue_name' ] ); ?>
+<?php echo $this->mailLink( '/client/index.php#/issues/' . $issueId, $issue[ 'issue_name' ] ); ?>
 </h2>
 
 <div class="sub-pane-wrapper">

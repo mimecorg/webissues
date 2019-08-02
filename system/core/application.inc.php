@@ -42,7 +42,6 @@ abstract class System_Core_Application
     protected $session = null;
     protected $translator = null;
 
-    private $commandLine = null;
     private $siteName = null;
 
     private $errors = array();
@@ -217,17 +216,11 @@ abstract class System_Core_Application
     */
     private function initializeRequest()
     {
-        if ( WI_BASE_URL == '' ) {
-            global $argv;
-            $this->commandLine = $argv;
-        }
-
         mb_internal_encoding( 'UTF-8' );
 
         @date_default_timezone_set( @date_default_timezone_get() );
 
-        if ( $this->commandLine == null )
-            $this->request->initialize();
+        $this->request->initialize();
         $this->response->initialize();
 
         // override PHP error handling
@@ -250,9 +243,6 @@ abstract class System_Core_Application
     */
     private function initializeSite()
     {
-        if ( $this->commandLine != null )
-            $this->processCommandLine( count( $this->commandLine ), $this->commandLine );
-
         $this->site->initializeSite( $this->siteName );
 
         $level = $this->site->getConfig( 'debug_level' );
@@ -272,14 +262,6 @@ abstract class System_Core_Application
         }
 
         $this->site->loadSiteConfig();
-    }
-
-    /**
-    * Process command line parameters if the script was run from command line.
-    * Override this method to get the site name from the parameters.
-    */
-    protected function processCommandLine( $argc, $argv )
-    {
     }
 
     /**
@@ -353,8 +335,7 @@ abstract class System_Core_Application
     */
     public function initializeSession()
     {
-        if ( $this->commandLine == null )
-            $this->session->initialize();
+        $this->session->initialize();
 
         $sessionManager = new System_Api_SessionManager();
         $sessionManager->initializePrincipal();
@@ -511,9 +492,6 @@ abstract class System_Core_Application
     */
     protected function logException( $exception )
     {
-        if ( $this->commandLine != null && is_resource( STDERR ) )
-            fwrite( STDERR, $exception->__toString() . "\n" );
-
         if ( $this->debug->checkLevel( DEBUG_ERRORS ) )
             $this->debug->write( '*** ', $exception->__toString(), "\n" );
 
@@ -555,17 +533,13 @@ abstract class System_Core_Application
     {
         $content = '';
 
-        if ( $this->commandLine == null ) {
-            $content .= "<html>\n";
-            $content .= "<head><title>Unexpected Error</title></head>\n";
-            $content .= "<body>\n";
-            $content .= "<h1>Unexpected Error</h1>\n";
-            $content .= "<p>An unexpected error occured while processing the request.</p>\n";
-            $content .= "</body>\n";
-            $content .= "</html>\n";
-        } else {
-            $content .= "An unexpected error occured while executing the command.\n";
-        }
+        $content .= "<html>\n";
+        $content .= "<head><title>Unexpected Error</title></head>\n";
+        $content .= "<body>\n";
+        $content .= "<h1>Unexpected Error</h1>\n";
+        $content .= "<p>An unexpected error occured while processing the request.</p>\n";
+        $content .= "</body>\n";
+        $content .= "</html>\n";
 
         $this->response->setContentType( 'text/html; charset=UTF-8' );
         $this->response->setContent( $content );

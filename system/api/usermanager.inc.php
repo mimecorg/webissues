@@ -296,7 +296,7 @@ class System_Api_UserManager extends System_Api_Base
     */
     public function getUsersWithEmail()
     {
-        $query = 'SELECT user_id, user_name, user_access'
+        $query = 'SELECT user_id, user_name, user_access, user_email, user_language'
             . ' FROM {users}'
             . ' WHERE user_access > %d AND user_email IS NOT NULL';
 

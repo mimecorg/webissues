@@ -92,9 +92,10 @@ class System_Api_SubscriptionManager extends System_Api_Base
     * Add a subscription for the current user for given issue. An error is thrown
     * if it already exists.
     * @param $issue The issue to create the subscription for.
-    * @retrun The identifier of the subscription.
+    * @param $inbox The optional inbox associated with the subscription.
+    * @return The identifier of the subscription.
     */
-    public function addSubscription( $issue )
+    public function addSubscription( $issue, $inbox = null )
     {
         $principal = System_Api_Principal::getCurrent();
 
@@ -102,6 +103,7 @@ class System_Api_SubscriptionManager extends System_Api_Base
         $stampId = $issue[ 'stamp_id' ];
         $stateId = $issue[ 'state_id' ];
         $readId = $issue[ 'read_id' ];
+        $inboxId = isset( $inbox[ 'inbox_id' ] ) ? $inbox[ 'inbox_id' ] : null;
 
         $transaction = $this->connection->beginTransaction( System_Db_Transaction::Serializable, 'subscriptions' );
 
@@ -110,8 +112,8 @@ class System_Api_SubscriptionManager extends System_Api_Base
             if ( $this->connection->queryScalar( $query, $issueId, $principal->getUserId() ) !== false )
                 throw new System_Api_Error( System_Api_Error::SubscriptionAlreadyExists );
 
-            $query = 'INSERT INTO {subscriptions} ( issue_id, user_id, user_email, stamp_id ) VALUES ( %d, %d, NULL, %d )';
-            $this->connection->execute( $query, $issueId, $principal->getUserId(), $stampId );
+            $query = 'INSERT INTO {subscriptions} ( issue_id, user_id, user_email, stamp_id, inbox_id ) VALUES ( %d, %d, NULL, %d, %d? )';
+            $this->connection->execute( $query, $issueId, $principal->getUserId(), $stampId, $inboxId );
 
             $subscriptionId = $this->connection->getInsertId( 'subscriptions', 'subscription_id' );
 
@@ -138,12 +140,14 @@ class System_Api_SubscriptionManager extends System_Api_Base
     * is thrown if it already exists.
     * @param $issue The issue to create the subscription for.
     * @param $email The email address to create the subscription for.
-    * @retrun The identifier of the subscription.
+    * @param $inbox The inbox associated with the subscription.
+    * @return The identifier of the subscription.
     */
-    public function addExternalSubscription( $issue, $email )
+    public function addExternalSubscription( $issue, $email, $inbox )
     {
         $issueId = $issue[ 'issue_id' ];
         $stampId = $issue[ 'stamp_id' ];
+        $inboxId = $inbox[ 'inbox_id' ];
 
         $transaction = $this->connection->beginTransaction( System_Db_Transaction::Serializable, 'subscriptions' );
 
@@ -152,8 +156,8 @@ class System_Api_SubscriptionManager extends System_Api_Base
             if ( $this->connection->queryScalar( $query, $issueId, $email ) !== false )
                 throw new System_Api_Error( System_Api_Error::SubscriptionAlreadyExists );
 
-            $query = 'INSERT INTO {subscriptions} ( issue_id, user_id, user_email, stamp_id ) VALUES ( %d, NULL, %s, %d )';
-            $this->connection->execute( $query, $issueId, $email, $stampId );
+            $query = 'INSERT INTO {subscriptions} ( issue_id, user_id, user_email, stamp_id, inbox_id ) VALUES ( %d, NULL, %s, %d, %d )';
+            $this->connection->execute( $query, $issueId, $email, $stampId, $inboxId );
 
             $subscriptionId = $this->connection->getInsertId( 'subscriptions', 'subscription_id' );
 
@@ -226,11 +230,12 @@ class System_Api_SubscriptionManager extends System_Api_Base
     {
         $principal = System_Api_Principal::getCurrent();
 
-        $query = 'SELECT s.subscription_id, s.issue_id, s.user_id, s.stamp_id'
+        $query = 'SELECT s.subscription_id, s.issue_id, s.user_id, s.stamp_id, ei.inbox_email'
             . ' FROM {subscriptions} AS s'
             . ' JOIN {issues} AS i ON i.issue_id = s.issue_id'
             . ' JOIN {folders} AS f ON f.folder_id = i.folder_id'
-            . ' JOIN {projects} AS p ON p.project_id = f.project_id';
+            . ' JOIN {projects} AS p ON p.project_id = f.project_id'
+            . ' LEFT OUTER JOIN {email_inboxes} AS ei ON ei.inbox_id = s.inbox_id';
         if ( !$principal->isAdministrator() )
             $query .= ' JOIN {effective_rights} AS r ON r.project_id = f.project_id AND r.user_id = %1d';
         $query .= ' WHERE s.user_id = %1d AND i.stamp_id > s.stamp_id AND p.is_archived = 0';
@@ -240,10 +245,13 @@ class System_Api_SubscriptionManager extends System_Api_Base
 
     /**
     * Get external subscriptions for which an email should be sent.
+    * @param $inbox The inbox associated with the subscription.
     * @return An array of associative arrays represeting subscriptions.
     */
-    public function getExternalSubscriptionsToEmail()
+    public function getExternalSubscriptionsToEmail( $inbox )
     {
+        $inboxId = $inbox[ 'inbox_id' ];
+
         $principal = System_Api_Principal::getCurrent();
 
         $query = 'SELECT s.subscription_id, s.issue_id, s.user_id, s.stamp_id, s.user_email, p.is_public'
@@ -253,9 +261,9 @@ class System_Api_SubscriptionManager extends System_Api_Base
             . ' JOIN {projects} AS p ON p.project_id = f.project_id';
         if ( !$principal->isAdministrator() )
             $query .= ' JOIN {effective_rights} AS r ON r.project_id = f.project_id AND r.user_id = %1d';
-        $query .= ' WHERE s.user_id IS NULL AND i.stamp_id > s.stamp_id AND p.is_archived = 0';
+        $query .= ' WHERE s.user_id IS NULL AND i.stamp_id > s.stamp_id AND p.is_archived = 0 AND s.inbox_id = %2d';
 
-        return $this->connection->queryTable( $query, $principal->getUserId() );
+        return $this->connection->queryTable( $query, $principal->getUserId(), $inboxId );
     }
 
     /**
