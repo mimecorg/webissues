@@ -61,12 +61,10 @@ class Common_Mail_Subscription extends System_Web_Component
         else
             $this->historyProvider->setExceptSubscriptionId( $this->subscription[ 'subscription_id' ] );
 
-        $preferencesManager = new System_Api_PreferencesManager();
+        $serverManager = new System_Api_ServerManager();
+        $order = $serverManager->getSetting( 'history_order' );
 
-        $filter = $preferencesManager->getPreferenceOrSetting( 'history_filter' );
-        $order = $preferencesManager->getPreferenceOrSetting( 'history_order' );
-
-        $query = $this->historyProvider->generateSelectQuery( $filter );
+        $query = $this->historyProvider->generateSelectQuery( System_Api_HistoryProvider::AllHistory );
         $this->page = $connection->queryPageArgs( $query, $this->historyProvider->getOrderBy( $order ), 1000, 0, $this->historyProvider->getQueryArguments() );
 
         if ( empty( $this->descr ) && empty( $this->page ) )
@@ -79,6 +77,8 @@ class Common_Mail_Subscription extends System_Web_Component
     {
         $this->view->setDecoratorClass( 'Common_Mail_Layout' );
         $this->view->setSlot( 'subject', '[#' . $this->issueId . '] ' . $this->issue[ 'issue_name' ] );
+
+        $this->view->setSlot( 'withCssDetails', true );
 
         $formatter = new System_Api_Formatter();
         $localeHelper = new System_Web_LocaleHelper();
@@ -95,10 +95,8 @@ class Common_Mail_Subscription extends System_Web_Component
 
         $attributeValues = $issueManager->getAllAttributeValuesForIssue( $this->issue, $hideEmpty == '1' ? System_Api_IssueManager::HideEmptyValues : 0 );
 
-        foreach ( $attributeValues as &$value ) {
-            $text = $formatter->convertAttributeValue( $value[ 'attr_def' ], $value[ 'attr_value' ], System_Api_Formatter::MultiLine );
-            $value[ 'attr_value' ] = $this->convertToParagraphs( $text );
-        }
+        foreach ( $attributeValues as &$value )
+            $value[ 'attr_value' ] = $formatter->convertAttributeValue( $value[ 'attr_def' ], $value[ 'attr_value' ], System_Api_Formatter::MultiLine );
 
         $typeManager = new System_Api_TypeManager();
         $viewManager = new System_Api_ViewManager();
@@ -107,26 +105,26 @@ class Common_Mail_Subscription extends System_Web_Component
         $this->attributeValues = $viewManager->sortByAttributeOrder( $type, $attributeValues );
 
         if ( !empty( $this->descr ) ) {
+            $this->descr[ 'is_modified' ] = ( $this->descr[ 'modified_date' ] - $this->issue[ 'created_date' ] ) > 180 || $this->descr[ 'modified_user' ] != $this->issue[ 'created_user' ];
             $this->descr[ 'modified_date' ] = $formatter->formatDateTime( $this->descr[ 'modified_date' ], System_Api_Formatter::ToLocalTimeZone );
             if ( $this->descr[ 'descr_format' ] == System_Const::TextWithMarkup )
-                $text = System_Web_MarkupProcessor::convertToRawHtml( $this->descr[ 'descr_text' ], $prettyPrint );
+                $this->descr[ 'descr_text' ] = System_Web_MarkupProcessor::convertToRawHtml( $this->descr[ 'descr_text' ], $prettyPrint );
             else
-                $text = System_Web_LinkLocator::convertToRawHtml( $this->descr[ 'descr_text' ] );
-            $this->descr[ 'descr_text' ] = $this->convertToParagraphs( $text );
+                $this->descr[ 'descr_text' ] = System_Web_LinkLocator::convertToRawHtml( $this->descr[ 'descr_text' ] );
         }
 
         $this->history = $this->historyProvider->processPage( $this->page );
 
         foreach ( $this->history as $id => &$item ) {
             $item[ 'change_id' ] = '#' . $item[ 'change_id' ];
+            $item[ 'is_modified' ] = ( $item[ 'modified_date' ] - $item[ 'created_date' ] ) > 180 || $item[ 'modified_user' ] != $item[ 'created_user' ];
             $item[ 'created_date' ] = $formatter->formatDateTime( $item[ 'created_date' ], System_Api_Formatter::ToLocalTimeZone );
             $item[ 'modified_date' ] = $formatter->formatDateTime( $item[ 'modified_date' ], System_Api_Formatter::ToLocalTimeZone );
             if ( isset( $item[ 'comment_text' ] ) ) {
                 if ( $item[ 'comment_format' ] == System_Const::TextWithMarkup )
-                    $text = System_Web_MarkupProcessor::convertToRawHtml( $item[ 'comment_text' ], $prettyPrint );
+                    $item[ 'comment_text' ] = System_Web_MarkupProcessor::convertToRawHtml( $item[ 'comment_text' ], $prettyPrint );
                 else
-                    $text = System_Web_LinkLocator::convertToRawHtml( $item[ 'comment_text' ] );
-                $item[ 'comment_text' ] = $this->convertToParagraphs( $text );
+                    $item[ 'comment_text' ] = System_Web_LinkLocator::convertToRawHtml( $item[ 'comment_text' ] );
             }
             if ( isset( $item[ 'file_size' ] ) )
                 $item[ 'file_size' ] = $localeHelper->formatFileSize( $item[ 'file_size' ] );
@@ -144,14 +142,5 @@ class Common_Mail_Subscription extends System_Web_Component
             $this->hasInbox = true;
             $this->separator = str_repeat( '-', 11 );
         }
-    }
-
-    private function convertToParagraphs( $text )
-    {
-        $text = System_Web_Escaper::wrap( $text );
-        $text = str_replace( "\n", "<br>", $text );
-        $text = str_replace( "  ", "&nbsp; ", $text );
-        $text = str_replace( "\t", "&nbsp; &nbsp; &nbsp; &nbsp; ", $text );
-        return new System_Web_RawValue( $text );
     }
 }

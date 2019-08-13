@@ -43,96 +43,54 @@
 <?php echo $this->mailLink( '/client/index.php#/issues/' . $issueId, $issue[ 'issue_name' ] ); ?>
 </h2>
 
-<div class="sub-pane-wrapper">
-
-<table class="sub-pane-layout">
-<tr>
-<td class="top-sub-pane"<?php if ( empty( $issue[ 'attribute_values' ] ) ) echo ' colspan="2"' ?>>
-
 <h3><?php echo $this->t( 'title.Properties' ) ?></h3>
 
-<table class="info-list">
-<tr>
-<td><?php echo $this->t( 'label.ID' ) ?></td>
-<td><?php echo $issue[ 'issue_id' ] ?></td>
-</tr>
-<tr>
-<td><?php echo $this->t( 'label.Type' ) ?></td>
-<td><?php echo $issue[ 'type_name' ] ?></td>
-</tr>
-<tr>
-<td><?php echo $this->t( 'label.Location' ) ?></td>
-<td><?php echo $issue[ 'project_name' ] . ' &mdash; ' . $issue[ 'folder_name' ] ?></td>
-</tr>
-<tr>
-<td><?php echo $this->t( 'label.Created' ) ?></td>
-<td><?php echo $issue[ 'created_date' ] . ' &mdash; ' . $issue[ 'created_by' ] ?></td>
-</tr>
-<tr>
-<td><?php echo $this->t( 'label.LastModified' ) ?></td>
-<td><?php echo $issue[ 'modified_date' ] . ' &mdash; ' . $issue[ 'modified_by' ] ?></td>
-</tr>
-</table>
+<div class="issue-details-title"><?php echo $this->t( 'title.ID' ) ?></div>
+<div class="issue-details-value"><?php echo $issue[ 'issue_id' ] ?></div>
+<div class="issue-details-title"><?php echo $this->t( 'title.Type' ) ?></div>
+<div class="issue-details-value"><?php echo $issue[ 'type_name' ] ?></div>
+<div class="issue-details-title"><?php echo $this->t( 'title.Location' ) ?></div>
+<div class="issue-details-value"><?php echo $issue[ 'project_name' ] . ' &mdash; ' . $issue[ 'folder_name' ] ?></div>
+<div class="issue-details-title"><?php echo $this->t( 'title.Created' ) ?></div>
+<div class="issue-details-value"><?php echo $issue[ 'created_date' ] . ' &mdash; ' . $issue[ 'created_by' ] ?></div>
+<div class="issue-details-title"><?php echo $this->t( 'title.LastModified' ) ?></div>
+<div class="issue-details-value"><?php echo $issue[ 'modified_date' ] . ' &mdash; ' . $issue[ 'modified_by' ] ?></div>
 
-</td>
 <?php if ( !empty( $issue[ 'attribute_values' ] ) ): ?>
-<td class="top-sub-pane">
 
 <h3><?php echo $this->t( 'title.Attributes' ) ?></h3>
 
-<table class="info-list">
 <?php foreach( $issue[ 'attribute_values' ] as $value ): ?>
-<tr>
-<td><?php echo $value[ 'attr_name' ] ?>:</td>
-<td><?php echo $value[ 'attr_value' ] ?></td>
-</tr>
+<div class="issue-details-title"><?php echo $value[ 'attr_name' ] ?></div>
+<div class="issue-details-value"><?php echo $value[ 'attr_value' ] != '' ? $value[ 'attr_value' ] : '&nbsp;' ?></div>
 <?php endforeach ?>
 </table>
 
-</td>
 <?php endif ?>
-</tr>
 
 <?php if ( !empty( $issue[ 'description' ] ) ): ?>
-<tr>
-<td colspan="2" class="bottom-sub-pane">
 
-<h3>
-<?php
-    echo $this->t( 'title.Description' );
-    if ( $issue[ 'description' ][ 'is_modified' ] ):
-        echo '&nbsp; <span class="edited">(' . $this->t( 'label.LastEdited' ) . ' ' . $issue[ 'description' ][ 'modified_date' ] . ' &mdash; ' . $issue[ 'description' ][ 'modified_by' ] . ')</span>';
-    endif;
-?>
-</h3>
+<h3><?php echo $this->t( 'title.Description' ); ?></h3>
 
-<div class="comment-text"><?php echo $issue[ 'description' ][ 'descr_text' ] ?></div>
+<div class="description-panel">
 
-</td>
-</tr>
+<div class="formatted-text"><?php echo $issue[ 'description' ][ 'descr_text' ] ?></div>
+
+<?php if ( $issue[ 'description' ][ 'is_modified' ] ): ?>
+<div class="last-edited"><?php echo $issue[ 'description' ][ 'modified_date' ] . ' &mdash; ' . $issue[ 'description' ][ 'modified_by' ]; ?></div>
+<?php endif ?>
+
+</div>
+
 <?php endif ?>
 
 <?php if ( !empty( $issue[ 'history' ] ) ): ?>
 
-<tr>
-<td colspan="2" class="bottom-sub-pane">
+<h3><?php echo $this->t( 'title.History' ) ?></h3>
 
-<h3><?php echo $this->t( 'title.IssueHistory' ) ?></h3>
+<?php foreach ( $issue[ 'history' ] as $id => $item ): ?>
 
-<?php
-    foreach ( $issue[ 'history' ] as $id => $item ):
-?>
-
-<div class="history-item">
-
-<h4>
-<?php
-    echo  $item[ 'created_date' ] . ' &mdash; ' . $item[ 'created_by' ];
-    if ( $item[ 'is_modified' ] ):
-        echo '&nbsp; <span class="edited">(' . $this->t( 'label.LastEdited' ) . ' ' . $item[ 'modified_date' ] . ' &mdash; ' . $item[ 'modified_by' ] . ')</span>';
-    endif;
-?>
-</h4>
+<h4><?php echo  $item[ 'created_date' ] . ' &mdash; ' . $item[ 'created_by' ]; ?></h4>
 
 <?php
     switch ( $item[ 'change_type' ] ):
@@ -141,24 +99,18 @@
     case System_Const::ValueChanged:
 ?>
 
-<ul class="changes">
+<ul class="issue-history-list">
 <?php foreach ( $item[ 'changes' ] as $change ): ?>
 <li>
-<?php
-    switch ( $change[ 'change_type' ] ):
-    case System_Const::IssueCreated:
-        echo $this->t( 'label.Name' ) . ' "' . $change[ 'value_new' ] . '"';
-        break;
-    case System_Const::IssueRenamed:
-        echo $this->t( 'label.Name' ) . ' "' . $change[ 'value_old' ] . '" &raquo; "' . $change[ 'value_new' ] . '"';
-        break;
-    case System_Const::ValueChanged:
-        $from = ( $change[ 'value_old' ] == '' ) ? $this->t( 'text.empty' ) : '"' . $change[ 'value_old' ] . '"';
-        $to = ( $change[ 'value_new' ] == '' ) ? $this->t( 'text.empty' ) : '"' . $change[ 'value_new' ] . '"';
-        echo $change[ 'attr_name' ] . ': ' . $from . ' &raquo; ' . $to;
-        break;
-    endswitch;
-?>
+  <span class="issue-history-label"><?php echo $change[ 'change_type' ] == System_Const::ValueChanged ? $change[ 'attr_name' ] : $this->t( 'title.Name' ) ?>:</span>
+  <?php if ( $change[ 'change_type' ] != System_Const::IssueCreated && $change[ 'value_old' ] != '' ): ?>
+  <span class="issue-history-value"><?php echo $change[ 'value_old' ]; ?></span> &rarr;
+  <?php endif ?>
+  <?php if ( $change[ 'value_new' ] != '' ): ?>
+  <span class="issue-history-value"><?php echo $change[ 'value_new' ]; ?></span>
+  <?php else: ?>
+  <?php echo $this->t( 'text.empty' ); ?>
+  <?php endif ?>
 </li>
 <?php endforeach ?>
 </ul>
@@ -168,20 +120,33 @@
     case System_Const::CommentAdded:
 ?>
 
-<div class="comment-text"><?php echo $item[ 'comment_text' ] ?></div>
+<div class="issue-comment">
+
+<div class="formatted-text"><?php echo $item[ 'comment_text' ] ?></div>
+
+<?php if ( $item[ 'is_modified' ] ): ?>
+<div class="last-edited"><?php echo $item[ 'modified_date' ] . ' &mdash; ' . $item[ 'modified_by' ]; ?></div>
+<?php endif ?>
+
+</div>
 
 <?php
     break;
     case System_Const::FileAdded:
 ?>
 
-<div class="attachment">
+<div class="issue-attachment">
 <?php
     echo $this->mailLink( $this->appendQueryString( '/client/file.php', array( 'id' => $id ) ), $item[ 'file_name' ] ) . ' (' . $item[ 'file_size' ] . ')';
     if ( $item[ 'file_descr' ] != '' ):
         echo ' &mdash; ' . $item[ 'file_descr' ];
     endif;
 ?>
+
+<?php if ( $item[ 'is_modified' ] ): ?>
+<div class="last-edited"><?php echo $item[ 'modified_date' ] . ' &mdash; ' . $item[ 'modified_by' ]; ?></div>
+<?php endif ?>
+
 </div>
 
 <?php
@@ -189,13 +154,20 @@
     case System_Const::IssueMoved:
 ?>
 
-<ul class="changes">
+<ul class="issue-history-list">
 <li>
-<?php
-    $from = ( $item[ 'from_folder_name' ] == '' ) ? $this->t( 'text.unknown' ) : '"' . $item[ 'from_folder_name' ] . '"';
-    $to = ( $item[ 'to_folder_name' ] == '' ) ? $this->t( 'text.unknown' ) : '"' . $item[ 'to_folder_name' ] . '"';
-    echo $this->t( 'label.Location' ) . ' ' . $from . ' &rarr; ' . $to;
-?>
+  <span class="issue-history-label"><?php echo $this->t( 'title.Location' ); ?>:</span>
+  <?php if ( $item[ 'from_folder_name' ] != '' ): ?>
+  <span class="issue-history-value"><?php echo $item[ 'from_project_name' ] . '&mdash;' . $item[ 'from_folder_name' ]; ?></span>
+  <?php else: ?>
+  <?php echo $this->t( 'text.unknown' ); ?>
+  <?php endif ?>
+  &rarr;
+  <?php if ( $item[ 'to_folder_name' ] != '' ): ?>
+  <span class="issue-history-value"><?php echo $item[ 'to_project_name' ] . '&mdash;' . $item[ 'to_folder_name' ]; ?></span>
+  <?php else: ?>
+  <?php echo $this->t( 'text.unknown' ); ?>
+  <?php endif ?>
 </li>
 </ul>
 
@@ -204,21 +176,10 @@
     endswitch;
 ?>
 
-</div>
-
-<?php
-    endforeach;
-?>
-
-</td>
-</tr>
+<?php endforeach ?>
 
 <?php endif ?>
 
-</table>
-
-</div>
-
 <?php endforeach ?>
 
-<p><?php echo $this->t( 'prompt.AlertEmail' ) ?></p>
+<p class="footer"><?php echo $this->t( 'prompt.AlertEmail' ) ?></p>

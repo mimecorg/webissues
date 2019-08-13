@@ -106,6 +106,8 @@ class Common_Mail_Notification extends System_Web_Component
 
         $this->view->setSlot( 'subject', $subject );
 
+        $this->view->setSlot( 'withCssGrid', true );
+
         if ( $this->viewId != null ) {
             if ( $this->folderId != null )
                 $this->viewUrl = '/views/' . $this->viewId . '/folders/' . $this->folderId . '/issues';
@@ -162,6 +164,8 @@ class Common_Mail_Notification extends System_Web_Component
         $this->details = array();
 
         if ( $this->alert[ 'alert_type' ] != System_Const::IssueReport ) {
+            $this->view->setSlot( 'withCssDetails', true );
+
             $serverManager = new System_Api_ServerManager();
             $issueManager = new System_Api_IssueManager();
             $typeManager = new System_Api_TypeManager();
@@ -185,10 +189,8 @@ class Common_Mail_Notification extends System_Web_Component
 
                 $attributeValues = $issueManager->getAllAttributeValuesForIssue( $issue, $hideEmpty == '1' ? System_Api_IssueManager::HideEmptyValues : 0 );
 
-                foreach ( $attributeValues as &$value ) {
-                    $text = $formatter->convertAttributeValue( $value[ 'attr_def' ], $value[ 'attr_value' ], System_Api_Formatter::MultiLine );
-                    $value[ 'attr_value' ] = $this->convertToParagraphs( $text );
-                }
+                foreach ( $attributeValues as &$value )
+                    $value[ 'attr_value' ] = $formatter->convertAttributeValue( $value[ 'attr_def' ], $value[ 'attr_value' ], System_Api_Formatter::MultiLine );
 
                 $type = $typeManager->getIssueTypeForIssue( $issue );
                 $detail[ 'attribute_values' ] = $viewManager->sortByAttributeOrder( $type, $attributeValues );
@@ -203,10 +205,9 @@ class Common_Mail_Notification extends System_Web_Component
                     $descr[ 'is_modified' ] = ( $descr[ 'modified_date' ] - $issue[ 'created_date' ] ) > 180 || $descr[ 'modified_user' ] != $issue[ 'created_user' ];
                     $descr[ 'modified_date' ] = $formatter->formatDateTime( $descr[ 'modified_date' ], System_Api_Formatter::ToLocalTimeZone );
                     if ( $descr[ 'descr_format' ] == System_Const::TextWithMarkup )
-                        $text = System_Web_MarkupProcessor::convertToRawHtml( $descr[ 'descr_text' ], $prettyPrint );
+                        $descr[ 'descr_text' ] = System_Web_MarkupProcessor::convertToRawHtml( $descr[ 'descr_text' ], $prettyPrint );
                     else
-                        $text = System_Web_LinkLocator::convertToRawHtml( $descr[ 'descr_text' ] );
-                    $descr[ 'descr_text' ] = $this->convertToParagraphs( $text );
+                        $descr[ 'descr_text' ] = System_Web_LinkLocator::convertToRawHtml( $descr[ 'descr_text' ] );
                     $detail[ 'description' ] = $descr;
                 }
 
@@ -228,10 +229,9 @@ class Common_Mail_Notification extends System_Web_Component
                         $item[ 'modified_date' ] = $formatter->formatDateTime( $item[ 'modified_date' ], System_Api_Formatter::ToLocalTimeZone );
                         if ( isset( $item[ 'comment_text' ] ) ) {
                             if ( $item[ 'comment_format' ] == System_Const::TextWithMarkup )
-                                $text = System_Web_MarkupProcessor::convertToRawHtml( $item[ 'comment_text' ], $prettyPrint );
+                                $item[ 'comment_text' ] = System_Web_MarkupProcessor::convertToRawHtml( $item[ 'comment_text' ], $prettyPrint );
                             else
-                                $text = System_Web_LinkLocator::convertToRawHtml( $item[ 'comment_text' ] );
-                            $item[ 'comment_text' ] = $this->convertToParagraphs( $text );
+                                $item[ 'comment_text' ] = System_Web_LinkLocator::convertToRawHtml( $item[ 'comment_text' ] );
                         }
                         if ( isset( $item[ 'file_size' ] ) )
                             $item[ 'file_size' ] = $localeHelper->formatFileSize( $item[ 'file_size' ] );
@@ -251,14 +251,5 @@ class Common_Mail_Notification extends System_Web_Component
                 $this->details[ $issueId ] = $detail;
             }
         }
-    }
-
-    private function convertToParagraphs( $text )
-    {
-        $text = System_Web_Escaper::wrap( $text );
-        $text = str_replace( "\n", "<br>", $text );
-        $text = str_replace( "  ", "&nbsp; ", $text );
-        $text = str_replace( "\t", "&nbsp; &nbsp; &nbsp; &nbsp; ", $text );
-        return new System_Web_RawValue( $text );
     }
 }
