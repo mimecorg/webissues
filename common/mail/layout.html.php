@@ -106,6 +106,7 @@ table.grid td {
 
 .issue-details-value {
   min-height: 20px;
+  white-space: pre;
   white-space: pre-wrap;
   word-wrap: break-word;
 }
@@ -143,6 +144,7 @@ ul.issue-history-list li {
 }
 
 .formatted-text {
+  white-space: pre;
   white-space: pre-wrap;
   word-wrap: break-word;
 }
@@ -150,6 +152,7 @@ ul.issue-history-list li {
 .formatted-text ul {
   margin-top: 0;
   margin-bottom: 0;
+  white-space: normal;
 }
 
 .formatted-text .quote {
@@ -163,6 +166,11 @@ ul.issue-history-list li {
   font-weight: bold;
 }
 
+.formatted-text pre, .formatted-text code {
+  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+  font-size: 13px;
+}
+
 .formatted-text pre {
   margin: 0 0 5px;
   padding: 5px 10px;
@@ -170,12 +178,16 @@ ul.issue-history-list li {
   color: #333;
   border: 1px solid #ccc;
   border-radius: 4px;
-  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
-  font-size: 13px;
   line-height: 1.42857143;
-  word-break: break-all;
   word-wrap: break-word;
   overflow-x: auto;
+}
+
+.formatted-text code {
+  padding: 2px 4px;
+  color: #c7254e;
+  background-color: #f9f2f5;
+  border-radius: 4px;
 }
 
 .formatted-text .rtl {
