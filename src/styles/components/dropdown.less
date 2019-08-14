@@ -42,7 +42,6 @@
 }
 
 .dropdown-menu-scroll {
-  width: 200px;
   max-height: 156px;
   overflow-x: hidden;
   overflow-y: auto;
@@ -51,8 +50,12 @@
     max-height: 260px;
   }
 
-  .dropdown-filters & {
-    width: initial;
+  .btn-group & {
+    width: 200px;
+
+    .dropdown-filters &, .dropdown-select & {
+      width: initial;
+    }
   }
 
   &.dropdown-menu-scroll-wide {
@@ -157,10 +160,6 @@
 
   .dropdown-menu {
     right: 0;
-  }
-
-  .dropdown-menu-scroll {
-    width: 100%;
   }
 }
 
