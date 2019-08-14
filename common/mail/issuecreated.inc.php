@@ -22,28 +22,34 @@ if ( !defined( 'WI_VERSION' ) ) die( -1 );
 
 class Common_Mail_IssueCreated extends System_Web_Component
 {
+    private $data;
     private $issue;
 
-    protected function __construct( $issue )
+    protected function __construct( $data )
     {
         parent::__construct();
 
-        $this->issue = $issue;
+        $this->data = $data;
+        $this->issue = $data[ 'issue' ];
     }
 
     protected function execute()
     {
-        $this->view->setDecoratorClass( 'Common_Mail_Layout' );
-        $this->view->setSlot( 'subject', '[#' . $this->issue[ 'issue_id' ] . '] ' . $this->issue[ 'issue_name' ] );
+        $this->view->setDecoratorClass( 'Common_Mail_Template' );
+
+        $subject = '[#' . $this->issue[ 'issue_id' ] . '] ' . $this->issue[ 'issue_name' ];
+
+        $this->view->setSlot( 'subject', $this->t( 'subject.Notification', array( $subject ) ) );
+
+        $this->view->setSlot( 'user_name', $this->data[ 'user_name' ] );
 
         $this->issueId = $this->issue[ 'issue_id' ];
         $this->issueName = $this->issue[ 'issue_name' ];
 
-        $serverManager = new System_Api_ServerManager();
-        if ( $serverManager->getSetting( 'inbox_subscribe' ) == 1 )
+        if ( $this->data[ 'subscribe' ] == 1 )
             $this->subscribe = true;
 
         if ( self::getLinkMode() != self::NoInternalLinks )
-            $this->linkUrl = $this->mailLink( '/client/index.php#/issues/' . $this->issueId );
+            $this->linkUrl = $this->url( '/client/index.php#/issues/' . $this->issueId );
     }
 }

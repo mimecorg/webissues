@@ -104,7 +104,7 @@ class Common_Mail_Notification extends System_Web_Component
         else if ( !empty( $this->projectName ) )
             $subject .= ' ' . $this->t( 'text.in' ) . ' ' . $this->projectName;
 
-        $this->view->setSlot( 'subject', $subject );
+        $this->view->setSlot( 'subject', $this->t( 'subject.Notification', array( $subject ) ) );
 
         $this->view->setSlot( 'withCssGrid', true );
 

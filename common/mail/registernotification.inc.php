@@ -36,6 +36,8 @@ class Common_Mail_RegisterNotification extends System_Web_Component
         $this->view->setDecoratorClass( 'Common_Mail_Layout' );
         $this->view->setSlot( 'subject', $this->t( 'subject.RegistrationRequests' ) );
 
+        $this->view->setSlot( 'withCssGrid', true );
+
         $formatter = new System_Api_Formatter();
 
         $this->requests = array();

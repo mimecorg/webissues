@@ -18,3 +18,5 @@
 </tr>
 <?php endforeach ?>
 </table>
+
+<p class="footer"><?php echo $this->t( 'prompt.NotificationEmail' ) ?></p>

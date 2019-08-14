@@ -256,7 +256,8 @@
     "EmailSubscribed": "You will receive email notifications when this issue is updated.",
     "EmailVerification": "Thank you for registering your WebIssues account. To confirm your email adress, please open the following URL:",
     "EnterNewPassword": "You have to enter a new password in order to log in.",
-    "Hello": "Hello {0},",
+    "Hello": "Hello,",
+    "HelloName": "Hello {0},",
     "IncludeResponseAbove": "Include your response above this line",
     "InstallExistingServer": "The server is already configured. It will not be modified during the installation.",
     "InstallNewServer": "The new server will be installed in the selected database.",
@@ -292,6 +293,7 @@
   "subject": {
     "AccountCreated": "WebIssues: Account created",
     "EmailVerification": "WebIssues: Email verification",
+    "Notification": "WebIssues: {0}",
     "RegistrationApproved": "WebIssues: Registration approved",
     "RegistrationRejected": "WebIssues: Registration rejected",
     "RegistrationRequests": "WebIssues: New registration requests",

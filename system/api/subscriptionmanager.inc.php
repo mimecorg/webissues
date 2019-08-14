@@ -230,7 +230,7 @@ class System_Api_SubscriptionManager extends System_Api_Base
     {
         $principal = System_Api_Principal::getCurrent();
 
-        $query = 'SELECT s.subscription_id, s.issue_id, s.user_id, s.stamp_id, ei.inbox_email'
+        $query = 'SELECT s.subscription_id, s.issue_id, s.user_id, s.stamp_id, s.inbox_id, ei.inbox_email'
             . ' FROM {subscriptions} AS s'
             . ' JOIN {issues} AS i ON i.issue_id = s.issue_id'
             . ' JOIN {folders} AS f ON f.folder_id = i.folder_id'
@@ -254,7 +254,7 @@ class System_Api_SubscriptionManager extends System_Api_Base
 
         $principal = System_Api_Principal::getCurrent();
 
-        $query = 'SELECT s.subscription_id, s.issue_id, s.user_id, s.stamp_id, s.user_email, p.is_public'
+        $query = 'SELECT s.subscription_id, s.issue_id, s.user_id, s.stamp_id, s.inbox_id, s.user_email, p.is_public'
             . ' FROM {subscriptions} AS s'
             . ' JOIN {issues} AS i ON i.issue_id = s.issue_id'
             . ' JOIN {folders} AS f ON f.folder_id = i.folder_id'

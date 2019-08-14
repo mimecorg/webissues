@@ -274,7 +274,11 @@ class Cron_Receiver extends System_Web_Base
                 }
 
                 if ( $respond == 1 && $sender != null && $issueId != null ) {
-                    $mail = System_Web_Component::createComponent( 'Common_Mail_IssueCreated', null, $issue );
+                    $data[ 'issue' ] = $issue;
+                    $data[ 'user_name' ] = $user != null ? $user[ 'user_name' ] : null;
+                    $data[ 'subscribe' ] = $subscribe;
+
+                    $mail = System_Web_Component::createComponent( 'Common_Mail_IssueCreated', null, $data );
 
                     if ( $user != null || $anonymousAccess == 1 && $issue[ 'is_public' ] == 1 )
                         System_Web_Base::setLinkMode( System_Web_Base::AutoLinks );

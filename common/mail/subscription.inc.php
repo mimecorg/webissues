@@ -76,7 +76,10 @@ class Common_Mail_Subscription extends System_Web_Component
     protected function execute()
     {
         $this->view->setDecoratorClass( 'Common_Mail_Layout' );
-        $this->view->setSlot( 'subject', '[#' . $this->issueId . '] ' . $this->issue[ 'issue_name' ] );
+
+        $subject = '[#' . $this->issueId . '] ' . $this->issue[ 'issue_name' ];
+
+        $this->view->setSlot( 'subject', $this->t( 'subject.Notification', array( $subject ) ) );
 
         $this->view->setSlot( 'withCssDetails', true );
 
@@ -138,7 +141,7 @@ class Common_Mail_Subscription extends System_Web_Component
             }
         }
 
-        if ( $serverManager->getSetting( 'inbox_engine' ) != null ) {
+        if ( $this->subscription[ 'inbox_id' ] != null ) {
             $this->hasInbox = true;
             $this->separator = str_repeat( '-', 11 );
         }
