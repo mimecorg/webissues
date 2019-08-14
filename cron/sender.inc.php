@@ -146,6 +146,7 @@ class Cron_Sender extends System_Web_Base
     public function sendExternalNotifications( $inbox )
     {
         $serverManager = new System_Api_ServerManager();
+        $subscriptionManager = new System_Api_SubscriptionManager();
 
         $anonymousAccess = $serverManager->getSetting( 'anonymous_access' );
 
