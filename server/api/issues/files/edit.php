@@ -40,6 +40,8 @@ class Server_Api_Issues_Files_Edit
         $validator->checkString( $name, System_Const::FileNameMaxLength );
         $validator->checkString( $description, System_Const::DescriptionMaxLength, System_Api_Validator::AllowEmpty );
 
+        $validator->checkFileName( $name );
+
         $stampId = $issueManager->editFile( $file, $name, $description );
 
         $result[ 'stampId' ] = $stampId;

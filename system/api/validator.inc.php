@@ -202,6 +202,16 @@ class System_Api_Validator
     }
 
     /**
+    * Check if the argument is a valid file name.
+    * @param $value The string argument to validate.
+    */
+    public function checkFileName( $value )
+    {
+        if ( $value[ 0 ] == '.' || preg_match( '/[\\/:*?"<>|]/', $value ) )
+            throw new System_Api_Error( System_Api_Error::InvalidValue );
+    }
+
+    /**
     * Check if the argument is a valid date.
     * @param $value Value in 'yyyy-mm-dd' format.
     */

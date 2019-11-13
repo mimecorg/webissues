@@ -255,7 +255,13 @@ class Cron_Receiver extends System_Web_Base
                                     $description = $this->t( 'text.HTMLMessageForEmail', array( $emailId ) );
                                 } else {
                                     $name = $part[ 'name' ];
-                                    $parser->checkString( $name, System_Const::FileNameMaxLength );
+                                    try {
+                                        $parser->checkString( $name, System_Const::FileNameMaxLength );
+                                        $parser->checkFileName( $name );
+                                    } catch ( System_Api_Error $e ) {
+                                        $eventLog->addEvent( System_Api_EventLog::Cron, System_Api_EventLog::Warning, $eventLog->t( 'log.EmailAttachmentInvalidName', array( $emailId, $fromEmail ) ) );
+                                        continue;
+                                    }
                                     $description = $this->t( 'text.AttachmentForEmail', array( $emailId ) );
                                 }
 

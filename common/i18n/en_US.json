@@ -189,6 +189,7 @@
     "CronTimeout": "Previous cron job timed out",
     "DatabaseUpdated": "Updated database to version {0}",
     "EmailAmbiguousFolder": "Ambiguous folder for inbox email address \"{0}\"",
+    "EmailAttachmentInvalidName": "Attachment for message {0} from \"{1}\" has invalid file name",
     "EmailAttachmentTooLarge": "Attachment for message {0} from \"{1}\" exceeded maximum size",
     "EmailCannotMapFolder": "Ignored inbox email from \"{0}\" because folder cannot be mapped",
     "EmailDefaultFolderInaccessible": "Ignored inbox email from \"{0}\" because default folder is inaccessible",
