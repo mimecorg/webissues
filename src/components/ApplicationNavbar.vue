@@ -45,7 +45,7 @@
             <template v-if="isAdministrator">
               <li role="separator" class="divider"></li>
               <li><HyperLink v-on:click="serverSettings"><span class="fa fa-wrench" aria-hidden="true"></span> {{ $t( 'title.ServerSettings' ) }}</HyperLink></li>
-              <li><HyperLink><span class="fa fa-book" aria-hidden="true"></span> {{ $t( 'title.EventLog' ) }}</HyperLink></li>
+              <li><HyperLink v-on:click="eventLog"><span class="fa fa-book" aria-hidden="true"></span> {{ $t( 'title.EventLog' ) }}</HyperLink></li>
             </template>
           </DropdownButton>
           <button v-else class="btn btn-default" v-bind:title="$t( 'title.Projects' )" v-on:click="manageProjects">
@@ -153,6 +153,9 @@ export default {
     },
     serverSettings() {
       this.$router.push( 'ServerSettings' );
+    },
+    eventLog() {
+      this.$router.push( 'EventLog' );
     },
 
     myAccount() {

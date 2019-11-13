@@ -1,3 +1,4 @@
+<?php
 /**************************************************************************
 * This file is part of the WebIssues Server program
 * Copyright (C) 2006 Michał Męciński
@@ -17,61 +18,33 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-.panel-title {
-  font-size: @panel-title-font-size;
-  font-weight: bold;
-}
+require_once( '../../../system/bootstrap.inc.php' );
 
-.panel-body {
-  > .form-group:last-child {
-    margin-bottom: 5px;
+class Server_Api_Events_List
+{
+    public $access = 'admin';
 
-    > .help-block {
-      margin-bottom: 0;
+    public $params = array(
+        'eventId' => array( 'type' => 'int', 'required' => true )
+    );
+
+    public function run( $eventId )
+    {
+        $eventLog = new System_Api_EventLog();
+        $event = $eventLog->getEvent( $eventId );
+
+        $resultDetails[ 'id' ] = (int)$event[ 'event_id' ];
+        $resultDetails[ 'type' ] = $event[ 'event_type' ];
+        $resultDetails[ 'severity' ] = (int)$event[ 'event_severity' ];
+        $resultDetails[ 'date' ] = (int)$event[ 'event_time' ];
+        $resultDetails[ 'message' ] = $event[ 'event_message' ];
+        $resultDetails[ 'user' ] = $event[ 'user_name' ];
+        $resultDetails[ 'host' ] = $event[ 'host_name' ];
+
+        $result[ 'details' ] = $resultDetails;
+
+        return $result;
     }
-
-    > .radio:last-child {
-      margin-bottom: 0;
-    }
-  }
-
-  > .panel-buttons:last-child {
-    margin-bottom: 5px;
-  }
-
-  > .alert:last-child {
-    margin-bottom: 5px;
-  }
-
-  > p:last-child {
-    margin-bottom: 5px;
-  }
 }
 
-.panel-links {
-  float: right;
-  line-height: 1.2;
-
-  a {
-    margin-left: 10px;
-  }
-}
-
-.panel-table .row + .row {
-  margin-top: 5px;
-}
-
-.panel-buttons {
-  text-align: right;
-  margin-bottom: 15px;
-
-  > .btn {
-    min-width: 120px;
-    margin-left: 10px;
-  }
-}
-
-.panel-multiline {
-  white-space: pre-wrap;
-  word-wrap: break-word;
-}
+System_Bootstrap::run( 'Server_Api_Application', 'Server_Api_Events_List' );

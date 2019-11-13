@@ -34,6 +34,19 @@ export const AlertFrequency = {
   Weekly: 1
 };
 
+export const EventType = {
+  Errors: 'errors',
+  Access: 'access',
+  Audit: 'audit',
+  Cron: 'cron'
+};
+
+export const EventSeverity = {
+  Information: 0,
+  Warning: 1,
+  Error: 2
+};
+
 export const Change = {
   IssueCreated: 0,
   IssueRenamed: 1,

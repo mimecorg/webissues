@@ -1,3 +1,4 @@
+<?php
 /**************************************************************************
 * This file is part of the WebIssues Server program
 * Copyright (C) 2006 Michał Męciński
@@ -17,61 +18,35 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-.panel-title {
-  font-size: @panel-title-font-size;
-  font-weight: bold;
-}
+require_once( '../../../system/bootstrap.inc.php' );
 
-.panel-body {
-  > .form-group:last-child {
-    margin-bottom: 5px;
+class Server_Api_Events_List
+{
+    public $access = 'admin';
 
-    > .help-block {
-      margin-bottom: 0;
+    public $params = array();
+
+    public function run()
+    {
+        $eventLog = new System_Api_EventLog();
+        $events = $eventLog->getEvents( null, 'event_id DESC', 15, 0 );
+
+        $result[ 'events' ] = array();
+
+        foreach ( $events as $event ) {
+            $resultEvent = array();
+
+            $resultEvent[ 'id' ] = (int)$event[ 'event_id' ];
+            $resultEvent[ 'type' ] = $event[ 'event_type' ];
+            $resultEvent[ 'severity' ] = (int)$event[ 'event_severity' ];
+            $resultEvent[ 'date' ] = (int)$event[ 'event_time' ];
+            $resultEvent[ 'message' ] = $event[ 'event_message' ];
+
+            $result[ 'events' ][] = $resultEvent;
+        }
+
+        return $result;
     }
-
-    > .radio:last-child {
-      margin-bottom: 0;
-    }
-  }
-
-  > .panel-buttons:last-child {
-    margin-bottom: 5px;
-  }
-
-  > .alert:last-child {
-    margin-bottom: 5px;
-  }
-
-  > p:last-child {
-    margin-bottom: 5px;
-  }
 }
 
-.panel-links {
-  float: right;
-  line-height: 1.2;
-
-  a {
-    margin-left: 10px;
-  }
-}
-
-.panel-table .row + .row {
-  margin-top: 5px;
-}
-
-.panel-buttons {
-  text-align: right;
-  margin-bottom: 15px;
-
-  > .btn {
-    min-width: 120px;
-    margin-left: 10px;
-  }
-}
-
-.panel-multiline {
-  white-space: pre-wrap;
-  word-wrap: break-word;
-}
+System_Bootstrap::run( 'Server_Api_Application', 'Server_Api_Events_List' );

@@ -17,61 +17,23 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-.panel-title {
-  font-size: @panel-title-font-size;
-  font-weight: bold;
-}
+export default function routeEvents( route, ajax, store ) {
+  route( 'EventLog', '/events', () => {
+    return ajax.post( '/events/list.php' ).then( ( { events } ) => {
+      return {
+        form: 'events/EventLog',
+        events
+      };
+    } );
+  } );
 
-.panel-body {
-  > .form-group:last-child {
-    margin-bottom: 5px;
-
-    > .help-block {
-      margin-bottom: 0;
-    }
-
-    > .radio:last-child {
-      margin-bottom: 0;
-    }
-  }
-
-  > .panel-buttons:last-child {
-    margin-bottom: 5px;
-  }
-
-  > .alert:last-child {
-    margin-bottom: 5px;
-  }
-
-  > p:last-child {
-    margin-bottom: 5px;
-  }
-}
-
-.panel-links {
-  float: right;
-  line-height: 1.2;
-
-  a {
-    margin-left: 10px;
-  }
-}
-
-.panel-table .row + .row {
-  margin-top: 5px;
-}
-
-.panel-buttons {
-  text-align: right;
-  margin-bottom: 15px;
-
-  > .btn {
-    min-width: 120px;
-    margin-left: 10px;
-  }
-}
-
-.panel-multiline {
-  white-space: pre-wrap;
-  word-wrap: break-word;
+  route( 'EventDetails', '/events/:eventId', ( { eventId } ) => {
+    return ajax.post( '/events/load.php', { eventId } ).then( ( { details } ) => {
+      return {
+        form: 'events/EventDetails',
+        eventId,
+        details
+      };
+    } );
+  } );
 }
