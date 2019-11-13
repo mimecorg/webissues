@@ -19,10 +19,9 @@
 
 export default function routeEvents( route, ajax, store ) {
   route( 'EventLog', '/events', () => {
-    return ajax.post( '/events/list.php' ).then( ( { events } ) => {
+    return store.dispatch( 'events/load' ).then( () => {
       return {
-        form: 'events/EventLog',
-        events
+        form: 'events/EventLog'
       };
     } );
   } );

@@ -24,12 +24,24 @@ class Server_Api_Events_List
 {
     public $access = 'admin';
 
-    public $params = array();
+    public $params = array(
+        'type' => 'string',
+        'offset' => array( 'type' => 'int', 'default' => 0 ),
+        'limit' => array( 'type' => 'int', 'required' => true )
+    );
 
-    public function run()
+    public function run( $type, $offset, $limit )
     {
+        if ( $offset < 0 || $limit < 1 )
+            throw new Server_Error( Server_Error::InvalidArguments );
+
+        if ( $type != null ) {
+            $validator = new System_Api_Validator();
+            $validator->checkString( $type, System_Const::NameMaxLength );
+        }
+
         $eventLog = new System_Api_EventLog();
-        $events = $eventLog->getEvents( null, 'event_id DESC', 15, 0 );
+        $events = $eventLog->getEvents( $type, 'event_id DESC', $limit, $offset );
 
         $result[ 'events' ] = array();
 
@@ -44,6 +56,8 @@ class Server_Api_Events_List
 
             $result[ 'events' ][] = $resultEvent;
         }
+
+        $result[ 'totalCount' ] = $eventLog->getEventsCount( $type );
 
         return $result;
     }

@@ -19,7 +19,21 @@
 
 <template>
   <BaseForm v-bind:title="$t( 'title.EventLog' )" size="large" auto-close save-position>
-    <Grid v-if="events.length > 0" v-bind:items="events" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-large', null, null, null ]" v-on:row-click="rowClick">
+    <template slot="header">
+      <DropdownButton v-bind:btn-class="filter != null ? 'btn-primary' : 'btn-default'" fa-class="fa-filter" menu-class="dropdown-menu-right" v-bind:title="filterTitle">
+        <li v-bind:class="{ active: filter == null }">
+          <HyperLink v-on:click="setFilter( null )">{{ getFilterText( null ) }}</HyperLink>
+        </li>
+        <li role="separator" class="divider"></li>
+        <li v-for="item in allFilters" v-bind:key="item" v-bind:class="{ active: filter == item }">
+          <HyperLink v-on:click="setFilter( item )">{{ getFilterText( item ) }}</HyperLink>
+        </li>
+      </DropdownButton>
+    </template>
+    <Grid v-if="events.length > 0" v-bind:items="events" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-large', null, null, null ]"
+          footer-visible v-bind:previous-enabled="previousEnabled" v-bind:next-enabled="nextEnabled"
+          v-bind:status-text="statusText" v-on:previous="previous" v-on:next="next"
+          v-on:row-click="rowClick">
       <template slot-scope="{ item, columnIndex, columnClass, columnKey }">
         <td v-bind:key="columnKey" v-bind:class="columnClass">
           <span v-if="columnIndex == 3" v-bind:class="[ 'fa', 'fa-fw', getIcon( item ) ]" aria-hidden="true"></span> {{ getCellValue( columnIndex, item ) }}
@@ -31,14 +45,14 @@
 </template>
 
 <script>
-import { EventSeverity } from '@/constants'
+import { mapState, mapGetters } from 'vuex'
+
+import { EventType, EventSeverity } from '@/constants'
 
 export default {
-  props: {
-    events: Array
-  },
-
   computed: {
+    ...mapState( 'events', [ 'filter', 'events', 'totalCount' ] ),
+    ...mapGetters( 'events', [ 'firstIndex', 'lastIndex' ] ),
     columnNames() {
       return [
         this.$t( 'title.Message' ),
@@ -46,6 +60,27 @@ export default {
         this.$t( 'title.Type' ),
         this.$t( 'title.Severity' )
       ];
+    },
+    previousEnabled() {
+      return this.firstIndex > 1;
+    },
+    nextEnabled() {
+      return this.lastIndex < this.totalCount;
+    },
+    statusText() {
+      if ( this.firstIndex == 1 && this.lastIndex == this.totalCount )
+        return this.$t( 'text.EventsCount', [ this.totalCount ] );
+      else
+        return this.$t( 'text.EventsCountOf', [ this.firstIndex, this.lastIndex, this.totalCount ] );
+    },
+    allFilters() {
+      return [ EventType.Errors, EventType.Access, EventType.Audit, EventType.Cron ];
+    },
+    filterTitle() {
+      if ( this.filter != null )
+        return this.$t( 'text.Filter', [ this.getFilterText( this.filter ) ] );
+      else
+        return this.$t( 'title.Filter' );
     }
   },
 
@@ -76,6 +111,34 @@ export default {
         return 'fa-exclamation-triangle text-warning';
       else if ( event.severity == EventSeverity.Error )
         return 'fa-exclamation-circle text-danger';
+    },
+
+    getFilterText( filter ) {
+      if ( filter != null )
+        return this.$t( 'EventType.' + filter );
+      else
+        return this.$t( 'text.AllEvents' );
+    },
+
+    setFilter( filter ) {
+      this.$store.commit( 'events/setFilter', { filter } );
+      this.update();
+    },
+    previous() {
+      this.$store.commit( 'events/setPreviousPage' );
+      this.update();
+    },
+    next() {
+      this.$store.commit( 'events/setNextPage' );
+      this.update();
+    },
+    update() {
+      this.$form.block();
+      this.$store.dispatch( 'events/load' ).then( () => {
+        this.$form.unblock();
+      } ).catch( error => {
+        this.$form.error( error );
+      } );
     },
 
     rowClick( rowIndex ) {

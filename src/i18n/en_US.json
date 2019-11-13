@@ -478,6 +478,7 @@
   },
   "text": {
     "AcceptExternalUsers": "Accept messages from external users",
+    "AllEvents": "All Events",
     "AllFolders": "All Folders",
     "AllIssues": "All Issues",
     "AllProjects": "All Projects",
@@ -511,7 +512,10 @@
     "EnableUserRegistration": "Enable user registration",
     "Enabled": "Enabled",
     "Error": "Error",
+    "EventsCount": "{0} events",
+    "EventsCountOf": "{0}-{1} of {2} events",
     "Files": "Files",
+    "Filter": "Filter: {0}",
     "Folder": "Folder: {0}",
     "HideIDColumn": "Hide the ID column",
     "HideEmptyAttributes": "Hide empty attribute values",
