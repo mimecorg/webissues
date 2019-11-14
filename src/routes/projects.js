@@ -244,4 +244,60 @@ export default function routeProjects( route, ajax, store ) {
       };
     } );
   } );
+
+  route( 'ProjectsArchive', '/projects/archive', () => {
+    return ajax.post( '/projects/archive/list.php' ).then( ( { projects } ) => {
+      return {
+        form: 'projects/ProjectsArchive',
+        projects
+      };
+    } );
+  } );
+
+  route( 'ProjectDetailsArchive', '/projects/archive/:projectId', ( { projectId } ) => {
+    return ajax.post( '/projects/archive/load.php', { projectId, description: true, html: true } ).then( ( { details, description } ) => {
+      return {
+        form: 'projects/ProjectDetailsArchive',
+        projectId,
+        name: details.name,
+        description
+      };
+    } );
+  } );
+
+  route( 'RestoreProject', '/projects/archive/:projectId/restore', ( { projectId } ) => {
+    return ajax.post( '/projects/archive/load.php', { projectId } ).then( ( { details } ) => {
+      return {
+        form: 'projects/DeleteProject',
+        mode: 'restore',
+        projectId,
+        name: details.name,
+        archive: true
+      };
+    } );
+  } );
+
+  route( 'RenameProjectArchive', '/projects/archive/:projectId/rename', ( { projectId } ) => {
+    return ajax.post( '/projects/archive/load.php', { projectId } ).then( ( { details } ) => {
+      return {
+        form: 'projects/EditProject',
+        mode: 'rename',
+        projectId,
+        initialName: details.name,
+        archive: true
+      };
+    } );
+  } );
+
+  route( 'DeleteProjectArchive', '/projects/archive/:projectId/delete', ( { projectId } ) => {
+    return ajax.post( '/projects/archive/load.php', { projectId } ).then( ( { details } ) => {
+      return {
+        form: 'projects/DeleteProject',
+        mode: 'delete',
+        projectId,
+        name: details.name,
+        archive: true
+      };
+    } );
+  } );
 }

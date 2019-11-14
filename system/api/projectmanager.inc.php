@@ -707,6 +707,17 @@ class System_Api_ProjectManager extends System_Api_Base
     }
 
     /**
+    * Get the list of all archived projects.
+    * @return An array of associative arrays representing projects.
+    */
+    public function getArchivedProjects()
+    {
+        $query = 'SELECT p.project_id, p.project_name, p.descr_id FROM {projects} AS p WHERE p.is_archived = 1 ORDER BY p.project_name COLLATE LOCALE';
+
+        return $this->connection->queryTable( $query );
+    }
+
+    /**
     * Return the total number of archived projects.
     * @return The number of projects.
     */
@@ -738,7 +749,7 @@ class System_Api_ProjectManager extends System_Api_Base
     */
     public function getArchivedProject( $projectId )
     {
-        $query = 'SELECT p.project_id, p.project_name FROM {projects} AS p WHERE p.project_id = %d AND p.is_archived = 1';
+        $query = 'SELECT p.project_id, p.project_name, p.descr_id FROM {projects} AS p WHERE p.project_id = %d AND p.is_archived = 1';
 
         if ( !( $project = $this->connection->queryRow( $query, $projectId ) ) )
             throw new System_Api_Error( System_Api_Error::UnknownProject );

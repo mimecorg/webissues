@@ -18,34 +18,31 @@
 -->
 
 <template>
-  <BaseForm v-bind:title="$t( 'title.Projects' )" auto-close save-position>
-    <template slot="header">
-      <button v-if="isAdministrator" type="button" class="btn btn-success" v-on:click="addProject"><span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'cmd.Add' ) }}</button>
-      <button v-if="isAdministrator" type="button" class="btn btn-default" v-on:click="projectsArchive"><span class="fa fa-archive" aria-hidden="true"></span> {{ $t( 'title.Archive' ) }}</button>
-    </template>
+  <BaseForm v-bind:title="$t( 'title.ProjectsArchive' )" v-bind:breadcrumbs="breadcrumbs" auto-close save-position>
     <Grid v-if="projects.length > 0" v-bind:items="projects" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-large', null ]" v-on:row-click="rowClick">
       <template slot-scope="{ item, columnIndex, columnClass, columnKey }">
         <td v-bind:key="columnKey" v-bind:class="columnClass">{{ getCellValue( columnIndex, item ) }}</td>
       </template>
     </Grid>
-    <Prompt v-else v-bind:path="isAdministrator ? 'info.NoProjects' : 'info.NoAvailableProjects'"/>
+    <Prompt v-else path="info.NoArchivedProjects"/>
   </BaseForm>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-
 export default {
   props: {
     projects: Array
   },
 
   computed: {
-    ...mapGetters( 'global', [ 'isAdministrator' ] ),
+    breadcrumbs() {
+      return [
+        { label: this.$t( 'title.Projects' ), route: 'ManageProjects' }
+      ];
+    },
     columnNames() {
       return [
-        this.$t( 'title.Name' ),
-        this.$t( 'title.Access' )
+        this.$t( 'title.Name' )
       ];
     }
   },
@@ -55,20 +52,11 @@ export default {
       switch ( columnIndex ) {
         case 0:
           return project.name;
-        case 1:
-          return project.public ? this.$t( 'text.PublicProject' ) : this.$t( 'text.RegularProject' );
       }
     },
 
-    addProject() {
-      this.$router.push( 'AddProject' );
-    },
-    projectsArchive() {
-      this.$router.push( 'ProjectsArchive' );
-    },
-
     rowClick( rowIndex ) {
-      this.$router.push( 'ProjectDetails', { projectId: this.projects[ rowIndex ].id } );
+      this.$router.push( 'ProjectDetailsArchive', { projectId: this.projects[ rowIndex ].id } );
     }
   }
 }

@@ -21,6 +21,7 @@
   <BaseForm v-bind:title="title" size="small" with-buttons v-on:ok="submit" v-on:cancel="returnToDetails">
     <Prompt v-if="mode == 'archive'" path="prompt.ArchiveProject"><strong>{{ name }}</strong></Prompt>
     <Prompt v-else-if="mode == 'delete'" path="prompt.DeleteProject"><strong>{{ name }}</strong></Prompt>
+    <Prompt v-else-if="mode == 'restore'" path="prompt.RestoreProject"><strong>{{ name }}</strong></Prompt>
     <Prompt v-if="mode == 'archive'" path="prompt.NoteArchiveProject" alert-class="alert-success"><strong>{{ $t( 'label.Note' ) }}</strong></Prompt>
     <Prompt v-else-if="mode == 'delete' && force" path="prompt.WarningDeleteProject" alert-class="alert-danger"><strong>{{ $t( 'label.Warning' ) }}</strong></Prompt>
   </BaseForm>
@@ -34,12 +35,13 @@ export default {
     mode: String,
     projectId: Number,
     name: String,
-    folders: Array
+    folders: Array,
+    archive: { type: Boolean, default: false }
   },
 
   data() {
     return {
-      force: this.folders != null && this.folders.length > 0
+      force: this.archive || this.folders != null && this.folders.length > 0
     };
   },
 
@@ -49,6 +51,8 @@ export default {
         return this.$t( 'cmd.ArchiveProject' );
       else if ( this.mode == 'delete' )
         return this.$t( 'cmd.DeleteProject' );
+      else if ( this.mode == 'restore' )
+        return this.$t( 'cmd.RestoreProject' );
     }
   },
 
@@ -61,9 +65,12 @@ export default {
       if ( this.mode == 'delete' )
         data.force = this.force;
 
-      this.$ajax.post( '/projects/' + this.mode + '.php', data ).then( () => {
+      this.$ajax.post( '/projects/' + ( this.archive ? 'archive/' : '' ) + this.mode + '.php', data ).then( () => {
         this.$store.commit( 'global/setDirty' );
-        this.$router.push( 'ManageProjects' );
+        if ( this.archive )
+          this.$router.push( 'ProjectsArchive' );
+        else
+          this.$router.push( 'ManageProjects' );
       } ).catch( error => {
         if ( error.reason == Reason.APIError && error.errorCode == ErrorCode.CannotDeleteProject ) {
           this.$form.unblock();
@@ -75,7 +82,10 @@ export default {
     },
 
     returnToDetails() {
-      this.$router.push( 'ProjectDetails', { projectId: this.projectId } );
+      if ( this.archive )
+        this.$router.push( 'ProjectDetailsArchive', { projectId: this.projectId } );
+      else
+        this.$router.push( 'ProjectDetails', { projectId: this.projectId } );
     }
   }
 }

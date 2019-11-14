@@ -35,7 +35,8 @@ export default {
     mode: String,
     projectId: Number,
     initialName: String,
-    initialFormat: Number
+    initialFormat: Number,
+    archive: { type: Boolean, default: false }
   },
 
   fields() {
@@ -94,21 +95,21 @@ export default {
         data.descriptionFormat = this.descriptionFormat;
       }
 
-      this.$emit( 'block' );
+      this.$form.block();
 
-      this.$ajax.post( '/projects/' + this.mode + '.php', data ).then( ( { projectId, changed } ) => {
+      this.$ajax.post( '/projects/' + ( this.archive ? 'archive/' : '' ) + this.mode + '.php', data ).then( ( { projectId, changed } ) => {
         if ( changed )
           this.$store.commit( 'global/setDirty' );
         this.returnToDetails( projectId );
       } ).catch( error => {
         if ( error.reason == Reason.APIError && error.errorCode == ErrorCode.ProjectAlreadyExists ) {
-          this.$emit( 'unblock' );
+          this.$form.unblock();
           this.nameError = this.$t( 'ErrorCode.' + error.errorCode );
           this.$nextTick( () => {
             this.$refs.name.focus();
           } );
         } else {
-          this.$emit( 'error', error );
+          this.$form.error( error );
         }
       } );
     },
@@ -116,12 +117,17 @@ export default {
     cancel() {
       if ( this.mode == 'rename' )
         this.returnToDetails( this.projectId );
+      else if ( this.archive )
+        this.$router.push( 'ManageProjectsArchive' );
       else
         this.$router.push( 'ManageProjects' );
     },
 
     returnToDetails( projectId ) {
-      this.$router.push( 'ProjectDetails', { projectId } );
+      if ( this.archive )
+        this.$router.push( 'ProjectDetailsArchive', { projectId } );
+      else
+        this.$router.push( 'ProjectDetails', { projectId } );
     }
   },
 
