@@ -34,10 +34,12 @@ class Server_Api_Issues_List
         'sortColumn' => 'int',
         'sortAscending' => array( 'type' => 'bool', 'default' => true ),
         'offset' => array( 'type' => 'int', 'default' => 0 ),
-        'limit' => array( 'type' => 'int', 'required' => true )
+        'limit' => array( 'type' => 'int', 'required' => true ),
+        'html' => array( 'type' => 'bool', 'default' => true ),
+        'allColumns' => array( 'type' => 'bool', 'default' => false )
     );
 
-    public function run( $typeId, $viewId, $projectId, $folderId, $searchColumn, $searchValue, $sortColumn, $sortAscending, $offset, $limit )
+    public function run( $typeId, $viewId, $projectId, $folderId, $searchColumn, $searchValue, $sortColumn, $sortAscending, $offset, $limit, $html, $allColumns )
     {
         if ( $typeId == null && $viewId == null && $folderId == null )
             throw new Server_Error( Server_Error::InvalidArguments );
@@ -107,6 +109,9 @@ class Server_Api_Issues_List
             $queryGenerator->setSearchValue( $searchColumn, $info->getType(), $searchValue );
         }
 
+        if ( $allColumns )
+            $queryGenerator->includeAvailableColumns();
+
         if ( $sortColumn !== null ) {
             $order = $sortAscending ? System_Const::Ascending : System_Const::Descending;
             $orderBy = System_Web_ColumnHelper::makeOrderBy( $queryGenerator->getColumnExpression( $sortColumn ), $order );
@@ -121,9 +126,11 @@ class Server_Api_Issues_List
 
         $columns = $queryGenerator->getColumnNames();
 
-        $serverManager = new System_Api_ServerManager();
-        if ( $serverManager->getSetting( 'hide_id_column' ) == 1 )
-            unset( $columns[ System_Api_Column::ID ] );
+        if ( !$allColumns ) {
+            $serverManager = new System_Api_ServerManager();
+            if ( $serverManager->getSetting( 'hide_id_column' ) == 1 )
+                unset( $columns[ System_Api_Column::ID ] );
+        }
 
         $helper = new System_Web_ColumnHelper();
         $headers = $helper->getColumnHeaders() + $queryGenerator->getUserColumnHeaders();
@@ -176,11 +183,17 @@ class Server_Api_Issues_List
                         break;
 
                     case System_Api_Column::Name:
-                        $cells[] = System_Web_LinkLocator::convertToHtml( $value );
+                        if ( $html )
+                            $cells[] = System_Web_LinkLocator::convertToHtml( $value );
+                        else
+                            $cells[] = $value;
                         break;
 
                     case System_Api_Column::Location:
-                        $cells[] = htmlspecialchars( $row[ 'project_name' ] ) . ' &mdash; ' . htmlspecialchars( $value );
+                        if ( $html )
+                            $cells[] = htmlspecialchars( $row[ 'project_name' ] ) . ' &mdash; ' . htmlspecialchars( $value );
+                        else
+                            $cells[] = $row[ 'project_name' ] . " \xE2\x80\x94 " . $value;
                         break;
 
                     case System_Api_Column::CreatedDate:
@@ -189,10 +202,14 @@ class Server_Api_Issues_List
                         break;
 
                     default:
-                        if ( $column > System_Api_Column::UserDefined )
-                            $cells[] = System_Web_LinkLocator::convertToHtml( $value );
-                        else
-                            $cells[] = htmlspecialchars( $value );
+                        if ( $html ) {
+                            if ( $column > System_Api_Column::UserDefined )
+                                $cells[] = System_Web_LinkLocator::convertToHtml( $value );
+                            else
+                                $cells[] = htmlspecialchars( $value );
+                        } else {
+                            $cells[] = $value != null ? $value : '';
+                        }
                         break;
                 }
             }

@@ -304,6 +304,10 @@ export default function routeIssues( route, i18n, ajax, store, formatter ) {
     } );
   } );
 
+  route( 'ExportToCSV', '/issues/export/csv', () => {
+    return Promise.resolve( { form: 'issues/ExportIssues' } );
+  } );
+
   if ( process.env.TARGET == 'electron' ) {
     route( 'ClientDownload', '/issues/:issueId/files/:fileId/download', ( { issueId, fileId } ) => {
       return ajax.post( '/issues/files/load.php', { issueId, fileId } ).then( ( { name, total, size } ) => {

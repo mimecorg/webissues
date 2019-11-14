@@ -21,6 +21,8 @@ import { Column } from '@/constants'
 
 const PageSize = 50;
 
+const MaxExportSize = 10000;
+
 const UpdateInterval = 60 * 1000; // 1 minute
 
 export default function makeListModule( ajax ) {
@@ -247,20 +249,7 @@ function makeActions( ajax ) {
   return {
     load( { state, commit } ) {
       commit( 'beginUpdate' );
-      const query = {
-        typeId: state.typeId,
-        viewId: state.viewId,
-        projectId: state.projectId,
-        folderId: state.folderId
-      };
-      if ( state.searchValue != '' ) {
-        query.searchColumn = state.searchColumn;
-        query.searchValue = state.searchValue;
-      };
-      if ( state.overrideSort ) {
-        query.sortColumn = state.sortColumn;
-        query.sortAscending = state.sortAscending;
-      };
+      const query = makeBaseQuery( state );
       query.offset = state.offset;
       query.limit = PageSize;
       const promise = ajax.post( '/issues/list.php', query );
@@ -279,6 +268,33 @@ function makeActions( ajax ) {
           }
         } );
       } );
+    },
+
+    export( { state }, { allColumns } ) {
+      const query = makeBaseQuery( state );
+      query.offset = 0;
+      query.limit = MaxExportSize;
+      query.html = false;
+      query.allColumns = allColumns;
+      return ajax.post( '/issues/list.php', query );
     }
   };
+}
+
+function makeBaseQuery( state ) {
+  const query = {
+    typeId: state.typeId,
+    viewId: state.viewId,
+    projectId: state.projectId,
+    folderId: state.folderId
+  };
+  if ( state.searchValue != '' ) {
+    query.searchColumn = state.searchColumn;
+    query.searchValue = state.searchValue;
+  };
+  if ( state.overrideSort ) {
+    query.sortColumn = state.sortColumn;
+    query.sortAscending = state.sortAscending;
+  };
+  return query;
 }

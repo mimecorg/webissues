@@ -109,7 +109,7 @@
                 <li><HyperLink><span class="fa fa-check-circle-o" aria-hidden="true"></span> {{ $t( 'cmd.MarkAllAsRead' ) }}</HyperLink></li>
                 <li><HyperLink><span class="fa fa-check-circle" aria-hidden="true"></span> {{ $t( 'cmd.MarkAllAsUnread' ) }}</HyperLink></li>
                 <li role="separator" class="divider"></li>
-                <li><HyperLink><span class="fa fa-file-text-o" aria-hidden="true"></span> {{ $t( 'cmd.ExportToCSV' ) }}</HyperLink></li>
+                <li><HyperLink v-on:click="exportToCSV"><span class="fa fa-file-text-o" aria-hidden="true"></span> {{ $t( 'cmd.ExportToCSV' ) }}</HyperLink></li>
               </DropdownButton>
             </div>
           </div>
@@ -351,6 +351,10 @@ export default {
 
     reload() {
       this.$store.dispatch( 'reload' );
+    },
+
+    exportToCSV() {
+      this.$router.push( 'ExportToCSV' );
     }
   }
 }
