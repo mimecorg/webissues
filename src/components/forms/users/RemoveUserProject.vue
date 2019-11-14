@@ -37,12 +37,12 @@ export default {
 
   methods: {
     submit() {
-      this.$emit( 'block' );
+      this.$form.block();
 
       this.$ajax.post( '/users/projects/edit.php', { userId: this.userId, projects: [ this.projectId ], access: Access.NoAccess } ).then( () => {
         this.returnToDetails();
       } ).catch( error => {
-        this.$emit( 'error', error );
+        this.$form.error( error );
       } );
     },
 
