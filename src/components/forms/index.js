@@ -47,7 +47,8 @@ const formModules = {
   users: name => import( /* webpackMode: "lazy-once", webpackChunkName: "forms-users" */ `@/components/forms/users/${name}` ),
   alerts: name => import( /* webpackMode: "lazy-once", webpackChunkName: "forms-alerts" */ `@/components/forms/alerts/${name}` ),
   settings: name => import( /* webpackMode: "lazy-once", webpackChunkName: "forms-settings" */ `@/components/forms/settings/${name}` ),
-  events: name => import( /* webpackMode: "lazy-once", webpackChunkName: "forms-events" */ `@/components/forms/events/${name}` )
+  events: name => import( /* webpackMode: "lazy-once", webpackChunkName: "forms-events" */ `@/components/forms/events/${name}` ),
+  export: name => import( /* webpackMode: "lazy-once", webpackChunkName: "forms-export" */ `@/components/forms/export/${name}` )
 };
 
 export function loadForm( name ) {
