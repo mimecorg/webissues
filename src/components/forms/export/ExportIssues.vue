@@ -18,9 +18,10 @@
 -->
 
 <template>
-  <BaseForm v-bind:title="$t( 'cmd.ExportToCSV' )" with-buttons v-on:ok="submit" v-on:cancel="cancel">
-    <Prompt path="prompt.ExportToCSV"/>
-    <FormGroup v-bind:label="$t( 'label.Type' )" required>
+  <BaseForm v-bind:title="$t( 'cmd.ExportToCSV' )" v-bind:size="size" with-buttons v-bind:cancel-hidden="type == null" v-on:ok="submit" v-on:cancel="cancel">
+    <Prompt v-if="type != null" path="prompt.ExportToCSV"/>
+    <Prompt v-else alert-class="alert-warning" path="prompt.NoTypeSelected"/>
+    <FormGroup v-if="type != null" v-bind:label="$t( 'label.Type' )" required>
       <div class="radio">
         <label><input type="radio" v-model="exportType" v-bind:value="0"> {{ $t( 'text.TableWithVisibleColumns' ) }}</label>
       </div>
@@ -49,11 +50,19 @@ export default {
   },
 
   computed: {
-    ...mapGetters( 'list', [ 'type' ] )
+    ...mapGetters( 'list', [ 'type' ] ),
+    size() {
+      return this.type != null ? 'normal' : 'small';
+    }
   },
 
   methods: {
     submit() {
+      if ( this.type == null ) {
+        this.$form.close();
+        return;
+      }
+
       if ( !this.$fields.validate() )
         return;
 

@@ -448,6 +448,7 @@
     "ModifyAttribute": "Modify attribute {0}.",
     "MoveFolder": "Move folder {0} to another project.",
     "MoveIssue": "Move issue {0} to another folder of the same type.",
+    "NoTypeSelected": "No issue type selected.",
     "NoteArchiveProject": "{0} You can restore this project later by selecting Archive in the list of projects.",
     "PublishView": "Are you sure you want to convert your personal view {0} to a public view?",
     "RejectRequest": "Do you want to reject registration request for user {0}?",
