@@ -101,7 +101,9 @@ class Server_Api_Issues_List
 
             $validator->checkString( $searchValue, System_Const::ValueMaxLength );
 
-            $info = $this->getSearchValueInfo( $searchColumn );
+            $searchHelper = new Server_Api_Helpers_Search();
+
+            $info = $searchHelper->getSearchValueInfo( $searchColumn );
             $definition = $info->toString();
 
             $validator->checkAttributeValue( $definition, $searchValue );
@@ -227,55 +229,6 @@ class Server_Api_Issues_List
         }
 
         return $result;
-    }
-
-    private function getSearchValueInfo( $column )
-    {
-        switch ( $column ) {
-            case System_Api_Column::ID:
-                $definition = 'NUMERIC';
-                break;
-            case System_Api_Column::Name:
-            case System_Api_Column::Location:
-                $definition = 'TEXT';
-                break;
-            case System_Api_Column::CreatedBy:
-            case System_Api_Column::ModifiedBy:
-                $definition = 'USER';
-                break;
-            case System_Api_Column::CreatedDate:
-            case System_Api_Column::ModifiedDate:
-                $definition = 'DATETIME';
-                break;
-            default:
-                if ( $column > System_Api_Column::UserDefined ) {
-                    $typeManager = new System_Api_TypeManager();
-                    $attribute = $typeManager->getAttributeType( $column - System_Api_Column::UserDefined );
-                    $definition = $attribute[ 'attr_def' ];
-                }
-                break;
-        }
-
-        $attributeInfo = System_Api_DefinitionInfo::fromString( $definition );
-        $valueInfo = new System_Api_DefinitionInfo();
-
-        switch ( $attributeInfo->getType() ) {
-            case 'TEXT':
-            case 'ENUM':
-            case 'USER':
-                $valueInfo->setType( 'TEXT' );
-                break;
-            case 'NUMERIC':
-                $valueInfo->setType( 'NUMERIC' );
-                $valueInfo->setMetadata( 'decimal', $attributeInfo->getMetadata( 'decimal' ) );
-                $valueInfo->setMetadata( 'strip', $attributeInfo->getMetadata( 'strip' ) );
-                break;
-            case 'DATETIME':
-                $valueInfo->setType( 'DATETIME' );
-                break;
-        }
-
-        return $valueInfo;
     }
 }
 

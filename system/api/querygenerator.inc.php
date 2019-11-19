@@ -234,6 +234,15 @@ class System_Api_QueryGenerator extends System_Api_Base
     }
 
     /**
+    * Return a query for extracting issue IDs.
+    */
+    public function generateIdsQuery()
+    {
+        return 'SELECT i.issue_id FROM ' . $this->generateJoins()
+            . ' WHERE ' . $this->generateConditions();
+    }
+
+    /**
     * Return the arguments to be passed when executing the query.
     */
     public function getQueryArguments()

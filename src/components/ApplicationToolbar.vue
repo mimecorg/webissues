@@ -106,8 +106,8 @@
             <div class="toolbar-element">
               <button type="button" class="btn btn-default" v-bind:title="$t( 'cmd.Reload' )" v-on:click="reload"><span class="fa fa-refresh" aria-hidden="true"></span></button>
               <DropdownButton fa-class="fa-ellipsis-v" menu-class="dropdown-menu-right" v-bind:title="$t( 'title.More' )">
-                <li><HyperLink><span class="fa fa-check-circle-o" aria-hidden="true"></span> {{ $t( 'cmd.MarkAllAsRead' ) }}</HyperLink></li>
-                <li><HyperLink><span class="fa fa-check-circle" aria-hidden="true"></span> {{ $t( 'cmd.MarkAllAsUnread' ) }}</HyperLink></li>
+                <li><HyperLink v-on:click="markAsRead"><span class="fa fa-check-circle-o" aria-hidden="true"></span> {{ $t( 'cmd.MarkAllAsRead' ) }}</HyperLink></li>
+                <li><HyperLink v-on:click="markAsUnread"><span class="fa fa-check-circle" aria-hidden="true"></span> {{ $t( 'cmd.MarkAllAsUnread' ) }}</HyperLink></li>
                 <li role="separator" class="divider"></li>
                 <li><HyperLink v-on:click="exportToCSV"><span class="fa fa-file-text-o" aria-hidden="true"></span> {{ $t( 'cmd.ExportToCSV' ) }}</HyperLink></li>
               </DropdownButton>
@@ -353,6 +353,12 @@ export default {
       this.$store.dispatch( 'reload' );
     },
 
+    markAsRead() {
+      this.$router.push( 'MarkAsRead' );
+    },
+    markAsUnread() {
+      this.$router.push( 'MarkAsUnread' );
+    },
     exportToCSV() {
       this.$router.push( 'ExportToCSV' );
     }

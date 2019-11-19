@@ -325,4 +325,16 @@ export default function routeIssues( route, i18n, ajax, store, formatter ) {
   route( 'ExportToCSV', '/export/csv', () => {
     return Promise.resolve( { form: 'export/ExportIssues' } );
   } );
+
+  route( 'MarkAsRead', '/mark/read', () => {
+    if ( !store.getters[ 'global/isAuthenticated' ] )
+      return Promise.reject( makeError( ErrorCode.LoginRequired ) );
+    return Promise.resolve( { form: 'issues/MarkAllIssues', read: true } );
+  } );
+
+  route( 'MarkAsUnread', '/mark/unread', () => {
+    if ( !store.getters[ 'global/isAuthenticated' ] )
+      return Promise.reject( makeError( ErrorCode.LoginRequired ) );
+    return Promise.resolve( { form: 'issues/MarkAllIssues', read: false } );
+  } );
 }

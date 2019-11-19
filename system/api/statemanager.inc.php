@@ -149,4 +149,40 @@ class System_Api_StateManager extends System_Api_Base
 
         return true;
     }
+
+    /**
+    * Set the read state of all issues matching the given query.
+    * @param $subQuery The query selecting issue IDs.
+    * @param $arguments The query arguments.
+    * @param $readId The new read stamp of the issues.
+    */
+    public function setRead( $subQuery, $arguments, $readId )
+    {
+        $principal = System_Api_Principal::getCurrent();
+        $userId = $principal->getUserId();
+
+        $transaction = $this->connection->beginTransaction();
+
+        try {
+            $query = 'DELETE FROM {issue_states}'
+                . ' WHERE user_id = %d'
+                . ' AND issue_id IN ( ' . $subQuery . ' )';
+
+            $this->connection->executeArgs( $query, array_merge( array( $userId ), $arguments ) );
+
+            $query = 'INSERT INTO {issue_states} ( user_id, issue_id, read_id, subscription_id )'
+                . ' SELECT %d AS user_id, sq.issue_id, %d? AS read_id, s.subscription_id'
+                . ' FROM ( ' . $subQuery .  ' ) AS sq'
+                . ' LEFT OUTER JOIN {subscriptions} AS s ON s.issue_id = sq.issue_id AND s.user_id = %d';
+
+            $this->connection->executeArgs( $query, array_merge( array( $userId, $readId ), $arguments, array( $userId ) ) );
+
+            $transaction->commit();
+        } catch ( Exception $ex ) {
+            $transaction->rollback();
+            throw $ex;
+        }
+
+        return true;
+    }
 }

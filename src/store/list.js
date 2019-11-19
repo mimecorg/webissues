@@ -277,11 +277,17 @@ function makeActions( ajax ) {
       query.html = false;
       query.allColumns = allColumns;
       return ajax.post( '/issues/list.php', query );
+    },
+
+    markAll( { state }, { read } ) {
+      const query = makeBaseQuery( state, { sort: false } );
+      query.read = read;
+      return ajax.post( '/issues/mark.php', query );
     }
   };
 }
 
-function makeBaseQuery( state ) {
+function makeBaseQuery( state, { sort = true } = {} ) {
   const query = {
     typeId: state.typeId,
     viewId: state.viewId,
@@ -292,7 +298,7 @@ function makeBaseQuery( state ) {
     query.searchColumn = state.searchColumn;
     query.searchValue = state.searchValue;
   };
-  if ( state.overrideSort ) {
+  if ( sort && state.overrideSort ) {
     query.sortColumn = state.sortColumn;
     query.sortAscending = state.sortAscending;
   };
