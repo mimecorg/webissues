@@ -30,14 +30,18 @@
         </li>
       </DropdownButton>
     </template>
-    <Grid v-if="events.length > 0" v-bind:items="events" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-large', null, null, null ]"
+    <Grid v-if="events.length > 0" v-bind:items="events" v-bind:columns="columns"
           footer-visible v-bind:previous-enabled="previousEnabled" v-bind:next-enabled="nextEnabled"
           v-bind:status-text="statusText" v-on:previous="previous" v-on:next="next"
           v-on:row-click="rowClick">
-      <template slot-scope="{ item, columnIndex, columnClass, columnKey }">
-        <td v-bind:key="columnKey" v-bind:class="columnClass">
-          <span v-if="columnIndex == 3" v-bind:class="[ 'fa', 'fa-fw', getIcon( item ) ]" aria-hidden="true"></span> {{ getCellValue( columnIndex, item ) }}
-        </td>
+      <template v-slot:date-cell="{ item: event }">
+        {{ $formatter.formatStamp( event.date ) }}
+      </template>
+      <template v-slot:type-cell="{ item: event }">
+        {{ $t( 'EventType.' + event.type ) }}
+      </template>
+      <template v-slot:severity-cell="{ item: event }">
+        <span v-bind:class="[ 'fa', 'fa-fw', getIcon( event ) ]" aria-hidden="true"></span> {{ getSeverity( event ) }}
       </template>
     </Grid>
     <Prompt v-else path="info.NoEvents"/>
@@ -53,13 +57,13 @@ export default {
   computed: {
     ...mapState( 'events', [ 'filter', 'events', 'totalCount' ] ),
     ...mapGetters( 'events', [ 'firstIndex', 'lastIndex' ] ),
-    columnNames() {
-      return [
-        this.$t( 'title.Message' ),
-        this.$t( 'title.Date' ),
-        this.$t( 'title.Type' ),
-        this.$t( 'title.Severity' )
-      ];
+    columns() {
+      return {
+        message: { title: this.$t( 'title.Message' ), class: 'column-large' },
+        date: { title: this.$t( 'title.Date' ) },
+        type: { title: this.$t( 'title.Type' ) },
+        severity: { title: this.$t( 'title.Severity' ) }
+      };
     },
     previousEnabled() {
       return this.firstIndex > 1;
@@ -85,23 +89,13 @@ export default {
   },
 
   methods: {
-    getCellValue( columnIndex, event ) {
-      switch ( columnIndex ) {
-        case 0:
-          return event.message;
-        case 1:
-          return this.$formatter.formatStamp( event.date );
-        case 2:
-          return this.$t( 'EventType.' + event.type );
-        case 3:
-          if ( event.severity == EventSeverity.Information )
-            return this.$t( 'text.Information' );
-          else if ( event.severity == EventSeverity.Warning )
-            return this.$t( 'text.Warning' );
-          else if ( event.severity == EventSeverity.Error )
-            return this.$t( 'text.Error' );
-          break;
-      }
+    getSeverity( event ) {
+      if ( event.severity == EventSeverity.Information )
+        return this.$t( 'text.Information' );
+      else if ( event.severity == EventSeverity.Warning )
+        return this.$t( 'text.Warning' );
+      else if ( event.severity == EventSeverity.Error )
+        return this.$t( 'text.Error' );
     },
 
     getIcon( event ) {

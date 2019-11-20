@@ -22,11 +22,7 @@
     <template slot="header">
       <button v-if="isAdministrator" type="button" class="btn btn-success" v-on:click="addType"><span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'cmd.Add' ) }}</button>
     </template>
-    <Grid v-if="types.length > 0" v-bind:items="types" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-large' ]" v-on:row-click="rowClick">
-      <template slot-scope="{ item, columnIndex, columnClass, columnKey }">
-        <td v-bind:key="columnKey" v-bind:class="columnClass">{{ getCellValue( columnIndex, item ) }}</td>
-      </template>
-    </Grid>
+    <Grid v-if="types.length > 0" v-bind:items="types" v-bind:columns="columns" v-on:row-click="rowClick"/>
     <Prompt v-else path="info.NoIssueTypes"/>
   </BaseForm>
 </template>
@@ -41,19 +37,14 @@ export default {
 
   computed: {
     ...mapGetters( 'global', [ 'isAdministrator' ] ),
-    columnNames() {
-      return [ this.$t( 'title.Name' ) ];
+    columns() {
+      return {
+        name: { title: this.$t( 'title.Name' ), class: 'column-large' }
+      };
     }
   },
 
   methods: {
-    getCellValue( columnIndex, type ) {
-      switch ( columnIndex ) {
-        case 0:
-          return type.name;
-      }
-    },
-
     addType() {
       this.$router.push( 'AddType' );
     },

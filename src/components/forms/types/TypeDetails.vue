@@ -32,10 +32,15 @@
         <span class="fa fa-random" aria-hidden="true"></span> {{ $t( 'cmd.ChangeOrder' ) }}
       </button>
     </FormSection>
-    <Grid v-if="attributes.length > 0" v-bind:items="attributes" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-large', null, null, 'column-small' ]"
-          v-bind:row-click-disabled="!isAdministrator" v-on:row-click="rowClick">
-      <template slot-scope="{ item, columnIndex, columnClass, columnKey }">
-        <td v-bind:key="columnKey" v-bind:class="columnClass">{{ getCellValue( columnIndex, item ) }}</td>
+    <Grid v-if="attributes.length > 0" v-bind:items="attributes" v-bind:columns="columns" v-bind:row-click-disabled="!isAdministrator" v-on:row-click="rowClick">
+      <template v-slot:type-cell="{ item: attribute }">
+        {{ $t( 'AttributeType.' + attribute.type ) }}
+      </template>
+      <template v-slot:default-cell="{ item: attribute }">
+        {{ $formatter.formatExpression( attribute.default, attribute ) }}
+      </template>
+      <template v-slot:required-cell="{ item: attribute }">
+        {{ attribute.required == 1 ? $t( 'text.Yes' ) : $t( 'text.No' ) }}
       </template>
     </Grid>
     <div v-else class="alert alert-info">
@@ -61,30 +66,17 @@ export default {
         { label: this.$t( 'title.IssueTypes' ), route: 'ManageTypes' }
       ];
     },
-    columnNames() {
-      return [
-        this.$t( 'title.Name' ),
-        this.$t( 'title.Type' ),
-        this.$t( 'title.DefaultValue' ),
-        this.$t( 'title.Required' )
-      ];
+    columns() {
+      return {
+        name: { title: this.$t( 'title.Name' ), class: 'column-large' },
+        type: { title: this.$t( 'title.Type' ) },
+        default: { title: this.$t( 'title.DefaultValue' ) },
+        required: { title: this.$t( 'title.Required' ), class: 'column-small' }
+      };
     }
   },
 
   methods: {
-    getCellValue( columnIndex, attribute ) {
-      switch ( columnIndex ) {
-        case 0:
-          return attribute.name;
-        case 1:
-          return this.$t( 'AttributeType.' + attribute.type );
-        case 2:
-          return this.$formatter.formatExpression( attribute.default, attribute );
-        case 3:
-          return attribute.required == 1 ? this.$t( 'text.Yes' ) : this.$t( 'text.No' );
-      }
-    },
-
     renameType() {
       this.$router.push( 'RenameType', { typeId: this.typeId } );
     },

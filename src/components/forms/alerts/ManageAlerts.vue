@@ -25,12 +25,7 @@
           <span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'cmd.Add' ) }}
         </button>
       </FormSection>
-      <Grid v-if="publicAlerts.length > 0" v-bind:items="publicAlerts" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-medium', 'column-medium' ]"
-            v-on:row-click="rowClickPublic">
-        <template slot-scope="{ item, columnIndex, columnClass, columnKey }">
-          <td v-bind:key="columnKey" v-bind:class="columnClass" v-html="getCellValue( columnIndex, item )"></td>
-        </template>
-      </Grid>
+      <Grid v-if="publicAlerts.length > 0" v-bind:items="publicAlerts" v-bind:columns="columns" v-on:row-click="rowClickPublic"/>
       <Prompt v-else path="info.NoPublicAlerts"/>
     </template>
     <FormSection v-bind:title="$t( 'title.PersonalAlerts' )">
@@ -38,12 +33,7 @@
         <span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'cmd.Add' ) }}
       </button>
     </FormSection>
-    <Grid v-if="personalAlerts.length > 0" v-bind:items="personalAlerts" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-medium', 'column-medium' ]"
-          v-on:row-click="rowClickPersonal">
-      <template slot-scope="{ item, columnIndex, columnClass, columnKey }">
-        <td v-bind:key="columnKey" v-bind:class="columnClass" v-html="getCellValue( columnIndex, item )"></td>
-      </template>
-    </Grid>
+    <Grid v-if="personalAlerts.length > 0" v-bind:items="personalAlerts" v-bind:columns="columns" v-on:row-click="rowClickPersonal"/>
     <Prompt v-else path="info.NoPersonalAlerts"/>
   </BaseForm>
 </template>
@@ -61,24 +51,15 @@ export default {
 
   computed: {
     ...mapGetters( 'global', [ 'isAdministrator' ] ),
-    columnNames() {
-      return [
-        this.$t( 'title.Filter' ),
-        this.$t( 'title.Location' )
-      ];
+    columns() {
+      return {
+        view: { title: this.$t( 'title.Filter' ), class: 'column-medium' },
+        location: { title: this.$t( 'title.Location' ), class: 'column-medium' }
+      };
     }
   },
 
   methods: {
-    getCellValue( columnIndex, alert ) {
-      switch ( columnIndex ) {
-        case 0:
-          return alert.view;
-        case 1:
-          return alert.location;
-      }
-    },
-
     addPublicAlert() {
       this.$router.push( 'AddPublicAlert' );
     },

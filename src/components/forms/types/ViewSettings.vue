@@ -42,10 +42,12 @@
           <span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'cmd.Add' ) }}
         </button>
       </FormSection>
-      <Grid v-if="publicViews.length > 0" v-bind:items="publicViews" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-medium', 'column-xlarge', null ]"
-            v-on:row-click="rowClickPublic">
-        <template slot-scope="{ item, columnIndex, columnClass, columnKey }">
-          <td v-bind:key="columnKey" v-bind:class="columnClass">{{ getCellValue( columnIndex, item ) }}</td>
+      <Grid v-if="publicViews.length > 0" v-bind:items="publicViews" v-bind:columns="columns" v-on:row-click="rowClickPublic">
+        <template v-slot:columns-cell="{ item: view }">
+          {{ getColumns( view ) }}
+        </template>
+        <template v-slot:sort-cell="{ item: view }">
+          {{ getSortBy( view.sortColumn, view.sortAscending ) }}
         </template>
       </Grid>
       <div v-else class="alert alert-info">
@@ -57,10 +59,12 @@
         <span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'cmd.Add' ) }}
       </button>
     </FormSection>
-    <Grid v-if="personalViews.length > 0" v-bind:items="personalViews" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-medium', 'column-xlarge', null ]"
-          v-on:row-click="rowClickPersonal">
-      <template slot-scope="{ item, columnIndex, columnClass, columnKey }">
-        <td v-bind:key="columnKey" v-bind:class="columnClass">{{ getCellValue( columnIndex, item ) }}</td>
+    <Grid v-if="personalViews.length > 0" v-bind:items="personalViews" v-bind:columns="columns" v-on:row-click="rowClickPersonal">
+      <template v-slot:columns-cell="{ item: view }">
+        {{ getColumns( view ) }}
+      </template>
+      <template v-slot:sort-cell="{ item: view }">
+        {{ getSortBy( view.sortColumn, view.sortAscending ) }}
       </template>
     </Grid>
     <div v-else class="alert alert-info">
@@ -92,12 +96,12 @@ export default {
         { label: this.name, route: 'TypeDetails', params: { typeId: this.typeId } }
       ];
     },
-    columnNames() {
-      return [
-        this.$t( 'title.Name' ),
-        this.$t( 'title.Columns' ),
-        this.$t( 'title.SortBy' )
-      ];
+    columns() {
+      return {
+        name: { title: this.$t( 'title.Name' ), class: 'column-medium' },
+        columns: { title: this.$t( 'title.Columns' ), class: 'column-xlarge' },
+        sort: { title: this.$t( 'title.SortBy' ) }
+      };
     },
     defaultColumns() {
       return this.defaultView.columns.map( c => this.getColumnName( c ) ).join( ', ' );
@@ -108,15 +112,8 @@ export default {
   },
 
   methods: {
-    getCellValue( columnIndex, view ) {
-      switch ( columnIndex ) {
-        case 0:
-          return view.name;
-        case 1:
-          return view.columns.map( c => this.getColumnName( c ) ).join( ', ' );
-        case 2:
-          return this.getSortBy( view.sortColumn, view.sortAscending );
-      }
+    getColumns( view ) {
+      return view.columns.map( c => this.getColumnName( c ) ).join( ', ' );
     },
 
     getColumnName,

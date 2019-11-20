@@ -25,9 +25,9 @@
         <span class="fa fa-user-plus" aria-hidden="true"></span> {{ $t( 'title.RegistrationRequests' ) }}
       </button>
     </template>
-    <Grid v-bind:items="users" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-medium', 'column-medium', 'column-medium', null ]" v-on:row-click="rowClick">
-      <template slot-scope="{ item, columnIndex, columnClass, columnKey }">
-        <td v-bind:key="columnKey" v-bind:class="columnClass">{{ getCellValue( columnIndex, item ) }}</td>
+    <Grid v-bind:items="users" v-bind:columns="columns" v-on:row-click="rowClick">
+      <template v-slot:access-cell="{ item: user }">
+        {{ getAccess( user ) }}
       </template>
     </Grid>
   </BaseForm>
@@ -42,13 +42,13 @@ export default {
   },
 
   computed: {
-    columnNames() {
-      return [
-        this.$t( 'title.Name' ),
-        this.$t( 'title.Login' ),
-        this.$t( 'title.Email' ),
-        this.$t( 'title.Access' )
-      ];
+    columns() {
+      return {
+        name: { title: this.$t( 'title.Name' ), class: 'column-medium' },
+        login: { title: this.$t( 'title.Login' ), class: 'column-medium' },
+        email: { title: this.$t( 'title.Email' ), class: 'column-medium' },
+        access: { title: this.$t( 'title.Access' ) }
+      };
     },
     hasRegistrationRequests() {
       return this.$store.state.global.settings.selfRegister && !this.$store.state.global.settings.registerAutoApprove;
@@ -56,23 +56,13 @@ export default {
   },
 
   methods: {
-    getCellValue( columnIndex, user ) {
-      switch ( columnIndex ) {
-        case 0:
-          return user.name;
-        case 1:
-          return user.login;
-        case 2:
-          return user.email;
-        case 3:
-          if ( user.access == Access.NoAccess )
-            return this.$t( 'text.Disabled' );
-          else if ( user.access == Access.NormalAccess )
-            return this.$t( 'text.RegularUser' );
-          else if ( user.access == Access.AdministratorAccess )
-            return this.$t( 'text.SystemAdministrator' );
-          break;
-      }
+    getAccess( user ) {
+      if ( user.access == Access.NoAccess )
+        return this.$t( 'text.Disabled' );
+      else if ( user.access == Access.NormalAccess )
+        return this.$t( 'text.RegularUser' );
+      else if ( user.access == Access.AdministratorAccess )
+        return this.$t( 'text.SystemAdministrator' );
     },
 
     addUser() {

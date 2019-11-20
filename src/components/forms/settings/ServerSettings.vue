@@ -93,9 +93,9 @@
     <FormSection v-bind:title="$t( 'title.EmailInboxes' )">
       <button v-if="hasImap" type="button" class="btn btn-default" v-on:click="addInbox"><span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'cmd.Add' ) }}</button>
     </FormSection>
-    <Grid v-if="hasImap && inboxes.length > 0" v-bind:items="inboxes" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-large', null ]" v-on:row-click="rowClick">
-      <template slot-scope="{ item, columnIndex, columnClass, columnKey }">
-        <td v-bind:key="columnKey" v-bind:class="columnClass">{{ getCellValue( columnIndex, item ) }}</td>
+    <Grid v-if="hasImap && inboxes.length > 0" v-bind:items="inboxes" v-bind:columns="columns" v-on:row-click="rowClick">
+      <template v-slot:engine-cell="{ item: inbox }">
+        {{ getEngine( inbox ) }}
       </template>
     </Grid>
     <Prompt v-else-if="hasImap" path="info.NoEmailInboxes" alert-class="alert-default"/>
@@ -156,26 +156,20 @@ export default {
     timeZoneName() {
       return this.settings.timeZone.replace( /_/g, ' ' ).replace( /\//g, ' / ' ).replace( /St /g, 'St. ' );
     },
-    columnNames() {
-      return [
-        this.$t( 'title.Email' ),
-        this.$t( 'title.Type' )
-      ];
+    columns() {
+      return {
+        email: { title: this.$t( 'title.Email' ), class: 'column-large' },
+        engine: { title: this.$t( 'title.Type' ) }
+      };
     }
   },
 
   methods: {
-    getCellValue( columnIndex, inbox ) {
-      switch ( columnIndex ) {
-        case 0:
-          return inbox.email;
-        case 1:
-          if ( inbox.engine == 'imap' )
-            return this.$t( 'text.IMAP' );
-          else if ( inbox.engine == 'pop3' )
-            return this.$t( 'text.POP3' );
-          break;
-      }
+    getEngine( inbox ) {
+      if ( inbox.engine == 'imap' )
+        return this.$t( 'text.IMAP' );
+      else if ( inbox.engine == 'pop3' )
+        return this.$t( 'text.POP3' );
     },
 
     renameServer() {

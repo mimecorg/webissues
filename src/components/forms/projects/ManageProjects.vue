@@ -23,9 +23,9 @@
       <button v-if="isAdministrator" type="button" class="btn btn-success" v-on:click="addProject"><span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'cmd.Add' ) }}</button>
       <button v-if="isAdministrator" type="button" class="btn btn-default" v-on:click="projectsArchive"><span class="fa fa-archive" aria-hidden="true"></span> {{ $t( 'title.Archive' ) }}</button>
     </template>
-    <Grid v-if="projects.length > 0" v-bind:items="projects" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-large', null ]" v-on:row-click="rowClick">
-      <template slot-scope="{ item, columnIndex, columnClass, columnKey }">
-        <td v-bind:key="columnKey" v-bind:class="columnClass">{{ getCellValue( columnIndex, item ) }}</td>
+    <Grid v-if="projects.length > 0" v-bind:items="projects" v-bind:columns="columns" v-on:row-click="rowClick">
+      <template v-slot:access-cell="{ item: project }">
+        {{ project.public ? $t( 'text.PublicProject' ) : $t( 'text.RegularProject' ) }}
       </template>
     </Grid>
     <Prompt v-else v-bind:path="isAdministrator ? 'info.NoProjects' : 'info.NoAvailableProjects'"/>
@@ -42,24 +42,15 @@ export default {
 
   computed: {
     ...mapGetters( 'global', [ 'isAdministrator' ] ),
-    columnNames() {
-      return [
-        this.$t( 'title.Name' ),
-        this.$t( 'title.Access' )
-      ];
+    columns() {
+      return {
+        name: { title: this.$t( 'title.Name' ), class: 'column-large' },
+        access: { title: this.$t( 'title.Access' ) }
+      };
     }
   },
 
   methods: {
-    getCellValue( columnIndex, project ) {
-      switch ( columnIndex ) {
-        case 0:
-          return project.name;
-        case 1:
-          return project.public ? this.$t( 'text.PublicProject' ) : this.$t( 'text.RegularProject' );
-      }
-    },
-
     addProject() {
       this.$router.push( 'AddProject' );
     },

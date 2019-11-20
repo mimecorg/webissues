@@ -19,11 +19,7 @@
 
 <template>
   <BaseForm v-bind:title="$t( 'title.ProjectsArchive' )" v-bind:breadcrumbs="breadcrumbs" auto-close save-position>
-    <Grid v-if="projects.length > 0" v-bind:items="projects" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-large', null ]" v-on:row-click="rowClick">
-      <template slot-scope="{ item, columnIndex, columnClass, columnKey }">
-        <td v-bind:key="columnKey" v-bind:class="columnClass">{{ getCellValue( columnIndex, item ) }}</td>
-      </template>
-    </Grid>
+    <Grid v-if="projects.length > 0" v-bind:items="projects" v-bind:columns="columns" v-on:row-click="rowClick"/>
     <Prompt v-else path="info.NoArchivedProjects"/>
   </BaseForm>
 </template>
@@ -40,21 +36,14 @@ export default {
         { label: this.$t( 'title.Projects' ), route: 'ManageProjects' }
       ];
     },
-    columnNames() {
-      return [
-        this.$t( 'title.Name' )
-      ];
+    columns() {
+      return {
+        name: { title: this.$t( 'title.Name' ), class: 'column-large' }
+      };
     }
   },
 
   methods: {
-    getCellValue( columnIndex, project ) {
-      switch ( columnIndex ) {
-        case 0:
-          return project.name;
-      }
-    },
-
     rowClick( rowIndex ) {
       this.$router.push( 'ProjectDetailsArchive', { projectId: this.projects[ rowIndex ].id } );
     }

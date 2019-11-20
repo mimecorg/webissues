@@ -28,9 +28,12 @@
     <FormSection v-bind:title="$t( 'title.Members' )">
       <button type="button" class="btn btn-success" v-on:click="addMembers"><span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'cmd.Add' ) }}</button>
     </FormSection>
-    <Grid v-if="sortedMembers.length > 0" v-bind:items="sortedMembers" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-large', null ]" v-on:row-click="rowClick">
-      <template slot-scope="{ item, columnIndex, columnClass, columnKey }">
-        <td v-bind:key="columnKey" v-bind:class="columnClass">{{ getCellValue( columnIndex, item ) }}</td>
+    <Grid v-if="sortedMembers.length > 0" v-bind:items="sortedMembers" v-bind:columns="columns" v-on:row-click="rowClick">
+      <template v-slot:name-cell="{ item: member }">
+        {{ getName( member ) }}
+      </template>
+      <template v-slot:access-cell="{ item: member }">
+        {{ getAccess( member ) }}
       </template>
     </Grid>
     <div v-else class="alert alert-info">
@@ -66,28 +69,25 @@ export default {
     sortedMembers() {
       return this.users.map( u => this.members.find( m => m.id == u.id ) ).filter( m => m != null );
     },
-    columnNames() {
-      return [
-        this.$t( 'title.Name' ),
-        this.$t( 'title.Access' )
-      ];
+    columns() {
+      return {
+        name: { title: this.$t( 'title.Name' ), class: 'column-large' },
+        access: { title: this.$t( 'title.Access' ) }
+      };
     }
   },
 
   methods: {
-    getCellValue( columnIndex, member ) {
-      switch ( columnIndex ) {
-        case 0:
-          const user = this.users.find( u => u.id == member.id );
-          if ( user != null )
-            return user.name;
-        case 1:
-          if ( member.access == Access.NormalAccess )
-            return this.$t( 'text.RegularMember' );
-          else if ( member.access == Access.AdministratorAccess )
-            return this.$t( 'text.ProjectAdministrator' );
-          break;
-      }
+    getName( member ) {
+      const user = this.users.find( u => u.id == member.id );
+      if ( user != null )
+        return user.name;
+    },
+    getAccess( member ) {
+      if ( member.access == Access.NormalAccess )
+        return this.$t( 'text.RegularMember' );
+      else if ( member.access == Access.AdministratorAccess )
+        return this.$t( 'text.ProjectAdministrator' );
     },
 
     editAccess() {

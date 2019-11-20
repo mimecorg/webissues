@@ -23,14 +23,13 @@
       <div ref="headerScroll" class="grid-header-scroll">
         <table v-bind:class="[ 'grid-header-table', { 'grid-header-sort': sortEnabled } ]">
           <thead v-if="sortEnabled">
-            <th v-for="( columnName, columnIndex ) in columnNames" v-bind:key="getColumnKey( columnIndex )" v-bind:class="getColumnClass( columnIndex )"
-                v-on:click="sort( columnIndex )">
-              {{ columnName }} <span v-if="columnIndex == sortColumn" v-bind:class="sortClass" aria-hidden="true"></span>
+            <th v-for="( column, columnKey ) in columns" v-bind:key="columnKey" v-bind:class="column.class" v-on:click="sort( columnKey )">
+              {{ column.title }} <span v-if="columnKey == sortColumn" v-bind:class="sortClass" aria-hidden="true"></span>
             </th>
             <th class="column-fill"></th>
           </thead>
           <thead v-else>
-            <th v-for="( columnName, columnIndex ) in columnNames" v-bind:key="columnIndex" v-bind:class="getColumnClass( columnIndex )">{{ columnName }}</th>
+            <th v-for="( column, columnKey ) in columns" v-bind:key="columnKey" v-bind:class="column.class">{{ column.title }}</th>
             <th class="column-fill"></th>
           </thead>
         </table>
@@ -39,10 +38,17 @@
     <div class="grid-body">
       <div ref="bodyScroll" class="grid-body-scroll" v-on:scroll="updateHeaderScroll">
         <table v-bind:class="[ 'grid-body-table', { 'grid-body-hover': !rowClickDisabled } ]">
-          <tbody>
+          <tbody v-if="rawMode">
             <tr v-for="( item, rowIndex ) in items" v-bind:key="item.id" v-on:click="rowClick( rowIndex )">
-              <slot v-for="( columnName, columnIndex ) in columnNames" v-bind:item="item" v-bind:column-index="columnIndex"
-                    v-bind:row-index="rowIndex" v-bind:column-class="getColumnClass( columnIndex )" v-bind:column-key="getColumnKey( columnIndex )"/>
+              <slot v-for="( column, columnKey ) in columns" v-bind:item="item" v-bind:column="column" v-bind:column-key="columnKey" />
+              <td class="column-fill"></td>
+            </tr>
+          </tbody>
+          <tbody v-else>
+            <tr v-for="( item, rowIndex ) in items" v-bind:key="item.id" v-on:click="rowClick( rowIndex )">
+              <td v-for="( column, columnKey ) in columns" v-bind:key="columnKey" v-bind:class="column.class">
+                <slot v-bind:name="columnKey + '-cell'" v-bind:item="item">{{ item[ columnKey ] }}</slot>
+              </td>
               <td class="column-fill"></td>
             </tr>
           </tbody>
@@ -74,9 +80,7 @@
 export default {
   props: {
     items: Array,
-    columnNames: Array,
-    columnClasses: Array,
-    columnKeys: Array,
+    columns: [ Object, Array ],
     sortEnabled: Boolean,
     sortColumn: Number,
     sortAscending: Boolean,
@@ -85,7 +89,8 @@ export default {
     previousEnabled: Boolean,
     nextEnabled: Boolean,
     statusText: String,
-    busy: Boolean
+    busy: Boolean,
+    rawMode: Boolean
   },
 
   data() {
@@ -118,15 +123,8 @@ export default {
       this.$refs.headerScroll.scrollLeft = this.$refs.bodyScroll.scrollLeft;
     },
 
-    getColumnClass( columnIndex ) {
-      return this.columnClasses != null ? this.columnClasses[ columnIndex ] : null
-    },
-    getColumnKey( columnIndex ) {
-      return this.columnKeys != null ? this.columnKeys[ columnIndex ] : columnIndex
-    },
-
-    sort( columnIndex ) {
-      this.$emit( 'sort', columnIndex );
+    sort( columnKey ) {
+      this.$emit( 'sort', columnKey );
     },
     rowClick( rowIndex ) {
       if ( !this.rowClickDisabled )

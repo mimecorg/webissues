@@ -19,10 +19,9 @@
 
 <template>
   <BaseForm v-bind:title="$t( 'title.RegistrationRequests' )" v-bind:breadcrumbs="breadcrumbs" v-bind:size="size" auto-close save-position>
-    <Grid v-if="requests.length > 0" v-bind:items="requests" v-bind:column-names="columnNames"
-          v-bind:column-classes="[ 'column-medium', 'column-medium', 'column-medium', null ]" v-on:row-click="rowClick">
-      <template slot-scope="{ item, columnIndex, columnClass, columnKey }">
-        <td v-bind:key="columnKey" v-bind:class="columnClass">{{ getCellValue( columnIndex, item ) }}</td>
+    <Grid v-if="requests.length > 0" v-bind:items="requests" v-bind:columns="columns" v-on:row-click="rowClick">
+      <template v-slot:date-cell="{ item: request }">
+        {{ $formatter.formatStamp( request.date ) }}
       </template>
     </Grid>
     <Prompt v-else path="info.NoRegistrationRequests"/>
@@ -47,30 +46,17 @@ export default {
       else
         return 'small';
     },
-    columnNames() {
-      return [
-        this.$t( 'title.Name' ),
-        this.$t( 'title.Login' ),
-        this.$t( 'title.Email' ),
-        this.$t( 'title.CreatedDate' )
-      ];
+    columns() {
+      return {
+        name: { title: this.$t( 'title.Name' ), class: 'column-medium' },
+        login: { title: this.$t( 'title.Login' ), class: 'column-medium' },
+        email: { title: this.$t( 'title.Email' ), class: 'column-medium' },
+        date: { title: this.$t( 'title.CreatedDate' ) }
+      };
     }
   },
 
   methods: {
-    getCellValue( columnIndex, request ) {
-      switch ( columnIndex ) {
-        case 0:
-          return request.name;
-        case 1:
-          return request.login;
-        case 2:
-          return request.email;
-        case 3:
-          return this.$formatter.formatStamp( request.date );
-      }
-    },
-
     rowClick( rowIndex ) {
       this.$router.push( 'RequestDetails', { requestId: this.requests[ rowIndex ].id } );
     }

@@ -18,13 +18,13 @@
 -->
 
 <template>
-  <Grid id="application-grid" v-bind:items="convertedIssues" v-bind:column-names="columnNames" v-bind:column-classes="columnClasses"
-        v-bind:column-keys="columnKeys" sort-enabled v-bind:sort-column="sortColumnIndex" v-bind:sort-ascending="sortAscending"
+  <Grid id="application-grid" v-bind:items="convertedIssues" v-bind:columns="gridColumns"
+        sort-enabled v-bind:sort-column="sortColumnKey" v-bind:sort-ascending="sortAscending"
         footer-visible v-bind:previous-enabled="previousEnabled" v-bind:next-enabled="nextEnabled"
         v-bind:status-text="statusText" v-bind:busy="busy" v-on:sort="sort" v-on:previous="previous" v-on:next="next"
-        v-on:row-click="rowClick">
-    <template slot-scope="{ item, columnIndex, columnClass, columnKey }">
-      <td v-bind:key="columnKey" v-bind:class="columnClass" v-html="getCellValue( columnIndex, item )"></td>
+        v-on:row-click="rowClick" raw-mode>
+    <template v-slot="{ item: issue, column, columnKey }">
+      <td v-bind:key="column.id" v-bind:class="column.class" v-html="getCellValue( columnKey, issue )"></td>
     </template>
   </Grid>
 </template>
@@ -40,21 +40,17 @@ export default {
     ...mapState( 'global', [ 'settings' ] ),
     ...mapState( 'list', [ 'sortColumn', 'sortAscending', 'columns', 'issues', 'totalCount' ] ),
     ...mapGetters( 'list', [ 'type', 'firstIndex', 'lastIndex' ] ),
-    columnNames() {
-      return this.columns.map( column => column.name );
-    },
-    columnClasses() {
+    gridColumns() {
       return this.columns.map( column => {
+        const result = { title: column.name, id: column.id };
         if ( column.id == Column.ID )
-          return 'column-small';
+          result.class = 'column-small';
         else if ( column.id == Column.Name )
-          return 'column-xlarge';
+          result.class = 'column-xlarge';
         else if ( column.id == Column.Location )
-          return 'column-medium';
+          result.class = 'column-medium';
+        return result;
       } );
-    },
-    columnKeys() {
-      return this.columns.map( column => column.id );
     },
     columnAttributes() {
       return this.columns.map( column => {
@@ -81,7 +77,7 @@ export default {
         };
       } );
     },
-    sortColumnIndex() {
+    sortColumnKey() {
       return this.columns.findIndex( c => c.id == this.sortColumn );
     },
     previousEnabled() {
@@ -103,9 +99,9 @@ export default {
   },
 
   methods: {
-    getCellValue( columnIndex, issue ) {
-      let value = issue.cells[ columnIndex ];
-      if ( this.columns[ columnIndex ].id == Column.Name ) {
+    getCellValue( columnKey, issue ) {
+      let value = issue.cells[ columnKey ];
+      if ( this.columns[ columnKey ].id == Column.Name ) {
         if ( issue.read < issue.stamp )
           value = '<span class="fa fa-circle issue-' + ( issue.read > 0 ? 'modified' : 'unread' ) + '" aria-hidden="true"></span> ' + value;
         if ( issue.subscribed && this.settings.subscriptions )
@@ -114,10 +110,10 @@ export default {
       return value;
     },
 
-    sort( columnIndex ) {
+    sort( columnKey ) {
       this.$store.commit( 'list/setSortOrder', {
-        sortColumn: this.columns[ columnIndex ].id,
-        sortAscending: ( columnIndex == this.sortColumnIndex ) ? !this.sortAscending : true
+        sortColumn: this.columns[ columnKey ].id,
+        sortAscending: ( columnKey == this.sortColumnKey ) ? !this.sortAscending : true
       } );
       this.$store.dispatch( 'updateList' );
     },

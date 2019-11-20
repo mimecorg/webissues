@@ -25,10 +25,12 @@
           <span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'cmd.Add' ) }}
         </button>
       </FormSection>
-      <Grid v-if="publicReports.length > 0" v-bind:items="publicReports" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-medium', 'column-medium', null, null ]"
-            v-on:row-click="rowClickPublic">
-        <template slot-scope="{ item, columnIndex, columnClass, columnKey }">
-          <td v-bind:key="columnKey" v-bind:class="columnClass" v-html="getCellValue( columnIndex, item )"></td>
+      <Grid v-if="publicReports.length > 0" v-bind:items="publicReports" v-bind:columns="columns" v-on:row-click="rowClickPublic">
+        <template v-slot:type-cell="{ item: report }">
+          {{ getType( report ) }}
+        </template>
+        <template v-slot:frequency-cell="{ item: report }">
+          {{ getFrequency( report ) }}
         </template>
       </Grid>
       <Prompt v-else path="info.NoPublicReports"/>
@@ -38,10 +40,12 @@
         <span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'cmd.Add' ) }}
       </button>
     </FormSection>
-    <Grid v-if="personalReports.length > 0" v-bind:items="personalReports" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-medium', 'column-medium', null, null ]"
-          v-on:row-click="rowClickPersonal">
-      <template slot-scope="{ item, columnIndex, columnClass, columnKey }">
-        <td v-bind:key="columnKey" v-bind:class="columnClass" v-html="getCellValue( columnIndex, item )"></td>
+    <Grid v-if="personalReports.length > 0" v-bind:items="personalReports" v-bind:columns="columns" v-on:row-click="rowClickPersonal">
+      <template v-slot:type-cell="{ item: report }">
+        {{ getType( report ) }}
+      </template>
+      <template v-slot:frequency-cell="{ item: report }">
+        {{ getFrequency( report ) }}
       </template>
     </Grid>
     <Prompt v-else path="info.NoPersonalReports"/>
@@ -67,36 +71,28 @@ export default {
       else
         return 'normal';
     },
-    columnNames() {
-      return [
-        this.$t( 'title.Filter' ),
-        this.$t( 'title.Location' ),
-        this.$t( 'title.Type' ),
-        this.$t( 'title.Frequency' )
-      ];
+    columns() {
+      return {
+        view: { title: this.$t( 'title.Filter' ), class: 'column-medium' },
+        location: { title: this.$t( 'title.Location' ), class: 'column-medium' },
+        type: { title: this.$t( 'title.Type' ) },
+        frequency: { title: this.$t( 'title.Frequency' ) }
+      };
     }
   },
 
   methods: {
-    getCellValue( columnIndex, report ) {
-      switch ( columnIndex ) {
-        case 0:
-          return report.view;
-        case 1:
-          return report.location;
-        case 2:
-          if ( report.type == AlertType.ChangeReport )
-            return this.$t( 'text.ChangeReport' );
-          else if ( report.type == AlertType.IssueReport )
-            return this.$t( 'text.IssueReport' );
-          break;
-        case 3:
-          if ( report.frequency == AlertFrequency.Daily )
-            return this.$t( 'text.Daily' );
-          else if ( report.frequency == AlertFrequency.Weekly )
-            return this.$t( 'text.Weekly' );
-          break;
-      }
+    getType( report ) {
+      if ( report.type == AlertType.ChangeReport )
+        return this.$t( 'text.ChangeReport' );
+      else if ( report.type == AlertType.IssueReport )
+        return this.$t( 'text.IssueReport' );
+    },
+    getFrequency( report ) {
+      if ( report.frequency == AlertFrequency.Daily )
+        return this.$t( 'text.Daily' );
+      else if ( report.frequency == AlertFrequency.Weekly )
+        return this.$t( 'text.Weekly' );
     },
 
     addPublicReport() {

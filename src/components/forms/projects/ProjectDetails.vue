@@ -50,10 +50,9 @@
         <span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'cmd.Add' ) }}
       </button>
     </FormSection>
-    <Grid v-if="folders.length > 0" v-bind:items="folders" v-bind:column-names="columnNames" v-bind:column-classes="[ 'column-large', null ]"
-          v-bind:row-click-disabled="!isProjectAdministrator" v-on:row-click="rowClick">
-      <template slot-scope="{ item, columnIndex, columnClass, columnKey }">
-        <td v-bind:key="columnKey" v-bind:class="columnClass">{{ getCellValue( columnIndex, item ) }}</td>
+    <Grid v-if="folders.length > 0" v-bind:items="folders" v-bind:columns="columns" v-bind:row-click-disabled="!isProjectAdministrator" v-on:row-click="rowClick">
+      <template v-slot:type-cell="{ item: folder }">
+        {{ getType( folder ) }}
       </template>
     </Grid>
     <div v-else class="alert alert-info">
@@ -101,25 +100,19 @@ export default {
       else
         return null;
     },
-    columnNames() {
-      return [
-        this.$t( 'title.Name' ),
-        this.$t( 'title.Type' )
-      ];
+    columns() {
+      return {
+        name: { title: this.$t( 'title.Name' ), class: 'column-large' },
+        type: { title: this.$t( 'title.Type' ) }
+      };
     }
   },
 
   methods: {
-    getCellValue( columnIndex, folder ) {
-      switch ( columnIndex ) {
-        case 0:
-          return folder.name;
-        case 1:
-          const type = this.types.find( t => t.id == folder.typeId );
-          if ( type != null )
-            return type.name;
-          break;
-      }
+    getType( folder ) {
+      const type = this.types.find( t => t.id == folder.typeId );
+      if ( type != null )
+        return type.name;
     },
 
     renameProject() {
