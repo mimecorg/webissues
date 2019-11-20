@@ -19,7 +19,7 @@
 
 <template>
   <BaseForm v-bind:title="$t( 'cmd.DeleteAlert' )" size="small" with-buttons v-on:ok="submit" v-on:cancel="returnToDetails">
-    <Prompt v-bind:path="promptPath"><strong v-html="view"></strong><strong v-html="location"></strong></Prompt>
+    <Prompt v-bind:path="promptPath"><strong>{{ view }}</strong><strong>{{ location }}</strong></Prompt>
   </BaseForm>
 </template>
 

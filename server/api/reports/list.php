@@ -63,13 +63,13 @@ class Server_Api_Reports_List
         $resultReport = array();
         $resultReport[ 'id' ] = (int)$report[ 'alert_id' ];
         if ( $report[ 'view_name' ] != null )
-            $resultReport[ 'view' ] = htmlspecialchars( $report[ 'type_name' ] ) . ' &mdash; ' . htmlspecialchars( $report[ 'view_name' ] );
+            $resultReport[ 'view' ] = $report[ 'type_name' ] . " \xE2\x80\x94 " . $report[ 'view_name' ];
         else
-            $resultReport[ 'view' ] = htmlspecialchars( $report[ 'type_name' ] );
+            $resultReport[ 'view' ] = $report[ 'type_name' ];
         if ( $report[ 'folder_name' ] != null && $report[ 'project_name' ] != null )
-            $resultReport[ 'location' ] = htmlspecialchars( $report[ 'project_name' ] ) . ' &mdash; ' . htmlspecialchars( $report[ 'folder_name' ] );
+            $resultReport[ 'location' ] = $report[ 'project_name' ] . " \xE2\x80\x94 " . $report[ 'folder_name' ];
         else if ( $report[ 'project_name' ] != null )
-            $resultReport[ 'location' ] = htmlspecialchars( $report[ 'project_name' ] );
+            $resultReport[ 'location' ] = $report[ 'project_name' ];
         else
             $resultReport[ 'location' ] = null;
         $resultReport[ 'type' ] = (int)$report[ 'alert_type' ];

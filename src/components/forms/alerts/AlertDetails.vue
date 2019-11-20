@@ -18,7 +18,7 @@
 -->
 
 <template>
-  <BaseForm v-bind:title="view" v-bind:breadcrumbs="breadcrumbs" title-html auto-close save-position>
+  <BaseForm v-bind:title="view" v-bind:breadcrumbs="breadcrumbs" auto-close save-position>
     <template slot="header">
       <button type="button" class="btn btn-default" v-on:click="deleteAlert"><span class="fa fa-trash" aria-hidden="true"></span> {{ $t( 'cmd.Delete' ) }}</button>
     </template>
@@ -27,11 +27,11 @@
       <div class="panel-body panel-table">
         <div class="row">
           <div class="col-xs-3 col-sm-2">{{ $t( 'label.Filter' ) }}</div>
-          <div class="col-xs-9 col-sm-10" v-html="view"></div>
+          <div class="col-xs-9 col-sm-10">{{ view }}</div>
         </div>
         <div class="row">
           <div class="col-xs-3 col-sm-2">{{ $t( 'label.Location' ) }}</div>
-          <div class="col-xs-9 col-sm-10" v-html="location"></div>
+          <div class="col-xs-9 col-sm-10">{{ location }}</div>
         </div>
       </div>
     </div>

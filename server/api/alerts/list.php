@@ -59,13 +59,13 @@ class Server_Api_Alerts_List
         $resultAlert = array();
         $resultAlert[ 'id' ] = (int)$alert[ 'alert_id' ];
         if ( $alert[ 'view_name' ] != null )
-            $resultAlert[ 'view' ] = htmlspecialchars( $alert[ 'type_name' ] ) . ' &mdash; ' . htmlspecialchars( $alert[ 'view_name' ] );
+            $resultAlert[ 'view' ] = $alert[ 'type_name' ] . " \xE2\x80\x94 " . $alert[ 'view_name' ];
         else
-            $resultAlert[ 'view' ] = htmlspecialchars( $alert[ 'type_name' ] );
+            $resultAlert[ 'view' ] = $alert[ 'type_name' ];
         if ( $alert[ 'folder_name' ] != null && $alert[ 'project_name' ] != null )
-            $resultAlert[ 'location' ] = htmlspecialchars( $alert[ 'project_name' ] ) . ' &mdash; ' . htmlspecialchars( $alert[ 'folder_name' ] );
+            $resultAlert[ 'location' ] = $alert[ 'project_name' ] . " \xE2\x80\x94 " . $alert[ 'folder_name' ];
         else if ( $alert[ 'project_name' ] != null )
-            $resultAlert[ 'location' ] = htmlspecialchars( $alert[ 'project_name' ] );
+            $resultAlert[ 'location' ] = $alert[ 'project_name' ];
         else
             $resultAlert[ 'location' ] = null;
         return $resultAlert;

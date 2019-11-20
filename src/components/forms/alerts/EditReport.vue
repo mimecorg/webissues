@@ -23,7 +23,7 @@
       <button v-if="mode == 'edit'" type="button" class="btn btn-default" v-on:click="deleteReport"><span class="fa fa-trash" aria-hidden="true"></span> {{ $t( 'cmd.Delete' ) }}</button>
     </template>
     <Prompt v-if="mode == 'add'" v-bind:path="promptPath"/>
-    <Prompt v-else v-bind:path="promptPath"><strong v-html="view"></strong><strong v-html="location"></strong></Prompt>
+    <Prompt v-else v-bind:path="promptPath"><strong>{{ view }}</strong><strong>{{ location }}</strong></Prompt>
     <Prompt v-if="userEmail == null" path="prompt.WarningNoEmailAddress" alert-class="alert-warning"><strong>{{ $t( 'label.Warning' ) }}</strong></Prompt>
     <FormGroup v-if="mode == 'add'" v-bind:label="$t( 'label.Filter' )" v-bind="$field( 'typeId' )">
       <ViewFilters ref="typeId" v-bind:typeId.sync="typeId" v-bind:viewId.sync="viewId" v-bind:show-personal="!isPublic"/>

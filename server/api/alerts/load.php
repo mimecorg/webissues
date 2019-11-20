@@ -37,13 +37,13 @@ class Server_Api_Alerts_Load
         $result[ 'isPublic' ] = $alert[ 'is_public' ] != 0;
 
         if ( $alert[ 'view_name' ] != null )
-            $result[ 'view' ] = htmlspecialchars( $alert[ 'type_name' ] ) . ' &mdash; ' . htmlspecialchars( $alert[ 'view_name' ] );
+            $result[ 'view' ] = $alert[ 'type_name' ] . " \xE2\x80\x94 " . $alert[ 'view_name' ];
         else
-            $result[ 'view' ] = htmlspecialchars( $alert[ 'type_name' ] );
+            $result[ 'view' ] = $alert[ 'type_name' ];
         if ( $alert[ 'folder_name' ] != null && $alert[ 'project_name' ] != null )
-            $result[ 'location' ] = htmlspecialchars( $alert[ 'project_name' ] ) . ' &mdash; ' . htmlspecialchars( $alert[ 'folder_name' ] );
+            $result[ 'location' ] = $alert[ 'project_name' ] . " \xE2\x80\x94 " . $alert[ 'folder_name' ];
         else if ( $alert[ 'project_name' ] != null )
-            $result[ 'location' ] = htmlspecialchars( $alert[ 'project_name' ] );
+            $result[ 'location' ] = $alert[ 'project_name' ];
         else
             $result[ 'location' ] = null;
 

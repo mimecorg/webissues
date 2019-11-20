@@ -21,8 +21,7 @@
   <div class="form-header">
     <div class="form-header-group">
       <div class="form-header-title">
-        <h1 v-if="titleHtml" v-html="title"></h1>
-        <h1 v-else>{{ title }}</h1>
+        <h1>{{ title }}</h1>
       </div>
       <div class="form-header-buttons">
         <slot/>
@@ -42,7 +41,6 @@
 export default {
   props: {
     title: String,
-    titleHtml: Boolean,
     breadcrumbs: Array
   },
   methods: {

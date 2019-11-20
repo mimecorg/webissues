@@ -42,13 +42,13 @@ class Server_Api_Reports_Load
         $result[ 'isPublic' ] = $report[ 'is_public' ] != 0;
 
         if ( $report[ 'view_name' ] != null )
-            $result[ 'view' ] = htmlspecialchars( $report[ 'type_name' ] ) . ' &mdash; ' . htmlspecialchars( $report[ 'view_name' ] );
+            $result[ 'view' ] = $report[ 'type_name' ] . " \xE2\x80\x94 " . $report[ 'view_name' ];
         else
-            $result[ 'view' ] = htmlspecialchars( $report[ 'type_name' ] );
+            $result[ 'view' ] = $report[ 'type_name' ];
         if ( $report[ 'folder_name' ] != null && $report[ 'project_name' ] != null )
-            $result[ 'location' ] = htmlspecialchars( $report[ 'project_name' ] ) . ' &mdash; ' . htmlspecialchars( $report[ 'folder_name' ] );
+            $result[ 'location' ] = $report[ 'project_name' ] . " \xE2\x80\x94 " . $report[ 'folder_name' ];
         else if ( $report[ 'project_name' ] != null )
-            $result[ 'location' ] = htmlspecialchars( $report[ 'project_name' ] );
+            $result[ 'location' ] = $report[ 'project_name' ];
         else
             $result[ 'location' ] = null;
 

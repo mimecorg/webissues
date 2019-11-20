@@ -27,15 +27,15 @@
     </template>
     <li v-for="a in personalAlerts" v-bind:key="a.id" >
       <HyperLink v-on:click="openView( a )">
-        <span v-html="a.view"></span> <span class="badge">{{ a.count }}</span>
-        <div v-if="a.location != null" class="dropdown-subtitle" v-html="a.location"></div>
+        {{ a.view }} <span class="badge">{{ a.count }}</span>
+        <div v-if="a.location != null" class="dropdown-subtitle">{{ a.location }}</div>
       </HyperLink>
     </li>
     <li v-if="personalAlerts.length > 0 && publicAlerts.length > 0" role="separator" class="divider"></li>
     <li v-for="a in publicAlerts" v-bind:key="a.id" >
       <HyperLink v-on:click="openView( a )">
-        <span v-html="a.view"></span> <span class="badge">{{ a.count }}</span>
-        <div v-if="a.location != null" class="dropdown-subtitle" v-html="a.location"></div>
+        {{ a.view }} <span class="badge">{{ a.count }}</span>
+        <div v-if="a.location != null" class="dropdown-subtitle">{{ a.location }}</div>
       </HyperLink>
     </li>
     <template v-slot:no-scroll>
