@@ -24,7 +24,7 @@
         v-bind:status-text="statusText" v-bind:busy="busy" v-on:sort="sort" v-on:previous="previous" v-on:next="next"
         v-on:row-click="rowClick" raw-mode>
     <template v-slot="{ item: issue, column, columnKey }">
-      <td v-bind:key="column.id" v-bind:class="column.class" v-html="getCellValue( columnKey, issue )"></td>
+      <td v-bind:key="column.id" v-bind:class="column.class" v-html="getCellValue( columnKey, issue )" v-on:mouseenter="onCellEnter( $event.target )"></td>
     </template>
   </Grid>
 </template>
@@ -129,6 +129,13 @@ export default {
 
     rowClick( rowIndex ) {
       this.$router.push( 'IssueDetails', { issueId: this.issues[ rowIndex ].id } );
+    },
+
+    onCellEnter( cell ) {
+      if ( cell.offsetWidth < cell.scrollWidth )
+        cell.setAttribute( 'title', cell.innerText.trim() );
+      else
+        cell.removeAttribute( 'title' );
     }
   }
 }

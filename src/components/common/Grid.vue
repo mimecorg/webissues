@@ -46,7 +46,7 @@
           </tbody>
           <tbody v-else>
             <tr v-for="( item, rowIndex ) in items" v-bind:key="item.id" v-on:click="rowClick( rowIndex )">
-              <td v-for="( column, columnKey ) in columns" v-bind:key="columnKey" v-bind:class="column.class">
+              <td v-for="( column, columnKey ) in columns" v-bind:key="columnKey" v-bind:class="column.class" v-on:mouseenter="onCellEnter( $event.target )">
                 <slot v-bind:name="columnKey + '-cell'" v-bind:item="item">{{ item[ columnKey ] }}</slot>
               </td>
               <td class="column-fill"></td>
@@ -135,6 +135,13 @@ export default {
     },
     next() {
       this.$emit( 'next' );
+    },
+
+    onCellEnter( cell ) {
+      if ( cell.offsetWidth < cell.scrollWidth )
+        cell.setAttribute( 'title', cell.innerText.trim() );
+      else
+        cell.removeAttribute( 'title' );
     }
   },
 
