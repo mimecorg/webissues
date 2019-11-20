@@ -19,7 +19,7 @@
 
 <template>
   <BaseForm v-bind:title="title" with-buttons v-on:ok="submit" v-on:cancel="returnToDetails">
-    <template slot="header">
+    <template v-slot:header>
       <button v-if="mode == 'edit'" type="button" class="btn btn-default" v-on:click="deleteInbox">
         <span class="fa fa-trash" aria-hidden="true"></span> {{ $t( 'cmd.Delete' ) }}
       </button>

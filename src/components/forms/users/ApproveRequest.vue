@@ -21,10 +21,12 @@
   <BaseForm v-bind:title="$t( 'cmd.ApproveRequest' )" with-buttons v-on:ok="submit" v-on:cancel="returnToDetails">
     <Prompt path="prompt.ApproveRequest"><strong>{{ name }}</strong></Prompt>
     <Panel v-if="projects.length > 0" v-bind:title="$t( 'title.Projects' )">
-      <div slot="heading" class="panel-links">
-        <HyperLink v-on:click="selectAll( true )">{{ $t( 'cmd.SelectAll' ) }}</HyperLink>
-        <HyperLink v-on:click="selectAll( false )">{{ $t( 'cmd.UnselectAll' ) }}</HyperLink>
-      </div>
+      <template v-slot:heading>
+        <div class="panel-links">
+          <HyperLink v-on:click="selectAll( true )">{{ $t( 'cmd.SelectAll' ) }}</HyperLink>
+          <HyperLink v-on:click="selectAll( false )">{{ $t( 'cmd.UnselectAll' ) }}</HyperLink>
+        </div>
+      </template>
       <div class="row checkbox-group">
         <div v-for="( u, index ) in projects" v-bind:key="u.id" class="col-xs-12 col-md-4">
           <div class="checkbox">

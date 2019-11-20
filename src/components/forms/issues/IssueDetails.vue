@@ -20,7 +20,7 @@
 <template>
   <BaseForm v-bind:title="details.name" size="large" auto-close>
 
-    <template slot="header">
+    <template v-slot:header>
       <button v-if="isAuthenticated" type="button" class="btn btn-primary" v-on:click="editIssue"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'cmd.Edit' ) }}</button>
       <DropdownButton v-if="isAuthenticated" fa-class="fa-ellipsis-v" menu-class="dropdown-menu-right" v-bind:title="$t( 'title.More' )">
         <li><HyperLink v-on:click="cloneIssue"><span class="fa fa-clone" aria-hidden="true"></span> {{ $t( 'cmd.CloneIssue' ) }}</HyperLink></li>

@@ -19,7 +19,7 @@
 
 <template>
   <BaseForm v-bind:title="name" v-bind:breadcrumbs="breadcrumbs" auto-close save-position>
-    <template slot="header">
+    <template v-slot:header>
       <DropdownButton fa-class="fa-ellipsis-v" menu-class="dropdown-menu-right" v-bind:title="$t( 'title.More' )">
         <li><HyperLink v-on:click="restoreProject"><span class="fa fa-undo" aria-hidden="true"></span> {{ $t( 'cmd.RestoreProject' ) }}</HyperLink></li>
         <li><HyperLink v-on:click="renameProject"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'cmd.RenameProject' ) }}</HyperLink></li>

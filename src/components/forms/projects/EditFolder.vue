@@ -19,7 +19,7 @@
 
 <template>
   <BaseForm v-bind:title="title" size="small" with-buttons v-on:ok="submit" v-on:cancel="returnToDetails">
-    <template slot="header">
+    <template v-slot:header>
       <DropdownButton v-if="mode == 'rename'" fa-class="fa-ellipsis-v" menu-class="dropdown-menu-right" v-bind:title="$t( 'title.More' )">
         <li><HyperLink v-on:click="moveFolder"><span class="fa fa-exchange" aria-hidden="true"></span> {{ $t( 'cmd.MoveFolder' ) }}</HyperLink></li>
         <li><HyperLink v-on:click="deleteFolder"><span class="fa fa-trash" aria-hidden="true"></span> {{ $t( 'cmd.DeleteFolder' ) }}</HyperLink></li>

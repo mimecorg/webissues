@@ -19,7 +19,7 @@
 
 <template>
   <BaseForm v-bind:title="view" v-bind:breadcrumbs="breadcrumbs" auto-close save-position>
-    <template slot="header">
+    <template v-slot:header>
       <button type="button" class="btn btn-default" v-on:click="deleteAlert"><span class="fa fa-trash" aria-hidden="true"></span> {{ $t( 'cmd.Delete' ) }}</button>
     </template>
     <FormSection v-bind:title="$t( 'title.Details' )"/>

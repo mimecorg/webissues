@@ -19,7 +19,7 @@
 
 <template>
   <BaseForm v-bind:title="name" v-bind:breadcrumbs="breadcrumbs" size="large" auto-close save-position>
-    <template slot="header">
+    <template v-slot:header>
       <button type="button" class="btn btn-default" v-on:click="viewSettings"><span class="fa fa-binoculars" aria-hidden="true"></span> {{ $t( 'title.ViewSettings' ) }}</button>
       <DropdownButton v-if="isAdministrator" fa-class="fa-ellipsis-v" menu-class="dropdown-menu-right" v-bind:title="$t( 'title.More' )">
         <li><HyperLink v-on:click="renameType"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'cmd.RenameType' ) }}</HyperLink></li>

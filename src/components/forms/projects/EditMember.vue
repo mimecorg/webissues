@@ -19,7 +19,7 @@
 
 <template>
   <BaseForm v-bind:title="title" v-bind:size="size" with-buttons v-on:ok="submit" v-on:cancel="returnToDetails">
-    <template slot="header">
+    <template v-slot:header>
       <button v-if="mode == 'edit' && canEdit" type="button" class="btn btn-default" v-on:click="removeMember">
         <span class="fa fa-ban" aria-hidden="true"></span> {{ $t( 'cmd.Remove' ) }}
       </button>
@@ -27,10 +27,12 @@
     <Prompt v-if="mode == 'edit'" path="prompt.EditMember"><strong>{{ projectName }}</strong><strong>{{ userName }}</strong></Prompt>
     <Prompt v-else-if="mode == 'add'" path="prompt.AddMembers"><strong>{{ projectName }}</strong></Prompt>
     <Panel v-if="mode == 'add' && availableUsers.length > 0" v-bind:title="$t( 'title.Users' )">
-      <div slot="heading" class="panel-links">
-        <HyperLink v-on:click="selectAll( true )">{{ $t( 'cmd.SelectAll' ) }}</HyperLink>
-        <HyperLink v-on:click="selectAll( false )">{{ $t( 'cmd.UnselectAll' ) }}</HyperLink>
-      </div>
+      <template v-slot:heading>
+        <div class="panel-links">
+          <HyperLink v-on:click="selectAll( true )">{{ $t( 'cmd.SelectAll' ) }}</HyperLink>
+          <HyperLink v-on:click="selectAll( false )">{{ $t( 'cmd.UnselectAll' ) }}</HyperLink>
+        </div>
+      </template>
       <div class="row checkbox-group">
         <div v-for="( u, index ) in availableUsers" v-bind:key="u.id" class="col-xs-12 col-md-4">
           <div class="checkbox">

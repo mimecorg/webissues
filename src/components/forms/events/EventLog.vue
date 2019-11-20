@@ -19,7 +19,7 @@
 
 <template>
   <BaseForm v-bind:title="$t( 'title.EventLog' )" size="large" auto-close save-position>
-    <template slot="header">
+    <template v-slot:header>
       <DropdownButton v-bind:btn-class="filter != null ? 'btn-primary' : 'btn-default'" fa-class="fa-filter" menu-class="dropdown-menu-right" v-bind:title="filterTitle">
         <li v-bind:class="{ active: filter == null }">
           <HyperLink v-on:click="setFilter( null )">{{ getFilterText( null ) }}</HyperLink>

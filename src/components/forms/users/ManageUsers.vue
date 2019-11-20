@@ -19,7 +19,7 @@
 
 <template>
   <BaseForm v-bind:title="$t( 'title.UserAccounts' )" size="large" auto-close save-position>
-    <template slot="header">
+    <template v-slot:header>
       <button type="button" class="btn btn-success" v-on:click="addUser"><span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'cmd.Add' ) }}</button>
       <button v-if="hasRegistrationRequests" type="button" class="btn btn-default" v-on:click="registrationRequests">
         <span class="fa fa-user-plus" aria-hidden="true"></span> {{ $t( 'title.RegistrationRequests' ) }}

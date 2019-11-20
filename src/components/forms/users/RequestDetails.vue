@@ -19,7 +19,7 @@
 
 <template>
   <BaseForm v-bind:title="name" v-bind:breadcrumbs="breadcrumbs" auto-close save-position>
-    <template slot="header">
+    <template v-slot:header>
       <button type="button" class="btn btn-primary" v-on:click="approveRequest"><span class="fa fa-check" aria-hidden="true"></span> {{ $t( 'cmd.Approve' ) }}</button>
       <button type="button" class="btn btn-default" v-on:click="rejectRequest"><span class="fa fa-ban" aria-hidden="true"></span> {{ $t( 'cmd.Reject' ) }}</button>
     </template>

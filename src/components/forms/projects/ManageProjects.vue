@@ -19,7 +19,7 @@
 
 <template>
   <BaseForm v-bind:title="$t( 'title.Projects' )" auto-close save-position>
-    <template slot="header">
+    <template v-slot:header>
       <button v-if="isAdministrator" type="button" class="btn btn-success" v-on:click="addProject"><span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'cmd.Add' ) }}</button>
       <button v-if="isAdministrator" type="button" class="btn btn-default" v-on:click="projectsArchive"><span class="fa fa-archive" aria-hidden="true"></span> {{ $t( 'title.Archive' ) }}</button>
     </template>

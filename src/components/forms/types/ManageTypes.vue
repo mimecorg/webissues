@@ -19,7 +19,7 @@
 
 <template>
   <BaseForm v-bind:title="$t( 'title.IssueTypes' )" auto-close save-position>
-    <template slot="header">
+    <template v-slot:header>
       <button v-if="isAdministrator" type="button" class="btn btn-success" v-on:click="addType"><span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'cmd.Add' ) }}</button>
     </template>
     <Grid v-if="types.length > 0" v-bind:items="types" v-bind:columns="columns" v-on:row-click="rowClick"/>
