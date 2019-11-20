@@ -60,7 +60,7 @@
           <li v-for="column in allColumns" v-bind:key="column"><HyperLink v-on:click="addFilter( column )">{{ getColumnName( column ) }}</HyperLink></li>
         </DropdownScrollButton>
       </FormSection>
-      <Draggable v-if="filters.length > 0" class="filters" v-bind:options="{ handle: '.filters-name' }" v-model="filters">
+      <Draggable v-if="filters.length > 0" class="filters" handle=".filters-name" v-model="filters">
         <div v-for="filter in filters" v-bind:key="filter.id" class="row">
           <button class="btn btn-default" v-bind:title="$t( 'cmd.Remove' )" v-on:click="removeFilter( filter )"><span class="fa fa-remove" aria-hidden="true"></span></button>
           <div class="col-xs-10 col-sm-3 filters-name"><span class="fa fa-bars" aria-hidden="true"></span> {{ getColumnName( filter.column ) }}</div>
