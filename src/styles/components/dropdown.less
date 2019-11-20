@@ -178,3 +178,37 @@
 .dropdown-menu .badge {
   margin-left: 5px;
 }
+
+.dropdown-shadow-top, .dropdown-shadow-bottom {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 25px;
+  border-bottom-left-radius: 50px;
+  border-bottom-right-radius: 50px;
+  background-image: linear-gradient( rgba( #555, 0.25 ) 0%, rgba( #fff, 0 ) 100% );
+  opacity: 0;
+  transition: opacity 0.2s;
+  pointer-events: none;
+
+  &.active {
+    opacity: 1;
+  }
+
+  #navbar & {
+    background-image: linear-gradient( rgba( #000, 0.333 ) 0%, rgba( @navbar-dropdown-bg, 0 ) 100% );
+  }
+}
+
+.dropdown-shadow-top {
+  top: 0;
+}
+
+.dropdown-shadow-bottom {
+  bottom: 0;
+  transform: rotate( 180deg );
+}
+
+.dropdown-menu-filter + .dropdown-menu-scroll + .dropdown-shadow-top {
+  top: 39px;
+}

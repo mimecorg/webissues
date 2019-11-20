@@ -18,30 +18,30 @@
 -->
 
 <template>
-  <DropdownButton menu-class="dropdown-menu-right" v-bind:title="$t( 'title.Notifications' )">
-    <template slot="button">
+  <DropdownScrollButton menu-class="dropdown-menu-right" menu-scroll-class="dropdown-menu-scroll-wide" v-bind:title="$t( 'title.Notifications' )" v-bind:has-scroll="hasAlerts">
+    <template v-slot:button>
       <span class="fa-stack">
         <span class="fa fa-bell fa-stack-1x" aria-hidden="true"></span>
         <span v-if="hasAlerts" class="fa fa-circle fa-stack-1x fa-stack-top-right" aria-hidden="true"></span>
       </span>
     </template>
-    <div v-if="hasAlerts" class="dropdown-menu-scroll dropdown-menu-scroll-wide">
-      <li v-for="a in personalAlerts" v-bind:key="a.id" >
-        <HyperLink v-on:click="openView( a )">
-          <span v-html="a.view"></span> <span class="badge">{{ a.count }}</span>
-          <div v-if="a.location != null" class="dropdown-subtitle" v-html="a.location"></div>
-        </HyperLink>
-      </li>
-      <li v-if="personalAlerts.length > 0 && publicAlerts.length > 0" role="separator" class="divider"></li>
-      <li v-for="a in publicAlerts" v-bind:key="a.id" >
-        <HyperLink v-on:click="openView( a )">
-          <span v-html="a.view"></span> <span class="badge">{{ a.count }}</span>
-          <div v-if="a.location != null" class="dropdown-subtitle" v-html="a.location"></div>
-        </HyperLink>
-      </li>
-    </div>
-    <li v-else><div class="dropdown-info">There are no new notifications.</div></li>
-  </DropdownButton>
+    <li v-for="a in personalAlerts" v-bind:key="a.id" >
+      <HyperLink v-on:click="openView( a )">
+        <span v-html="a.view"></span> <span class="badge">{{ a.count }}</span>
+        <div v-if="a.location != null" class="dropdown-subtitle" v-html="a.location"></div>
+      </HyperLink>
+    </li>
+    <li v-if="personalAlerts.length > 0 && publicAlerts.length > 0" role="separator" class="divider"></li>
+    <li v-for="a in publicAlerts" v-bind:key="a.id" >
+      <HyperLink v-on:click="openView( a )">
+        <span v-html="a.view"></span> <span class="badge">{{ a.count }}</span>
+        <div v-if="a.location != null" class="dropdown-subtitle" v-html="a.location"></div>
+      </HyperLink>
+    </li>
+    <template v-slot:no-scroll>
+      <li><div class="dropdown-info">There are no new notifications.</div></li>
+    </template>
+  </DropdownScrollButton>
 </template>
 
 <script>

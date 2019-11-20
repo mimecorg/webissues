@@ -22,80 +22,70 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-xs-12 col-lg-4 dropdown-filters">
-          <DropdownButton v-if="types.length > 0" fa-class="fa-table" btn-class="btn-primary" v-bind:text="typeName" v-bind:title="typeTitle">
-            <div class="dropdown-menu-scroll">
-              <li v-for="t in types" v-bind:key="t.id" v-bind:class="{ active: type != null && t.id == type.id }">
-                <HyperLink v-on:click="selectType( t )">{{ t.name }}</HyperLink>
+          <DropdownScrollButton v-if="types.length > 0" fa-class="fa-table" btn-class="btn-primary" v-bind:text="typeName" v-bind:title="typeTitle">
+            <li v-for="t in types" v-bind:key="t.id" v-bind:class="{ active: type != null && t.id == type.id }">
+              <HyperLink v-on:click="selectType( t )">{{ t.name }}</HyperLink>
+            </li>
+          </DropdownScrollButton>
+          <DropdownScrollButton v-if="type != null" fa-class="fa-binoculars" v-bind:text="viewName" v-bind:title="viewTitle">
+            <li v-bind:class="{ active: view == null }">
+              <HyperLink v-on:click="selectView( null )">{{ $t( 'text.AllIssues' ) }}</HyperLink>
+            </li>
+            <template v-if="personalViews.length > 0">
+              <li role="separator" class="divider"></li>
+              <li class="dropdown-header">{{ $t( 'title.PersonalViews' ) }}</li>
+              <li v-for="v in personalViews" v-bind:key="v.id" v-bind:class="{ active: view != null && v.id == view.id }">
+                <HyperLink v-on:click="selectView( v )">{{ v.name }}</HyperLink>
               </li>
-            </div>
-          </DropdownButton>
-          <DropdownButton v-if="type != null" fa-class="fa-binoculars" v-bind:text="viewName" v-bind:title="viewTitle">
-            <div class="dropdown-menu-scroll">
-              <li v-bind:class="{ active: view == null }">
-                <HyperLink v-on:click="selectView( null )">{{ $t( 'text.AllIssues' ) }}</HyperLink>
+            </template>
+            <template v-if="publicViews.length > 0">
+              <li role="separator" class="divider"></li>
+              <li class="dropdown-header">{{ $t( 'title.PublicViews' ) }}</li>
+              <li v-for="v in publicViews" v-bind:key="v.id" v-bind:class="{ active: view != null && v.id == view.id }">
+                <HyperLink v-on:click="selectView( v )">{{ v.name }}</HyperLink>
               </li>
-              <template v-if="personalViews.length > 0">
-                <li role="separator" class="divider"></li>
-                <li class="dropdown-header">{{ $t( 'title.PersonalViews' ) }}</li>
-                <li v-for="v in personalViews" v-bind:key="v.id" v-bind:class="{ active: view != null && v.id == view.id }">
-                  <HyperLink v-on:click="selectView( v )">{{ v.name }}</HyperLink>
-                </li>
-              </template>
-              <template v-if="publicViews.length > 0">
-                <li role="separator" class="divider"></li>
-                <li class="dropdown-header">{{ $t( 'title.PublicViews' ) }}</li>
-                <li v-for="v in publicViews" v-bind:key="v.id" v-bind:class="{ active: view != null && v.id == view.id }">
-                  <HyperLink v-on:click="selectView( v )">{{ v.name }}</HyperLink>
-                </li>
-              </template>
-            </div>
-          </DropdownButton>
+            </template>
+          </DropdownScrollButton>
         </div>
         <div v-if="type != null" class="col-xs-12 col-sm-6 col-lg-4 dropdown-filters">
-          <DropdownButton fa-class="fa-briefcase" v-bind:text="projectName" v-bind:title="projectTitle">
-            <div class="dropdown-menu-scroll">
-              <li v-bind:class="{ active: project == null }">
-                <HyperLink v-on:click="selectProject( null )">{{ $t( 'text.AllProjects' ) }}</HyperLink>
+          <DropdownScrollButton fa-class="fa-briefcase" v-bind:text="projectName" v-bind:title="projectTitle">
+            <li v-bind:class="{ active: project == null }">
+              <HyperLink v-on:click="selectProject( null )">{{ $t( 'text.AllProjects' ) }}</HyperLink>
+            </li>
+            <template v-if="projects.length > 0">
+              <li role="separator" class="divider"></li>
+              <li v-for="p in projects" v-bind:key="p.id" v-bind:class="{ active: project != null && p.id == project.id }">
+                <HyperLink v-on:click="selectProject( p )">{{ p.name }}</HyperLink>
               </li>
-              <template v-if="projects.length > 0">
-                <li role="separator" class="divider"></li>
-                <li v-for="p in projects" v-bind:key="p.id" v-bind:class="{ active: project != null && p.id == project.id }">
-                  <HyperLink v-on:click="selectProject( p )">{{ p.name }}</HyperLink>
-                </li>
-              </template>
-            </div>
-          </DropdownButton>
-          <DropdownButton fa-class="fa-folder-open-o" v-bind:text="folderName" v-bind:title="folderTitle">
-            <div class="dropdown-menu-scroll">
-              <li v-bind:class="{ active: folder == null }">
-                <HyperLink v-on:click="selectFolder( null )">{{ $t( 'text.AllFolders' ) }}</HyperLink>
+            </template>
+          </DropdownScrollButton>
+          <DropdownScrollButton fa-class="fa-folder-open-o" v-bind:text="folderName" v-bind:title="folderTitle">
+            <li v-bind:class="{ active: folder == null }">
+              <HyperLink v-on:click="selectFolder( null )">{{ $t( 'text.AllFolders' ) }}</HyperLink>
+            </li>
+            <template v-if="folders.length > 0">
+              <li role="separator" class="divider"></li>
+              <li v-for="f in folders" v-bind:key="f.id" v-bind:class="{ active: folder != null && f.id == folder.id }">
+                <HyperLink v-on:click="selectFolder( f )">{{ f.name }}</HyperLink>
               </li>
-              <template v-if="folders.length > 0">
-                <li role="separator" class="divider"></li>
-                <li v-for="f in folders" v-bind:key="f.id" v-bind:class="{ active: folder != null && f.id == folder.id }">
-                  <HyperLink v-on:click="selectFolder( f )">{{ f.name }}</HyperLink>
-                </li>
-              </template>
-            </div>
-          </DropdownButton>
+            </template>
+          </DropdownScrollButton>
         </div>
         <div v-if="type != null" class="col-xs-12 col-sm-6 col-lg-4">
           <div class="toolbar-group">
             <div class="toolbar-element toolbar-element-wide">
               <div class="input-group" v-bind:class="{ 'has-error': searchError }">
-                <DropdownButton class="input-group-btn" fa-class="fa-chevron-down" v-bind:title="searchTitle">
-                  <div class="dropdown-menu-scroll">
-                    <li v-for="c in systemColumns" v-bind:key="'c' + c.id" v-bind:class="{ active: isSearchColumn( c ) }">
-                      <HyperLink v-on:click="setSearchColumn( c )">{{ c.name }}</HyperLink>
+                <DropdownScrollButton class="input-group-btn" fa-class="fa-chevron-down" v-bind:title="searchTitle">
+                  <li v-for="c in systemColumns" v-bind:key="'c' + c.id" v-bind:class="{ active: isSearchColumn( c ) }">
+                    <HyperLink v-on:click="setSearchColumn( c )">{{ c.name }}</HyperLink>
+                  </li>
+                  <template v-if="type.attributes.length > 0">
+                    <li role="separator" class="divider"></li>
+                    <li v-for="a in type.attributes" v-bind:key="'a' + a.id" v-bind:class="{ active: isSearchAttribute( a ) }">
+                      <HyperLink v-on:click="setSearchAttribute( a )">{{ a.name }}</HyperLink>
                     </li>
-                    <template v-if="type.attributes.length > 0">
-                      <li role="separator" class="divider"></li>
-                      <li v-for="a in type.attributes" v-bind:key="'a' + a.id" v-bind:class="{ active: isSearchAttribute( a ) }">
-                        <HyperLink v-on:click="setSearchAttribute( a )">{{ a.name }}</HyperLink>
-                      </li>
-                    </template>
-                  </div>
-                </DropdownButton>
+                  </template>
+                </DropdownScrollButton>
                 <input ref="search" type="search" class="form-control" v-bind:placeholder="searchName" v-bind:maxlength="searchLength"
                        v-bind:value="searchText" v-on:input="setSearchText( $event.target.value )" v-on:keydown.enter="search">
                 <div class="input-group-btn">

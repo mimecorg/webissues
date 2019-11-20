@@ -31,11 +31,9 @@
     <Prompt v-else v-bind:path="promptPath"><strong>{{ initialName }}</strong></Prompt>
     <FormInput v-if="mode == 'add' || mode == 'edit' || mode == 'clone'" ref="name" id="name" v-bind:label="$t( 'label.Name' )" v-bind="$field( 'name' )" v-model="name"/>
     <FormSection v-bind:title="$t( 'title.Columns' )">
-      <DropdownButton v-if="availableColumns.length > 0" fa-class="fa-plus" menu-class="dropdown-menu-right" v-bind:title="$t( 'cmd.AddColumn' )">
-        <div class="dropdown-menu-scroll">
-          <li v-for="column in availableColumns" v-bind:key="column"><HyperLink v-on:click="addColumn( column )">{{ getColumnName( column ) }}</HyperLink></li>
-        </div>
-      </DropdownButton>
+      <DropdownScrollButton v-if="availableColumns.length > 0" fa-class="fa-plus" menu-class="dropdown-menu-right" v-bind:title="$t( 'cmd.AddColumn' )">
+        <li v-for="column in availableColumns" v-bind:key="column"><HyperLink v-on:click="addColumn( column )">{{ getColumnName( column ) }}</HyperLink></li>
+      </DropdownScrollButton>
     </FormSection>
     <Draggable class="draggable-container" handle=".draggable-handle" v-bind:move="canMoveColumn" v-model="columns">
       <div v-for="column in columns" v-bind:key="column" class="draggable-item">
@@ -58,24 +56,20 @@
     </Panel>
     <template v-if="mode == 'add' || mode == 'edit' || mode == 'clone'">
       <FormSection v-bind:title="$t( 'title.Filters' )">
-        <DropdownButton fa-class="fa-plus" menu-class="dropdown-menu-right" v-bind:title="$t( 'cmd.AddFilter' )">
-          <div class="dropdown-menu-scroll">
-            <li v-for="column in allColumns" v-bind:key="column"><HyperLink v-on:click="addFilter( column )">{{ getColumnName( column ) }}</HyperLink></li>
-          </div>
-        </DropdownButton>
+        <DropdownScrollButton fa-class="fa-plus" menu-class="dropdown-menu-right" v-bind:title="$t( 'cmd.AddFilter' )">
+          <li v-for="column in allColumns" v-bind:key="column"><HyperLink v-on:click="addFilter( column )">{{ getColumnName( column ) }}</HyperLink></li>
+        </DropdownScrollButton>
       </FormSection>
       <Draggable v-if="filters.length > 0" class="filters" v-bind:options="{ handle: '.filters-name' }" v-model="filters">
         <div v-for="filter in filters" v-bind:key="filter.id" class="row">
           <button class="btn btn-default" v-bind:title="$t( 'cmd.Remove' )" v-on:click="removeFilter( filter )"><span class="fa fa-remove" aria-hidden="true"></span></button>
           <div class="col-xs-10 col-sm-3 filters-name"><span class="fa fa-bars" aria-hidden="true"></span> {{ getColumnName( filter.column ) }}</div>
           <div class="col-xs-12 col-sm-4">
-            <DropdownButton v-bind:text="getOperatorName( filter.operator )">
-              <div class="dropdown-menu-scroll">
-                <li v-for="op in getOperators( filter.column )" v-bind:key="op" v-bind:class="{ active: op == filter.operator }">
-                  <HyperLink v-on:click="filter.operator = op">{{ getOperatorName( op ) }}</HyperLink>
-                </li>
-              </div>
-            </DropdownButton>
+            <DropdownScrollButton v-bind:text="getOperatorName( filter.operator )">
+              <li v-for="op in getOperators( filter.column )" v-bind:key="op" v-bind:class="{ active: op == filter.operator }">
+                <HyperLink v-on:click="filter.operator = op">{{ getOperatorName( op ) }}</HyperLink>
+              </li>
+            </DropdownScrollButton>
           </div>
           <div v-bind:class="'col-xs-12 col-sm-4' + ( filter.error != null ? ' form-group has-error' : '' )">
             <ValueEditor v-bind:ref="'filter' + filter.id" v-bind:attribute="getAttributeForEditor( filter.column )" with-expressions v-model="filter.value"/>

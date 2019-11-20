@@ -19,40 +19,36 @@
 
 <template>
   <div class="dropdown-filters">
-    <DropdownButton ref="type" fa-class="fa-table" v-bind:text="typeName" v-bind:title="typeTitle">
-      <div class="dropdown-menu-scroll">
-        <li v-bind:class="{ active: type == null }">
-          <HyperLink v-on:click="selectType( null )">{{ $t( 'text.SelectType' ) }}</HyperLink>
+    <DropdownScrollButton ref="type" fa-class="fa-table" v-bind:text="typeName" v-bind:title="typeTitle">
+      <li v-bind:class="{ active: type == null }">
+        <HyperLink v-on:click="selectType( null )">{{ $t( 'text.SelectType' ) }}</HyperLink>
+      </li>
+      <template v-if="types.length > 0">
+        <li role="separator" class="divider"></li>
+        <li v-for="t in types" v-bind:key="t.id" v-bind:class="{ active: type != null && t.id == type.id }">
+          <HyperLink v-on:click="selectType( t )">{{ t.name }}</HyperLink>
         </li>
-        <template v-if="types.length > 0">
-          <li role="separator" class="divider"></li>
-          <li v-for="t in types" v-bind:key="t.id" v-bind:class="{ active: type != null && t.id == type.id }">
-            <HyperLink v-on:click="selectType( t )">{{ t.name }}</HyperLink>
-          </li>
-        </template>
-      </div>
-    </DropdownButton>
-    <DropdownButton ref="view" fa-class="fa-binoculars" v-bind:text="viewName" v-bind:title="viewTitle">
-      <div class="dropdown-menu-scroll">
-        <li v-bind:class="{ active: view == null }">
-          <HyperLink v-on:click="selectView( null )">{{ $t( 'text.AllIssues' ) }}</HyperLink>
+      </template>
+    </DropdownScrollButton>
+    <DropdownScrollButton ref="view" fa-class="fa-binoculars" v-bind:text="viewName" v-bind:title="viewTitle">
+      <li v-bind:class="{ active: view == null }">
+        <HyperLink v-on:click="selectView( null )">{{ $t( 'text.AllIssues' ) }}</HyperLink>
+      </li>
+      <template v-if="availablePersonalViews.length > 0">
+        <li role="separator" class="divider"></li>
+        <li class="dropdown-header">{{ $t( 'title.PersonalViews' ) }}</li>
+        <li v-for="v in availablePersonalViews" v-bind:key="v.id" v-bind:class="{ active: view != null && v.id == view.id }">
+          <HyperLink v-on:click="selectView( v )">{{ v.name }}</HyperLink>
         </li>
-        <template v-if="availablePersonalViews.length > 0">
-          <li role="separator" class="divider"></li>
-          <li class="dropdown-header">{{ $t( 'title.PersonalViews' ) }}</li>
-          <li v-for="v in availablePersonalViews" v-bind:key="v.id" v-bind:class="{ active: view != null && v.id == view.id }">
-            <HyperLink v-on:click="selectView( v )">{{ v.name }}</HyperLink>
-          </li>
-        </template>
-        <template v-if="availablePublicViews.length > 0">
-          <li role="separator" class="divider"></li>
-          <li class="dropdown-header">{{ $t( 'title.PublicViews' ) }}</li>
-          <li v-for="v in availablePublicViews" v-bind:key="v.id" v-bind:class="{ active: view != null && v.id == view.id }">
-            <HyperLink v-on:click="selectView( v )">{{ v.name }}</HyperLink>
-          </li>
-        </template>
-      </div>
-    </DropdownButton>
+      </template>
+      <template v-if="availablePublicViews.length > 0">
+        <li role="separator" class="divider"></li>
+        <li class="dropdown-header">{{ $t( 'title.PublicViews' ) }}</li>
+        <li v-for="v in availablePublicViews" v-bind:key="v.id" v-bind:class="{ active: view != null && v.id == view.id }">
+          <HyperLink v-on:click="selectView( v )">{{ v.name }}</HyperLink>
+        </li>
+      </template>
+    </DropdownScrollButton>
   </div>
 </template>
 

@@ -25,9 +25,11 @@
     <span v-bind:class="[ 'input-group-btn', 'dropdown-input-group', { open } ]">
       <button class="btn btn-default" type="button" tabindex="-1" v-on:click="toggle()" v-on:mousedown.prevent><span class="fa fa-chevron-down" aria-hidden="true"></span></button>
       <div ref="menu" v-if="open && matchingItems.length > 0" class="dropdown-menu dropdown-menu-both" v-on:mousedown.prevent>
-        <div ref="scroll" class="dropdown-menu-scroll">
+        <div ref="scroll" class="dropdown-menu-scroll" v-on:scroll.passive="toggleShadow">
           <li v-for="item in matchingItems" v-bind:key="item" v-bind:class="{ active: item == currentItem }"><a v-on:click="select( item )">{{ item }}</a></li>
         </div>
+        <span v-bind:class="[ 'dropdown-shadow-top', { active: shadowTop } ]"></span>
+        <span v-bind:class="[ 'dropdown-shadow-bottom', { active: shadowBottom } ]"></span>
       </div>
     </span>
   </div>
@@ -50,7 +52,9 @@ export default {
     return {
       text: this.value,
       matchPrefix: null,
-      open: false
+      open: false,
+      shadowTop: false,
+      shadowBottom: false
     }
   },
 
@@ -90,7 +94,12 @@ export default {
         this.matchPrefix = null;
         this.open = true;
         this.$refs.input.focus();
-        this.$nextTick( this.scrollMenuToView );
+        this.$nextTick( () => {
+          this.toggleShadow();
+          this.scrollMenuToView();
+          if ( this.currentItemIndex >= 0 )
+            this.scrollItemToView( this.currentItemIndex );
+        } );
       }
     },
 
@@ -105,11 +114,16 @@ export default {
       else
         this.matchPrefix = null;
       this.open = true;
-      this.$nextTick( this.scrollMenuToView );
+      this.$nextTick( () => {
+        this.toggleShadow();
+        this.scrollMenuToView()
+      } );
     },
 
     close() {
       this.open = false;
+      this.shadowTop = false;
+      this.shadowBottom = false;
     },
 
     select( item ) {
@@ -160,6 +174,21 @@ export default {
           this.close();
           e.stopPropagation();
         }
+      }
+    },
+
+    toggleShadow() {
+      if ( this.open && this.matchingItems.length > 0 ) {
+        const hasScrollbar = this.$refs.scroll.clientHeight < this.$refs.scroll.scrollHeight;
+        const scrollbarWidth = this.$refs.scroll.offsetWidth - this.$refs.scroll.clientWidth;
+        const scrolledFromTop = this.$refs.scroll.offsetHeight + this.$refs.scroll.scrollTop;
+        const scrolledToTop = this.$refs.scroll.scrollTop <= 0;
+        const scrolledToBottom = scrolledFromTop >= this.$refs.scroll.scrollHeight;
+        this.shadowTop = hasScrollbar && scrollbarWidth == 0 && !scrolledToTop;
+        this.shadowBottom = hasScrollbar && scrollbarWidth == 0 && !scrolledToBottom;
+      } else {
+        this.shadowTop = false;
+        this.shadowBottom = false;
       }
     },
 

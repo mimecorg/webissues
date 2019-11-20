@@ -23,23 +23,23 @@
     <p>{{ $t( 'prompt.TimeZone' ) }}</p>
     <FormGroup v-bind:label="$t( 'label.TimeZone' )">
       <div class="dropdown-select">
-        <DropdownButton ref="dropdown" v-bind:text="timeZoneName" v-on:open="dropdownOpen">
-          <div class="dropdown-menu-filter">
-            <input ref="filter" type="text" class="form-control" v-model="filter">
-          </div>
-          <div class="dropdown-menu-scroll">
-            <li v-bind:class="{ active: timeZone == '' }">
-              <HyperLink v-on:click="timeZone = ''">{{ defaultTimeZoneName }}</HyperLink>
+        <DropdownScrollButton ref="dropdown" v-bind:text="timeZoneName" v-on:open="dropdownOpen">
+          <template v-slot:filter>
+            <div class="dropdown-menu-filter">
+              <input ref="filter" type="text" class="form-control" v-bind:value="filter" v-on:input="setFilter( $event.target.value )">
+            </div>
+          </template>
+          <li v-bind:class="{ active: timeZone == '' }">
+            <HyperLink v-on:click="timeZone = ''">{{ defaultTimeZoneName }}</HyperLink>
+          </li>
+          <template v-for="( zone, index ) in filteredTimeZones">
+            <li v-bind:key="'sep' + index" role="separator" class="divider"></li>
+            <li v-bind:key="'h' + index" class="dropdown-header">{{ zone.offset }}</li>
+            <li v-for="name in zone.names" v-bind:key="name" v-bind:class="{ active: name == timeZone }">
+              <HyperLink v-on:click="timeZone = name">{{ convertTimeZoneName( name ) }}</HyperLink>
             </li>
-            <template v-for="( zone, index ) in filteredTimeZones">
-              <li v-bind:key="'sep' + index" role="separator" class="divider"></li>
-              <li v-bind:key="'h' + index" class="dropdown-header">{{ zone.offset }}</li>
-              <li v-for="name in zone.names" v-bind:key="name" v-bind:class="{ active: name == timeZone }">
-                <HyperLink v-on:click="timeZone = name">{{ convertTimeZoneName( name ) }}</HyperLink>
-              </li>
-            </template>
-          </div>
-        </DropdownButton>
+          </template>
+        </DropdownScrollButton>
       </div>
     </FormGroup>
     <Panel v-bind:title="$t( 'title.Formats' )">
@@ -177,6 +177,13 @@ export default {
     dropdownOpen() {
       this.$nextTick( () => {
         this.$refs.filter.focus();
+      } );
+    },
+
+    setFilter( text ) {
+      this.filter = text;
+      this.$nextTick( () => {
+        this.$refs.dropdown.toggleShadow();
       } );
     },
 

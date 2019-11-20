@@ -19,32 +19,28 @@
 
 <template>
   <div class="dropdown-filters">
-    <DropdownButton ref="project" fa-class="fa-briefcase" v-bind:text="projectName" v-bind:title="projectTitle">
-      <div class="dropdown-menu-scroll">
-        <li v-bind:class="{ active: project == null }">
-          <HyperLink v-on:click="selectProject( null )">{{ projectLabel || $t( 'text.SelectProject' ) }}</HyperLink>
+    <DropdownScrollButton ref="project" fa-class="fa-briefcase" v-bind:text="projectName" v-bind:title="projectTitle">
+      <li v-bind:class="{ active: project == null }">
+        <HyperLink v-on:click="selectProject( null )">{{ projectLabel || $t( 'text.SelectProject' ) }}</HyperLink>
+      </li>
+      <template v-if="availableProjects.length > 0">
+        <li role="separator" class="divider"></li>
+        <li v-for="p in availableProjects" v-bind:key="p.id" v-bind:class="{ active: project != null && p.id == project.id }">
+          <HyperLink v-on:click="selectProject( p )">{{ p.name }}</HyperLink>
         </li>
-        <template v-if="availableProjects.length > 0">
-          <li role="separator" class="divider"></li>
-          <li v-for="p in availableProjects" v-bind:key="p.id" v-bind:class="{ active: project != null && p.id == project.id }">
-            <HyperLink v-on:click="selectProject( p )">{{ p.name }}</HyperLink>
-          </li>
-        </template>
-      </div>
-    </DropdownButton>
-    <DropdownButton v-if="folderVisible" ref="folder" fa-class="fa-folder-open-o" v-bind:text="folderName" v-bind:title="folderTitle">
-      <div class="dropdown-menu-scroll">
-        <li v-bind:class="{ active: folder == null }">
-          <HyperLink v-on:click="selectFolder( null )">{{ folderLabel || $t( 'text.SelectFolder' ) }}</HyperLink>
+      </template>
+    </DropdownScrollButton>
+    <DropdownScrollButton v-if="folderVisible" ref="folder" fa-class="fa-folder-open-o" v-bind:text="folderName" v-bind:title="folderTitle">
+      <li v-bind:class="{ active: folder == null }">
+        <HyperLink v-on:click="selectFolder( null )">{{ folderLabel || $t( 'text.SelectFolder' ) }}</HyperLink>
+      </li>
+      <template v-if="availableFolders.length > 0">
+        <li role="separator" class="divider"></li>
+        <li v-for="f in availableFolders" v-bind:key="f.id" v-bind:class="{ active: folder != null && f.id == folder.id }">
+          <HyperLink v-on:click="selectFolder( f )">{{ f.name }}</HyperLink>
         </li>
-        <template v-if="availableFolders.length > 0">
-          <li role="separator" class="divider"></li>
-          <li v-for="f in availableFolders" v-bind:key="f.id" v-bind:class="{ active: folder != null && f.id == folder.id }">
-            <HyperLink v-on:click="selectFolder( f )">{{ f.name }}</HyperLink>
-          </li>
-        </template>
-      </div>
-    </DropdownButton>
+      </template>
+    </DropdownScrollButton>
   </div>
 </template>
 
