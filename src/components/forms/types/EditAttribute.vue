@@ -140,7 +140,7 @@ export default {
         parse: this.parseItems
       },
       decimal: {
-        value: details.decimal,
+        value: details.decimal || 0,
         type: Number,
         required: true,
         condition: () => this.attributeType == 'NUMERIC',
