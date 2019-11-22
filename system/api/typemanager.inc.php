@@ -122,24 +122,6 @@ class System_Api_TypeManager extends System_Api_Base
     }
 
     /**
-    * Get an attribute for the given issue.
-    * @param $issue Issue associated with the attribute.
-    * @param $attributeId Identifier of the attribute.
-    * @return Array containing the attribute.
-    */
-    public function getAttributeTypeForIssue( $issue, $attributeId )
-    {
-        $typeId = $issue[ 'type_id' ];
-
-        $query = 'SELECT attr_id, type_id, attr_name, attr_def FROM {attr_types} WHERE attr_id = %d AND type_id = %d';
-
-        if ( !( $attribute = $this->connection->queryRow( $query, $attributeId, $typeId ) ) )
-            throw new System_Api_Error( System_Api_Error::UnknownAttribute );
-
-        return $attribute;
-    }
-
-    /**
     * Get default attribute values for issues in given folder.
     * @param $folder Folder containing the issue.
     * @return An associative array containing default values of attributes.
@@ -222,27 +204,6 @@ class System_Api_TypeManager extends System_Api_Base
         }
 
         return $attributes;
-    }
-
-    /**
-    * Get all attributes for given issue types.
-    * @param $types Array of issue types.
-    * @return An array of associative arrays representing attributes.
-    */
-    public function getAttributeTypesForIssueTypes( $types )
-    {
-        if ( empty( $types ) )
-            return array();
-
-        $ids = array();
-        foreach ( $types as $type )
-            $ids[] = $type[ 'type_id' ];
-
-        $query = 'SELECT attr_id, type_id, attr_name, attr_def FROM {attr_types}'
-            . ' WHERE type_id IN ( %%d )'
-            . 'ORDER BY attr_name COLLATE LOCALE';
-
-        return $this->connection->queryTable( $query, $ids );
     }
 
     /**
@@ -575,29 +536,5 @@ class System_Api_TypeManager extends System_Api_Base
         $query = 'SELECT COUNT(*) FROM {attr_values} WHERE attr_id = %d';
 
         return $this->connection->queryScalar( $query, $attributeId ) > 0;
-    }
-
-    /**
-    * Get the total number of issue types.
-    */
-    public function getIssueTypesCount()
-    {
-        $query = 'SELECT COUNT(*) FROM {issue_types}';
-
-        return $this->connection->queryScalar( $query );
-    }
-
-    /**
-    * Get a paged list of issue types.
-    * @param $orderBy The sorting order specifier.
-    * @param $limit Maximum number of rows to return.
-    * @param $offset Zero-based index of first row to return.
-    * @return An array of associative arrays representing types.
-    */
-    public function getIssueTypesPage( $orderBy, $limit, $offset )
-    {
-        $query = 'SELECT type_id, type_name FROM {issue_types}';
-
-        return $this->connection->queryPage( $query, $orderBy, $limit, $offset );
     }
 }

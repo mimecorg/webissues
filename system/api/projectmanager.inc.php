@@ -51,25 +51,19 @@ class System_Api_ProjectManager extends System_Api_Base
 
     /**
     * Get list of accessible projects.
-    * @param $flags If RequireAdministrator is passed only projects
-    * to which the user has administrator access are returned.
     * @return An array of associative arrays representing project.
     */
-    public function getProjects( $flags = 0 )
+    public function getProjects()
     {
         $principal = System_Api_Principal::getCurrent();
 
         if ( !$principal->isAuthenticated() ) {
-            if ( $flags & self::RequireAdministrator )
-                throw new System_Api_Error( System_Api_Error::AccessDenied );
             $query = 'SELECT p.project_id, p.project_name, p.stamp_id, p.is_public, %3d AS project_access FROM {projects} AS p'
                 . ' WHERE p.is_archived = 0 AND p.is_public = 1';
         } else if ( !$principal->isAdministrator() ) {
             $query = 'SELECT p.project_id, p.project_name, p.stamp_id, p.is_public, r.project_access FROM {projects} AS p'
-                . ' JOIN {effective_rights} AS r ON r.project_id = p.project_id AND r.user_id = %1d';
-            if ( $flags & self::RequireAdministrator )
-                $query .= ' AND r.project_access = %2d';
-            $query .= ' WHERE p.is_archived = 0';
+                . ' JOIN {effective_rights} AS r ON r.project_id = p.project_id AND r.user_id = %1d'
+                . ' WHERE p.is_archived = 0';
         } else {
             $query = 'SELECT p.project_id, p.project_name, p.stamp_id, p.is_public, %2d AS project_access FROM {projects} AS p'
                 . ' WHERE p.is_archived = 0';
@@ -115,28 +109,20 @@ class System_Api_ProjectManager extends System_Api_Base
 
     /**
     * Get list of folders in all accessible projects.
-    * @param $flags If RequireAdministrator is passed only folders from
-    * projects to which the user has administrator access are returned.
     * @return An array of associative arrays representing folders.
     */
-    public function getFolders( $flags = 0 )
+    public function getFolders()
     {
         $principal = System_Api_Principal::getCurrent();
 
         $query = 'SELECT f.folder_id, f.project_id, f.folder_name, f.type_id, f.stamp_id, t.type_name FROM {folders} AS f';
-        if ( $principal->isAuthenticated() && !$principal->isAdministrator() ) {
+        if ( $principal->isAuthenticated() && !$principal->isAdministrator() )
             $query .= ' JOIN {effective_rights} AS r ON r.project_id = f.project_id AND r.user_id = %1d';
-            if ( $flags & self::RequireAdministrator )
-                $query .= ' AND r.project_access = %2d';
-        }
         $query .= ' JOIN {projects} AS p ON p.project_id = f.project_id'
             . ' JOIN {issue_types} AS t ON t.type_id = f.type_id'
             . ' WHERE p.is_archived = 0';
-        if ( !$principal->isAuthenticated() ) {
-            if ( $flags & self::RequireAdministrator )
-                throw new System_Api_Error( System_Api_Error::AccessDenied );
+        if ( !$principal->isAuthenticated() )
             $query .= ' AND p.is_public = 1';
-        }
         $query .= ' ORDER BY f.folder_name COLLATE LOCALE';
 
         return $this->connection->queryTable( $query, $principal->getUserId(), System_Const::AdministratorAccess );
@@ -190,41 +176,23 @@ class System_Api_ProjectManager extends System_Api_Base
     /**
     * Get list of folders of the specified type.
     * @param $type The issue type of the folders.
-    * @param $flags If RequireAdministrator is passed only folders from
-    * projects to which the user has administrator access are returned.
     * @return An array of associative arrays representing folders.
     */
-    public function getFoldersByIssueType( $type, $flags = 0 )
+    public function getFoldersByIssueType( $type )
     {
         $principal = System_Api_Principal::getCurrent();
 
         $typeId = $type[ 'type_id' ];
 
         $query = 'SELECT f.folder_id, f.project_id, f.folder_name, f.type_id, f.stamp_id, t.type_name FROM {folders} AS f';
-        if ( !$principal->isAdministrator() ) {
+        if ( !$principal->isAdministrator() )
             $query .= ' JOIN {effective_rights} AS r ON r.project_id = f.project_id AND r.user_id = %1d';
-            if ( $flags & self::RequireAdministrator )
-                $query .= ' AND r.project_access = %2d';
-        }
         $query .= ' JOIN {projects} AS p ON p.project_id = f.project_id'
             . ' JOIN {issue_types} AS t ON t.type_id = f.type_id'
             . ' WHERE t.type_id = %3d AND p.is_archived = 0'
             . ' ORDER BY f.folder_name COLLATE LOCALE';
 
         return $this->connection->queryTable( $query, $principal->getUserId(), System_Const::AdministratorAccess, $typeId );
-    }
-
-    public function getFolderFromIssue( $issue )
-    {
-        $folder = array();
-        $folder[ 'folder_id' ] = $issue[ 'folder_id' ];
-        $folder[ 'folder_name' ] = $issue[ 'folder_name' ];
-        $folder[ 'type_id' ] = $issue[ 'type_id' ];
-        $folder[ 'type_name' ] = $issue[ 'type_name' ];
-        $folder[ 'project_id' ] = $issue[ 'project_id' ];
-        $folder[ 'project_name' ] = $issue[ 'project_name' ];
-        $folder[ 'project_access' ] = $issue[ 'project_access' ];
-        return $folder;
     }
 
     /**
@@ -248,22 +216,6 @@ class System_Api_ProjectManager extends System_Api_Base
             throw new System_Api_Error( System_Api_Error::UnknownDescription );
 
         return $descr;
-    }
-
-    /**
-    * Return @c true if the description has been added or modified since the given stamp.
-    */
-    public function isDescriptionModified( $project, $sinceStamp )
-    {
-        return $project[ 'descr_id' ] != null && $project[ 'descr_id' ] > $sinceStamp;
-    }
-
-    /**
-    * Return @c true if the description has been deleted since the given stamp.
-    */
-    public function isDescriptionDeleted( $project, $sinceStamp )
-    {
-        return $project[ 'descr_id' ] == null && $sinceStamp > 0 && $project[ 'descr_stub_id' ] > $sinceStamp;
     }
 
     /**
@@ -656,57 +608,6 @@ class System_Api_ProjectManager extends System_Api_Base
     }
 
     /**
-    * Return the total number of accessible projects.
-    * @param $flags If RequireAdministrator is passed only projects
-    * to which the user has administrator access are returned.
-    * @return The number of projects.
-    */
-    public function getProjectsCount( $flags = 0 )
-    {
-        $principal = System_Api_Principal::getCurrent();
-        if ( !$principal->isAuthenticated() ) {
-            $query = 'SELECT COUNT(*) FROM {projects} AS p WHERE p.is_public = 1 AND p.is_archived = 0';
-        } else if ( !$principal->isAdministrator() ) {
-            $query = 'SELECT COUNT(*) FROM {projects} AS p'
-                . ' JOIN {effective_rights} AS r ON r.project_id = p.project_id AND r.user_id = %1d';
-            if ( $flags & self::RequireAdministrator )
-                $query .= ' AND r.project_access = %2d';
-            $query .= ' WHERE p.is_archived = 0';
-        } else {
-            $query = 'SELECT COUNT(*) FROM {projects} AS p WHERE p.is_archived = 0';
-        }
-
-        return $this->connection->queryScalar( $query, $principal->getUserId(), System_Const::AdministratorAccess );
-    }
-
-    /**
-    * Get paged list of accessible projects.
-    * @param $orderBy The sorting order specifier.
-    * @param $limit Maximum number of rows to return.
-    * @param $offset Zero-based index of first row to return.
-    * @param $flags If RequireAdministrator is passed only projects
-    * to which the user has administrator access are returned.
-    * @return An array of associative arrays representing projects.
-    */
-    public function getProjectsPage( $orderBy, $limit, $offset, $flags = 0 )
-    {
-        $principal = System_Api_Principal::getCurrent();
-        if ( !$principal->isAuthenticated() ) {
-            $query = 'SELECT p.project_id, p.project_name, p.is_public, p.descr_id, %3d AS project_access FROM {projects} AS p WHERE p.is_public = 1 AND p.is_archived = 0';
-        } else if ( !$principal->isAdministrator() ) {
-            $query = 'SELECT p.project_id, p.project_name, p.is_public, p.descr_id, r.project_access FROM {projects} AS p'
-                . ' JOIN {effective_rights} AS r ON r.project_id = p.project_id AND r.user_id = %1d';
-            if ( $flags & self::RequireAdministrator )
-                $query .= ' AND r.project_access = %2d';
-            $query .= ' WHERE p.is_archived = 0';
-        } else {
-            $query = 'SELECT p.project_id, p.project_name, p.is_public, p.descr_id, %2d AS project_access FROM {projects} AS p WHERE p.is_archived = 0';
-        }
-
-        return $this->connection->queryPage( $query, $orderBy, $limit, $offset, $principal->getUserId(), System_Const::AdministratorAccess, System_Const::NormalAccess );
-    }
-
-    /**
     * Get the list of all archived projects.
     * @return An array of associative arrays representing projects.
     */
@@ -715,31 +616,6 @@ class System_Api_ProjectManager extends System_Api_Base
         $query = 'SELECT p.project_id, p.project_name, p.descr_id FROM {projects} AS p WHERE p.is_archived = 1 ORDER BY p.project_name COLLATE LOCALE';
 
         return $this->connection->queryTable( $query );
-    }
-
-    /**
-    * Return the total number of archived projects.
-    * @return The number of projects.
-    */
-    public function getArchivedProjectsCount()
-    {
-        $query = 'SELECT COUNT(*) FROM {projects} AS p WHERE p.is_archived = 1';
-
-        return $this->connection->queryScalar( $query );
-    }
-
-    /**
-    * Get paged list of archived projects.
-    * @param $orderBy The sorting order specifier.
-    * @param $limit Maximum number of rows to return.
-    * @param $offset Zero-based index of first row to return.
-    * @return An array of associative arrays representing projects.
-    */
-    public function getArchivedProjectsPage( $orderBy, $limit, $offset )
-    {
-        $query = 'SELECT p.project_id, p.project_name, p.descr_id FROM {projects} AS p WHERE p.is_archived = 1';
-
-        return $this->connection->queryPage( $query, $orderBy, $limit, $offset );
     }
 
     /**
@@ -772,28 +648,6 @@ class System_Api_ProjectManager extends System_Api_Base
             . ' ORDER BY f.folder_name COLLATE LOCALE';
 
         return $this->connection->queryTable( $query, $projectId );
-    }
-
-    /**
-    * Get list of folders in given projects.
-    * @param $projects Array of projects.
-    * @return An array of associative arrays representing folders.
-    */
-    public function getFoldersForProjects( $projects )
-    {
-        if ( empty( $projects ) )
-            return array();
-
-        $ids = array();
-        foreach ( $projects as $project )
-            $ids[] = $project[ 'project_id' ];
-
-        $query = 'SELECT f.folder_id, f.project_id, f.folder_name, f.type_id, f.stamp_id, t.type_name FROM {folders} AS f'
-            . ' JOIN {issue_types} AS t ON t.type_id = f.type_id'
-            . ' WHERE f.project_id IN ( %%d )'
-            . ' ORDER BY f.folder_name COLLATE LOCALE';
-
-        return $this->connection->queryTable( $query, $ids );
     }
 
     /**

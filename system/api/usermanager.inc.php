@@ -122,71 +122,6 @@ class System_Api_UserManager extends System_Api_Base
     }
 
     /**
-    * Get the total number of users.
-    */
-    public function getUsersCount( $type )
-    {
-        $query = 'SELECT COUNT(*) FROM {users}';
-        if ( $type == self::Active )
-            $query .= ' WHERE user_access <> %d';
-        else if ( $type == self::Disabled )
-            $query .= ' WHERE user_access = %d';
-
-        return $this->connection->queryScalar( $query, System_Const::NoAccess );
-    }
-
-    /**
-    * Get a paged list of users.
-    * @param $orderBy The sorting order specifier.
-    * @param $limit Maximum number of rows to return.
-    * @param $offset Zero-based index of first row to return.
-    * @return An array of associative arrays representing types.
-    */
-    public function getUsersPage( $type, $orderBy, $limit, $offset )
-    {
-        $query = 'SELECT user_id, user_login, user_name, user_access, user_email'
-            . ' FROM {users}';
-        if ( $type == self::Active )
-            $query .= ' WHERE user_access <> %d';
-        else if ( $type == self::Disabled )
-            $query .= ' WHERE user_access = %d';
-
-        return $this->connection->queryPage( $query, $orderBy, $limit, $offset, System_Const::NoAccess );
-    }
-
-    /**
-    * Return the number of members of given project.
-    * @param $project The project to count members.
-    * @return The number of members.
-    */
-    public function getMembersCount( $project )
-    {
-        $projectId = $project[ 'project_id' ];
-
-        $query = 'SELECT COUNT(*) FROM {rights} WHERE project_id = %d';
-
-        return $this->connection->queryScalar( $query, $projectId );
-    }
-
-    /**
-    * Get paged list of the members of given project.
-    * @param $project The project to retrieve members.
-    * @param $orderBy The sorting order specifier.
-    * @param $limit Maximum number of rows to return.
-    * @param $offset Zero-based index of first row to return.
-    * @return An array of associative arrays representing members.
-    */
-    public function getMembersPage( $project, $orderBy, $limit, $offset )
-    {
-        $projectId = $project[ 'project_id' ];
-
-        $query = 'SELECT r.project_id, r.user_id, r.project_access, u.user_name FROM {rights} AS r'
-            . ' JOIN {users} AS u ON u.user_id = r.user_id AND r.project_id = %d';
-
-        return $this->connection->queryPage( $query, $orderBy, $limit, $offset, $projectId );
-    }
-
-    /**
     * Get list of the projects of given user.
     * @param $user The user to retrieve member projects.
     * @return An array of associative arrays representing projects.
@@ -200,52 +135,6 @@ class System_Api_UserManager extends System_Api_Base
             . ' WHERE r.user_id = %d AND p.is_archived = 0';
 
         return $this->connection->queryTable( $query, $userId );
-    }
-
-    /**
-    * Return the number of projects for the given user.
-    * @param $user The user to count projects.
-    * @return The number of project.
-    */
-    public function getUserProjectsCount( $user )
-    {
-        $userId = $user[ 'user_id' ];
-
-        $query = 'SELECT COUNT(*) FROM {rights} AS r'
-            . ' JOIN {projects} AS p ON p.project_id = r.project_id'
-            . ' WHERE user_id = %d AND p.is_archived = 0';
-
-        return $this->connection->queryScalar( $query, $userId );
-    }
-
-    /**
-    * Get paged list of the projects of given user.
-    * @param $user The user to retrieve projects.
-    * @param $orderBy The sorting order specifier.
-    * @param $limit Maximum number of rows to return.
-    * @param $offset Zero-based index of first row to return.
-    * @return An array of associative arrays representing projects.
-    */
-    public function getUserProjectsPage( $user, $orderBy, $limit, $offset )
-    {
-        $userId = $user[ 'user_id' ];
-
-        $query = 'SELECT r.project_id, r.user_id, r.project_access, p.project_name FROM {rights} AS r'
-            . ' JOIN {projects} AS p ON p.project_id = r.project_id'
-            . ' WHERE r.user_id = %d AND p.is_archived = 0';
-
-        return $this->connection->queryPage( $query, $orderBy, $limit, $offset, $userId );
-    }
-
-    public function getPreferences()
-    {
-        $principal = System_Api_Principal::getCurrent();
-
-        $query = 'SELECT user_id, pref_key, pref_value FROM {preferences}';
-        if ( !$principal->isAdministrator() )
-            $query .= ' WHERE user_id = %d';
-
-        return $this->connection->queryTable( $query, $principal->getUserId() );
     }
 
     /**

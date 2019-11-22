@@ -146,16 +146,4 @@ class System_Api_Principal
         if ( !$this->isAdministrator() )
             throw new System_Api_Error( System_Api_Error::AccessDenied );
     }
-
-    /**
-    * Throw a System_Api_Error if the user is not an administrator and
-    * tries to perform an operation affecting another user.
-    * @param $userId The user whom the operation is affecting.
-    */
-    public function checkAdministratorOrSelf( $userId )
-    {
-        $this->checkAuthenticated();
-        if ( $this->userId != $userId && !$this->isAdministrator() )
-            throw new System_Api_Error( System_Api_Error::AccessDenied );
-    }
 }

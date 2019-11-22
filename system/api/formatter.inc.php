@@ -180,30 +180,6 @@ class System_Api_Formatter
         return $this->convertAttributeValueInfo( $info, $value, $flags );
     }
 
-    /**
-    * Format attribute value preserving special tags for initial values.
-    * @param $info Parsed definition of the attribute type.
-    * @param $value The internal value of the attribute.
-    * @param $flags If MultiLine is given, new lines and multiple spaces
-    * are preserved in the value.
-    * @return The localized formatted string.
-    */
-    public function convertInitialValueInfo( $info, $value, $flags = 0 )
-    {
-        if ( $value == '' )
-            return '';
-
-        $type = $info->getType();
-
-        if ( ( $type == 'TEXT' || $type == 'ENUM' || $type == 'USER' ) && mb_substr( $value, 0, 4 ) == '[Me]' )
-            return $value;
-
-        if ( $type == 'DATETIME' && mb_substr( $value, 0, 7 ) == '[Today]' )
-            return $value;
-
-        return $this->convertAttributeValueInfo( $info, $value, $flags );
-    }
-
     private function convertAttributeValueInfo( $info, $value, $flags )
     {
         switch ( $info->getType() ) {

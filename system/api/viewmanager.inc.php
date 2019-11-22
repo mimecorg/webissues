@@ -87,44 +87,6 @@ class System_Api_ViewManager extends System_Api_Base
     }
 
     /**
-    * Get the total number of personal views for given issue type.
-    * @param $type Issue type for which views are retrieved.
-    */
-    public function getPersonalViewsCount( $type )
-    {
-        $principal = System_Api_Principal::getCurrent();
-
-        $typeId = $type[ 'type_id' ];
-
-        $query = 'SELECT COUNT(*)'
-            . ' FROM {views}'
-            . ' WHERE type_id = %d AND user_id = %d';
-
-        return $this->connection->queryScalar( $query, $typeId, $principal->getUserId() );
-    }
-
-    /**
-    * Get the paged list of personal views for given issue type.
-    * @param $type Issue type for which views are retrieved.
-    * @param $orderBy The sorting order specifier.
-    * @param $limit Maximum number of rows to return.
-    * @param $offset Zero-based index of first row to return.
-    * @return An array of associative arrays representing views.
-    */
-    public function getPersonalViewsPage( $type, $orderBy, $limit, $offset )
-    {
-        $principal = System_Api_Principal::getCurrent();
-
-        $typeId = $type[ 'type_id' ];
-
-        $query = 'SELECT view_id, view_name, view_def'
-            . ' FROM {views}'
-            . ' WHERE type_id = %d AND user_id = %d';
-
-        return $this->connection->queryPage( $query, $orderBy, $limit, $offset, $typeId, $principal->getUserId() );
-    }
-
-    /**
     * Return all public views for given issue type.
     * @param $type Issue type for which views are retrieved.
     * @return An array of associative arrays representing views.
@@ -139,40 +101,6 @@ class System_Api_ViewManager extends System_Api_Base
             . ' ORDER BY view_name';
 
         return $this->connection->queryTable( $query, $typeId );
-    }
-
-    /**
-    * Get the total number of public views for given issue type.
-    * @param $type Issue type for which views are retrieved.
-    */
-    public function getPublicViewsCount( $type )
-    {
-        $typeId = $type[ 'type_id' ];
-
-        $query = 'SELECT COUNT(*)'
-            . ' FROM {views}'
-            . ' WHERE type_id = %d AND user_id IS NULL';
-
-        return $this->connection->queryScalar( $query, $typeId );
-    }
-
-    /**
-    * Get the paged list public views for given issue type.
-    * @param $type Issue type for which views are retrieved.
-    * @param $orderBy The sorting order specifier.
-    * @param $limit Maximum number of rows to return.
-    * @param $offset Zero-based index of first row to return.
-    * @return An array of associative arrays representing views.
-    */
-    public function getPublicViewsPage( $type, $orderBy, $limit, $offset )
-    {
-        $typeId = $type[ 'type_id' ];
-
-        $query = 'SELECT view_id, view_name, view_def'
-            . ' FROM {views}'
-            . ' WHERE type_id = %d AND user_id IS NULL';
-
-        return $this->connection->queryPage( $query, $orderBy, $limit, $offset, $typeId );
     }
 
     /**
@@ -238,79 +166,6 @@ class System_Api_ViewManager extends System_Api_Base
             throw new System_Api_Error( System_Api_Error::AccessDenied );
 
         return $view;
-    }
-
-    /**
-    * Check if the public view with given identifier associated with specified
-    * issue type exists.
-    * @param $type Issue type for which the view is retrieved.
-    * @param $viewId Identifier of the view.
-    * @return @c true if the view exists.
-    */
-    public function isPublicViewForIssueType( $type, $viewId )
-    {
-        $typeId = $type[ 'type_id' ];
-
-        $query = 'SELECT view_id'
-            . ' FROM {views}'
-            . ' WHERE view_id = %d AND type_id = %d AND user_id IS NULL';
-
-        return ( $this->connection->queryScalar( $query, $viewId, $typeId ) !== false );
-    }
-
-    /**
-    * Get public views associated with specified issue type.
-    * @param $type Issue type for which the view is retrieved.
-    * @return An associative array of public views view.
-    */
-    public function getPublicViewsForIssueType( $type )
-    {
-        $typeId = $type[ 'type_id' ];
-
-        $query = 'SELECT view_id, view_name'
-            . ' FROM {views}'
-            . ' WHERE type_id = %d AND user_id IS NULL'
-            . ' ORDER BY view_name COLLATE LOCALE';
-
-        $views = $this->connection->queryTable( $query, $typeId );
-
-        $result = array();
-        foreach ( $views as $view )
-            $result[ $view[ 'view_id' ] ] = $view[ 'view_name' ];
-
-        return $result;
-    }
-
-    /**
-    * Get personal and public views for given issue type.
-    * @param $type Issue type for which views are retrieved.
-    * @return Array containing two associative arrays of personal views
-    * and public views.
-    */
-    public function getViewsForIssueType( $type )
-    {
-        $principal = System_Api_Principal::getCurrent();
-
-        $typeId = $type[ 'type_id' ];
-
-        if ( !$principal->isAuthenticated() ) {
-            $query = 'SELECT view_id, view_name, 1 AS is_public'
-                . ' FROM {views}'
-                . ' WHERE type_id = %d AND user_id IS NULL';
-        } else {
-            $query = 'SELECT view_id, view_name, ( CASE WHEN user_id IS NULL THEN 1 ELSE 0 END ) AS is_public'
-                . ' FROM {views}'
-                . ' WHERE type_id = %d AND ( user_id = %d OR user_id IS NULL )';
-        }
-        $query .= ' ORDER BY view_name COLLATE LOCALE';
-
-        $views = $this->connection->queryTable( $query, $typeId, $principal->getUserId() );
-
-        $result = array();
-        foreach ( $views as $view )
-            $result[ $view[ 'is_public' ] ][ $view[ 'view_id' ] ] = $view[ 'view_name' ];
-
-        return $result;
     }
 
     /**

@@ -385,20 +385,6 @@ class System_Api_QueryGenerator extends System_Api_Base
         return $this->attributes[ $column ];
     }
 
-    public function getSearchableColumns()
-    {
-        $columns = array( System_Api_Column::ID, System_Api_Column::Name, System_Api_Column::CreatedBy, System_Api_Column::ModifiedBy );
-
-        foreach ( $this->attributes as $column => $attribute ) {
-            $info = System_Api_DefinitionInfo::fromString( $attribute[ 'attr_def' ] );
-            $type = $info->getType();
-            if ( $type == 'TEXT' || $type == 'ENUM' || $type == 'USER' )
-                $columns[] = $column;
-        }
-
-        return $columns;
-    }
-
     private function generateSelect( $flags = 0 )
     {
         $principal = System_Api_Principal::getCurrent();

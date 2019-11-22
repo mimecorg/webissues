@@ -81,30 +81,6 @@ class System_Api_RegistrationManager extends System_Api_Base
     }
 
     /**
-    * Get the total number of requests.
-    */
-    public function getRequestsCount()
-    {
-        $query = 'SELECT COUNT(*) FROM {register_requests} WHERE is_active = 1';
-
-        return $this->connection->queryScalar( $query, System_Const::NoAccess );
-    }
-
-    /**
-    * Get a paged list of requests.
-    * @param $orderBy The sorting order specifier.
-    * @param $limit Maximum number of rows to return.
-    * @param $offset Zero-based index of first row to return.
-    * @return An array of associative arrays representing requests.
-    */
-    public function getRequestsPage( $orderBy, $limit, $offset )
-    {
-        $query = 'SELECT request_id, user_login, user_name, user_email, created_time FROM {register_requests} WHERE is_active = 1';
-
-        return $this->connection->queryPage( $query, $orderBy, $limit, $offset );
-    }
-
-    /**
     * Add a request to register a new account.
     * @param $login The login of the user.
     * @param $name The name of the user.

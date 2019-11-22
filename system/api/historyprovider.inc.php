@@ -115,59 +115,6 @@ class System_Api_HistoryProvider
     }
 
     /**
-    * Return a query for calculating the number of items.
-    * @param $itemType The type of history items.
-    */
-    public function generateCountQuery( $itemType )
-    {
-        $principal = System_Api_Principal::getCurrent();
-
-        $this->arguments = array( $this->issueId, System_Const::CommentAdded, System_Const::FileAdded, $principal->getUserId(),
-            $this->sinceStamp, $this->modifiedSince, $this->exceptSubscriptionId );
-
-        $query = 'SELECT COUNT(*) FROM {changes} AS ch';
-        if ( $this->exceptOwn )
-            $query .= ' JOIN {stamps} AS sc ON sc.stamp_id = ch.change_id';
-        $query .= ' WHERE ch.issue_id = %1d';
-        if ( $itemType == self::CommentsAndFiles )
-            $query .= ' AND ( ch.change_type = %2d OR ch.change_type = %3d )';
-        else if ( $itemType == self::Comments )
-            $query .= ' AND ch.change_type = %2d';
-        else if ( $itemType == self::Files )
-            $query .= ' AND ch.change_type = %3d';
-        if ( $this->sinceStamp != null )
-            $query .= ' AND ch.change_id > %5d';
-        if ( $this->modifiedSince != null )
-            $query .= ' AND ch.stamp_id > %6d';
-        if ( $this->exceptOwn )
-            $query .= ' AND sc.user_id <> %4d';
-        if ( $this->exceptSubscriptionId != null )
-            $query .= ' AND COALESCE( ch.subscription_id, 0 ) <> %7d';
-
-        return $query;
-    }
-
-    /**
-    * Return a query for extracting item identifiers only.
-    * @param $itemType The type of history items.
-    */
-    public function generateSimpleSelectQuery( $itemType )
-    {
-        $this->arguments = array( $this->issueId, System_Const::CommentAdded, System_Const::FileAdded );
-
-        $query = 'SELECT ch.change_id FROM {changes} AS ch WHERE ch.issue_id = %1d';
-
-        if ( $itemType == self::CommentsAndFiles )
-            $query .= ' AND ( ch.change_type = %2d OR ch.change_type = %3d )';
-        else if ( $itemType == self::Comments )
-            $query .= ' AND ch.change_type = %2d';
-        else if ( $itemType == self::Files )
-            $query .= ' AND ch.change_type = %3d';
-
-        return $query;
-    }
-
-    /**
     * Return a query for extracting item details for the API.
     * @param $itemType The type of history items.
     */

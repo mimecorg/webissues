@@ -62,27 +62,6 @@ class System_Api_IssueManager extends System_Api_Base
     }
 
     /**
-    * Get list of issues added or modified since the given stamp.
-    * @param $folder Folder containing the issues.
-    * @param $sinceStamp Stamp used for incremental updates.
-    * @return An array of associative arrays representing issues.
-    */
-    public function getIssues( $folder, $sinceStamp )
-    {
-        $folderId = $folder[ 'folder_id' ];
-
-        $query = 'SELECT i.issue_id, i.folder_id, i.issue_name, i.stamp_id,'
-            . ' sc.stamp_time AS created_date, sc.user_id AS created_user,'
-            . ' sm.stamp_time AS modified_date, sm.user_id AS modified_user'
-            . ' FROM {issues} AS i'
-            . ' JOIN {stamps} AS sc ON sc.stamp_id = i.issue_id'
-            . ' JOIN {stamps} AS sm ON sm.stamp_id = i.stamp_id'
-            . ' WHERE i.folder_id = %d AND i.stamp_id > %d';
-
-        return $this->connection->queryTable( $query, $folderId, $sinceStamp );
-    }
-
-    /**
     * Get the issue with given identifier. Information about the related
     * project, folder and type is also returned. Issues are cached to prevent
     * accessing the database unnecessarily.
@@ -142,36 +121,6 @@ class System_Api_IssueManager extends System_Api_Base
     }
 
     /**
-    * Get attribute values of issues added or modified since the given stamp.
-    * @param $folder Folder containing the issues.
-    * @param $sinceStamp Stamp used for incremental updates.
-    * @return An array of associative arrays representing values.
-    */
-    public function getAttributeValuesForFolder( $folder, $sinceStamp )
-    {
-        $folderId = $folder[ 'folder_id' ];
-
-        $query = 'SELECT a.attr_id, a.issue_id, a.attr_value FROM {attr_values} AS a'
-            . ' JOIN {issues} AS i ON i.issue_id = a.issue_id AND i.folder_id = %d AND i.stamp_id > %d';
-
-        return $this->connection->queryTable( $query, $folderId, $sinceStamp );
-    }
-
-    /**
-    * Get attributes values for the given issue.
-    * @param $issue The issue to retrieve values for.
-    * @return An array of associative arrays representing values.
-    */
-    public function getAttributeValuesForIssue( $issue )
-    {
-        $issueId = $issue[ 'issue_id' ];
-
-        $query = 'SELECT attr_id, issue_id, attr_value FROM {attr_values} WHERE issue_id = %d';
-
-        return $this->connection->queryTable( $query, $issueId );
-    }
-
-    /**
     * Get all attributes with values for the given issue. All attributes are
     * returned including those which have empty values unless HideEmptyValues
     * is passed. Values are sorted by attribute name.
@@ -193,70 +142,6 @@ class System_Api_IssueManager extends System_Api_Base
             . ' ORDER BY a.attr_name COLLATE LOCALE';
 
         return $this->connection->queryTable( $query, $issueId, $typeId );
-    }
-
-    /**
-    * Get "stubs" representing all issues moved or deleted from given folder.
-    * @param $folder Folder containing the removed issues.
-    * @param $sinceStamp Stamp used for incremental updates.
-    * @return An array of associative arrays representing stubs.
-    */
-    public function getIssueStubs( $folder, $sinceStamp )
-    {
-        if ( $sinceStamp == 0 )
-            return array();
-
-        $folderId = $folder[ 'folder_id' ];
-
-        $query = 'SELECT s.issue_id, i.folder_id, i.stamp_id'
-            . ' FROM {issue_stubs} AS s'
-            . ' LEFT OUTER JOIN {issues} AS i ON i.issue_id = s.issue_id'
-            . ' WHERE s.folder_id = %d AND s.stub_id > %d AND s.prev_id <= %d AND COALESCE( i.folder_id, 0 ) <> s.folder_id';
-
-        return $this->connection->queryTable( $query, $folderId, $sinceStamp, $sinceStamp );
-    }
-
-    /**
-    * Get changes made to the issue since the given stamp.
-    * @param $issue Issue containing the changes.
-    * @param $sinceStamp Stamp used for incremental updates.
-    * @return An array of associative arrays representing changes.
-    */
-    public function getChanges( $issue, $sinceStamp )
-    {
-        $issueId = $issue[ 'issue_id' ];
-
-        $query = 'SELECT ch.change_id, ch.issue_id, ch.change_type, ch.stamp_id,'
-            . ' sc.stamp_time AS created_date, sc.user_id AS created_user,'
-            . ' sm.stamp_time AS modified_date, sm.user_id AS modified_user,'
-            . ' ch.attr_id, ch.value_old, ch.value_new, ch.from_folder_id, ch.to_folder_id,'
-            . ' c.comment_text, c.comment_format, f.file_name, f.file_size, f.file_descr'
-            . ' FROM {changes} AS ch'
-            . ' JOIN {stamps} AS sc ON sc.stamp_id = ch.change_id'
-            . ' JOIN {stamps} AS sm ON sm.stamp_id = ch.stamp_id'
-            . ' LEFT OUTER JOIN {comments} AS c ON c.comment_id = ch.change_id AND ch.change_type = %3d'
-            . ' LEFT OUTER JOIN {files} AS f ON f.file_id = ch.change_id AND ch.change_type = %4d'
-            . ' WHERE ch.issue_id = %1d AND ch.stamp_id > %2d';
-
-        return $this->connection->queryTable( $query, $issueId, $sinceStamp, System_Const::CommentAdded, System_Const::FileAdded );
-    }
-
-    /**
-    * Return only changes of the given type.
-    * @param $changes Array of changes to filter.
-    * @param $changeType The type of changes to return.
-    * @return Filtered changes.
-    */
-    public function getChangesOfType( $changes, $changeType )
-    {
-        $result = array();
-
-        foreach ( $changes as $change ) {
-            if ( $change[ 'change_type' ] == $changeType )
-                $result[] = $change;
-        }
-
-        return $result;
     }
 
     /**
@@ -407,22 +292,6 @@ class System_Api_IssueManager extends System_Api_Base
             throw new System_Api_Error( System_Api_Error::UnknownDescription );
 
         return $descr;
-    }
-
-    /**
-    * Return @c true if the description has been added or modified since the given stamp.
-    */
-    public function isDescriptionModified( $issue, $sinceStamp )
-    {
-        return $issue[ 'descr_id' ] != null && $issue[ 'descr_id' ] > $sinceStamp;
-    }
-
-    /**
-    * Return @c true if the description has been deleted since the given stamp.
-    */
-    public function isDescriptionDeleted( $issue, $sinceStamp )
-    {
-        return $issue[ 'descr_id' ] == null && $sinceStamp > 0 && $issue[ 'descr_stub_id' ] > $sinceStamp;
     }
 
     /**
@@ -1135,16 +1004,6 @@ class System_Api_IssueManager extends System_Api_Base
     {
         foreach ( $files as $file )
             @unlink( $this->getAttachmentPath( $file[ 'file_id' ] ) );
-    }
-
-    /**
-    * Return @c true if any attachments are stored in the file system.
-    */
-    public function checkFileSystemFiles()
-    {
-        $query = 'SELECT COUNT(*) FROM {files} WHERE file_storage = %d';
-
-        return $this->connection->queryScalar( $query, self::FileSystemStorage ) > 0;
     }
 
     private function getAttachmentPath( $id, $createDir = false )

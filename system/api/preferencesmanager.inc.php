@@ -67,20 +67,6 @@ class System_Api_PreferencesManager extends System_Api_Base
     }
 
     /**
-    * Return an array of associative arrays representing preferences.
-    */
-    public function getPreferencesAsTable()
-    {
-        $preferences = $this->getPreferences();
-
-        $result = array();
-        foreach ( $preferences as $key => $value )
-            $result[] = array( 'pref_key' => $key, 'pref_value' => $value );
-
-        return $result;
-    }
-
-    /**
     * Get the specific preference of the user.
     * @param $key Name of the preference.
     * @return The value of the preference.
@@ -127,21 +113,4 @@ class System_Api_PreferencesManager extends System_Api_Base
 
         return true;
     }
-
-    /**
-    * Get the specific preference of the user, or server setting if preference
-    * is not available.
-    * @param $key Name of the preference.
-    * @return The value of the preference or setting.
-    */
-    public function getPreferenceOrSetting( $key )
-    {
-        $preferences = $this->getPreferences();
-
-        if ( isset( $preferences[ $key ] ) )
-            return $preferences[ $key ];
-
-        $serverManager = new System_Api_ServerManager();
-        return $serverManager->getSetting( $key );
-	}
 }

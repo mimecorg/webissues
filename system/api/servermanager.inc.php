@@ -135,47 +135,6 @@ class System_Api_ServerManager extends System_Api_Base
     }
 
     /**
-    * Return an array of associative arrays representing public settings.
-    */
-    public function getSettingsAsTable()
-    {
-        $defaults = array(
-            'time_zone' => date_default_timezone_get()
-        );
-
-        $allSettings = $this->getSettings();
-
-        $keys = array(
-            'language', 'time_zone',
-            'number_format', 'date_format', 'time_format', 'first_day_of_week',
-            'project_page_size', 'folder_page_size', 'history_page_size',
-            'hide_id_column', 'hide_empty_values', 'history_order', 'history_filter',
-            'default_format',
-            'comment_max_length', 'file_max_size'
-        );
-
-        $settings = array();
-
-        foreach ( $keys as $key ) {
-            if ( isset( $allSettings[ $key ] ) )
-                $settings[ $key ] = $allSettings[ $key ];
-            else if ( isset( $defaults[ $key ] ) )
-                $settings[ $key ] = $defaults[ $key ];
-            else
-                $settings[ $key ] = null;
-        }
-
-        $settings[ 'email_enabled' ] = ( $this->getSetting( 'email_engine' ) != null ) ? '1' : null;
-
-        $result = array();
-
-        foreach ( $settings as $key => $value )
-            $result[] = array( 'set_key' => $key, 'set_value' => $value );
-
-        return $result;
-    }
-
-    /**
     * Get the specific setting of the server.
     * @param $key Name of the setting.
     * @return The value of the setting.
