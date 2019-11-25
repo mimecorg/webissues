@@ -461,6 +461,46 @@ class Setup_Updater extends System_Web_Base
                 $this->connection->execute( $query, $key, $value );
         }
 
+        if ( version_compare( $version, '2.0.007' ) < 0 ) {
+            $obsolete_settings = array(
+                'project_page_size',
+                'folder_page_size',
+                'history_page_size',
+                'project_page_mobile',
+                'folder_page_mobile',
+                'history_page_mobile',
+                'history_filter',
+                'gc_divisor',
+                'base_url',
+                'inbox_engine',
+                'inbox_email',
+                'inbox_server',
+                'inbox_port',
+                'inbox_encryption',
+                'inbox_user',
+                'inbox_password',
+                'inbox_mailbox',
+                'inbox_no_validate',
+                'inbox_leave_messages',
+                'inbox_allow_external',
+                'inbox_robot',
+                'inbox_map_folder',
+                'inbox_default_folder',
+                'inbox_respond',
+                'inbox_subscribe'
+            );
+
+            $query = 'DELETE FROM {settings} WHERE set_key = %s';
+            foreach ( $obsolete_settings as $key )
+                $this->connection->execute( $query, $key );
+
+            $query = 'DELETE FROM {preferences} WHERE pref_key <> %s';
+            $this->connection->execute( $query, 'history_filter' );
+
+            $query = 'DELETE FROM {view_settings} WHERE set_key = %s';
+            $this->connection->execute( $query, 'initial_view' );
+        }
+
         $query = 'DELETE FROM {sessions}';
         $this->connection->execute( $query );
 
