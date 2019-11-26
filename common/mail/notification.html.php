@@ -157,14 +157,14 @@
 <ul class="issue-history-list">
 <li>
   <span class="issue-history-label"><?php echo $this->t( 'title.Location' ); ?>:</span>
-  <?php if ( $item[ 'from_folder_name' ] != '' ): ?>
-  <span class="issue-history-value"><?php echo $item[ 'from_project_name' ] . '&mdash;' . $item[ 'from_folder_name' ]; ?></span>
+  <?php if ( $item[ 'from_project_name' ] != '' ): ?>
+  <span class="issue-history-value"><?php echo $item[ 'from_project_name' ] . ' &mdash; ' . $item[ 'from_folder_name' ]; ?></span>
   <?php else: ?>
   <?php echo $this->t( 'text.unknown' ); ?>
   <?php endif ?>
   &rarr;
-  <?php if ( $item[ 'to_folder_name' ] != '' ): ?>
-  <span class="issue-history-value"><?php echo $item[ 'to_project_name' ] . '&mdash;' . $item[ 'to_folder_name' ]; ?></span>
+  <?php if ( $item[ 'to_project_name' ] != '' ): ?>
+  <span class="issue-history-value"><?php echo $item[ 'to_project_name' ] . ' &mdash; ' . $item[ 'to_folder_name' ]; ?></span>
   <?php else: ?>
   <?php echo $this->t( 'text.unknown' ); ?>
   <?php endif ?>

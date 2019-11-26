@@ -191,13 +191,13 @@ class System_Api_HistoryProvider
             if ( !$principal->isAuthenticated() )
                 $query .= ' AND fp.is_public = 1';
             else if ( !$principal->isAdministrator() )
-                $query .= ' AND fp.project_id IN ( SELECT project_id FROM {effective_rights} WHERE user_id = %4d )';
+                $query .= ' AND ( fp.project_id IN ( SELECT project_id FROM {rights} WHERE user_id = %4d ) OR fp.is_public = 1 )';
             $query .= ' LEFT OUTER JOIN {folders} AS tf ON tf.folder_id = ch.to_folder_id'
                 . ' LEFT OUTER JOIN {projects} AS tp ON tp.project_id = tf.project_id';
             if ( !$principal->isAuthenticated() )
                 $query .= ' AND tp.is_public = 1';
             else if ( !$principal->isAdministrator() )
-                $query .= ' AND tp.project_id IN ( SELECT project_id FROM {effective_rights} WHERE user_id = %4d )';
+                $query .= ' AND ( tp.project_id IN ( SELECT project_id FROM {rights} WHERE user_id = %4d ) OR tp.is_public = 1 )';
         }
         if ( $itemType == self::AllHistory || $itemType == self::Comments || $itemType == self::CommentsAndFiles ) {
             if ( $itemType == self::AllHistory || $itemType == self::CommentsAndFiles )
