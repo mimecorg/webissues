@@ -451,13 +451,9 @@ class System_Api_QueryGenerator extends System_Api_Base
 
         $this->arguments = array();
 
-        if ( $this->typeId != 0 ) {
+        if ( $this->folderId == 0 ) {
             $joins[] = 'JOIN {folders} AS f ON f.folder_id = i.folder_id';
             $joins[] = 'JOIN {projects} AS p ON p.project_id = f.project_id';
-            if ( $principal->isAuthenticated() && !$principal->isAdministrator() ) {
-                $joins[] = 'JOIN {effective_rights} AS r ON r.project_id = f.project_id AND r.user_id = %d';
-                $this->arguments[] = $principal->getUserId();
-            }
         }
 
         if ( ( ( $flags & self::WithState ) || $this->noRead ) && $principal->isAuthenticated() )
@@ -507,19 +503,23 @@ class System_Api_QueryGenerator extends System_Api_Base
         if ( $this->folderId != 0 ) {
             $conditions = array( 'i.folder_id = %d' );
             $this->arguments[] = $this->folderId;
-        } else if ( $this->typeId != 0 ) {
+        } else {
             $conditions = array( 'f.type_id = %d' );
             $this->arguments[] = $this->typeId;
 
-            if ( !$principal->isAuthenticated()  )
-                $conditions[] = 'p.is_public = 1';
+            if ( $this->projectId != 0 ) {
+                $conditions[] = 'p.project_id = %d';
+                $this->arguments[] = $this->projectId;
+            } else {
+                if ( !$principal->isAuthenticated() ) {
+                    $conditions[] = 'p.is_public = 1';
+                } else if ( !$principal->isAdministrator() ) {
+                    $conditions[] = '( p.project_id IN ( SELECT project_id FROM {rights} WHERE user_id = %d ) OR p.is_public = 1 )';
+                    $this->arguments[] = $principal->getUserId();
+                }
 
-            $conditions[] = 'p.is_archived = 0';
-        }
-
-        if ( $this->projectId != 0 ) {
-            $conditions[] = 'p.project_id = %d';
-            $this->arguments[] = $this->projectId;
+                $conditions[] = 'p.is_archived = 0';
+            }
         }
 
         if ( $this->sinceStamp != null ) {
