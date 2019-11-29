@@ -28,18 +28,8 @@ class Server_Api_Types_List
 
     public function run()
     {
-        if ( System_Api_Principal::getCurrent()->isAdministrator() ) {
-            $isAdministrator = true;
-        } else {
-            $projectManager = new System_Api_ProjectManager();
-            $isAdministrator = $projectManager->isProjectAdministrator();
-        }
-
         $typeManager = new System_Api_TypeManager();
-        if ( $isAdministrator )
-            $types = $typeManager->getIssueTypes();
-        else
-            $types = $typeManager->getAvailableIssueTypes();
+        $types = $typeManager->getIssueTypes();
 
         $result[ 'types' ] = array();
 

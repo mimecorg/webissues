@@ -61,10 +61,10 @@ class System_Api_AlertManager extends System_Api_Base
 
         $query = 'SELECT a.alert_id, a.type_id, a.view_id, a.project_id, a.folder_id,'
             . ' t.type_name, v.view_name, p.project_name, f.folder_name, ( CASE WHEN a.user_id IS NULL THEN 1 ELSE 0 END ) AS is_public, v.view_def'
-            . ' FROM ' . $this->generateJoins() . ' WHERE ( a.user_id = %1d OR a.user_id IS NULL ) AND a.alert_type = %2d AND ' . $this->generateConditions()
+            . ' FROM ' . $this->generateJoins() . ' WHERE ( a.user_id = %1d OR a.user_id IS NULL ) AND a.alert_type = %3d AND ' . $this->generateConditions()
             . ' ORDER BY t.type_name, v.view_name, p.project_name, f.folder_name';
 
-        return $this->connection->queryTable( $query, $principal->getUserId(), System_Const::Alert );
+        return $this->connection->queryTable( $query, $principal->getUserId(), System_Const::AdministratorAccess, System_Const::Alert );
     }
 
     /**
@@ -76,10 +76,10 @@ class System_Api_AlertManager extends System_Api_Base
         $principal = System_Api_Principal::getCurrent();
 
         $query = 'SELECT a.alert_id, t.type_name, v.view_name, p.project_name, f.folder_name'
-            . ' FROM ' . $this->generateJoins() . ' WHERE a.user_id IS NULL AND a.alert_type = %2d AND ' . $this->generateConditions()
+            . ' FROM ' . $this->generateJoins() . ' WHERE a.user_id IS NULL AND a.alert_type = %3d AND ' . $this->generateConditions()
             . ' ORDER BY t.type_name, v.view_name, p.project_name, f.folder_name';
 
-        return $this->connection->queryTable( $query, $principal->getUserId(), System_Const::Alert );
+        return $this->connection->queryTable( $query, $principal->getUserId(), System_Const::AdministratorAccess, System_Const::Alert );
     }
 
     /**
@@ -91,10 +91,10 @@ class System_Api_AlertManager extends System_Api_Base
         $principal = System_Api_Principal::getCurrent();
 
         $query = 'SELECT a.alert_id, t.type_name, v.view_name, p.project_name, f.folder_name'
-            . ' FROM ' . $this->generateJoins() . ' WHERE a.user_id = %1d AND a.alert_type = %2d AND ' . $this->generateConditions()
+            . ' FROM ' . $this->generateJoins() . ' WHERE a.user_id = %1d AND a.alert_type = %3d AND ' . $this->generateConditions()
             . ' ORDER BY t.type_name, v.view_name, p.project_name, f.folder_name';
 
-        return $this->connection->queryTable( $query, $principal->getUserId(), System_Const::Alert );
+        return $this->connection->queryTable( $query, $principal->getUserId(), System_Const::AdministratorAccess, System_Const::Alert );
     }
 
     /**
@@ -106,10 +106,10 @@ class System_Api_AlertManager extends System_Api_Base
         $principal = System_Api_Principal::getCurrent();
 
         $query = 'SELECT a.alert_id, t.type_name, v.view_name, p.project_name, f.folder_name, a.alert_type, a.alert_frequency'
-            . ' FROM ' . $this->generateJoins() . ' WHERE a.user_id IS NULL AND a.alert_type <> %2d AND ' . $this->generateConditions()
+            . ' FROM ' . $this->generateJoins() . ' WHERE a.user_id IS NULL AND a.alert_type <> %3d AND ' . $this->generateConditions()
             . ' ORDER BY t.type_name, v.view_name, p.project_name, f.folder_name';
 
-        return $this->connection->queryTable( $query, $principal->getUserId(), System_Const::Alert );
+        return $this->connection->queryTable( $query, $principal->getUserId(), System_Const::AdministratorAccess, System_Const::Alert );
     }
 
     /**
@@ -121,10 +121,10 @@ class System_Api_AlertManager extends System_Api_Base
         $principal = System_Api_Principal::getCurrent();
 
         $query = 'SELECT a.alert_id, t.type_name, v.view_name, p.project_name, f.folder_name, a.alert_type, a.alert_frequency'
-            . ' FROM ' . $this->generateJoins() . ' WHERE a.user_id = %1d AND a.alert_type <> %2d AND ' . $this->generateConditions()
+            . ' FROM ' . $this->generateJoins() . ' WHERE a.user_id = %1d AND a.alert_type <> %3d AND ' . $this->generateConditions()
             . ' ORDER BY t.type_name, v.view_name, p.project_name, f.folder_name';
 
-        return $this->connection->queryTable( $query, $principal->getUserId(), System_Const::Alert );
+        return $this->connection->queryTable( $query, $principal->getUserId(), System_Const::AdministratorAccess, System_Const::Alert );
     }
 
     /**
@@ -140,10 +140,10 @@ class System_Api_AlertManager extends System_Api_Base
 
         $query = 'SELECT a.alert_id, t.type_name, v.view_name, p.project_name, f.folder_name,'
             . ' ( CASE WHEN a.user_id IS NULL THEN 1 ELSE 0 END ) AS is_public'
-            . ' FROM ' . $this->generateJoins() . ' WHERE ( a.user_id = %1d OR a.user_id IS NULL ) AND a.alert_id = %2d AND a.alert_type = %3d AND ' . $this->generateConditions()
+            . ' FROM ' . $this->generateJoins() . ' WHERE ( a.user_id = %1d OR a.user_id IS NULL ) AND a.alert_id = %3d AND a.alert_type = %4d AND ' . $this->generateConditions()
             . ' ORDER BY t.type_name, v.view_name, p.project_name, f.folder_name';
 
-        if ( !( $alert = $this->connection->queryRow( $query, $principal->getUserId(), $alertId, System_Const::Alert ) ) )
+        if ( !( $alert = $this->connection->queryRow( $query, $principal->getUserId(), System_Const::AdministratorAccess, $alertId, System_Const::Alert ) ) )
             throw new System_Api_Error( System_Api_Error::UnknownAlert );
 
         if ( ( $flags & self::AllowEdit ) && !$principal->isAdministrator() && $alert[ 'is_public' ] )
@@ -165,10 +165,10 @@ class System_Api_AlertManager extends System_Api_Base
 
         $query = 'SELECT a.alert_id, t.type_name, v.view_name, p.project_name, f.folder_name,'
             . ' ( CASE WHEN a.user_id IS NULL THEN 1 ELSE 0 END ) AS is_public, a.alert_type, a.alert_frequency'
-            . ' FROM ' . $this->generateJoins() . ' WHERE ( a.user_id = %1d OR a.user_id IS NULL ) AND a.alert_id = %2d AND a.alert_type <> %3d AND ' . $this->generateConditions()
+            . ' FROM ' . $this->generateJoins() . ' WHERE ( a.user_id = %1d OR a.user_id IS NULL ) AND a.alert_id = %3d AND a.alert_type <> %4d AND ' . $this->generateConditions()
             . ' ORDER BY t.type_name, v.view_name, p.project_name, f.folder_name';
 
-        if ( !( $report = $this->connection->queryRow( $query, $principal->getUserId(), $reportId, System_Const::Alert ) ) )
+        if ( !( $report = $this->connection->queryRow( $query, $principal->getUserId(), System_Const::AdministratorAccess, $reportId, System_Const::Alert ) ) )
             throw new System_Api_Error( System_Api_Error::UnknownAlert );
 
         if ( ( $flags & self::AllowEdit ) && !$principal->isAdministrator() && $report[ 'is_public' ] )
@@ -187,9 +187,6 @@ class System_Api_AlertManager extends System_Api_Base
             . ' LEFT OUTER JOIN {folders} AS f ON f.folder_id = a.folder_id'
             . ' LEFT OUTER JOIN {projects} AS p ON p.project_id = COALESCE( a.project_id, f.project_id )';
 
-        if ( !$principal->isAdministrator() )
-            $joins .= ' LEFT OUTER JOIN {effective_rights} AS r ON r.project_id = p.project_id AND r.user_id = %1d';
-
         return $joins;
     }
 
@@ -198,11 +195,12 @@ class System_Api_AlertManager extends System_Api_Base
         $principal = System_Api_Principal::getCurrent();
 
         if ( !$principal->isAdministrator() ) {
-            return '( p.is_archived = 0 AND r.project_id IS NOT NULL OR '
-                . ' p.project_id IS NULL AND EXISTS ( SELECT f2.folder_id FROM {folders} AS f2'
+            return '( EXISTS( SELECT * FROM {rights}'
+                . ' WHERE user_id = %1d AND project_access = %2d AND project_id IN ( SELECT project_id FROM {projects} WHERE is_archived = 0 ) )'
+                . ' OR t.type_id IN ( SELECT f2.type_id FROM {folders} AS f2'
                 . ' JOIN {projects} AS p2 ON p2.project_id = f2.project_id'
-                . ' JOIN {effective_rights} AS r2 ON r2.project_id = f2.project_id AND r2.user_id = %1d'
-                . ' WHERE f2.type_id = a.type_id AND p2.is_archived = 0 ) )';
+                . ' WHERE p2.is_archived = 0 AND ( p2.project_id IN ( SELECT project_id FROM {rights} WHERE user_id = %1d ) OR p2.is_public = 1 ) ) )'
+                . ' AND ( p.is_archived = 0 AND ( p.project_id IN ( SELECT project_id FROM {rights} WHERE user_id = %1d ) OR p.is_public = 1 ) OR p.project_id IS NULL )';
         } else {
             return '( p.is_archived = 0 OR p.project_id IS NULL )';
         }
@@ -388,19 +386,18 @@ class System_Api_AlertManager extends System_Api_Base
         }
 
         $conditions .= ' AND EXISTS ( SELECT f.folder_id FROM {folders} AS f'
-            . ' JOIN {projects} AS p ON p.project_id = f.project_id';
+            . ' JOIN {projects} AS p ON p.project_id = f.project_id'
+            . ' WHERE f.type_id = a.type_id'
+            . ' AND ( f.folder_id = a.folder_id OR f.project_id = a.project_id OR a.folder_id IS NULL AND a.project_id IS NULL )'
+            . ' AND p.is_archived = 0';
 
         if ( $principal != null && !$principal->isAdministrator() )
-            $conditions .= ' JOIN {effective_rights} AS r ON r.project_id = p.project_id AND r.user_id = %1d';
-
-        $conditions .= ' WHERE f.type_id = a.type_id AND ( f.folder_id = a.folder_id OR f.project_id = a.project_id OR a.folder_id IS NULL AND a.project_id IS NULL )';
+            $conditions .= ' AND ( p.project_id IN ( SELECT project_id FROM {rights} WHERE user_id = %1d ) OR p.is_public = 1 )';
 
         if ( $flags & self::WithDaily )
-            $conditions .= ' AND ( f.stamp_id > COALESCE( a.stamp_id, 0 ) OR a.alert_type = %4d )';
+            $conditions .= ' AND ( f.stamp_id > COALESCE( a.stamp_id, 0 ) OR a.alert_type = %4d ) )';
         else
-            $conditions .= ' AND f.stamp_id > COALESCE( a.stamp_id, 0 )';
-
-        $conditions .= ' AND p.is_archived = 0 )';
+            $conditions .= ' AND f.stamp_id > COALESCE( a.stamp_id, 0 ) )';
 
         return $conditions;
     }
@@ -429,10 +426,11 @@ class System_Api_AlertManager extends System_Api_Base
             if ( $projectId != null )
                 $query .= ' AND f.project_id = %4d';
         }
-        $query .= ' AND ( u.user_access = %2d OR EXISTS ( SELECT r.project_id FROM {effective_rights} AS r WHERE r.project_id = f.project_id AND r.user_id = u.user_id ) )';
+        $query .= ' AND p.is_archived = 0'
+            . ' AND ( u.user_access = %2d OR p.is_public = 1 OR EXISTS ( SELECT r.project_id FROM {rights} AS r WHERE r.project_id = p.project_id AND r.user_id = u.user_id ) )';
         if ( $alertType != System_Const::IssueReport && $stampId != null )
             $query .= ' AND f.stamp_id > %6d';
-        $query .= ' AND p.is_archived = 0 )';
+        $query .= ' )';
 
         return $this->connection->queryTable( $query, System_Const::NoAccess, System_Const::AdministratorAccess, $typeId, $projectId, $folderId, $stampId );
     }

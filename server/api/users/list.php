@@ -29,7 +29,7 @@ class Server_Api_Users_List
     public function run()
     {
         $userManager = new System_Api_UserManager();
-        $users = $userManager->getUsers();
+        $users = $userManager->getUsersWithDetails();
 
         $result[ 'users' ] = array();
 

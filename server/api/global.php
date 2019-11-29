@@ -51,8 +51,6 @@ class Server_Api_Global
 
         $result[ 'projects' ] = array();
 
-        $isProjectAdministrator = false;
-
         foreach ( $projects as $project ) {
             $resultProject = array();
 
@@ -61,9 +59,6 @@ class Server_Api_Global
             $resultProject[ 'access' ] = (int)$project[ 'project_access' ];
             $resultProject[ 'folders' ] = array();
             $resultProject[ 'members' ] = array();
-
-            if ( $project[ 'project_access' ] == System_Const::AdministratorAccess )
-                $isProjectAdministrator = true;
 
             foreach ( $folders as $folder ) {
                 if ( $folder[ 'project_id' ] == $project[ 'project_id' ] ) {
@@ -85,11 +80,7 @@ class Server_Api_Global
 
         $typeManager = new System_Api_TypeManager();
 
-        if ( $principal->isAdministrator() || $isProjectAdministrator )
-            $types = $typeManager->getIssueTypes();
-        else
-            $types = $typeManager->getAvailableIssueTypes();
-
+        $types = $typeManager->getIssueTypes();
         $attributes = $typeManager->getAttributeTypes();
 
         $viewManager = new System_Api_ViewManager();
@@ -150,10 +141,7 @@ class Server_Api_Global
             $result[ 'types' ][] = $resultType;
         }
 
-        if ( $principal->isAdministrator() || $isProjectAdministrator )
-            $users = $userManager->getUsers();
-        else
-            $users = $userManager->getVisibleUsers();
+        $users = $userManager->getUsers();
 
         $result[ 'users' ] = array();
 

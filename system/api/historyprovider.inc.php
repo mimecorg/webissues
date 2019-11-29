@@ -187,13 +187,13 @@ class System_Api_HistoryProvider
         if ( $itemType == self::AllHistory ) {
             $query .= ' LEFT OUTER JOIN {attr_types} AS a ON a.attr_id = ch.attr_id'
                 . ' LEFT OUTER JOIN {folders} AS ff ON ff.folder_id = ch.from_folder_id'
-                . ' LEFT OUTER JOIN {projects} AS fp ON fp.project_id = ff.project_id';
+                . ' LEFT OUTER JOIN {projects} AS fp ON fp.project_id = ff.project_id AND fp.is_archived = 0';
             if ( !$principal->isAuthenticated() )
                 $query .= ' AND fp.is_public = 1';
             else if ( !$principal->isAdministrator() )
                 $query .= ' AND ( fp.project_id IN ( SELECT project_id FROM {rights} WHERE user_id = %4d ) OR fp.is_public = 1 )';
             $query .= ' LEFT OUTER JOIN {folders} AS tf ON tf.folder_id = ch.to_folder_id'
-                . ' LEFT OUTER JOIN {projects} AS tp ON tp.project_id = tf.project_id';
+                . ' LEFT OUTER JOIN {projects} AS tp ON tp.project_id = tf.project_id AND tp.is_archived = 0';
             if ( !$principal->isAuthenticated() )
                 $query .= ' AND tp.is_public = 1';
             else if ( !$principal->isAdministrator() )

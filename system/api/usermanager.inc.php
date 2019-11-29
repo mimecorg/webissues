@@ -49,6 +49,34 @@ class System_Api_UserManager extends System_Api_Base
     */
     public function getUsers()
     {
+        $principal = System_Api_Principal::getCurrent();
+
+        $query = 'SELECT user_id, user_name'
+            . ' FROM {users}';
+        if ( !$principal->isAuthenticated() ) {
+            $query .= ' WHERE user_id IN ( SELECT r.user_id FROM {rights} AS r'
+                . ' INNER JOIN {projects} AS p ON p.project_id = r.project_id'
+                . ' WHERE p.is_archived = 0 AND p.is_public = 1 )'
+                . ' OR user_access = %2d';
+        } else if ( !$principal->isAdministrator() ) {
+            $query .= ' WHERE EXISTS( SELECT * FROM {rights}'
+                . ' WHERE user_id = %1d AND project_access = %2d AND project_id IN ( SELECT project_id FROM {projects} WHERE is_archived = 0 ) )'
+                . ' OR user_id IN ( SELECT r.user_id FROM {rights} AS r'
+                . ' INNER JOIN {projects} AS p ON p.project_id = r.project_id'
+                . ' WHERE p.is_archived = 0 AND ( p.project_id IN ( SELECT project_id FROM {rights} WHERE user_id = %1d ) OR p.is_public = 1 ) )'
+                . ' OR user_access = %2d';
+        }
+        $query .= ' ORDER BY user_name COLLATE LOCALE';
+
+        return $this->connection->queryTable( $query, $principal->getUserId(), System_Const::AdministratorAccess );
+    }
+
+    /**
+    * Get list of users with all details.
+    * @return An array of associative arrays representing users.
+    */
+    public function getUsersWithDetails()
+    {
         $query = 'SELECT user_id, user_login, user_name, user_access, user_email'
             . ' FROM {users}'
             . ' ORDER BY user_name COLLATE LOCALE';
@@ -80,10 +108,12 @@ class System_Api_UserManager extends System_Api_Base
         $principal = System_Api_Principal::getCurrent();
 
         $query = 'SELECT r.project_id, r.user_id, r.project_access FROM {rights} AS r';
-        if ( !$principal->isAdministrator() )
-            $query .= ' JOIN {effective_rights} AS r2 ON r2.project_id = r.project_id AND r2.user_id = %d';
         $query .= ' JOIN {projects} AS p ON p.project_id = r.project_id'
             . ' WHERE p.is_archived = 0';
+        if ( !$principal->isAuthenticated() )
+            $query .= ' AND p.is_public = 1';
+        else if ( !$principal->isAdministrator() )
+            $query .= ' AND ( p.project_id IN ( SELECT project_id FROM {rights} WHERE user_id = %1d ) OR p.is_public = 1 )';
 
         return $this->connection->queryTable( $query, $principal->getUserId() );
     }
@@ -135,31 +165,6 @@ class System_Api_UserManager extends System_Api_Base
             . ' WHERE r.user_id = %d AND p.is_archived = 0';
 
         return $this->connection->queryTable( $query, $userId );
-    }
-
-    /**
-    * Get list of users visible to the current user.
-    * @return An array of associative arrays representing users.
-    */
-    public function getVisibleUsers()
-    {
-        $principal = System_Api_Principal::getCurrent();
-
-        $query = 'SELECT u.user_id, u.user_name'
-            . ' FROM {users} AS u';
-        if ( !$principal->isAuthenticated() ) {
-            $query .= ' WHERE u.user_id IN ( SELECT r1.user_id FROM {rights} AS r1'
-                . ' INNER JOIN {projects} AS p ON p.project_id = r1.project_id'
-                . ' WHERE p.is_archived = 0 AND p.is_public = 1 ) OR u.user_access = %2d';
-        } else if ( !$principal->isAdministrator() ) {
-            $query .= ' WHERE u.user_id IN ( SELECT r1.user_id FROM {rights} AS r1'
-                . ' INNER JOIN {projects} AS p ON p.project_id = r1.project_id'
-                . ' INNER JOIN {effective_rights} AS r2 ON r2.project_id = p.project_id AND r2.user_id = %1d'
-                . ' WHERE p.is_archived = 0 ) OR u.user_access = %2d';
-        }
-        $query .= ' ORDER BY u.user_name COLLATE LOCALE';
-
-        return $this->connection->queryTable( $query, $principal->getUserId(), System_Const::AdministratorAccess );
     }
 
     /**

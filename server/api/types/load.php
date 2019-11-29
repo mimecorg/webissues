@@ -35,15 +35,8 @@ class Server_Api_Types_Load
 
     public function run( $typeId, $attributes, $defaultView, $publicViews, $personalViews, $used )
     {
-        if ( System_Api_Principal::getCurrent()->isAdministrator() ) {
-            $isAdministrator = true;
-        } else {
-            $projectManager = new System_Api_ProjectManager();
-            $isAdministrator = $projectManager->isProjectAdministrator();
-        }
-
         $typeManager = new System_Api_TypeManager();
-        $type = $typeManager->getIssueType( $typeId, $isAdministrator ? 0 : System_Api_TypeManager::CheckAvailable );
+        $type = $typeManager->getIssueType( $typeId );
 
         $result[ 'id' ] = $type[ 'type_id' ];
         $result[ 'name' ] = $type[ 'type_name' ];

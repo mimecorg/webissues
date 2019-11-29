@@ -57,17 +57,21 @@ class System_Api_ProjectManager extends System_Api_Base
     {
         $principal = System_Api_Principal::getCurrent();
 
-        if ( !$principal->isAuthenticated() ) {
-            $query = 'SELECT p.project_id, p.project_name, p.stamp_id, p.is_public, %3d AS project_access FROM {projects} AS p'
-                . ' WHERE p.is_archived = 0 AND p.is_public = 1';
-        } else if ( !$principal->isAdministrator() ) {
-            $query = 'SELECT p.project_id, p.project_name, p.stamp_id, p.is_public, r.project_access FROM {projects} AS p'
-                . ' JOIN {effective_rights} AS r ON r.project_id = p.project_id AND r.user_id = %1d'
-                . ' WHERE p.is_archived = 0';
-        } else {
-            $query = 'SELECT p.project_id, p.project_name, p.stamp_id, p.is_public, %2d AS project_access FROM {projects} AS p'
-                . ' WHERE p.is_archived = 0';
-        }
+        $query = 'SELECT p.project_id, p.project_name, p.stamp_id, p.is_public,';
+        if ( !$principal->isAuthenticated() )
+            $query .= ' %3d AS project_access';
+        else if ( !$principal->isAdministrator() )
+            $query .= ' COALESCE( r.project_access, %3d ) AS project_access';
+        else
+            $query .= ' %2d AS project_access';
+        $query .= ' FROM {projects} AS p';
+        if ( $principal->isAuthenticated() && !$principal->isAdministrator() )
+            $query .= ' LEFT OUTER JOIN {rights} AS r ON r.project_id = p.project_id AND r.user_id = %1d';
+        $query .= ' WHERE p.is_archived = 0';
+        if ( !$principal->isAuthenticated() )
+            $query .= ' AND p.is_public = 1';
+        else if ( !$principal->isAdministrator() )
+            $query .= ' AND ( r.project_access IS NOT NULL OR p.is_public = 1 )';
         $query .= ' ORDER BY p.project_name COLLATE LOCALE';
 
         return $this->connection->queryTable( $query, $principal->getUserId(), System_Const::AdministratorAccess, System_Const::NormalAccess );
@@ -88,15 +92,17 @@ class System_Api_ProjectManager extends System_Api_Base
         if ( !$principal->isAuthenticated() )
             $query .= ' %4d AS project_access';
         else if ( !$principal->isAdministrator() )
-            $query .= ' r.project_access';
+            $query .= ' COALESCE( r.project_access, %4d ) AS project_access';
         else
             $query .= ' %3d AS project_access';
         $query .= ' FROM {projects} AS p';
         if ( $principal->isAuthenticated() && !$principal->isAdministrator() )
-            $query .= ' JOIN {effective_rights} AS r ON r.project_id = p.project_id AND r.user_id = %2d';
+            $query .= ' LEFT OUTER JOIN {rights} AS r ON r.project_id = p.project_id AND r.user_id = %2d';
         $query .= ' WHERE p.project_id = %1d AND p.is_archived = 0';
         if ( !$principal->isAuthenticated() )
             $query .= ' AND p.is_public = 1';
+        else if ( !$principal->isAdministrator() )
+            $query .= ' AND ( r.project_access IS NOT NULL OR p.is_public = 1 )';
 
         if ( !( $project = $this->connection->queryRow( $query, $projectId, $principal->getUserId(), System_Const::AdministratorAccess, System_Const::NormalAccess ) ) )
             throw new System_Api_Error( System_Api_Error::UnknownProject );
@@ -116,13 +122,13 @@ class System_Api_ProjectManager extends System_Api_Base
         $principal = System_Api_Principal::getCurrent();
 
         $query = 'SELECT f.folder_id, f.project_id, f.folder_name, f.type_id, f.stamp_id, t.type_name FROM {folders} AS f';
-        if ( $principal->isAuthenticated() && !$principal->isAdministrator() )
-            $query .= ' JOIN {effective_rights} AS r ON r.project_id = f.project_id AND r.user_id = %1d';
         $query .= ' JOIN {projects} AS p ON p.project_id = f.project_id'
             . ' JOIN {issue_types} AS t ON t.type_id = f.type_id'
             . ' WHERE p.is_archived = 0';
         if ( !$principal->isAuthenticated() )
             $query .= ' AND p.is_public = 1';
+        else if ( !$principal->isAdministrator() )
+            $query .= ' AND ( p.project_id IN ( SELECT project_id FROM {rights} WHERE user_id = %1d ) OR p.is_public = 1 )';
         $query .= ' ORDER BY f.folder_name COLLATE LOCALE';
 
         return $this->connection->queryTable( $query, $principal->getUserId(), System_Const::AdministratorAccess );
@@ -149,17 +155,19 @@ class System_Api_ProjectManager extends System_Api_Base
             if ( !$principal->isAuthenticated() )
                 $query .= ' %4d AS project_access';
             else if ( !$principal->isAdministrator() )
-                $query .= ' r.project_access';
+                $query .= ' COALESCE( r.project_access, %4d ) AS project_access';
             else
                 $query .= ' %3d AS project_access';
             $query .= ' FROM {folders} AS f'
                 . ' JOIN {projects} AS p ON p.project_id = f.project_id'
                 . ' JOIN {issue_types} AS t ON t.type_id = f.type_id';
             if ( $principal->isAuthenticated() && !$principal->isAdministrator() )
-                $query .= ' JOIN {effective_rights} AS r ON r.project_id = f.project_id AND r.user_id = %2d';
+                $query .= ' LEFT OUTER JOIN {rights} AS r ON r.project_id = f.project_id AND r.user_id = %2d';
             $query .= ' WHERE f.folder_id = %1d AND p.is_archived = 0';
             if ( !$principal->isAuthenticated() )
                 $query .= ' AND p.is_public = 1';
+            else if ( !$principal->isAdministrator() )
+                $query .= ' AND ( r.project_access IS NOT NULL OR p.is_public = 1 )';
 
             if ( !( $folder = $this->connection->queryRow( $query, $folderId, $principal->getUserId(), System_Const::AdministratorAccess, System_Const::NormalAccess ) ) )
                 throw new System_Api_Error( System_Api_Error::UnknownFolder );
@@ -185,12 +193,12 @@ class System_Api_ProjectManager extends System_Api_Base
         $typeId = $type[ 'type_id' ];
 
         $query = 'SELECT f.folder_id, f.project_id, f.folder_name, f.type_id, f.stamp_id, t.type_name FROM {folders} AS f';
-        if ( !$principal->isAdministrator() )
-            $query .= ' JOIN {effective_rights} AS r ON r.project_id = f.project_id AND r.user_id = %1d';
         $query .= ' JOIN {projects} AS p ON p.project_id = f.project_id'
             . ' JOIN {issue_types} AS t ON t.type_id = f.type_id'
-            . ' WHERE t.type_id = %3d AND p.is_archived = 0'
-            . ' ORDER BY f.folder_name COLLATE LOCALE';
+            . ' WHERE t.type_id = %3d AND p.is_archived = 0';
+        if ( !$principal->isAdministrator() )
+            $query .= ' AND ( p.project_id IN ( SELECT project_id FROM {rights} WHERE user_id = %1d ) OR p.is_public = 1 )';
+        $query .= ' ORDER BY f.folder_name COLLATE LOCALE';
 
         return $this->connection->queryTable( $query, $principal->getUserId(), System_Const::AdministratorAccess, $typeId );
     }

@@ -236,9 +236,9 @@ class System_Api_SubscriptionManager extends System_Api_Base
             . ' JOIN {folders} AS f ON f.folder_id = i.folder_id'
             . ' JOIN {projects} AS p ON p.project_id = f.project_id'
             . ' LEFT OUTER JOIN {email_inboxes} AS ei ON ei.inbox_id = s.inbox_id';
-        if ( !$principal->isAdministrator() )
-            $query .= ' JOIN {effective_rights} AS r ON r.project_id = f.project_id AND r.user_id = %1d';
         $query .= ' WHERE s.user_id = %1d AND i.stamp_id > s.stamp_id AND p.is_archived = 0';
+        if ( !$principal->isAdministrator() )
+            $query .= ' AND ( p.project_id IN ( SELECT project_id FROM {rights} WHERE user_id = %1d ) OR p.is_public = 1 )';
 
         return $this->connection->queryTable( $query, $principal->getUserId() );
     }
@@ -259,11 +259,11 @@ class System_Api_SubscriptionManager extends System_Api_Base
             . ' JOIN {issues} AS i ON i.issue_id = s.issue_id'
             . ' JOIN {folders} AS f ON f.folder_id = i.folder_id'
             . ' JOIN {projects} AS p ON p.project_id = f.project_id';
+        $query .= ' WHERE s.user_id IS NULL AND s.inbox_id = %1d AND i.stamp_id > s.stamp_id AND p.is_archived = 0';
         if ( !$principal->isAdministrator() )
-            $query .= ' JOIN {effective_rights} AS r ON r.project_id = f.project_id AND r.user_id = %1d';
-        $query .= ' WHERE s.user_id IS NULL AND i.stamp_id > s.stamp_id AND p.is_archived = 0 AND s.inbox_id = %2d';
+            $query .= ' AND ( p.project_id IN ( SELECT project_id FROM {rights} WHERE user_id = %2d ) OR p.is_public = 1 )';
 
-        return $this->connection->queryTable( $query, $principal->getUserId(), $inboxId );
+        return $this->connection->queryTable( $query, $inboxId, $principal->getUserId() );
     }
 
     /**

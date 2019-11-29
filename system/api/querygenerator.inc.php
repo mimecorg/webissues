@@ -511,14 +511,14 @@ class System_Api_QueryGenerator extends System_Api_Base
                 $conditions[] = 'p.project_id = %d';
                 $this->arguments[] = $this->projectId;
             } else {
+                $conditions[] = 'p.is_archived = 0';
+
                 if ( !$principal->isAuthenticated() ) {
                     $conditions[] = 'p.is_public = 1';
                 } else if ( !$principal->isAdministrator() ) {
                     $conditions[] = '( p.project_id IN ( SELECT project_id FROM {rights} WHERE user_id = %d ) OR p.is_public = 1 )';
                     $this->arguments[] = $principal->getUserId();
                 }
-
-                $conditions[] = 'p.is_archived = 0';
             }
         }
 

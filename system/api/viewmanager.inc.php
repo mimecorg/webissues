@@ -61,10 +61,21 @@ class System_Api_ViewManager extends System_Api_Base
 
         $query = 'SELECT view_id, type_id, view_name, view_def, ( CASE WHEN user_id IS NULL THEN 1 ELSE 0 END ) AS is_public'
             . ' FROM {views}'
-            . ' WHERE user_id = %d OR user_id IS NULL'
-            . ' ORDER BY view_name';
+            . ' WHERE ( user_id = %1d OR user_id IS NULL )';
+        if ( !$principal->isAuthenticated() ) {
+            $query .= ' AND type_id IN ( SELECT f.type_id FROM {folders} AS f'
+                . ' JOIN {projects} AS p ON p.project_id = f.project_id'
+                . ' WHERE p.is_archived = 0 AND p.is_public = 1 )';
+        } else if ( !$principal->isAdministrator() ) {
+            $query .= ' AND ( EXISTS( SELECT * FROM {rights}'
+                . ' WHERE user_id = %1d AND project_access = %2d AND project_id IN ( SELECT project_id FROM {projects} WHERE is_archived = 0 ) )'
+                . ' OR type_id IN ( SELECT f.type_id FROM {folders} AS f'
+                . ' JOIN {projects} AS p ON p.project_id = f.project_id'
+                . ' WHERE p.is_archived = 0 AND ( p.project_id IN ( SELECT project_id FROM {rights} WHERE user_id = %1d ) OR p.is_public = 1 ) ) )';
+        }
+        $query .= ' ORDER BY view_name';
 
-        return $this->connection->queryTable( $query, $principal->getUserId() );
+        return $this->connection->queryTable( $query, $principal->getUserId(), System_Const::AdministratorAccess );
     }
 
     /**
@@ -120,9 +131,20 @@ class System_Api_ViewManager extends System_Api_Base
             $query = 'SELECT v.view_id, v.view_name, v.view_def, ( CASE WHEN v.user_id IS NULL THEN 1 ELSE 0 END ) AS is_public, t.type_id, t.type_name'
                 . ' FROM {views} AS v'
                 . ' JOIN {issue_types} AS t ON t.type_id = v.type_id'
-                . ' WHERE v.view_id = %d AND ( user_id = %d OR user_id IS NULL )';
+                . ' WHERE v.view_id = %1d AND ( v.user_id = %2d OR v.user_id IS NULL )';
+            if ( !$principal->isAuthenticated() ) {
+                $query .= ' AND t.type_id IN ( SELECT f.type_id FROM {folders} AS f'
+                    . ' JOIN {projects} AS p ON p.project_id = f.project_id'
+                    . ' WHERE p.is_archived = 0 AND p.is_public = 1 )';
+            } else if ( !$principal->isAdministrator() ) {
+                $query .= ' AND ( EXISTS( SELECT * FROM {rights}'
+                    . ' WHERE user_id = %2d AND project_access = %3d AND project_id IN ( SELECT project_id FROM {projects} WHERE is_archived = 0 ) )'
+                    . ' OR t.type_id IN ( SELECT f.type_id FROM {folders} AS f'
+                    . ' JOIN {projects} AS p ON p.project_id = f.project_id'
+                    . ' WHERE p.is_archived = 0 AND ( p.project_id IN ( SELECT project_id FROM {rights} WHERE user_id = %2d ) OR p.is_public = 1 ) ) )';
+            }
 
-            if ( !( $view = $this->connection->queryRow( $query, $viewId, $principal->getUserId() ) ) )
+            if ( !( $view = $this->connection->queryRow( $query, $viewId, $principal->getUserId(), System_Const::AdministratorAccess ) ) )
                 throw new System_Api_Error( System_Api_Error::UnknownView );
 
             self::$views[ $viewId ] = $view;
@@ -382,17 +404,6 @@ class System_Api_ViewManager extends System_Api_Base
         $this->connection->execute( $query, $viewId );
 
         return true;
-    }
-
-    /**
-    * Return all view settings as an array of associative arrays.
-    */
-    public function getViewSettings()
-    {
-        $query = 'SELECT type_id, set_key, set_value'
-            . ' FROM {view_settings}';
-
-        return $this->connection->queryTable( $query );
     }
 
     /**

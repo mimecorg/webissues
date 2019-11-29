@@ -35,8 +35,6 @@ class System_Api_TypeManager extends System_Api_Base
     /*@{*/
     /** Force deletion with all associated data. */
     const ForceDelete = 1;
-    /** Check if type is available to the current user. */
-    const CheckAvailable = 2;
     /*@}*/
 
     private static $attributeTypes = array();
@@ -55,38 +53,48 @@ class System_Api_TypeManager extends System_Api_Base
     */
     public function getIssueTypes()
     {
-        $query = 'SELECT type_id, type_name FROM {issue_types} ORDER BY type_name COLLATE LOCALE';
+        $principal = System_Api_Principal::getCurrent();
 
-        return $this->connection->queryTable( $query );
+        $query = 'SELECT type_id, type_name FROM {issue_types}';
+        if ( !$principal->isAuthenticated() ) {
+            $query .= ' WHERE type_id IN ( SELECT f.type_id FROM {folders} AS f'
+                . ' JOIN {projects} AS p ON p.project_id = f.project_id'
+                . ' WHERE p.is_archived = 0 AND p.is_public = 1 )';
+        } else if ( !$principal->isAdministrator() ) {
+            $query .= ' WHERE EXISTS( SELECT * FROM {rights}'
+                . ' WHERE user_id = %1d AND project_access = %2d AND project_id IN ( SELECT project_id FROM {projects} WHERE is_archived = 0 ) )'
+                . ' OR type_id IN ( SELECT f.type_id FROM {folders} AS f'
+                . ' JOIN {projects} AS p ON p.project_id = f.project_id'
+                . ' WHERE p.is_archived = 0 AND ( p.project_id IN ( SELECT project_id FROM {rights} WHERE user_id = %1d ) OR p.is_public = 1 ) )';
+        }
+        $query .= ' ORDER BY type_name COLLATE LOCALE';
+
+        return $this->connection->queryTable( $query, $principal->getUserId(), System_Const::AdministratorAccess );
     }
 
     /**
     * Get the issue type with given identifier.
     * @param $typeId Identifier of the type.
-    * @param $flags If CheckAvailable is passed the issue type is only returned
-    * if it is available to the current user.
     * @return Array containing the issue type.
     */
-    public function getIssueType( $typeId, $flags = 0 )
+    public function getIssueType( $typeId )
     {
         $principal = System_Api_Principal::getCurrent();
 
-        $query = 'SELECT t.type_id, t.type_name FROM {issue_types} AS t WHERE t.type_id = %d';
-
-        if ( $flags & self::CheckAvailable ) {
-            if ( !$principal->isAuthenticated() ) {
-                $query .= ' AND t.type_id IN ( SELECT f.type_id FROM {folders} AS f'
-                    . ' JOIN {projects} AS p ON p.project_id = f.project_id'
-                    . ' WHERE p.is_public = 1 AND p.is_archived = 0 )';
-            } else if ( !$principal->isAdministrator() ) {
-                $query .= ' AND t.type_id IN ( SELECT f.type_id FROM {folders} AS f'
-                    . ' JOIN {projects} AS p ON p.project_id = f.project_id'
-                    . ' JOIN {effective_rights} AS r ON r.project_id = f.project_id AND r.user_id = %d'
-                    . ' WHERE p.is_archived = 0 )';
-            }
+        $query = 'SELECT type_id, type_name FROM {issue_types} WHERE type_id = %1d';
+        if ( !$principal->isAuthenticated() ) {
+            $query .= ' AND type_id IN ( SELECT f.type_id FROM {folders} AS f'
+                . ' JOIN {projects} AS p ON p.project_id = f.project_id'
+                . ' WHERE p.is_archived = 0 AND p.is_public = 1 )';
+        } else if ( !$principal->isAdministrator() ) {
+            $query .= ' AND ( EXISTS( SELECT * FROM {rights}'
+                . ' WHERE user_id = %2d AND project_access = %3d AND project_id IN ( SELECT project_id FROM {projects} WHERE is_archived = 0 ) )'
+                . ' OR type_id IN ( SELECT f.type_id FROM {folders} AS f'
+                . ' JOIN {projects} AS p ON p.project_id = f.project_id'
+                . ' WHERE p.is_archived = 0 AND ( p.project_id IN ( SELECT project_id FROM {rights} WHERE user_id = %2d ) OR p.is_public = 1 ) ) )';
         }
 
-        if ( !( $type = $this->connection->queryRow( $query, $typeId, $principal->getUserId() ) ) )
+        if ( !( $type = $this->connection->queryRow( $query, $typeId, $principal->getUserId(), System_Const::AdministratorAccess ) ) )
             throw new System_Api_Error( System_Api_Error::UnknownType );
 
         return $type;
@@ -98,9 +106,23 @@ class System_Api_TypeManager extends System_Api_Base
     */
     public function getAttributeTypes()
     {
-        $query = 'SELECT attr_id, type_id, attr_name, attr_def FROM {attr_types} ORDER BY attr_name COLLATE LOCALE';
+        $principal = System_Api_Principal::getCurrent();
 
-        return $this->connection->queryTable( $query );
+        $query = 'SELECT attr_id, type_id, attr_name, attr_def FROM {attr_types}';
+        if ( !$principal->isAuthenticated() ) {
+            $query .= ' WHERE type_id IN ( SELECT f.type_id FROM {folders} AS f'
+                . ' JOIN {projects} AS p ON p.project_id = f.project_id'
+                . ' WHERE p.is_archived = 0 AND p.is_public = 1 )';
+        } else if ( !$principal->isAdministrator() ) {
+            $query .= ' WHERE EXISTS( SELECT * FROM {rights}'
+                . ' WHERE user_id = %1d AND project_access = %2d AND project_id IN ( SELECT project_id FROM {projects} WHERE is_archived = 0 ) )'
+                . ' OR type_id IN ( SELECT f.type_id FROM {folders} AS f'
+                . ' JOIN {projects} AS p ON p.project_id = f.project_id'
+                . ' WHERE p.is_archived = 0 AND ( p.project_id IN ( SELECT project_id FROM {rights} WHERE user_id = %1d ) OR p.is_public = 1 ) )';
+        }
+        $query .= ' ORDER BY attr_name COLLATE LOCALE';
+
+        return $this->connection->queryTable( $query, $principal->getUserId(), System_Const::AdministratorAccess );
     }
 
     /**
@@ -110,12 +132,25 @@ class System_Api_TypeManager extends System_Api_Base
     */
     public function getAttributeType( $attributeId )
     {
+        $principal = System_Api_Principal::getCurrent();
+
         $query = 'SELECT a.attr_id, t.type_id, a.attr_name, a.attr_def, t.type_name'
             . ' FROM {attr_types} AS a'
             . ' INNER JOIN {issue_types} AS t ON t.type_id = a.type_id'
-            . ' WHERE attr_id = %d';
+            . ' WHERE attr_id = %1d';
+        if ( !$principal->isAuthenticated() ) {
+            $query .= ' AND type_id IN ( SELECT f.type_id FROM {folders} AS f'
+                . ' JOIN {projects} AS p ON p.project_id = f.project_id'
+                . ' WHERE p.is_archived = 0 AND p.is_public = 1 )';
+        } else if ( !$principal->isAdministrator() ) {
+            $query .= ' AND ( EXISTS( SELECT * FROM {rights}'
+                . ' WHERE user_id = %2d AND project_access = %3d AND project_id IN ( SELECT project_id FROM {projects} WHERE is_archived = 0 ) )'
+                . ' OR type_id IN ( SELECT f.type_id FROM {folders} AS f'
+                . ' JOIN {projects} AS p ON p.project_id = f.project_id'
+                . ' WHERE p.is_archived = 0 AND ( p.project_id IN ( SELECT project_id FROM {rights} WHERE user_id = %2d ) OR p.is_public = 1 ) ) )';
+        }
 
-        if ( !( $attribute = $this->connection->queryRow( $query, $attributeId ) ) )
+        if ( !( $attribute = $this->connection->queryRow( $query, $attributeId, $principal->getUserId(), System_Const::AdministratorAccess ) ) )
             throw new System_Api_Error( System_Api_Error::UnknownAttribute );
 
         return $attribute;
@@ -240,30 +275,6 @@ class System_Api_TypeManager extends System_Api_Base
         $type[ 'type_id' ] = $view[ 'type_id' ];
         $type[ 'type_name' ] = $view[ 'type_name' ];
         return $type;
-    }
-
-    /**
-    * Get list of issue types available to the current user.
-    * @return An array of associative arrays representing types.
-    */
-    public function getAvailableIssueTypes()
-    {
-        $principal = System_Api_Principal::getCurrent();
-
-        $query = 'SELECT t.type_id, t.type_name FROM {issue_types} AS t';
-        if ( !$principal->isAuthenticated() ) {
-            $query .= ' WHERE t.type_id IN ( SELECT f.type_id FROM {folders} AS f'
-                . ' JOIN {projects} AS p ON p.project_id = f.project_id'
-                . ' WHERE p.is_public = 1 AND p.is_archived = 0 )';
-        } else if ( !$principal->isAdministrator() ) {
-            $query .= ' WHERE t.type_id IN ( SELECT f.type_id FROM {folders} AS f'
-                . ' JOIN {projects} AS p ON p.project_id = f.project_id'
-                . ' JOIN {effective_rights} AS r ON r.project_id = f.project_id AND r.user_id = %d'
-                . ' WHERE p.is_archived = 0 )';
-        }
-        $query .= ' ORDER BY t.type_name COLLATE LOCALE';
-
-        return $this->connection->queryTable( $query, $principal->getUserId() );
     }
 
     /**
