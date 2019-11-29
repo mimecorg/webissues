@@ -501,6 +501,11 @@ class Setup_Updater extends System_Web_Base
             $this->connection->execute( $query, 'initial_view' );
         }
 
+        if ( version_compare( $version, '2.0.008' ) < 0 ) {
+            $query = 'DROP VIEW {effective_rights}';
+            $this->connection->execute( $query );
+        }
+
         $query = 'DELETE FROM {sessions}';
         $this->connection->execute( $query );
 

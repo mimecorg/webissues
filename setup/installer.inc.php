@@ -318,14 +318,6 @@ class Setup_Installer extends System_Web_Base
             $this->generator->createTable( $tableName, $fields );
 
         $this->generator->updateReferences();
-
-        $query = 'SELECT p.project_id, u.user_id, COALESCE( r.project_access, 1 ) AS project_access'
-            . ' FROM {projects} AS p'
-            . ' CROSS JOIN {users} AS u'
-            . ' LEFT OUTER JOIN {rights} AS r ON r.project_id = p.project_id AND r.user_id = u.user_id'
-            . ' WHERE r.project_access IS NOT NULL OR p.is_public = 1';
-
-        $this->generator->createView( 'effective_rights', $query );
     }
 
     public function installData( $serverName, $adminPassword )

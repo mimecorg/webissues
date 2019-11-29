@@ -38,7 +38,7 @@ define( 'WI_VERSION', '2.0' );
 /**
 * Current version of the WebIssues database schema.
 */
-define( 'WI_DATABASE_VERSION', '2.0.007' );
+define( 'WI_DATABASE_VERSION', '2.0.008' );
 
 /**
 * The full physical path of the entry script.
