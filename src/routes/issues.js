@@ -317,14 +317,13 @@ export default function routeIssues( route, i18n, ajax, store, formatter ) {
 
   if ( process.env.TARGET == 'electron' ) {
     route( 'ClientDownload', '/issues/:issueId/files/:fileId/download', ( { issueId, fileId } ) => {
-      return ajax.post( '/issues/files/load.php', { issueId, fileId } ).then( ( { name, total, size } ) => {
+      return ajax.post( '/issues/files/load.php', { issueId, fileId } ).then( ( { name, size } ) => {
         return Vue.prototype.$client.findAttachment( store.state.global.serverUUID, fileId ).then( filePath => {
           return {
             form: 'client/ClientDownload',
             issueId,
             fileId,
             name,
-            total,
             fileSize: size,
             initialPath: filePath
           };

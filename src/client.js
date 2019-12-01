@@ -78,7 +78,7 @@ function makeClientAPI() {
   let progressHandler = null;
   let doneHandler = null;
 
-  return {
+  const clientAPI = {
     get settings() {
       return settings;
     },
@@ -135,7 +135,11 @@ function makeClientAPI() {
     },
 
     openFile( path ) {
-      shell.openExternal( url.format( { pathname: path, protocol: 'file:', slashes: true } ) );
+      shell.openExternal( clientAPI.pathToURL( path ) );
+    },
+
+    pathToURL( path ) {
+      return url.format( { pathname: path, protocol: 'file:', slashes: true } );
     },
 
     isSupportedVersion( serverVersion ) {
@@ -226,4 +230,6 @@ function makeClientAPI() {
       } );
     }
   };
+
+  return clientAPI;
 }

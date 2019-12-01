@@ -45,7 +45,6 @@ class Server_Api_Issues_Files_Load
             throw new System_Api_Error( System_Api_Error::UnknownFile );
 
         $result[ 'name' ] = $file[ 'file_name' ];
-        $result[ 'total' ] = $file[ 'file_size' ];
         $result[ 'size' ] = $file[ 'file_size' ];
         $result[ 'description' ] = $file[ 'file_descr' ];
 

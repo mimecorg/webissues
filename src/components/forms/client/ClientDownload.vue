@@ -18,18 +18,19 @@
 -->
 
 <template>
-  <BaseForm v-bind:title="$t( 'title.DownloadFile' )">
-    <Prompt path="prompt.DownloadFile"><strong>{{ name }}</strong></Prompt>
-    <div class="progress">
+  <BaseForm v-bind:title="name" v-bind:size="size">
+    <Prompt v-if="imageError" alert-class="alert-warning" path="error.ImagePreviewError"/>
+    <div ref="image" class="issue-image"></div>
+    <div v-if="!imageLoaded" class="progress">
       <div v-bind:class="[ 'progress-bar', error != null ? 'progress-bar-danger' : 'progress-bar-success' ]" v-bind:style="{ width: receivedPercent }"></div>
     </div>
-    <div v-bind:class="[ 'progress-message', { 'has-error': error != null } ]">
+    <div v-if="!imageLoaded" v-bind:class="[ 'progress-message', { 'has-error': error != null } ]">
       <p v-if="error != null" class="help-block">{{ error }}</p>
       <p v-else class="help-block">{{ $t( 'info.Downloaded', [ receivedPercent, formattedFileSize ] ) }}</p>
     </div>
     <div class="form-buttons">
       <button v-if="path != null" class="btn btn-primary" v-on:click="open">{{ $t( 'cmd.Open' ) }}</button>
-      <button v-if="path != null" class="btn btn-primary" v-on:click="saveAs">{{ $t( 'cmd.SaveAs' ) }}</button>
+      <button v-if="path != null" class="btn btn-primary" v-on:click="saveAs">{{ $t( 'cmd.Save' ) }}</button>
       <button class="btn btn-default" v-on:click="returnToDetails">{{ $t( 'cmd.Cancel' ) }}</button>
     </div>
   </BaseForm>
@@ -43,7 +44,6 @@ export default {
     issueId: Number,
     fileId: Number,
     name: String,
-    total: Number,
     fileSize: Number,
     initialPath: String
   },
@@ -51,18 +51,27 @@ export default {
   data() {
     return {
       path: this.initialPath,
-      received: 0,
-      error: null
+      received: this.initialPath != null ? this.fileSize : 0,
+      error: null,
+      imageLoaded: false,
+      imageError: false,
+      width: 0
     };
   },
 
   computed: {
     ...mapState( 'global', [ 'baseURL', 'serverUUID' ] ),
+    size() {
+      if ( this.width <= 676 )
+        return 'normal';
+      else
+        return 'large';
+    },
     receivedPercent() {
-      if ( this.error != null || this.total == 0 )
+      if ( this.error != null || this.fileSize == 0 )
         return '100%';
       else
-        return '' + Math.floor( 100 * this.received / this.total ) + '%';
+        return '' + Math.floor( 100 * this.received / this.fileSize ) + '%';
     },
     formattedFileSize() {
       return this.$formatter.formatFileSize( this.fileSize );
@@ -103,7 +112,24 @@ export default {
         this.error = this.$t( 'error.DownloadError' );
       } else {
         this.path = filePath;
-        this.received = this.total;
+        this.received = this.fileSize;
+        this.previewImage();
+      }
+    },
+
+    previewImage() {
+      if ( /\.(png|jpe?g|gif|bmp|ico|svg)$/i.test( this.name ) ) {
+        const image = document.createElement( 'img' );
+        image.onload = () => {
+          this.imageLoaded = true;
+          this.width = image.width;
+          this.$refs.image.appendChild( image );
+        };
+        image.onerror = () => {
+          this.imageLoaded = true;
+          this.imageError = true;
+        };
+        image.src = this.$client.pathToURL( this.path );
       }
     }
   },
@@ -111,9 +137,9 @@ export default {
   mounted() {
     if ( this.path == null ) {
       const url = this.baseURL + '/server/api/issues/files/download.php?id=' + this.fileId;
-      this.$client.downloadAttachment( this.serverUUID, this.fileId, this.name, this.total, url, this.progress, this.done );
+      this.$client.downloadAttachment( this.serverUUID, this.fileId, this.name, this.fileSize, url, this.progress, this.done );
     } else {
-      this.received = this.total;
+      this.previewImage();
     }
   },
 
