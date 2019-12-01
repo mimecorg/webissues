@@ -41,6 +41,7 @@ class Server_Api_Users_List
             $resultUser[ 'login' ] = $user[ 'user_login' ];
             $resultUser[ 'access' ] = $user[ 'user_access' ];
             $resultUser[ 'email' ] = $user[ 'user_email' ];
+            $resultUser[ 'projectAdmin' ] = $user[ 'project_admin' ];
 
             $result[ 'users' ][] = $resultUser;
         }

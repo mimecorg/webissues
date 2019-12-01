@@ -77,11 +77,14 @@ class System_Api_UserManager extends System_Api_Base
     */
     public function getUsersWithDetails()
     {
-        $query = 'SELECT user_id, user_login, user_name, user_access, user_email'
-            . ' FROM {users}'
-            . ' ORDER BY user_name COLLATE LOCALE';
+        $query = 'SELECT u.user_id, u.user_login, u.user_name, u.user_access, u.user_email,'
+            . ' ( CASE WHEN EXISTS( SELECT * FROM {rights} AS r'
+            . ' WHERE r.user_id = u.user_id AND r.project_access = %1d'
+            . ' AND r.project_id IN ( SELECT project_id FROM {projects} WHERE is_archived = 0 ) ) THEN 1 ELSE 0 END ) AS project_admin'
+            . ' FROM {users} AS u'
+            . ' ORDER BY u.user_name COLLATE LOCALE';
 
-        return $this->connection->queryTable( $query );
+        return $this->connection->queryTable( $query, System_Const::AdministratorAccess );
     }
 
     /**

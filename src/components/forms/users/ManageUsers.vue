@@ -60,7 +60,7 @@ export default {
       if ( user.access == Access.NoAccess )
         return this.$t( 'text.Disabled' );
       else if ( user.access == Access.NormalAccess )
-        return this.$t( 'text.RegularUser' );
+        return user.projectAdmin ? this.$t( 'text.ProjectAdministrator' ) : this.$t( 'text.RegularUser' );
       else if ( user.access == Access.AdministratorAccess )
         return this.$t( 'text.SystemAdministrator' );
     },
