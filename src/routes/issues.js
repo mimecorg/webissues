@@ -304,6 +304,17 @@ export default function routeIssues( route, i18n, ajax, store, formatter ) {
     } );
   } );
 
+  route( 'ImagePreview', '/issues/:issueId/files/:fileId/preview', ( { issueId, fileId } ) => {
+      return ajax.post( '/issues/files/load.php', { issueId, fileId } ).then( ( { name } ) => {
+        return {
+          form: 'issues/ImagePreview',
+          issueId,
+          fileId,
+          name
+        };
+      } );
+  } );
+
   if ( process.env.TARGET == 'electron' ) {
     route( 'ClientDownload', '/issues/:issueId/files/:fileId/download', ( { issueId, fileId } ) => {
       return ajax.post( '/issues/files/load.php', { issueId, fileId } ).then( ( { name, total, size } ) => {

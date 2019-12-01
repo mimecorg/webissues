@@ -126,8 +126,8 @@
             </div>
             <div v-else-if="isFileAdded( item )" class="issue-attachment">
               <span class="fa fa-paperclip" aria-hidden="true"></span>
-              <a v-if="isWeb" v-bind:href="getFileURL( item.id )" target="_blank">{{ item.name }}</a>
-              <HyperLink v-else v-on:click="downloadFile( item )">{{ item.name }}</HyperLink>
+              <a v-if="isWeb" v-bind:href="getFileURL( item.id )" v-on:click="downloadFile( $event, item )">{{ item.name }}</a>
+              <HyperLink v-else v-on:click="downloadFile( $event, item )">{{ item.name }}</HyperLink>
               ({{ formatFileSize( item.size ) }})
               <span v-if="item.description" v-html="'&mdash; ' + item.description"></span>
               <div v-if="isItemModified( item )" class="last-edited">
@@ -411,9 +411,13 @@ export default {
         this.$router.push( 'DeleteFile', { issueId: this.issueId, fileId: item.id } );
     },
 
-    downloadFile( item ) {
-      if ( process.env.TARGET == 'electron' )
+    downloadFile( event, item ) {
+      if ( process.env.TARGET == 'electron' ) {
         this.$router.push( 'ClientDownload', { issueId: this.issueId, fileId: item.id } );
+      } else if ( /\.(png|jpe?g|gif|bmp|ico|svg)$/i.test( item.name ) ) {
+        this.$router.push( 'ImagePreview', { issueId: this.issueId, fileId: item.id } );
+        event.preventDefault();
+      }
     },
 
     setUnread( unread ) {
