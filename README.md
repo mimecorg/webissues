@@ -12,13 +12,13 @@ The latest stable version of the WebIssues Server can be found [here](https://gi
 
 ## Requirements
 
-* Web server with PHP version 5.2.1 or newer
+* Web server with PHP version 5.6 or newer
 
 * The following PHP extensions:
   * mbstring (required)
   * mysqli (required when using MySQL database)
   * pgsql (required when using PostgreSQL database)
-  * com_dotnet (required since PHP 5.3.15 / 5.4.5 when using SQL Server)
+  * com_dotnet (required when using SQL Server database)
 
 * One of the following database servers:
   * MySQL (version 5.0.15 or newer)
