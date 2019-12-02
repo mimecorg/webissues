@@ -20,7 +20,7 @@
 <template>
   <BaseForm v-bind:title="$t( 'cmd.GoToItem' )" size="small" with-buttons v-on:ok="submit" v-on:cancel="cancel">
     <Prompt path="prompt.GoToItem"/>
-    <FormInput ref="item" id="item" v-bind:label="$t( 'label.ID' )" v-bind="$field( 'item' )" v-model="item" v-on:keydown.enter="submit"/>
+    <FormInput ref="item" id="item" autocomplete="off" v-bind:label="$t( 'label.ID' )" v-bind="$field( 'item' )" v-model="item" v-on:keydown.enter="submit"/>
   </BaseForm>
 </template>
 
