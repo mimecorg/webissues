@@ -25,13 +25,14 @@ if ( !defined( 'WI_VERSION' ) ) die( -1 );
 */
 class System_Web_Assets extends System_Web_Base
 {
-    const ProductionOnly = 1;
+    const Preload = 1;
 
     private $devMode;
     private $devUrl;
 
     private $assets = array();
 
+    private $preload = array();
     private $stylesheets = array();
     private $scripts = array();
 
@@ -51,24 +52,50 @@ class System_Web_Assets extends System_Web_Base
         }
     }
 
+    public function isDevMode()
+    {
+        return $this->devMode;
+    }
+
     public function add( $name, $flags = 0 )
     {
-        if ( !$this->devMode ) {
-            if ( isset( $this->assets[ $name ][ 'js' ] ) )
-                $this->scripts[] = '/assets/' . $this->assets[ $name ][ 'js' ];
-
-            if ( isset( $this->assets[ $name ][ 'css' ] ) )
-                $this->stylesheets[] = '/assets/' . $this->assets[ $name ][ 'css' ];
-        } else if ( ( $flags & self::ProductionOnly ) == 0 ) {
-            $this->scripts[] = $this->devUrl . 'js/' . $name . '.js';
+        if ( $flags & self::Preload ) {
+            if ( !$this->devMode && isset( $this->assets[ $name ][ 'js' ] ) )
+                $this->preload[] = '/assets/' . $this->assets[ $name ][ 'js' ];
+        } else {
+            if ( !$this->devMode ) {
+                if ( isset( $this->assets[ $name ][ 'js' ] ) ) {
+                    $this->preload[] = '/assets/' . $this->assets[ $name ][ 'js' ];
+                    $this->scripts[] = '/assets/' . $this->assets[ $name ][ 'js' ];
+                }
+                if ( isset( $this->assets[ $name ][ 'css' ] ) )
+                    $this->stylesheets[] = '/assets/' . $this->assets[ $name ][ 'css' ];
+            } else {
+                $this->scripts[] = $this->devUrl . 'js/' . $name . '.js';
+            }
         }
     }
 
-    public function render()
+    public function renderHeader()
     {
-        foreach ( $this->stylesheets as $url )
-            echo "  <link rel=\"stylesheet\" href=\"" . $this->url( $url )  . "\" type=\"text/css\">\n";
-        foreach ( $this->scripts as $url )
-            echo "  <script type=\"text/javascript\" src=\"" . $this->url( $url ) . "\"></script>\n";
+        if ( $this->devMode ) {
+            foreach ( $this->scripts as $url )
+                echo "  <script src=\"" . $this->url( $url ) . "\"></script>\n";
+        } else {
+            foreach ( $this->stylesheets as $url )
+                echo "  <link rel=\"preload\" href=\"" . $this->url( $url ) . "\" as=\"style\">\n";
+            foreach ( $this->preload as $url )
+                echo "  <link rel=\"preload\" href=\"" . $this->url( $url ) . "\" as=\"script\">\n";
+            foreach ( $this->stylesheets as $url )
+                echo "  <link rel=\"stylesheet\" href=\"" . $this->url( $url )  . "\">\n";
+        }
+    }
+
+    public function renderBody()
+    {
+        if ( !$this->devMode ) {
+            foreach ( $this->scripts as $url )
+                echo "<script src=\"" . $this->url( $url ) . "\" defer></script>\n";
+        }
     }
 }

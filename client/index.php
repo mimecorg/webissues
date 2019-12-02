@@ -59,8 +59,8 @@ class Client_Index extends System_Web_Component
 
         $this->assets = new System_Web_Assets();
         $this->assets->add( 'client' );
-        $this->assets->add( 'application', System_Web_Assets::ProductionOnly );
-        $this->assets->add( 'i18n-' . $locale, System_Web_Assets::ProductionOnly );
+        $this->assets->add( 'application', System_Web_Assets::Preload );
+        $this->assets->add( 'i18n-' . $locale, System_Web_Assets::Preload );
 
         $options[ 'baseURL' ] = WI_BASE_URL;
         $options[ 'csrfToken' ] = $csrfToken;
