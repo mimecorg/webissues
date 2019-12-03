@@ -16,15 +16,7 @@
 
 <?php $this->insertContent() ?>
 
-<?php if ( $assets->isDevMode() ): ?>
-
-<script>window.__WI.initializePage();</script>
-
-<?php else: ?>
-
 <?php $assets->renderBody() ?>
-
-<?php endif ?>
 
 </body>
 </html>

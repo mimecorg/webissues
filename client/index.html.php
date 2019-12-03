@@ -32,16 +32,8 @@
 
 </div>
 
-<?php if ( $assets->isDevMode() ): ?>
-
-<script>window.__WI.loadApplication(<?php echo $options ?>);</script>
-
-<?php else: ?>
-
 <script>window.__WI_OPTIONS=<?php echo $options ?>;</script>
 <?php $assets->renderBody() ?>
-
-<?php endif ?>
 
 </body>
 </html>

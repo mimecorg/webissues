@@ -52,11 +52,6 @@ class System_Web_Assets extends System_Web_Base
         }
     }
 
-    public function isDevMode()
-    {
-        return $this->devMode;
-    }
-
     public function add( $name, $flags = 0 )
     {
         if ( $flags & self::Preload ) {

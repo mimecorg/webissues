@@ -93,11 +93,9 @@ function displayBusyOverlay() {
     overlayDivs[ 0 ].style.display = 'block';
 }
 
-if ( process.env.NODE_ENV == 'production' ) {
+window.addEventListener( 'DOMContentLoaded', () => {
   if ( window.__WI_OPTIONS != null )
     loadApplication( window.__WI_OPTIONS );
   else
     initializePage();
-} else {
-  window.__WI = { loadApplication, initializePage };
-}
+} );
