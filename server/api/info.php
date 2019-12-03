@@ -26,7 +26,7 @@ class Server_Api_Info
 
     public $params = array();
 
-    public function run( $login, $password )
+    public function run()
     {
         $serverManager = new System_Api_ServerManager();
         $server = $serverManager->getServer();
