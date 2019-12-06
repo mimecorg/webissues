@@ -32,6 +32,8 @@ if ( process.env.TARGET == 'electron' ) {
     const name = key.replace( /^\.\//, '' ).replace( /\.vue$/, '' );
     loadedForms[ `client/${name}` ] = context( key ).default;
   } );
+
+  loadedForms[ 'about/AboutForm' ] = require( '@/components/forms/about/AboutForm' ).default;
 }
 
 const loadedComponents = {};
@@ -48,7 +50,8 @@ const formModules = {
   alerts: name => import( /* webpackMode: "lazy-once", webpackChunkName: "forms-alerts" */ `@/components/forms/alerts/${name}` ),
   settings: name => import( /* webpackMode: "lazy-once", webpackChunkName: "forms-settings" */ `@/components/forms/settings/${name}` ),
   events: name => import( /* webpackMode: "lazy-once", webpackChunkName: "forms-events" */ `@/components/forms/events/${name}` ),
-  export: name => import( /* webpackMode: "lazy-once", webpackChunkName: "forms-export" */ `@/components/forms/export/${name}` )
+  export: name => import( /* webpackMode: "lazy-once", webpackChunkName: "forms-export" */ `@/components/forms/export/${name}` ),
+  about: name => import( /* webpackMode: "lazy-once", webpackChunkName: "forms-about" */ `@/components/forms/about/${name}` )
 };
 
 export function loadForm( name ) {

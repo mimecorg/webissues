@@ -19,7 +19,7 @@
 
 <template>
   <div id="application">
-    <ClientNavbar v-bind:server-name="serverName" v-bind:server-version="serverVersion" v-on:client-settings="clientSettings"/>
+    <ClientNavbar v-bind:server-name="serverName" v-bind:server-version="serverVersion" v-on:client-settings="clientSettings" v-on:about="about"/>
     <ClientWindow v-bind:child-form="childForm" v-bind:child-props="childProps" v-bind:size="size" v-bind:busy="busy"/>
   </div>
 </template>
@@ -84,6 +84,15 @@ export default {
       if ( !this.busy ) {
         this.childForm = 'client/ClientSettings';
         this.childProps = {};
+      }
+    },
+
+    about() {
+      if ( !this.busy ) {
+        this.childForm = 'about/AboutForm';
+        this.childProps = {
+          serverVersion: this.serverVersion
+        };
       }
     },
 

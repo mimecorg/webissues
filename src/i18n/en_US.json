@@ -353,6 +353,7 @@
     "ServerName": "Server name:",
     "ServerType": "Server type:",
     "ServerURL": "Server URL:",
+    "ServerVersion": "Server version:",
     "SessionLifetime": "Session lifetime:",
     "Severity": "Severity:",
     "SortBy": "Sort by:",
@@ -362,6 +363,7 @@
     "Type": "Type:",
     "UserName": "User name:",
     "UserRegistration": "User registration:",
+    "Version": "Version:",
     "WeeklyReportDay": "Weekly report day:",
     "Warning": "Warning:"
   },
@@ -532,6 +534,7 @@
     "IssuesCount": "{0} issues",
     "IssuesCountOf": "{0}-{1} of {2} issues",
     "LeaveProcessedMessages": "Leave processed messages on the server",
+    "License": "This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.",
     "MB": "{0} MB",
     "MapAddressExtensions": "Map address extensions to project and folder",
     "MarkAsRead": "read",

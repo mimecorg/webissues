@@ -28,6 +28,13 @@ export default function routeGlobal( route, ajax, store ) {
   route( 'ListFolder', '/folders/:folderId/issues' );
   route( 'ListViewFolder', '/views/:viewId/folders/:folderId/issues' );
 
+  route( 'About', '/about', () => {
+    return Promise.resolve( {
+      form: 'about/AboutForm',
+      serverVersion: store.state.global.serverVersion
+    } );
+  } );
+
   route( 'MyAccount', '/account', () => {
     return ajax.post( '/account/load.php', { projects: true } ).then( ( { details, projects } ) => {
       return {

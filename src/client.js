@@ -36,6 +36,8 @@ import '@/mixins/form'
 
 import makeI18n, { fromSystemLocale } from '@/i18n'
 
+import { version } from '../package.json'
+
 if ( process.env.NODE_ENV == 'production' )
   __webpack_public_path__ = './assets/';
 
@@ -79,6 +81,10 @@ function makeClientAPI() {
   let doneHandler = null;
 
   const clientAPI = {
+    get version() {
+      return version;
+    },
+
     get settings() {
       return settings;
     },

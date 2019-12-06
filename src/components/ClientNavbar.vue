@@ -30,13 +30,15 @@
           <div class="navbar-sub-group">
             <div class="navbar-sub-element navbar-sub-element-wide">
               <div class="navbar-brand-img"></div>
-              <div class="navbar-brand-name">WebIssues {{ serverVersion }}</div>
+              <div class="navbar-brand-name">WebIssues {{ version }}</div>
             </div>
             <div class="navbar-sub-element">
               <button v-if="serverName != null" type="button" class="btn btn-info" v-bind:title="$t( 'title.WebIssuesSettings' )" v-on:click="clientSettings">
                 <span class="fa fa-wrench" aria-hidden="true"></span>
               </button>
-              <button v-if="serverName != null" type="button" class="btn btn-info" v-bind:title="$t( 'title.AboutWebIssues' )"><span class="fa fa-info-circle" aria-hidden="true"></span></button>
+              <button type="button" class="btn btn-info" v-bind:title="$t( 'title.AboutWebIssues' )" v-on:click="about">
+                <span class="fa fa-info-circle" aria-hidden="true"></span>
+              </button>
               <button type="button" class="btn btn-info" v-bind:title="$t( 'title.WebIssuesManual' )" v-on:click="openManual">
                 <span class="fa fa-question-circle" aria-hidden="true"></span>
               </button>
@@ -69,6 +71,9 @@ export default {
   computed: {
     manualURL() {
       return 'http://doc.mimec.org/webissues/1.1/en/index.html';
+    },
+    version() {
+      return this.$client.version;
     }
   },
 
@@ -79,6 +84,9 @@ export default {
 
     clientSettings() {
       this.$emit( 'client-settings' );
+    },
+    about() {
+      this.$emit( 'about' );
     },
 
     toggle() {
