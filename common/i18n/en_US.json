@@ -173,7 +173,8 @@
     "Subject": "Subject:",
     "TablePrefix": "Table prefix:",
     "To": "To:",
-    "UserName": "User name:"
+    "UserName": "User name:",
+    "Version": "Version:"
   },
   "log": {
     "AccessForbidden": "Access forbidden: {0}",
@@ -307,6 +308,7 @@
     "CreateNewTables": "Create new database tables",
     "DefaultIssueTypes": "Install the default set of issue types",
     "HTMLMessageForEmail": "HTML message for email {0}",
+    "License": "This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.",
     "MB": "{0} MB",
     "NoIssueTypes": "Do not install any issue types",
     "NoSubject": "No subject",
@@ -319,6 +321,7 @@
     "unknown": "unknown"
   },
   "title": {
+    "AboutWebIssues": "About WebIssues",
     "AccessForbidden": "Access Forbidden",
     "AccountRegistered": "Account Registered",
     "AdministratorAccount": "Administrator Account",

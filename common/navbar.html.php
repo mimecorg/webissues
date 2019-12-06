@@ -13,6 +13,9 @@
             <div class="navbar-brand-name">WebIssues <?php echo WI_VERSION ?></div>
           </div>
           <div class="navbar-sub-element">
+            <a type="button" title="<?php echo $this->t( 'title.AboutWebIssues' ) ?>" href="<?php echo $this->url( '/client/about.php' ) ?>" class="btn btn-info">
+              <span aria-hidden="true" class="fa fa-info-circle"></span>
+            </a>
             <a type="button" title="<?php echo $this->t( 'title.WebIssuesManual' ) ?>" href="<?php echo $this->url( $manualUrl ) ?>" target="_blank" class="btn btn-info">
               <span aria-hidden="true" class="fa fa-question-circle"></span>
             </a>

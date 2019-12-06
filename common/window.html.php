@@ -4,7 +4,14 @@
 <div class="container-fluid">
 
 <div class="form-header">
-  <h1><?php echo $header ?></h1>
+  <div class="form-header-group">
+    <div class="form-header-title">
+      <h1><?php echo $header ?></h1>
+    </div>
+    <div class="form-header-buttons">
+      <?php $this->insertSlot( 'header' ) ?>
+    </div>
+  </div>
 </div>
 
 <?php $this->insertContent() ?>
