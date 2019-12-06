@@ -75,6 +75,11 @@ class Cron_Job extends System_Core_Application
 
         if ( $this->sender != null )
             $this->sender->addEvent();
+
+        if ( ini_get( 'allow_url_fopen' ) ) {
+            $update = new Cron_Update();
+            $update->run( $this->current );
+        }
     }
 
     protected function cleanUp()

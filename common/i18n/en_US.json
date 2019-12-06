@@ -211,6 +211,7 @@
     "MemberAdministrator": "Granted project administrator access for user \"{0}\" to project \"{1}\"",
     "MemberRegular": "Granted regular access for user \"{0}\" to project \"{1}\"",
     "MemberRemoved": "Removed user \"{0}\" from project \"{1}\"",
+    "NewVersionAvailable": "New version available: {0}",
     "NotificationsSent": "Sent {0} notification emails",
     "PageNotFound": "Page not found: {0}",
     "ProjectAdded": "Added project \"{0}\"",
