@@ -1,18 +1,16 @@
-# Apache settings for the WebIssues Server
-
-# protect include files and templates
-<FilesMatch (\.(inc\.php|html\.php|svn-base)$)>
-  Order allow,deny
-  Deny from all
-</FilesMatch>
-
-# do not show directory listings
 Options -Indexes
 
-# set the default handler
-DirectoryIndex index.php
+RewriteEngine On
+RewriteBase /
 
-# set error handlers
-ErrorDocument 401 /common/errors/handle401.php
-ErrorDocument 403 /common/errors/handle403.php
-ErrorDocument 404 /common/errors/handle404.php
+RewriteRule ^index\.php$ - [L]
+
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule ^(assets|common/images)/ - [L]
+
+RewriteRule \.(html|inc)\.php$ common/errors/handle404.php [L]
+
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule ^(client|common/errors|cron|server|setup|users)/.*\.php$ - [L]
+
+RewriteRule . common/errors/handle404.php [L]

@@ -89,7 +89,6 @@
     "UpdateDatabase": "Update Database"
   },
   "error": {
-    "AccessForbidden": "You have insufficient permissions to access the requested page.",
     "CannotAccessDirectory": "Cannot access directory '{0}'.",
     "CannotAccessFile": "Cannot access file '{0}'.",
     "CannotSaveConfiguration": "Cannot save the configuration file.",
@@ -106,7 +105,6 @@
     "PageNotFound": "The requested page was not found.",
     "NoUserWithThisEmail": "There is no user with this email address.",
     "TablesAlreadyExist": "The WebIssues tables already exist in the database. Drop them first or use a different table prefix and try again.",
-    "Unauthorized": "You are not authorized to access the requested page.",
     "UnexpectedError": "An unexpected error occured while processing the request.",
     "UpdateFailed": "Update failed with the following fatal error:"
   },
@@ -177,7 +175,6 @@
     "Version": "Version:"
   },
   "log": {
-    "AccessForbidden": "Access forbidden: {0}",
     "AttributeAdded": "Added attribute \"{0}\" to issue type \"{1}\"",
     "AttributeDeleted": "Deleted attribute \"{0}\" from issue type \"{1}\"",
     "AttributeForceDeleted": "Deleted attribute \"{0}\" with values from issue type \"{1}\"",
@@ -232,7 +229,6 @@
     "TypeDeleted": "Deleted issue type \"{0}\"",
     "TypeForceDeleted": "Deleted issue type \"{0}\" with folders",
     "TypeRenamed": "Renamed issue type \"{0}\" to \"{1}\"",
-    "Unauthorized": "Unauthorized: {0}",
     "UserAccessAdministrator": "Granted system administrator access for user \"{0}\"",
     "UserAccessDisabled": "Disabled access for user \"{0}\"",
     "UserAccessRegular": "Granted regular access for user \"{0}\"",
@@ -323,7 +319,6 @@
   },
   "title": {
     "AboutWebIssues": "About WebIssues",
-    "AccessForbidden": "Access Forbidden",
     "AccountRegistered": "Account Registered",
     "AdministratorAccount": "Administrator Account",
     "Attributes": "Attributes",
@@ -362,7 +357,6 @@
     "ServerConfiguration": "Server Configuration",
     "ServerInformation": "Server Information",
     "Type": "Type",
-    "Unauthorized": "Unauthorized",
     "UnexpectedError": "Unexpected Error",
     "UpdateCompleted": "Update Completed",
     "UpdateFailed": "Update Failed",

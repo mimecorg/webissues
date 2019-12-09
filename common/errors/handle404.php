@@ -36,8 +36,7 @@ class Common_Errors_Handle404 extends System_Web_Component
         $this->view->setSlot( 'page_title', $this->t( 'title.PageNotFound' ) );
 
         if ( System_Core_Application::getInstance()->isLoggingEnabled() ) {
-            $helper = new Common_Errors_Helper();
-            $url = $helper->getRequestUrl();
+            $url = $this->request->getRequestUrl();
 
             if ( $url != null ) {
                 $eventLog = new System_Api_EventLog( $this );
