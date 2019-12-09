@@ -4,7 +4,7 @@
 case 'up_to_date': ?>
 
 <div class="alert alert-info">
-<p><?php echo $this->t( 'title.ServerAlreadyUpdated' ) ?></p>
+<p><?php echo $this->t( 'prompt.ServerAlreadyUpdated' ) ?></p>
 </div>
 
 <?php break;
