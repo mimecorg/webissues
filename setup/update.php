@@ -130,6 +130,7 @@ class Setup_Update extends System_Web_Component
 
         if ( $this->form->isSubmittedWith( 'update' ) && !$this->form->hasErrors() ) {
             if ( $this->updateDatabase() ) {
+                $this->deleteObsoleteFiles();
                 $this->startSession();
                 $this->page = 'completed';
             }
@@ -159,6 +160,12 @@ class Setup_Update extends System_Web_Component
 
             return false;
         }
+    }
+
+    private function deleteObsoleteFiles()
+    {
+        if ( file_exists( WI_ROOT_DIR . '/data/.htaccess' ) )
+            @unlink( WI_ROOT_DIR . '/data/.htaccess' );
     }
 
     private function startSession()
