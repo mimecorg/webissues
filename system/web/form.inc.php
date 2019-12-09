@@ -230,6 +230,15 @@ class System_Web_Form extends System_Web_Base
     }
 
     /**
+    * Register an email validation rule.
+    * @param $key The name of the field.
+    */
+    public function addEmailRule( $key )
+    {
+        $this->rules[ $key ][ 'email' ] = true;
+    }
+
+    /**
     * Run all registered validation rules.
     */
     public function validate()
@@ -496,6 +505,17 @@ class System_Web_Form extends System_Web_Base
                 $compareKey = $rule[ 'compare-key' ];
                 if ( !$this->hasErrors( $compareKey ) && $field !== $this->fields[ $compareKey ] )
                     $this->getErrorHelper()->handleError( $key, System_Api_Error::PasswordNotMatching );
+                break;
+
+            case 'email':
+                if ( $field != '' ) {
+                    $validator = new System_Api_Validator();
+                    try {
+                        $validator->checkEmailAddress( $field );
+                    } catch ( System_Api_Error $ex ) {
+                        $this->getErrorHelper()->handleError( $key, $ex );
+                    }
+                }
                 break;
         }
     }

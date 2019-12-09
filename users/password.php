@@ -59,7 +59,7 @@ class Users_Password extends System_Web_Component
                 $this->response->redirect( '/index.php' );
 
             $this->initializeRules();
-            $this->validate();
+            $this->form->validate();
 
             if ( $this->form->isSubmittedWith( 'ok' ) && !$this->form->hasErrors() ) {
                 if ( $this->page == 'email' ) {
@@ -96,24 +96,11 @@ class Users_Password extends System_Web_Component
 
         if ( $this->page == 'email' ) {
             $this->form->addTextRule( 'email', System_Const::ValueMaxLength );
+            $this->form->addEmailRule( 'email' );
         } else if ( $this->page == 'reset' ) {
             $this->form->addTextRule( 'password', System_Const::PasswordMaxLength );
             $this->form->addTextRule( 'passwordConfirm', System_Const::PasswordMaxLength );
             $this->form->addPasswordRule( 'passwordConfirm', 'password' );
-        }
-    }
-
-    private function validate()
-    {
-        $this->form->validate();
-
-        if ( $this->page == 'email' && !$this->form->hasErrors() ) {
-            $validator = new System_Api_Validator();
-            try {
-                $validator->checkEmailAddress( $this->email );
-            } catch ( System_Api_Error $ex ) {
-                $this->form->getErrorHelper()->handleError( 'email', $ex );
-            }
         }
     }
 

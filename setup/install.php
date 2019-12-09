@@ -51,6 +51,7 @@ class Setup_Install extends System_Web_Component
             $this->form->addPersistentField( 'serverName' );
             $this->form->addPersistentField( 'adminPassword' );
             $this->form->addPersistentField( 'adminConfirm' );
+            $this->form->addPersistentField( 'adminEmail' );
             $this->form->addPersistentField( 'initialData', 'default' );
 
             if ( $this->form->loadForm() )
@@ -220,6 +221,8 @@ class Setup_Install extends System_Web_Component
                 $this->form->addTextRule( 'adminPassword', System_Const::PasswordMaxLength );
                 $this->form->addTextRule( 'adminConfirm', System_Const::PasswordMaxLength );
                 $this->form->addPasswordRule( 'adminConfirm', 'adminPassword' );
+                $this->form->addTextRule( 'adminEmail', System_Const::ValueMaxLength, System_Api_Parser::AllowEmpty );
+                $this->form->addEmailRule( 'adminEmail' );
                 $this->form->addItemsRule( 'initialData', $this->dataOptions );
                 break;
         }
@@ -455,7 +458,7 @@ class Setup_Install extends System_Web_Component
             $installer = new Setup_Installer( $connection );
 
             $installer->installSchema();
-            $installer->installData( $this->serverName, $this->adminPassword );
+            $installer->installData( $this->serverName, $this->adminPassword, $this->adminEmail );
 
             switch ( $this->initialData ) {
                 case 'default':

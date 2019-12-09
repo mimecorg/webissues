@@ -122,6 +122,7 @@ case 'server': ?>
 <?php $form->renderText( $this->t( 'label.Login' ), 'adminLogin', array( 'value' => 'admin', 'readonly' => true ) ) ?>
 <?php $form->renderPassword( $this->t( 'label.Password' ), 'adminPassword' ) ?>
 <?php $form->renderPassword( $this->t( 'label.ConfirmPassword' ), 'adminConfirm' ) ?>
+<?php $form->renderText( $this->t( 'label.EmailAddress' ), 'adminEmail' ) ?>
 
 </div>
 </div>

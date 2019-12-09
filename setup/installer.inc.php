@@ -320,7 +320,7 @@ class Setup_Installer extends System_Web_Base
         $this->generator->updateReferences();
     }
 
-    public function installData( $serverName, $adminPassword )
+    public function installData( $serverName, $adminPassword, $adminEmail )
     {
         $serverManager = new System_Api_ServerManager();
         $uuid = $serverManager->generateUuid();
@@ -331,8 +331,8 @@ class Setup_Installer extends System_Web_Base
         $passwordHash = new System_Core_PasswordHash();
         $hash = $passwordHash->hashPassword( $adminPassword );
 
-        $query = 'INSERT INTO {users} ( user_login, user_name, user_passwd, user_access, passwd_temp ) VALUES ( %s, %s, %s, %d, 0 )';
-        $this->connection->execute( $query, 'admin', $this->t( 'installer.Administrator' ), $hash, System_Const::AdministratorAccess );
+        $query = 'INSERT INTO {users} ( user_login, user_name, user_passwd, user_access, passwd_temp, user_email ) VALUES ( %s, %s, %s, %d, 0, %s )';
+        $this->connection->execute( $query, 'admin', $this->t( 'installer.Administrator' ), $hash, System_Const::AdministratorAccess, $adminEmail );
 
         $language = $this->translator->getLanguage( System_Core_Translator::SystemLanguage );
 
