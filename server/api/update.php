@@ -20,7 +20,7 @@
 
 require_once( '../../system/bootstrap.inc.php' );
 
-class Server_Api_Info
+class Server_Api_Update
 {
     public $access = 'public';
 
@@ -29,20 +29,15 @@ class Server_Api_Info
     public function run()
     {
         $serverManager = new System_Api_ServerManager();
-        $server = $serverManager->getServer();
 
-        $result[ 'serverName' ] = $server[ 'server_name' ];
-        $result[ 'serverVersion' ] = $server[ 'server_version' ];
-
-        $settings[ 'locale' ] = $serverManager->getSetting( 'language' );
-        $settings[ 'anonymousAccess' ] = $serverManager->getSetting( 'anonymous_access' ) == 1;
-        $settings[ 'selfRegister' ] = $serverManager->getSetting( 'self_register' ) == 1 && $serverManager->getSetting( 'email_engine' ) != null;
-        $settings[ 'resetPassword' ] = $serverManager->getSetting( 'email_engine' ) != null;
-
-        $result[ 'settings' ] = $settings;
+        $result[ 'version' ] = $serverManager->getSetting( 'update_version' );
+        if ( $result[ 'version' ] != null ) {
+            $result[ 'notesUrl' ] = $serverManager->getSetting( 'update_notes_url' );
+            $result[ 'downloadUrl' ] = $serverManager->getSetting( 'update_download_url' );
+        }
 
         return $result;
     }
 }
 
-System_Bootstrap::run( 'Server_Api_Application', 'Server_Api_Info' );
+System_Bootstrap::run( 'Server_Api_Application', 'Server_Api_Update' );

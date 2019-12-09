@@ -29,6 +29,11 @@
     </template>
     <p><strong>{{ $t( 'label.Version' ) }} {{ version }}</strong></p>
     <p v-if="!isWeb && serverVersion != null">{{ $t( 'label.ServerVersion' ) }} {{ serverVersion }}</p>
+    <p v-if="showLatestVersion">
+      {{ $t( 'label.LatestVersion' ) }} {{ latestVersion }}
+      &middot; <a v-bind:href="downloadUrl" target="_blank">{{ $t( 'title.Download' ) }}</a>
+      &middot; <a v-bind:href="notesUrl" target="_blank">{{ $t( 'title.ReleaseNotes' ) }}</a>
+    </p>
     <hr>
     <p class="about-link"><span class="fa fa-info-circle" aria-hidden="true"></span> <a href="https://webissues.mimec.org" target="_blank">webissues.mimec.org</a></p>
     <p class="about-link"><span class="fa fa-github" aria-hidden="true"></span> <a href="https://github.com/mimecorg/webissues" target="_blank">github.com/mimecorg/webissues</a></p>
@@ -39,9 +44,16 @@
 </template>
 
 <script>
+import compareVersions from 'compare-versions'
+
+import { Access } from '@/constants'
+
 export default {
   props: {
-    serverVersion: String
+    serverVersion: String,
+    latestVersion: String,
+    notesUrl: String,
+    downloadUrl: String
   },
   computed: {
     manualURL() {
@@ -55,6 +67,15 @@ export default {
         return this.serverVersion;
       else
         return this.$client.version;
+    },
+    showLatestVersion() {
+      if ( this.latestVersion != null ) {
+        if ( this.$store.state.global.userAccess == Access.AdministratorAccess && compareVersions( this.serverVersion, this.latestVersion ) < 0 )
+          return true;
+        if ( process.env.TARGET == 'electron' && compareVersions( this.$client.version, this.latestVersion ) < 0 )
+          return true;
+      }
+      return false;
     }
   },
   methods: {

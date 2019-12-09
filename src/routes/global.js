@@ -29,10 +29,22 @@ export default function routeGlobal( route, ajax, store ) {
   route( 'ListViewFolder', '/views/:viewId/folders/:folderId/issues' );
 
   route( 'About', '/about', () => {
-    return Promise.resolve( {
-      form: 'about/AboutForm',
-      serverVersion: store.state.global.serverVersion
-    } );
+    if ( process.env.TARGET == 'electron' || store.state.global.userAccess == Access.AdministratorAccess ) {
+      return ajax.post( '/update.php' ).then( ( { version, notesUrl, downloadUrl } ) => {
+        return {
+          form: 'about/AboutForm',
+          serverVersion: store.state.global.serverVersion,
+          latestVersion: version,
+          notesUrl,
+          downloadUrl
+        };
+      } );
+    } else {
+      return Promise.resolve( {
+        form: 'about/AboutForm',
+        serverVersion: store.state.global.serverVersion
+      } );
+    }
   } );
 
   route( 'MyAccount', '/account', () => {
