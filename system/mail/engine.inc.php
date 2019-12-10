@@ -20,16 +20,15 @@
 
 if ( !defined( 'WI_VERSION' ) ) die( -1 );
 
-function PHPMailerAutoload( $className )
+function System_Mail_Autoload( $className )
 {
-    $path = WI_ROOT_DIR . '/system/mail/class.' . strtolower( $className ) . '.php';
-    if ( is_readable( $path ) )
-        include_once( $path );
+    if ( substr( $className, 0, 20 ) == 'PHPMailer\\PHPMailer\\' )
+        require_once( WI_ROOT_DIR . '/system/mail/phpmailer/src/' . substr( $className, 20 ) . '.php' );
 }
 
-spl_autoload_register( 'PHPMailerAutoload' );
+spl_autoload_register( 'System_Mail_Autoload' );
 
-class System_Mail_PHPMailer extends PHPMailer
+class System_Mail_PHPMailer extends PHPMailer\PHPMailer\PHPMailer
 {
     public function __construct()
     {
@@ -39,7 +38,7 @@ class System_Mail_PHPMailer extends PHPMailer
     /**
      * Do not validate the address becaue WebIssues already handles it.
      */
-    public static function validateAddress( $address, $patternselect = 'auto' )
+    public static function validateAddress( $address, $patternselect = null )
     {
         return true;
     }
@@ -59,19 +58,16 @@ class System_Mail_Engine
     */
     public function __construct()
     {
-        require_once( WI_ROOT_DIR . '/system/mail/class.phpmailer.php' );
-
         $this->mailer = new System_Mail_PHPMailer();
 
         $this->mailer->CharSet = 'UTF-8';
         $this->mailer->Encoding = 'quoted-printable';
-        $this->mailer->LE = "\n";
 
         $translator = System_Core_Application::getInstance()->getTranslator();
         $language = $translator->getLanguage( System_Core_Translator::SystemLanguage );
 
         if ( $language != null && $language != 'en_US' )
-            $this->mailer->setLanguage( $language, WI_ROOT_DIR . '/system/mail/language/' );
+            $this->mailer->setLanguage( strtolower( $language ), WI_ROOT_DIR . '/system/mail/phpmailer/language/' );
     }
 
     /**
@@ -105,6 +101,8 @@ class System_Mail_Engine
                 $this->mailer->Port = $settings[ 'smtp_port' ];
                 if ( !empty( $settings[ 'smtp_encryption' ] ) )
                     $this->mailer->SMTPSecure = $settings[ 'smtp_encryption' ];
+                else
+                    $this->mailer->SMTPAutoTLS = false;
                 if ( !empty( $settings[ 'smtp_user' ] ) ) {
                     $this->mailer->SMTPAuth = true;
                     $this->mailer->Username = $settings[ 'smtp_user' ];

@@ -64,7 +64,7 @@ class Server_Api_Settings_Email_Test
             $engine->setSettings( $settings );
             $engine->send( $emailFrom, '', $subject, $body );
             $status = true;
-        } catch ( phpmailerException $ex ) {
+        } catch ( PHPMailer\PHPMailer\Exception $ex ) {
             $status = false;
         }
 
