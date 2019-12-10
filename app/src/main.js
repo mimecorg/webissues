@@ -70,7 +70,7 @@ ipcMain.on( 'save-settings', ( event, settings ) => {
 ipcMain.on( 'restart-client', ( event, settings ) => {
   config.settings = settings;
   saveConfiguration( () => {
-    event.sender.session.clearStorageData( { storages: [ 'cookies' ] }, () => {
+    event.sender.session.clearStorageData( { storages: [ 'cookies' ] } ).then( () => {
       event.sender.send( 'start-client', config.settings, app.getLocale() );
     } );
   } );

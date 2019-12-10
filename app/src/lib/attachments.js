@@ -118,18 +118,18 @@ ipcMain.on( 'abort-attachment', ( event ) => {
     currentItem.cancel();
 } );
 
-ipcMain.on( 'save-attachment', ( event, filePath, name ) => {
-  dialog.showSaveDialog( currentWindow, { defaultPath: name }, targetPath => {
-    if ( targetPath == null ) {
+ipcMain.on( 'save-attachment', ( event, sourcePath, name ) => {
+  dialog.showSaveDialog( currentWindow, { defaultPath: name } ).then( ( { filePath } ) => {
+    if ( filePath == null ) {
       event.sender.send( 'save-attachment-result', null, null );
       return;
     }
 
-    fs.copyFile( filePath, targetPath, error => {
+    fs.copyFile( sourcePath, filePath, error => {
       if ( error != null )
         event.sender.send( 'save-attachment-result', error.message, null );
       else
-        event.sender.send( 'save-attachment-result', null, targetPath );
+        event.sender.send( 'save-attachment-result', null, filePath );
     } );
   } );
 } );
