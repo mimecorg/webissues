@@ -24,6 +24,7 @@ const packager = require( 'electron-packager' );
 const archiver = require( 'archiver' );
 const rimraf = require( 'rimraf' );
 
+const makeBuildVersion = require( './build-version' );
 const version = require( '../../../package' ).version;
 
 const platform = process.argv[ 2 ] || process.platform;
@@ -37,6 +38,8 @@ if ( platform == 'win32' )
 else if ( platform == 'darwin' )
   icon = path.resolve( __dirname, '../icons/webissues.icns' );
 
+const buildVersion = makeBuildVersion( version );
+
 packager( {
   name: 'WebIssues',
   dir: path.resolve( __dirname, '../..' ),
@@ -49,6 +52,7 @@ packager( {
   appCopyright: 'Copyright (C) 2007-2017 WebIssues Team',
   appBundleId: 'org.mimec.webissues',
   appCategoryType: 'public.app-category.developer-tools',
+  buildVersion,
 
   afterExtract: [
     ( buildPath, electronVersion, platform, arch, callback ) => {
