@@ -17,8 +17,6 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-!define SRCDIR "..\..\..\packages\webissues-${VERSION}-${ARCHITECTURE}"
-
 !define UNINST_KEY "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\WebIssues Client 2.0"
 
 Unicode true
@@ -28,7 +26,7 @@ Unicode true
 SetCompressor /SOLID lzma
 SetCompressorDictSize 32
 
-OutFile "${SRCDIR}.exe"
+OutFile "${OUTDIR}\${OUTFILE}"
 
 !define MULTIUSER_EXECUTIONLEVEL "Highest"
 !define MULTIUSER_MUI
@@ -87,7 +85,7 @@ VIAddVersionKey /LANG=${LANG_ENGLISH} "CompanyName" "WebIssues Team"
 VIAddVersionKey /LANG=${LANG_ENGLISH} "FileDescription" "WebIssues Setup"
 VIAddVersionKey /LANG=${LANG_ENGLISH} "FileVersion" "${VERSION}"
 VIAddVersionKey /LANG=${LANG_ENGLISH} "LegalCopyright" "Copyright (C) 2007-2017 WebIssues Team"
-VIAddVersionKey /LANG=${LANG_ENGLISH} "OriginalFilename" "webissues-${VERSION}-${ARCHITECTURE}.exe"
+VIAddVersionKey /LANG=${LANG_ENGLISH} "OriginalFilename" "${OUTFILE}"
 VIAddVersionKey /LANG=${LANG_ENGLISH} "ProductName" "WebIssues"
 VIAddVersionKey /LANG=${LANG_ENGLISH} "ProductVersion" "${VERSION}"
 

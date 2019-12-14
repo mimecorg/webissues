@@ -27,37 +27,47 @@ const rimraf = require( 'rimraf' );
 
 const version = require( '../../package' ).version;
 
-const rootPath = path.resolve( __dirname, '../..' );
-
-const out = path.resolve( __dirname, '../../packages' );
-const dirPath = path.join( out, 'webissues-server-' + version );
-
-if ( fs.existsSync( dirPath ) )
-  rimraf.sync( dirPath );
-
-mkdirp.sync( dirPath );
-
-[ 'LICENSE', 'README.md', '.htaccess', 'index.php', 'web.config' ].forEach( name => fs.copyFileSync( path.join( rootPath, name ), path.join( dirPath, name ) ) );
-
-[ 'assets', 'client', 'common', 'cron', 'server', 'setup', 'system', 'users' ].forEach( name => {
-  glob.sync( name + '/**', { cwd: rootPath, nodir: true, dot: true } ).forEach( match => {
-    const srcPath = path.join( rootPath, match );
-    const destPath = path.join( dirPath, match );
-    const destDir = path.dirname( destPath );
-    if ( !fs.existsSync( destDir ) )
-      mkdirp.sync( destDir );
-    fs.copyFileSync( srcPath, destPath );
-  } );
+buildPackage().catch( error => {
+  console.error( error );
+  process.exit( 1 );
 } );
 
-makeArchive( dirPath + '.zip', 'zip', { zlib: { level: 9 } } );
-makeArchive( dirPath + '.tar.gz', 'tar', { gzip: true, gzipOptions: { level: 9 } } );
+async function buildPackage() {
+  const rootPath = path.resolve( __dirname, '../..' );
 
-function makeArchive( outputPath, format, options ) {
-  const output = fs.createWriteStream( outputPath );
+  const out = path.resolve( __dirname, '../../packages' );
+  const dirName = 'webissues-server-' + version;
+  const dirPath = path.join( out, dirName );
+
+  if ( fs.existsSync( dirPath ) )
+    rimraf.sync( dirPath );
+
+  mkdirp.sync( dirPath );
+
+  [ 'LICENSE', 'README.md', '.htaccess', 'index.php', 'web.config' ].forEach( name => fs.copyFileSync( path.join( rootPath, name ), path.join( dirPath, name ) ) );
+
+  [ 'assets', 'client', 'common', 'cron', 'server', 'setup', 'system', 'users' ].forEach( name => {
+    glob.sync( name + '/**', { cwd: rootPath, nodir: true, dot: true } ).forEach( match => {
+      const srcPath = path.join( rootPath, match );
+      const destPath = path.join( dirPath, match );
+      const destDir = path.dirname( destPath );
+      if ( !fs.existsSync( destDir ) )
+        mkdirp.sync( destDir );
+      fs.copyFileSync( srcPath, destPath );
+    } );
+  } );
+
+  await buildArchive( out, dirName, dirName + '.zip', 'zip', { zlib: { level: 9 } } );
+
+  if ( process.platform == 'linux' || process.platform == 'darwin' )
+    await buildArchive( out, dirName, dirName + '.tar.gz', 'tar', { gzip: true, gzipOptions: { level: 9 } } );
+}
+
+async function buildArchive( out, dirName, fileName, format, options ) {
+  const output = fs.createWriteStream( path.join( out, fileName ) );
   const archive = archiver( format, options );
 
   archive.pipe( output );
-  archive.glob( 'webissues-server-' + version + '/**', { cwd: out, dot: true } );
-  archive.finalize();
+  archive.glob( dirName + '/**', { cwd: out, dot: true } );
+  await archive.finalize();
 }
