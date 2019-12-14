@@ -216,11 +216,18 @@ class Setup_Updater extends System_Web_Base
                 'alert_idx'         => 'INDEX columns={"user_id","folder_id","type_id","view_id"} unique=1'
             );
 
+            $affectedReferences = array(
+                'user_id'           => 'INTEGER null=1 ref-table="users" ref-column="user_id"'
+            );
+
             $generator = $this->connection->getSchemaGenerator();
 
             $generator->modifyFieldsNull( 'alerts', $modifiedFields );
             $generator->addFields( 'alerts', $newFields );
-            $generator->modifyIndexColumns( 'alerts', $modifiedIndexes );
+            $generator->removeReferences( 'alerts', $affectedReferences );
+            $generator->removeIndexes( 'alerts', $modifiedIndexes );
+            $generator->addFields( 'alerts', $modifiedIndexes );
+            $generator->addReferences( 'alerts', $affectedReferences );
 
             $generator->updateReferences();
 
@@ -440,11 +447,20 @@ class Setup_Updater extends System_Web_Base
             );
 
             $modifiedIndexes = array(
-                'alert_idx'         => 'INDEX columns={"user_id","project_id","folder_id","type_id","view_id","alert_type"} unique=1'
+                'alert_idx'         => 'INDEX columns={"user_id","project_id","folder_id","type_id","view_id","alert_type"} unique=1',
+                'type_idx'          => 'INDEX columns={"type_id"}'
             );
 
+            $affectedReferences = array(
+                'user_id'           => 'INTEGER null=1 ref-table="users" ref-column="user_id"',
+                'type_id'           => 'INTEGER ref-table="issue_types" ref-column="type_id" on-delete="cascade" trigger=1'
+            );
+
+            $generator->removeReferences( 'alerts', $affectedReferences );
+            $generator->removeIndexes( 'alerts', $modifiedIndexes );
             $generator->modifyFieldsNull( 'alerts', $modifiedFields );
-            $generator->modifyIndexColumns( 'alerts', $modifiedIndexes );
+            $generator->addFields( 'alerts', $modifiedIndexes );
+            $generator->addReferences( 'alerts', $affectedReferences );
             $generator->removeFields( 'alerts', array( 'alert_email', 'summary_days', 'summary_hours' ) );
 
             $generator->updateReferences();

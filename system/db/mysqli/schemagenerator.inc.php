@@ -86,18 +86,19 @@ class System_Db_Mysqli_SchemaGenerator extends System_Db_SchemaGenerator
         $this->alters[] = 'MODIFY ' . $fieldName . ' ' . $this->getFieldType( $info );
     }
 
-    protected function prepareModifyIndexColumns( $tableName, $fieldName, $info )
-    {
-        $columns = $info->getMetadata( 'columns' );
-        $unique = $info->getMetadata( 'unique', 0 );
-        $type = $unique ? 'UNIQUE KEY' : 'KEY';
-        $this->alters[] = 'DROP KEY ' . $fieldName;
-        $this->alters[] = 'ADD ' . $type . ' ' . $fieldName . ' ( ' . join( ', ', $columns ) . ' )';
-    }
-
     protected function prepareRemoveField( $tableName, $fieldName )
     {
         $this->alters[] = 'DROP COLUMN ' . $fieldName;
+    }
+
+    protected function prepareRemoveIndex( $tableName, $fieldName, $info )
+    {
+        $this->alters[] = 'DROP KEY ' . $fieldName;
+    }
+
+    protected function prepareRemoveReference( $tableName, $fieldName, $info )
+    {
+        $this->alters[] = 'DROP FOREIGN KEY {' . $tableName . '}_' . $fieldName . '_fk';
     }
 
     protected function executeAlterTable( $tableName )
@@ -187,7 +188,7 @@ class System_Db_Mysqli_SchemaGenerator extends System_Db_SchemaGenerator
         return $type;
     }
 
-    private function processReference( $tableName, $fieldName, $info )
+    public function processReference( $tableName, $fieldName, $info )
     {
         $refTable = $info->getMetadata( 'ref-table' );
 

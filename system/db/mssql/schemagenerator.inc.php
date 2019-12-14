@@ -75,14 +75,12 @@ class System_Db_Mssql_SchemaGenerator extends System_Db_SchemaGenerator
 
     protected function executeAddFields( $tableName )
     {
-        $query = 'ALTER TABLE {' . $tableName . '} ADD ' . join( ', ', $this->fields );
-        $this->connection->execute( $query );
+        if ( !empty( $this->fields ) )
+            $this->alters[] = 'ADD ' . join( ', ', $this->fields );
 
-        foreach ( $this->indexes as $index )
-            $this->connection->execute( $index );
+        $this->executeAlterTable( $tableName );
 
         $this->fields = array();
-        $this->indexes = array();
     }
 
     protected function prepareModifyFieldNull( $tableName, $fieldName, $info )
@@ -95,22 +93,27 @@ class System_Db_Mssql_SchemaGenerator extends System_Db_SchemaGenerator
         $this->alters[] = 'ALTER COLUMN ' . $fieldName . ' ' . $this->getFieldType( $info );
     }
 
-    protected function prepareModifyIndexColumns( $tableName, $fieldName, $info )
-    {
-        $columns = $info->getMetadata( 'columns' );
-        $unique = $info->getMetadata( 'unique', 0 );
-        if ( $unique ) {
-            $this->alters[] = 'DROP CONSTRAINT {' . $tableName . '}_' . $fieldName;
-            $this->alters[] = 'ADD CONSTRAINT {' . $tableName . '}_' . $fieldName . ' UNIQUE ( ' . join( ', ', $columns ) . ' )';
-        } else {
-            $this->indexes[] = 'DROP INDEX {' . $tableName . '}_' . $fieldName . ' ON {' . $tableName . '}';
-            $this->indexes[] = 'CREATE INDEX {' . $tableName . '}_' . $fieldName . ' ON {' . $tableName . '} ( ' . join( ', ', $columns ) . ' )';
-        }
-    }
-
     protected function prepareRemoveField( $tableName, $fieldName )
     {
         $this->alters[] = 'DROP COLUMN ' . $fieldName;
+    }
+
+    protected function prepareRemoveIndex( $tableName, $fieldName, $info )
+    {
+        $unique = $info->getMetadata( 'unique', 0 );
+        if ( $unique )
+            $this->alters[] = 'DROP CONSTRAINT {' . $tableName . '}_' . $fieldName;
+        else
+            $this->indexes[] = 'DROP INDEX {' . $tableName . '}_' . $fieldName . ' ON {' . $tableName . '}';
+    }
+
+    protected function prepareRemoveReference( $tableName, $fieldName, $info )
+    {
+        $trigger = $info->getMetadata( 'trigger', 0 );
+        if ( $trigger )
+            $this->indexes[] = 'DROP TRIGGER {' . $tableName . '}_' . $fieldName . '_delete';
+        else
+            $this->alters[] = 'DROP CONSTRAINT {' . $tableName . '}_' . $fieldName . '_fk';
     }
 
     protected function executeAlterTable( $tableName )
@@ -202,7 +205,7 @@ class System_Db_Mssql_SchemaGenerator extends System_Db_SchemaGenerator
         return $type;
     }
 
-    private function processReference( $tableName, $fieldName, $info )
+    public function processReference( $tableName, $fieldName, $info )
     {
         $refTable = $info->getMetadata( 'ref-table' );
 

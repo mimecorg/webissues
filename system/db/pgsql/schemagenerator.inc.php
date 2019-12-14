@@ -96,22 +96,23 @@ class System_Db_Pgsql_SchemaGenerator extends System_Db_SchemaGenerator
         $this->alters[] = 'ALTER COLUMN ' . $fieldName . ' TYPE ' . $this->getFieldType( $info, false );
     }
 
-    protected function prepareModifyIndexColumns( $tableName, $fieldName, $info )
-    {
-        $columns = $info->getMetadata( 'columns' );
-        $unique = $info->getMetadata( 'unique', 0 );
-        if ( $unique ) {
-            $this->alters[] = 'DROP CONSTRAINT {' . $tableName . '}_' . $fieldName;
-            $this->alters[] = 'ADD CONSTRAINT {' . $tableName . '}_' . $fieldName . ' UNIQUE ( ' . join( ', ', $columns ) . ' )';
-        } else {
-            $this->indexes[] = 'DROP INDEX {' . $tableName . '}_' . $fieldName;
-            $this->indexes[] = 'CREATE INDEX {' . $tableName . '}_' . $fieldName . ' ON {' . $tableName . '} ( ' . join( ', ', $columns ) . ' )';
-        }
-    }
-
     protected function prepareRemoveField( $tableName, $fieldName )
     {
         $this->alters[] = 'DROP COLUMN ' . $fieldName;
+    }
+
+    protected function prepareRemoveIndex( $tableName, $fieldName, $info )
+    {
+        $unique = $info->getMetadata( 'unique', 0 );
+        if ( $unique )
+            $this->alters[] = 'DROP CONSTRAINT {' . $tableName . '}_' . $fieldName;
+        else
+            $this->indexes[] = 'DROP INDEX {' . $tableName . '}_' . $fieldName . ' ON {' . $tableName . '}';
+    }
+
+    protected function prepareRemoveReference( $tableName, $fieldName, $info )
+    {
+        $this->alters[] = 'DROP CONSTRAINT {' . $tableName . '}_' . $fieldName . '_fk';
     }
 
     protected function executeAlterTable( $tableName )
@@ -194,7 +195,7 @@ class System_Db_Pgsql_SchemaGenerator extends System_Db_SchemaGenerator
         return $type;
     }
 
-    private function processReference( $tableName, $fieldName, $info )
+    public function processReference( $tableName, $fieldName, $info )
     {
         $refTable = $info->getMetadata( 'ref-table' );
 

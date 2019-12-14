@@ -103,28 +103,57 @@ abstract class System_Db_SchemaGenerator
     }
 
     /**
-    * Modify the columns of an existing index.
+    * Remove the columns from an existing table.
+    * @param $tableName The name of the table.
+    * @param $fields An array of names of fields to remove.
+    */
+    public function removeFields( $tableName, $fields )
+    {
+        foreach ( $fields as $fieldName )
+            $this->prepareRemoveField( $tableName, $fieldName );
+
+        $this->executeAlterTable( $tableName );
+    }
+
+    /**
+    * Remove the indexes from an existing table.
     * @param $tableName The name of the table.
     * @param $fields An associative array of index definitions.
     */
-    public function modifyIndexColumns( $tableName, $fields )
+    public function removeIndexes( $tableName, $fields )
     {
         foreach ( $fields as $fieldName => $definition ) {
             $info = System_Api_DefinitionInfo::fromString( $definition );
-            $this->prepareModifyIndexColumns( $tableName, $fieldName, $info );
+            $this->prepareRemoveIndex( $tableName, $fieldName, $info );
         }
 
         $this->executeAlterTable( $tableName );
     }
 
     /**
-    * Remove the columns from an existing table.
+    * Add foreign keys to an existing table.
     * @param $tableName The name of the table.
-    * @param $fields An array of names of fields to remove.
+    * @param $fields An associative array of fields with foreign keys.
     */
-    public function removeFields( $tableName, $fields ) {
-        foreach ( $fields as $fieldName )
-            $this->prepareRemoveField( $tableName, $fieldName );
+    public function addReferences( $tableName, $fields )
+    {
+        foreach ( $fields as $fieldName => $definition ) {
+            $info = System_Api_DefinitionInfo::fromString( $definition );
+            $this->processReference( $tableName, $fieldName, $info );
+        }
+    }
+
+    /**
+    * Remove foreign keys from an existing table.
+    * @param $tableName The name of the table.
+    * @param $fields An associative array of fields with foreign keys.
+    */
+    public function removeReferences( $tableName, $fields )
+    {
+        foreach ( $fields as $fieldName => $definition ) {
+            $info = System_Api_DefinitionInfo::fromString( $definition );
+            $this->prepareRemoveReference( $tableName, $fieldName, $info );
+        }
 
         $this->executeAlterTable( $tableName );
     }
@@ -150,11 +179,15 @@ abstract class System_Db_SchemaGenerator
 
     protected abstract function prepareModifyFieldType( $tableName, $fieldName, $info );
 
-    protected abstract function prepareModifyIndexColumns( $tableName, $fieldName, $info );
-
     protected abstract function prepareRemoveField( $tableName, $fieldName );
 
+    protected abstract function prepareRemoveIndex( $tableName, $fieldName, $info );
+
+    protected abstract function prepareRemoveReference( $tableName, $fieldName, $info );
+
     protected abstract function executeAlterTable( $tableName );
+
+    protected abstract function processReference( $tableName, $fieldName, $info );
 
     /**
     * Set identity insert on or off for the given table.
