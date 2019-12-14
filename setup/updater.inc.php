@@ -22,6 +22,8 @@ if ( !defined( 'WI_VERSION' ) ) die( -1 );
 
 class Setup_Updater extends System_Web_Base
 {
+    const SummaryNotificationEmail = 2;
+
     private $connection = null;
 
     public function __construct( $connection )
@@ -234,7 +236,7 @@ class Setup_Updater extends System_Web_Base
             $query = 'UPDATE {alerts} SET summary_days = ( SELECT pref_value FROM {preferences} AS p WHERE p.user_id = {alerts}.user_id AND p.pref_key = %s ),'
                 . ' summary_hours = ( SELECT pref_value FROM {preferences} AS p WHERE p.user_id = {alerts}.user_id AND p.pref_key = %s )'
                 . ' WHERE alert_email >= %d';
-            $this->connection->execute( $query, 'summary_days', 'summary_hours', System_Const::SummaryNotificationEmail );
+            $this->connection->execute( $query, 'summary_days', 'summary_hours', self::SummaryNotificationEmail );
 
             $query = 'DELETE FROM {preferences} WHERE pref_key IN ( %%s )';
             $this->connection->execute( $query, array( 'summary_days', 'summary_hours' ) );
