@@ -123,14 +123,18 @@ class System_Core_Debug
     public function close()
     {
         if ( !empty( $this->contents ) ) {
-            $date = date( 'Y-m-d H:i:s' );
+            $dir = dirname( $this->file );
 
-            $request = System_Core_Application::getInstance()->getRequest();
-            $host = $request->getHostName();
+            if ( System_Core_FileSystem::isDirectory( $dir, true ) ) {
+                $date = date( 'Y-m-d H:i:s' );
 
-            $contents = "[$date, $host]\n\n" . implode( '', $this->contents ) . "\n";
+                $request = System_Core_Application::getInstance()->getRequest();
+                $host = $request->getHostName();
 
-            @file_put_contents( $this->file, $contents, FILE_APPEND );
+                $contents = "[$date, $host]\n\n" . implode( '', $this->contents ) . "\n";
+
+                @file_put_contents( $this->file, $contents, FILE_APPEND );
+            }
         }
     }
 }
