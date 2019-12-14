@@ -31,6 +31,8 @@ async function buildPlatformPackage( { out, dirName, version, buildVersion, arch
 }
 
 async function buildArchive( out, dirName ) {
+  console.log( 'Building zip archive' );
+
   const output = fs.createWriteStream( path.join( out, dirName + '.zip' ) );
   const archive = archiver( 'zip', { zlib: { level: 9 } } );
 
@@ -40,6 +42,8 @@ async function buildArchive( out, dirName ) {
 }
 
 async function buildInstaller( out, dirName, version, buildVersion ) {
+  console.log( 'Building installer' );
+
   const makensisPath = findMakensis();
 
   const cwd = path.resolve( __dirname, '../nsis' );

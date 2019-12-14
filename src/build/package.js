@@ -33,6 +33,8 @@ buildPackage().catch( error => {
 } );
 
 async function buildPackage() {
+  console.log( 'Packaging server' );
+
   const rootPath = path.resolve( __dirname, '../..' );
 
   const out = path.resolve( __dirname, '../../packages' );
@@ -57,14 +59,16 @@ async function buildPackage() {
     } );
   } );
 
-  await buildArchive( out, dirName, dirName + '.zip', 'zip', { zlib: { level: 9 } } );
+  await buildArchive( out, dirName, 'zip', 'zip', { zlib: { level: 9 } } );
 
   if ( process.platform == 'linux' || process.platform == 'darwin' )
-    await buildArchive( out, dirName, dirName + '.tar.gz', 'tar', { gzip: true, gzipOptions: { level: 9 } } );
+    await buildArchive( out, dirName, 'tar.gz', 'tar', { gzip: true, gzipOptions: { level: 9 } } );
 }
 
-async function buildArchive( out, dirName, fileName, format, options ) {
-  const output = fs.createWriteStream( path.join( out, fileName ) );
+async function buildArchive( out, dirName, extension, format, options ) {
+  console.log( 'Building ' + extension + ' archive' );
+
+  const output = fs.createWriteStream( path.join( out, dirName + '.' + extension ) );
   const archive = archiver( format, options );
 
   archive.pipe( output );
