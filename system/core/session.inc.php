@@ -60,8 +60,13 @@ class System_Core_Session
         ini_set( 'session.use_trans_sid', 0 );
 
         // make sure session id is 32 characters long
-        ini_set( 'session.hash_function', 1 ); // SHA-1, 160 bits
-        ini_set( 'session.hash_bits_per_character', 5 );
+        if ( version_compare( PHP_VERSION, '7.1' ) >= 0 ) {
+            ini_set( 'session.sid_length', 32 );
+            ini_set( 'session.sid_bits_per_character', 5 );
+        } else {
+            ini_set( 'session.hash_function', 1 ); // SHA-1, 160 bits
+            ini_set( 'session.hash_bits_per_character', 5 );
+        }
 
         $serverManager = new System_Api_ServerManager();
         $cronLast = $serverManager->getSetting( 'cron_last' );
