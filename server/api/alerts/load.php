@@ -28,7 +28,7 @@ class Server_Api_Alerts_Load
         'alertId' => array( 'type' => 'int', 'required' => true )
     );
 
-    public function run( $alertId, $details )
+    public function run( $alertId )
     {
         $alertManager = new System_Api_AlertManager();
         $alert = $alertManager->getAlert( $alertId, System_Api_AlertManager::AllowEdit );
