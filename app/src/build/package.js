@@ -52,11 +52,12 @@ async function buildPackage() {
     overwrite: true,
     platform,
     arch,
+    buildVersion,
+    executableName: ( platform == 'linux' ) ? 'webissues' : 'WebIssues',
     icon,
     appCopyright: 'Copyright (C) 2007-2017 WebIssues Team',
     appBundleId: 'org.mimec.webissues',
     appCategoryType: 'public.app-category.developer-tools',
-    buildVersion,
 
     afterExtract: [
       ( buildPath, electronVersion, platform, arch, callback ) => {
