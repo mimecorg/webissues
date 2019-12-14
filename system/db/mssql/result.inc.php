@@ -41,8 +41,11 @@ class System_Db_Mssql_Result implements System_Db_IResult
     public function fetch()
     {
         if ( $this->cache != null ) {
-            if ( list( $key, $row ) = each( $this->cache ) )
+            $row = current( $this->cache );
+            if ( $row !== false ) {
+                next( $this->cache );
                 return $row;
+            }
             return false;
         }
 
