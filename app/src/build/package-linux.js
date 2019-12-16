@@ -22,12 +22,14 @@ const path = require( 'path' );
 
 const archiver = require( 'archiver' );
 const debianInstaller = require( 'electron-installer-debian' );
+const redhatInstaller = require( 'electron-installer-redhat' );
 
 const package = require( '../../../package' );
 
 async function buildPlatformPackage( { out, dirName, version, arch } ) {
   await buildArchive( out, dirName );
   await buildDebianInstaller( out, dirName, version, arch );
+  await buildRedhatInstaller( out, dirName, version, arch );
 }
 
 async function buildArchive( out, dirName ) {
@@ -60,6 +62,34 @@ async function buildDebianInstaller( out, dirName, version, arch ) {
     arch: debianArch,
     maintainer: 'Michał Męciński <mimec@mimec.org>',
     homepage: 'https://webissues.mimec.org',
+    bin: 'webissues',
+    icon: {
+      '48x48': path.resolve( __dirname, '../icons/webissues-48.png' ),
+      '256x256': path.resolve( __dirname, '../icons/webissues-256.png' )
+    },
+    categories: [ 'Development', 'ProjectManagement' ]
+  } );
+}
+
+async function buildRedhatInstaller( out, dirName, version, arch ) {
+  console.log( 'Building rpm package' );
+
+  const redhatArch = ( arch == 'x64' ) ? 'x86_64' : 'i686';
+
+  await redhatInstaller( {
+    src: path.join( out, dirName ),
+    dest: out,
+    rename: ( dest, src ) => path.join( dest, `webissues-${version}-linux-${redhatArch}.rpm` ),
+    name: 'webissues',
+    productName: 'WebIssues',
+    genericName: 'Issue Tracker',
+    description: package.description,
+    productDescription: package.description,
+    version,
+    license: 'AGPLv3+',
+    arch: redhatArch,
+    homepage: 'https://webissues.mimec.org',
+    compressionLevel: 9,
     bin: 'webissues',
     icon: {
       '48x48': path.resolve( __dirname, '../icons/webissues-48.png' ),
