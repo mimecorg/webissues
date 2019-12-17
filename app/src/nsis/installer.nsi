@@ -43,11 +43,11 @@ Name "WebIssues"
 !define MUI_ICON "..\icons\webissues.ico"
 !define MUI_UNICON "${NSISDIR}\Contrib\Graphics\Icons\modern-uninstall-blue-full.ico"
 
-!define MUI_WELCOMEFINISHPAGE_BITMAP "..\images\wizard.bmp"
-!define MUI_UNWELCOMEFINISHPAGE_BITMAP "..\images\wizard.bmp"
+!define MUI_WELCOMEFINISHPAGE_BITMAP "..\images\nsis-wizard.bmp"
+!define MUI_UNWELCOMEFINISHPAGE_BITMAP "..\images\nsis-wizard.bmp"
 
 !define MUI_HEADERIMAGE
-!define MUI_HEADERIMAGE_BITMAP "..\images\header.bmp"
+!define MUI_HEADERIMAGE_BITMAP "..\images\nsis-header.bmp"
 !define MUI_HEADERIMAGE_RIGHT
 
 !define MUI_WELCOMEPAGE_TITLE "WebIssues ${VERSION}"
