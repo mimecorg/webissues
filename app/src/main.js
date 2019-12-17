@@ -17,7 +17,7 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-const { app, BrowserWindow, ipcMain, shell } = require( 'electron' );
+const { app, BrowserWindow, ipcMain, Menu, shell } = require( 'electron' );
 
 const path = require( 'path' );
 const url = require( 'url' );
@@ -77,6 +77,11 @@ ipcMain.on( 'restart-client', ( event, settings ) => {
 } );
 
 function createWindow() {
+  if ( process.platform == 'darwin' )
+    makeDarwinMenu();
+  else if ( process.env.NODE_ENV == 'production' )
+    Menu.setApplicationMenu( null );
+
   const position = config.position;
   adjustPosition( position );
 
@@ -160,9 +165,4 @@ function createWindow() {
   mainWindow.on( 'closed', () => {
     mainWindow = null;
   } );
-
-  if ( process.platform == 'darwin' )
-    makeDarwinMenu();
-  else if ( process.env.NODE_ENV == 'production' )
-    mainWindow.removeMenu();
 }
