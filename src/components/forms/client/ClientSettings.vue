@@ -57,13 +57,17 @@ export default {
         return;
       }
 
-      const baseURL = this.baseURL.replace( /\/$/, '' );
+      let baseURL = this.baseURL.replace( /\/$/, '' );
 
       this.$form.block();
 
-      this.$ajax.withBaseURL( baseURL ).post( '/info.php' ).then( ( { serverName, serverVersion } ) => {
+      this.$ajax.get( baseURL + '/server/api/info.php' ).then( ( { serverName, serverVersion, responseURL } ) => {
         if ( !this.$client.isSupportedVersion( serverVersion ) )
           throw makeVersionError( serverVersion );
+
+        const match = responseURL.match( /\/server\/api\/info\.php$/ );
+        if ( match != null )
+          baseURL = responseURL.substr( 0, match.index );
 
         this.$client.settings.baseURL = baseURL;
         this.$client.settings.serverName = serverName;

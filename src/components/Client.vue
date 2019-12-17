@@ -126,9 +126,21 @@ export default {
 
     this.busy = true;
 
-    this.$ajax.post( '/info.php' ).then( ( { serverName, serverVersion, settings } ) => {
+    this.$ajax.get( '/info.php' ).then( ( { serverName, serverVersion, settings, responseURL } ) => {
       if ( !this.$client.isSupportedVersion( serverVersion ) )
         throw makeVersionError( serverVersion );
+
+      const match = responseURL.match( /\/server\/api\/info\.php$/ );
+      if ( match != null ) {
+        const baseURL = responseURL.substr( 0, match.index );
+        if ( baseURL != this.$client.settings.baseURL ) {
+          this.$client.settings.baseURL = baseURL;
+          this.$client.settings.serverName = serverName;
+          this.$client.settings.serverVersion = serverVersion;
+          this.$client.restartClient();
+          return;
+        }
+      }
 
       this.$client.settings.serverName = serverName;
       this.$client.settings.serverVersion = serverVersion;

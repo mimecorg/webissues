@@ -20,13 +20,14 @@
 
 require_once( '../../system/bootstrap.inc.php' );
 
-class Server_Api_Info
+class Server_Api_Info extends System_Core_Application
 {
-    public $access = 'public';
+    protected function __construct()
+    {
+        parent::__construct();
+    }
 
-    public $params = array();
-
-    public function run()
+    protected function execute()
     {
         $serverManager = new System_Api_ServerManager();
         $server = $serverManager->getServer();
@@ -41,8 +42,28 @@ class Server_Api_Info
 
         $result[ 'settings' ] = $settings;
 
-        return $result;
+        $response[ 'result' ] = $result;
+
+        $this->response->setCustomHeader( 'Cache-Control', 'no-store, no-cache, must-revalidate' );
+        $this->response->setCustomHeader( 'Expires', 'Mon, 19 Apr 1982 19:30:00 GMT' );
+        $this->response->setCustomHeader( 'Pragma', 'no-cache' );
+
+        $this->response->setContentType( 'application/json' );
+        $this->response->setContent( json_encode( $response ) );
+    }
+
+    protected function displayErrorPage()
+    {
+        $exception = $this->getFatalError();
+        $error = Server_Error::getErrorFromException( $exception );
+        $content = Server_Error::getErrorResponse( $error, $status );
+
+        $this->response->setStatus( $status );
+        $this->response->setContentType( 'application/json' );
+        $this->response->setContent( $content );
+
+        $this->response->send();
     }
 }
 
-System_Bootstrap::run( 'Server_Api_Application', 'Server_Api_Info' );
+System_Bootstrap::run( 'Server_Api_Info' );
