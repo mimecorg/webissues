@@ -39,7 +39,7 @@
       </HyperLink>
     </li>
     <template v-slot:no-scroll>
-      <li><div class="dropdown-info">There are no new notifications.</div></li>
+      <li><div class="dropdown-info">{{ $t( 'info.NoNewNotifications' ) }} </div></li>
     </template>
   </DropdownScrollButton>
 </template>
