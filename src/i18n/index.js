@@ -27,7 +27,21 @@ import { ErrorCode } from '@/constants'
 Vue.use( VueI18n );
 
 const translationModules = {
-  pl: () => import( /* webpackChunkName: "i18n-pl" */ '@/i18n/pl' )
+  cs: () => import( /* webpackChunkName: "i18n-cs" */ '@/i18n/cs' ),
+  de: () => import( /* webpackChunkName: "i18n-de" */ '@/i18n/de' ),
+  es: () => import( /* webpackChunkName: "i18n-es" */ '@/i18n/es' ),
+  fr: () => import( /* webpackChunkName: "i18n-fr" */ '@/i18n/fr' ),
+  hu: () => import( /* webpackChunkName: "i18n-hu" */ '@/i18n/hu' ),
+  it: () => import( /* webpackChunkName: "i18n-it" */ '@/i18n/it' ),
+  nb: () => import( /* webpackChunkName: "i18n-nb" */ '@/i18n/nb' ),
+  nl: () => import( /* webpackChunkName: "i18n-nl" */ '@/i18n/nl' ),
+  pl: () => import( /* webpackChunkName: "i18n-pl" */ '@/i18n/pl' ),
+  pt_BR: () => import( /* webpackChunkName: "i18n-pt_BR" */ '@/i18n/pt_BR' ),
+  ru: () => import( /* webpackChunkName: "i18n-ru" */ '@/i18n/ru' ),
+  sr: () => import( /* webpackChunkName: "i18n-sr" */ '@/i18n/sr' ),
+  tr: () => import( /* webpackChunkName: "i18n-tr" */ '@/i18n/tr' ),
+  uk: () => import( /* webpackChunkName: "i18n-uk" */ '@/i18n/uk' ),
+  zh_CN: () => import( /* webpackChunkName: "i18n-zh_CN" */ '@/i18n/zh_CN' )
 };
 
 VueI18n.prototype.setLocale = function( locale ) {
