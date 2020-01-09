@@ -3,14 +3,12 @@ Options -Indexes
 RewriteEngine On
 RewriteBase /
 
-RewriteRule ^index\.php$ - [L]
-
 RewriteCond %{REQUEST_FILENAME} -f
 RewriteRule ^(assets|common/images)/ - [L]
 
 RewriteRule \.(html|inc)\.php$ common/errors/handle404.php [L]
 
 RewriteCond %{REQUEST_FILENAME} -f
-RewriteRule ^(client|common/errors|cron|server|setup|users)/.*\.php$ - [L]
+RewriteRule \.php$ - [L]
 
 RewriteRule . common/errors/handle404.php [L]
