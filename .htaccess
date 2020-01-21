@@ -3,12 +3,14 @@ Options -Indexes
 RewriteEngine On
 RewriteBase /
 
+# Allow access to all files in assets/ and common/images/
 RewriteCond %{REQUEST_FILENAME} -f
 RewriteRule ^(assets|common/images)/ - [L]
 
-RewriteRule \.(html|inc)\.php$ common/errors/handle404.php [L]
-
+# Allow access to all .php files except .html.php and .inc.php
+RewriteCond %{REQUEST_URI} !\.(html|inc)\.php$
 RewriteCond %{REQUEST_FILENAME} -f
 RewriteRule \.php$ - [L]
 
+# Deny access to everything else
 RewriteRule . common/errors/handle404.php [L]
