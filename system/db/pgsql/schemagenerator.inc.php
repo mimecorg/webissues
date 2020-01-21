@@ -107,7 +107,7 @@ class System_Db_Pgsql_SchemaGenerator extends System_Db_SchemaGenerator
         if ( $unique )
             $this->alters[] = 'DROP CONSTRAINT {' . $tableName . '}_' . $fieldName;
         else
-            $this->indexes[] = 'DROP INDEX {' . $tableName . '}_' . $fieldName . ' ON {' . $tableName . '}';
+            $this->indexes[] = 'DROP INDEX {' . $tableName . '}_' . $fieldName;
     }
 
     protected function prepareRemoveReference( $tableName, $fieldName, $info )
