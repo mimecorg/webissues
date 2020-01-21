@@ -47,35 +47,30 @@ class Cron_Update extends System_Web_Base
 
     private function checkUpdate()
     {
-        $url = 'http://update.mimec.org/service.php?app=webissues';
+        $url = 'http://update.mimec.org/service.php?app=webissues&ver=' . WI_VERSION . '&api=v2';
 
         $response = @file_get_contents( $url );
 
         if ( $response === false )
             return;
 
-        $document = new DOMDocument();
+        $result = json_decode( $response, true );
 
-        if ( !$document->loadXML( $response ) )
+        if ( !is_array( $result ) )
             return;
 
         $serverManager = new System_Api_ServerManager();
 
-        $nodes = $document->documentElement->getElementsByTagName( 'version' );
+        if ( isset( $result[ 'version' ] ) ) {
+            $version = $result[ 'version' ][ 'id' ];
 
-        if ( $nodes->length > 0 ) {
-            $node = $nodes->item( 0 );
-            $version = $node->getAttribute( 'id' );
-
-            $nodes = $node->getElementsByTagName( 'notesUrl' );
-            if ( $nodes->length > 0 )
-                $notesUrl = $nodes->item( 0 )->textContent;
+            if ( isset( $result[ 'version' ][ 'notesUrl' ] ) )
+                $notesUrl = $result[ 'version' ][ 'notesUrl' ];
             else
                 $notesUrl = '';
 
-            $nodes = $node->getElementsByTagName( 'downloadUrl' );
-            if ( $nodes->length > 0 )
-                $downloadUrl = $nodes->item( 0 )->textContent;
+            if ( isset( $result[ 'version' ][ 'downloadUrl' ] ) )
+                $downloadUrl = $result[ 'version' ][ 'downloadUrl' ];
             else
                 $downloadUrl = '';
 
