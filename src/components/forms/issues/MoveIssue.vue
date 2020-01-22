@@ -21,7 +21,7 @@
   <BaseForm v-bind:title="$t( 'cmd.MoveIssue' )" size="small" with-buttons v-on:ok="submit" v-on:cancel="returnToDetails">
     <Prompt path="prompt.MoveIssue"><strong>{{ name }}</strong></Prompt>
     <FormGroup v-bind:label="$t( 'label.Location' )" v-bind="$field( 'folderId' )">
-      <LocationFilters ref="folderId" v-bind:typeId="typeId" v-bind:projectId.sync="projectId" v-bind:folderId.sync="folderId" require-admin folder-visible/>
+      <LocationFilters ref="folderId" require-admin folder-visible auto-expand v-bind:typeId="typeId" v-bind:projectId.sync="projectId" v-bind:folderId.sync="folderId"/>
     </FormGroup>
   </BaseForm>
 </template>

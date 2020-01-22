@@ -127,7 +127,8 @@ export default {
         this.$emit( 'update:typeId', type.id );
       else
         this.$emit( 'update:typeId', null );
-      this.$emit( 'update:viewId', null );
+      if ( type == null || type.id != this.typeId )
+        this.$emit( 'update:viewId', null );
     },
 
     selectView( view ) {

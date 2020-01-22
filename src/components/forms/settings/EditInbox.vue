@@ -59,7 +59,7 @@
     <Panel v-bind:title="$t( 'title.TargetFolder' )">
       <FormCheckbox v-bind:label="$t( 'text.MapAddressExtensions' )" v-model="mapFolder"/>
       <FormGroup v-bind:label="$t( 'label.DefaultFolder' )" v-bind="$field( 'defaultFolder' )">
-        <LocationFilters ref="defaultFolder" folder-visible v-bind:projectId.sync="projectId" v-bind:folderId.sync="defaultFolder"/>
+        <LocationFilters ref="defaultFolder" folder-visible auto-expand v-bind:projectId.sync="projectId" v-bind:folderId.sync="defaultFolder"/>
       </FormGroup>
     </Panel>
     <Panel v-if="hasEmail" v-bind:title="$t( 'title.SendingEmails' )">

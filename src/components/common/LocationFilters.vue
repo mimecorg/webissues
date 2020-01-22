@@ -58,7 +58,8 @@ export default {
     folderVisible: Boolean,
     projects: Array,
     projectLabel: String,
-    folderLabel: String
+    folderLabel: String,
+    autoExpand: Boolean
   },
 
   computed: {
@@ -131,7 +132,14 @@ export default {
         this.$emit( 'update:projectId', project.id );
       else
         this.$emit( 'update:projectId', null );
-      this.$emit( 'update:folderId', null );
+      if ( project == null || project.id != this.projectId )
+        this.$emit( 'update:folderId', null );
+      if ( this.autoExpand && this.folderVisible && project != null && project.id != this.projectId ) {
+        this.$nextTick( () => {
+          if ( this.availableFolders.length > 0 )
+            this.$refs.folder.expand();
+        } );
+      }
     },
 
     selectFolder( folder ) {

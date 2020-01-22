@@ -61,14 +61,16 @@ export default {
     },
 
     toggle() {
-      if ( this.open ) {
+      if ( this.open )
         this.close();
-      } else {
-        this.open = true;
-        this.$refs.button.focus();
-        this.$emit( 'open' );
-        this.$nextTick( this.scrollMenuToView );
-      }
+      else
+        this.expand();
+    },
+    expand() {
+      this.open = true;
+      this.$refs.button.focus();
+      this.$emit( 'open' );
+      this.$nextTick( this.scrollMenuToView );
     },
     close() {
       this.open = false;

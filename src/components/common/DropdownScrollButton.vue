@@ -59,6 +59,9 @@ export default {
     focus() {
       this.$refs.dropdown.focus();
     },
+    expand() {
+      this.$refs.dropdown.expand();
+    },
 
     toggleShadow() {
       if ( this.hasScroll ) {
