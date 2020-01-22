@@ -75,32 +75,13 @@ class System_Db_Mysqli_Engine implements System_Db_IEngine
 
     public function execute( $query, $params )
     {
-        if ( empty( $params ) )
-            $this->executeQuery( $query );
-        else
-            $this->executeStatement( $query, $params );
+        $this->executeStatement( $query, $params );
     }
 
     public function query( $query, $params )
     {
-        if ( empty( $params ) ) {
-            $rs = $this->executeQuery( $query );
-            return new System_Db_Mysqli_Result( $rs );
-        } else {
-            $this->executeStatement( $query, $params );
-            return new System_Db_Mysqli_Statement( $this->statement );
-        }
-    }
-
-    private function executeQuery( $query )
-    {
-        $this->statement = null;
-
-        $rs = $this->connection->query( $query );
-        if ( !$rs )
-            $this->handleError( $this->connection );
-
-        return $rs;
+        $this->executeStatement( $query, $params );
+        return new System_Db_Mysqli_Statement( $this->statement );
     }
 
     private function executeStatement( $query, $params )
@@ -109,21 +90,23 @@ class System_Db_Mysqli_Engine implements System_Db_IEngine
         if ( !$this->statement->prepare( $query ) )
             $this->handleError( $this->statement );
 
-        $types = '';
-        foreach ( $params as $param ) {
-            if ( is_int( $param ) )
-                $types .= 'i';
-            else if ( is_float( $param ) )
-                $types .= 'd';
-            else
-                $types .= 's';
+        if ( !empty( $params ) ) {
+            $types = '';
+            foreach ( $params as $param ) {
+                if ( is_int( $param ) )
+                    $types .= 'i';
+                else if ( is_float( $param ) )
+                    $types .= 'd';
+                else
+                    $types .= 's';
+            }
+
+            $args = array( $this->statement, $types );
+            foreach ( $params as $key => $param )
+                $args[ $key + 2 ] =& $params[ $key ];
+
+            call_user_func_array( 'mysqli_stmt_bind_param', $args );
         }
-
-        $args = array( $this->statement, $types );
-        foreach ( $params as $key => $param )
-            $args[ $key + 2 ] =& $params[ $key ];
-
-        call_user_func_array( 'mysqli_stmt_bind_param', $args );
 
         if ( !$this->statement->execute() )
             $this->handleError( $this->statement );
