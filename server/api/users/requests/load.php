@@ -39,7 +39,7 @@ class Server_Api_Users_Requests_Load
 
         $resultDetails = array();
 
-        $resultDetails[ 'id' ] = (int)$request[ 'request_id' ];
+        $resultDetails[ 'id' ] = $request[ 'request_id' ];
         $resultDetails[ 'name' ] = $request[ 'user_name' ];
         $resultDetails[ 'login' ] = $request[ 'user_login' ];
         $resultDetails[ 'email' ] = $request[ 'user_email' ];

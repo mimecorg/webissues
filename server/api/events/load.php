@@ -33,10 +33,10 @@ class Server_Api_Events_List
         $eventLog = new System_Api_EventLog();
         $event = $eventLog->getEvent( $eventId );
 
-        $resultDetails[ 'id' ] = (int)$event[ 'event_id' ];
+        $resultDetails[ 'id' ] = $event[ 'event_id' ];
         $resultDetails[ 'type' ] = $event[ 'event_type' ];
-        $resultDetails[ 'severity' ] = (int)$event[ 'event_severity' ];
-        $resultDetails[ 'date' ] = (int)$event[ 'event_time' ];
+        $resultDetails[ 'severity' ] = $event[ 'event_severity' ];
+        $resultDetails[ 'date' ] = $event[ 'event_time' ];
         $resultDetails[ 'message' ] = $event[ 'event_message' ];
         $resultDetails[ 'user' ] = $event[ 'user_name' ];
         $resultDetails[ 'host' ] = $event[ 'host_name' ];

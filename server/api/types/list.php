@@ -36,7 +36,7 @@ class Server_Api_Types_List
         foreach ( $types as $type ) {
             $resultType = array();
 
-            $resultType[ 'id' ] = (int)$type[ 'type_id' ];
+            $resultType[ 'id' ] = $type[ 'type_id' ];
             $resultType[ 'name' ] = $type[ 'type_name' ];
 
             $result[ 'types' ][] = $resultType;

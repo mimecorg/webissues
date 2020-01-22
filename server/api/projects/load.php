@@ -46,7 +46,7 @@ class Server_Api_Projects_Load
 
         $resultDetails[ 'id' ] = $project[ 'project_id' ];
         $resultDetails[ 'name' ] = $project[ 'project_name' ];
-        $resultDetails[ 'access' ] = (int)$project[ 'project_access' ];
+        $resultDetails[ 'access' ] = $project[ 'project_access' ];
         $resultDetails[ 'public' ] = $project[ 'is_public' ] != 0;
 
         $result[ 'details' ] = $resultDetails;
@@ -77,9 +77,9 @@ class Server_Api_Projects_Load
 
             foreach ( $folderRows as $folder ) {
                 $resultFolder = array();
-                $resultFolder[ 'id' ] = (int)$folder[ 'folder_id' ];
+                $resultFolder[ 'id' ] = $folder[ 'folder_id' ];
                 $resultFolder[ 'name' ] = $folder[ 'folder_name' ];
-                $resultFolder[ 'typeId' ] = (int)$folder[ 'type_id' ];
+                $resultFolder[ 'typeId' ] = $folder[ 'type_id' ];
                 $result[ 'folders' ][] = $resultFolder;
             }
         }

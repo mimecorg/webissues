@@ -54,8 +54,8 @@ class Server_Api_Reports_Load
 
         if ( $details ) {
             $resultDetails = array();
-            $resultDetails[ 'type' ] = (int)$report[ 'alert_type' ];
-            $resultDetails[ 'frequency' ] = (int)$report[ 'alert_frequency' ];
+            $resultDetails[ 'type' ] = $report[ 'alert_type' ];
+            $resultDetails[ 'frequency' ] = $report[ 'alert_frequency' ];
             $result[ 'details' ] = $resultDetails;
         }
 

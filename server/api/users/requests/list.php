@@ -40,7 +40,7 @@ class Server_Api_Users_Requests_List
         foreach ( $requests as $request ) {
             $resultRequest = array();
 
-            $resultRequest[ 'id' ] = (int)$request[ 'request_id' ];
+            $resultRequest[ 'id' ] = $request[ 'request_id' ];
             $resultRequest[ 'name' ] = $request[ 'user_name' ];
             $resultRequest[ 'login' ] = $request[ 'user_login' ];
             $resultRequest[ 'email' ] = $request[ 'user_email' ];

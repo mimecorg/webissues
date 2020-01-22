@@ -36,7 +36,7 @@ class Server_Api_Users_List
         foreach ( $users as $user ) {
             $resultUser = array();
 
-            $resultUser[ 'id' ] = (int)$user[ 'user_id' ];
+            $resultUser[ 'id' ] = $user[ 'user_id' ];
             $resultUser[ 'name' ] = $user[ 'user_name' ];
             $resultUser[ 'login' ] = $user[ 'user_login' ];
             $resultUser[ 'access' ] = $user[ 'user_access' ];

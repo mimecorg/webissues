@@ -68,7 +68,7 @@ class Server_Api_Settings_Load
 
             foreach ( $inboxRows as $inbox ) {
                 $resultInbox = array();
-                $resultInbox[ 'id' ] = (int)$inbox[ 'inbox_id' ];
+                $resultInbox[ 'id' ] = $inbox[ 'inbox_id' ];
                 $resultInbox[ 'engine' ] = $inbox[ 'inbox_engine' ];
                 $resultInbox[ 'email' ] = $inbox[ 'inbox_email' ];
                 $result[ 'inboxes' ][] = $resultInbox;

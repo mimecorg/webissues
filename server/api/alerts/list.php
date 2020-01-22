@@ -57,7 +57,7 @@ class Server_Api_Alerts_List
     private function processAlert( $alert )
     {
         $resultAlert = array();
-        $resultAlert[ 'id' ] = (int)$alert[ 'alert_id' ];
+        $resultAlert[ 'id' ] = $alert[ 'alert_id' ];
         if ( $alert[ 'view_name' ] != null )
             $resultAlert[ 'view' ] = $alert[ 'type_name' ] . " \xE2\x80\x94 " . $alert[ 'view_name' ];
         else

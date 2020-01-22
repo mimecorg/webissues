@@ -61,7 +61,7 @@ class Server_Api_Reports_List
     private function processReport( $report )
     {
         $resultReport = array();
-        $resultReport[ 'id' ] = (int)$report[ 'alert_id' ];
+        $resultReport[ 'id' ] = $report[ 'alert_id' ];
         if ( $report[ 'view_name' ] != null )
             $resultReport[ 'view' ] = $report[ 'type_name' ] . " \xE2\x80\x94 " . $report[ 'view_name' ];
         else
@@ -72,8 +72,8 @@ class Server_Api_Reports_List
             $resultReport[ 'location' ] = $report[ 'project_name' ];
         else
             $resultReport[ 'location' ] = null;
-        $resultReport[ 'type' ] = (int)$report[ 'alert_type' ];
-        $resultReport[ 'frequency' ] = (int)$report[ 'alert_frequency' ];
+        $resultReport[ 'type' ] = $report[ 'alert_type' ];
+        $resultReport[ 'frequency' ] = $report[ 'alert_frequency' ];
         return $resultReport;
     }
 }

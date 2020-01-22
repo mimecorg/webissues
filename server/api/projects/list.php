@@ -36,9 +36,9 @@ class Server_Api_Projects_List
         foreach ( $projects as $project ) {
             $resultProject = array();
 
-            $resultProject[ 'id' ] = (int)$project[ 'project_id' ];
+            $resultProject[ 'id' ] = $project[ 'project_id' ];
             $resultProject[ 'name' ] = $project[ 'project_name' ];
-            $resultProject[ 'access' ] = (int)$project[ 'project_access' ];
+            $resultProject[ 'access' ] = $project[ 'project_access' ];
             $resultProject[ 'public' ] = $project[ 'is_public' ] != 0;
 
             $result[ 'projects' ][] = $resultProject;

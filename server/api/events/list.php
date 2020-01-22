@@ -48,10 +48,10 @@ class Server_Api_Events_List
         foreach ( $events as $event ) {
             $resultEvent = array();
 
-            $resultEvent[ 'id' ] = (int)$event[ 'event_id' ];
+            $resultEvent[ 'id' ] = $event[ 'event_id' ];
             $resultEvent[ 'type' ] = $event[ 'event_type' ];
-            $resultEvent[ 'severity' ] = (int)$event[ 'event_severity' ];
-            $resultEvent[ 'date' ] = (int)$event[ 'event_time' ];
+            $resultEvent[ 'severity' ] = $event[ 'event_severity' ];
+            $resultEvent[ 'date' ] = $event[ 'event_time' ];
             $resultEvent[ 'message' ] = $event[ 'event_message' ];
 
             $result[ 'events' ][] = $resultEvent;

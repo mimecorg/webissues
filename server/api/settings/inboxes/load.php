@@ -45,7 +45,7 @@ class Server_Api_Settings_Inboxes_Load
 
         if ( $details ) {
             $resultDetails[ 'server' ] = $inbox[ 'inbox_server' ];
-            $resultDetails[ 'port' ] = (int)$inbox[ 'inbox_port' ];
+            $resultDetails[ 'port' ] = $inbox[ 'inbox_port' ];
             $resultDetails[ 'encryption' ] = $inbox[ 'inbox_encryption' ];
             $resultDetails[ 'user' ] = $inbox[ 'inbox_user' ];
             $resultDetails[ 'password' ] = $inbox[ 'inbox_password' ];
@@ -53,9 +53,9 @@ class Server_Api_Settings_Inboxes_Load
             $resultDetails[ 'noValidate' ] = $inbox[ 'inbox_no_validate' ] == 1;
             $resultDetails[ 'leaveMessages' ] = $inbox[ 'inbox_leave_messages' ] == 1;
             $resultDetails[ 'allowExternal' ] = $inbox[ 'inbox_allow_external' ] == 1;
-            $resultDetails[ 'robot' ] = $inbox[ 'inbox_robot' ] != null ? (int)$inbox[ 'inbox_robot' ] : null;
+            $resultDetails[ 'robot' ] = $inbox[ 'inbox_robot' ] != null ? $inbox[ 'inbox_robot' ] : null;
             $resultDetails[ 'mapFolder' ] = $inbox[ 'inbox_map_folder' ] == 1;
-            $resultDetails[ 'defaultFolder' ] = $inbox[ 'inbox_default_folder' ] != null ? (int)$inbox[ 'inbox_default_folder' ] : null;
+            $resultDetails[ 'defaultFolder' ] = $inbox[ 'inbox_default_folder' ] != null ? $inbox[ 'inbox_default_folder' ] : null;
             if ( $engine != null ) {
                 $resultDetails[ 'respond' ] = $inbox[ 'inbox_respond' ] == 1;
                 $resultDetails[ 'subscribe' ] = $inbox[ 'inbox_subscribe' ] == 1;

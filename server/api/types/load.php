@@ -51,7 +51,7 @@ class Server_Api_Types_Load
 
             foreach ( $attributeRows as $attribute ) {
                 $resultAttribute = array();
-                $resultAttribute[ 'id' ] = (int)$attribute[ 'attr_id' ];
+                $resultAttribute[ 'id' ] = $attribute[ 'attr_id' ];
                 $resultAttribute[ 'name' ] = $attribute[ 'attr_name' ];
 
                 $info = System_Api_DefinitionInfo::fromString( $attribute[ 'attr_def' ] );
@@ -91,7 +91,7 @@ class Server_Api_Types_Load
 
             foreach ( $viewRows as $view ) {
                 $resultView = array();
-                $resultView[ 'id' ] = (int)$view[ 'view_id' ];
+                $resultView[ 'id' ] = $view[ 'view_id' ];
                 $resultView[ 'name' ] = $view[ 'view_name' ];
 
                 $helper->getViewInformation( $resultView, $view[ 'view_def' ] );
@@ -110,7 +110,7 @@ class Server_Api_Types_Load
 
             foreach ( $viewRows as $view ) {
                 $resultView = array();
-                $resultView[ 'id' ] = (int)$view[ 'view_id' ];
+                $resultView[ 'id' ] = $view[ 'view_id' ];
                 $resultView[ 'name' ] = $view[ 'view_name' ];
 
                 $helper->getViewInformation( $resultView, $view[ 'view_def' ] );

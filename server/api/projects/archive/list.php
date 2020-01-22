@@ -36,7 +36,7 @@ class Server_Api_Projects_Archive_List
         foreach ( $projects as $project ) {
             $resultProject = array();
 
-            $resultProject[ 'id' ] = (int)$project[ 'project_id' ];
+            $resultProject[ 'id' ] = $project[ 'project_id' ];
             $resultProject[ 'name' ] = $project[ 'project_name' ];
 
             $result[ 'projects' ][] = $resultProject;

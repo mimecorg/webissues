@@ -54,25 +54,25 @@ class Server_Api_Global
         foreach ( $projects as $project ) {
             $resultProject = array();
 
-            $resultProject[ 'id' ] = (int)$project[ 'project_id' ];
+            $resultProject[ 'id' ] = $project[ 'project_id' ];
             $resultProject[ 'name' ] = $project[ 'project_name' ];
-            $resultProject[ 'access' ] = (int)$project[ 'project_access' ];
+            $resultProject[ 'access' ] = $project[ 'project_access' ];
             $resultProject[ 'folders' ] = array();
             $resultProject[ 'members' ] = array();
 
             foreach ( $folders as $folder ) {
                 if ( $folder[ 'project_id' ] == $project[ 'project_id' ] ) {
                     $resultFolder = array();
-                    $resultFolder[ 'id' ] = (int)$folder[ 'folder_id' ];
+                    $resultFolder[ 'id' ] = $folder[ 'folder_id' ];
                     $resultFolder[ 'name' ] = $folder[ 'folder_name' ];
-                    $resultFolder[ 'typeId' ] = (int)$folder[ 'type_id' ];
+                    $resultFolder[ 'typeId' ] = $folder[ 'type_id' ];
                     $resultProject[ 'folders' ][] = $resultFolder;
                 }
             }
 
             foreach ( $rights as $right ) {
                 if ( $right[ 'project_id' ] == $project[ 'project_id' ] )
-                    $resultProject[ 'members' ][] = (int)$right[ 'user_id' ];
+                    $resultProject[ 'members' ][] = $right[ 'user_id' ];
             }
 
             $result[ 'projects' ][] = $resultProject;
@@ -93,7 +93,7 @@ class Server_Api_Global
         foreach ( $types as $type ) {
             $resultType = array();
 
-            $resultType[ 'id' ] = (int)$type[ 'type_id' ];
+            $resultType[ 'id' ] = $type[ 'type_id' ];
             $resultType[ 'name' ] = $type[ 'type_name' ];
 
             $resultType[ 'attributes' ] = array();
@@ -109,7 +109,7 @@ class Server_Api_Global
 
                 foreach ( $typeAttributes as $attribute ) {
                     $resultAttribute = array();
-                    $resultAttribute[ 'id' ] = (int)$attribute[ 'attr_id' ];
+                    $resultAttribute[ 'id' ] = $attribute[ 'attr_id' ];
                     $resultAttribute[ 'name' ] = $attribute[ 'attr_name' ];
 
                     $info = System_Api_DefinitionInfo::fromString( $attribute[ 'attr_def' ] );
@@ -126,7 +126,7 @@ class Server_Api_Global
             foreach ( $views as $view ) {
                 if ( $view[ 'type_id' ] == $type[ 'type_id' ] ) {
                     $resultView = array();
-                    $resultView[ 'id' ] = (int)$view[ 'view_id' ];
+                    $resultView[ 'id' ] = $view[ 'view_id' ];
                     $resultView[ 'name' ] = $view[ 'view_name' ];
                     $resultView[ 'public' ] = $view[ 'is_public' ] != 0;
                     $resultType[ 'views' ][] = $resultView;
@@ -147,7 +147,7 @@ class Server_Api_Global
 
         foreach ( $users as $user ) {
             $resultUser = array();
-            $resultUser[ 'id' ] = (int)$user[ 'user_id' ];
+            $resultUser[ 'id' ] = $user[ 'user_id' ];
             $resultUser[ 'name' ] = $user[ 'user_name' ];
             $result[ 'users' ][] = $resultUser;
         }
