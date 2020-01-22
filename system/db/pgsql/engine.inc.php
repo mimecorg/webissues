@@ -157,7 +157,7 @@ class System_Db_Pgsql_Engine implements System_Db_IEngine
         $result = $this->sendQuery( $query );
         $row = pg_fetch_row( $result );
         pg_free_result( $result );
-        return $row[ 0 ];
+        return (int)$row[ 0 ];
     }
 
     public function checkTableExists( $table )
