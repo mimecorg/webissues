@@ -21,7 +21,7 @@
   <DropdownScrollButton menu-class="dropdown-menu-right" menu-scroll-class="dropdown-menu-scroll-wide" v-bind:title="$t( 'title.Notifications' )" v-bind:has-scroll="hasAlerts">
     <template v-slot:button>
       <span class="fa-stack">
-        <span class="fa fa-bell fa-stack-1x" aria-hidden="true"></span>
+        <span class="fa fa-bell-o fa-stack-1x" aria-hidden="true"></span>
         <span v-if="hasAlerts" class="fa fa-circle fa-stack-1x fa-stack-top-right" aria-hidden="true"></span>
       </span>
     </template>
