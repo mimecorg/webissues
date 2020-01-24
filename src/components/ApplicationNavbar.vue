@@ -90,7 +90,7 @@
             <span class="fa fa-plus" aria-hidden="true"></span>
           </button>
           <AlertsButton v-if="isAuthenticated"/>
-          <button type="button" class="btn btn-info" v-bind:title="$t( 'cmd.ToggleNavigation' )" v-on:click="toggle">
+          <button type="button" class="btn btn-default" v-bind:title="$t( 'cmd.ToggleNavigation' )" v-on:click="toggle">
             <span class="fa fa-bars" aria-hidden="true"></span>
           </button>
         </div>
