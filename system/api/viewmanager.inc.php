@@ -277,7 +277,7 @@ class System_Api_ViewManager extends System_Api_Base
         if ( $newName == $oldName )
             return false;
 
-        $transaction = $this->connection->beginTransaction( System_Db_Transaction::RepeatableRead, 'views' );
+        $transaction = $this->connection->beginTransaction( System_Db_Transaction::Serializable, 'views' );
 
         try {
             $userId = $isPublic ? null : $principal->getUserId();
@@ -333,7 +333,7 @@ class System_Api_ViewManager extends System_Api_Base
         if ( $isPublic )
             return false;
 
-        $transaction = $this->connection->beginTransaction( System_Db_Transaction::RepeatableRead, 'views' );
+        $transaction = $this->connection->beginTransaction( System_Db_Transaction::Serializable, 'views' );
 
         try {
             $query = 'SELECT view_id FROM {views} WHERE type_id = %d AND user_id IS NULL AND view_name = %s';
@@ -369,7 +369,7 @@ class System_Api_ViewManager extends System_Api_Base
         if ( !$isPublic )
             return false;
 
-        $transaction = $this->connection->beginTransaction( System_Db_Transaction::RepeatableRead, 'views' );
+        $transaction = $this->connection->beginTransaction( System_Db_Transaction::Serializable, 'views' );
 
         try {
             $query = 'SELECT view_id FROM {views} WHERE type_id = %d AND user_id = %d AND view_name = %s';

@@ -301,7 +301,7 @@ class System_Api_ProjectManager extends System_Api_Base
         if ( $newName == $oldName )
             return false;
 
-        $transaction = $this->connection->beginTransaction( System_Db_Transaction::RepeatableRead, 'projects' );
+        $transaction = $this->connection->beginTransaction( System_Db_Transaction::Serializable, 'projects' );
 
         try {
             $query = 'SELECT project_id FROM {projects} WHERE project_name = %s';
@@ -496,7 +496,7 @@ class System_Api_ProjectManager extends System_Api_Base
         if ( $newName == $oldName )
             return false;
 
-        $transaction = $this->connection->beginTransaction( System_Db_Transaction::RepeatableRead, 'folders' );
+        $transaction = $this->connection->beginTransaction( System_Db_Transaction::Serializable, 'folders' );
 
         try {
             $query = 'SELECT folder_id FROM {folders} WHERE project_id = %d AND folder_name = %s';
@@ -592,7 +592,7 @@ class System_Api_ProjectManager extends System_Api_Base
         if ( $fromProjectId == $toProjectId )
             return false;
 
-        $transaction = $this->connection->beginTransaction( System_Db_Transaction::RepeatableRead, 'folders' );
+        $transaction = $this->connection->beginTransaction( System_Db_Transaction::Serializable, 'folders' );
 
         try {
             $query = 'SELECT folder_id FROM {folders} WHERE project_id = %d AND folder_name = %s';

@@ -420,7 +420,7 @@ class System_Api_UserManager extends System_Api_Base
         if ( $newName == $oldName )
             return false;
 
-        $transaction = $this->connection->beginTransaction( System_Db_Transaction::RepeatableRead, 'users' );
+        $transaction = $this->connection->beginTransaction( System_Db_Transaction::Serializable, 'users' );
 
         try {
             $query = 'SELECT user_id FROM {users} WHERE user_name = %s';
@@ -462,7 +462,7 @@ class System_Api_UserManager extends System_Api_Base
         if ( $newName == $oldName && $newLogin == $oldLogin && $newEmail == $oldEmail && $newLanguage == $oldLanguage )
             return false;
 
-        $transaction = $this->connection->beginTransaction( System_Db_Transaction::RepeatableRead, 'users' );
+        $transaction = $this->connection->beginTransaction( System_Db_Transaction::Serializable, 'users' );
 
         try {
             if ( $newName != $oldName ) {

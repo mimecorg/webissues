@@ -127,7 +127,7 @@ class System_Api_InboxManager extends System_Api_Base
         if ( !$modified )
             return false;
 
-        $transaction = $this->connection->beginTransaction( System_Db_Transaction::RepeatableRead, 'email_inboxes' );
+        $transaction = $this->connection->beginTransaction( System_Db_Transaction::Serializable, 'email_inboxes' );
 
         try {
             if ( mb_strtoupper( $inbox[ 'inbox_email' ] ) != mb_strtoupper( $newInbox[ 'inbox_email' ] ) ) {
