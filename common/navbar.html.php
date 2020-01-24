@@ -23,7 +23,7 @@
         </div>
       </div>
       <div id="navbar-element-toggle" class="navbar-element">
-        <button id="toggle-button" type="button" title="<?php echo $this->t( 'cmd.ToggleNavigation' ) ?>" class="btn btn-info"><span aria-hidden="true" class="fa fa-bars"></span></button>
+        <button id="toggle-button" type="button" title="<?php echo $this->t( 'cmd.ToggleNavigation' ) ?>" class="btn btn-default"><span aria-hidden="true" class="fa fa-bars"></span></button>
       </div>
     </div>
   </div>
