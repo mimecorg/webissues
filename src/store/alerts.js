@@ -61,7 +61,7 @@ function makeMutations() {
     setTimer( state, value ) {
       state.timer = value
     },
-    reset() {
+    reset( state ) {
       state.dirty = false;
       state.loading = false;
       state.timer = null;
