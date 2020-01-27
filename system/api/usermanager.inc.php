@@ -406,43 +406,6 @@ class System_Api_UserManager extends System_Api_Base
     }
 
     /**
-    * Rename a user. An error is thrown if another user with given name
-    * already exists.
-    * @param $user The user to rename.
-    * @param $newName The new name of the user.
-    * @return @c true if the name was modified.
-    */
-    public function renameUser( $user, $newName )
-    {
-        $userId = $user[ 'user_id' ];
-        $oldName = $user[ 'user_name' ];
-
-        if ( $newName == $oldName )
-            return false;
-
-        $transaction = $this->connection->beginTransaction( System_Db_Transaction::Serializable, 'users' );
-
-        try {
-            $query = 'SELECT user_id FROM {users} WHERE user_name = %s';
-            if ( $this->connection->queryScalar( $query, $newName ) !== false )
-                throw new System_Api_Error( System_Api_Error::UserAlreadyExists );
-
-            $query = 'UPDATE {users} SET user_name = %s WHERE user_id = %d';
-            $this->connection->execute( $query, $newName, $userId );
-
-            $transaction->commit();
-        } catch ( Exception $ex ) {
-            $transaction->rollback();
-            throw $ex;
-        }
-
-        $eventLog = new System_Api_EventLog( $this );
-        $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information, $eventLog->t( 'log.UserRenamed', array( $oldName, $newName ) ) );
-
-        return true;
-    }
-
-    /**
     * Change the properties of a user.
     * @param $user The user to modify.
     * @param $newName The new name of the user.
