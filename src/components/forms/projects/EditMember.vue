@@ -148,7 +148,9 @@ export default {
 
       this.$form.block();
 
-      this.$ajax.post( '/projects/members/edit.php', data ).then( () => {
+      this.$ajax.post( '/projects/members/edit.php', data ).then( ( { changed } ) => {
+        if ( changed )
+          this.$store.commit( 'global/setDirty' );
         this.returnToDetails();
       } ).catch( error => {
         this.$form.error( error );

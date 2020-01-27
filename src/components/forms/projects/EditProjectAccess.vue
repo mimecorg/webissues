@@ -64,7 +64,9 @@ export default {
 
       this.$form.block();
 
-      this.$ajax.post( '/projects/access.php', data ).then( () => {
+      this.$ajax.post( '/projects/access.php', data ).then( ( { changed } ) => {
+        if ( changed )
+          this.$store.commit( 'global/setDirty' );
         this.returnToDetails();
       } ).catch( error => {
         this.$form.error( error );

@@ -39,7 +39,6 @@ class Server_Api_Users_Edit
 
         $changed = $userManager->grantUser( $user, $access );
 
-        $result[ 'userId' ] = $userId;
         $result[ 'changed' ] = $changed;
 
         return $result;

@@ -38,7 +38,9 @@ export default {
     submit() {
       this.$form.block();
 
-      this.$ajax.post( '/projects/members/edit.php', { projectId: this.projectId, users: [ this.userId ], access: Access.NoAccess } ).then( () => {
+      this.$ajax.post( '/projects/members/edit.php', { projectId: this.projectId, users: [ this.userId ], access: Access.NoAccess } ).then( ( { changed } ) => {
+        if ( changed )
+          this.$store.commit( 'global/setDirty' );
         this.returnToDetails();
       } ).catch( error => {
         this.$form.error( error );
