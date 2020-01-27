@@ -20,11 +20,11 @@
 <template>
   <BaseForm v-bind:title="$t( 'title.AboutWebIssues' )" auto-close with-buttons cancel-hidden v-on:ok="close">
     <template v-slot:header>
-      <a v-if="isWeb" type="button" class="btn btn-default" v-bind:href="manualURL" target="_blank">
-        <span class="fa fa-question-circle" aria-hidden="true"></span> <span class="hidden-xs">{{ $t( 'title.WebIssuesManual' ) }}</span>
+      <a v-if="isWeb" type="button" class="btn btn-default" v-bind:href="guideURL" target="_blank">
+        <span class="fa fa-question-circle" aria-hidden="true"></span> <span class="hidden-xs">{{ $t( 'title.WebIssuesGuide' ) }}</span>
       </a>
-      <button v-else type="button" class="btn btn-default" v-on:click="openManual">
-        <span class="fa fa-question-circle" aria-hidden="true"></span> <span class="hidden-xs">{{ $t( 'title.WebIssuesManual' ) }}</span>
+      <button v-else type="button" class="btn btn-default" v-on:click="openGuide">
+        <span class="fa fa-question-circle" aria-hidden="true"></span> <span class="hidden-xs">{{ $t( 'title.WebIssuesGuide' ) }}</span>
       </button>
     </template>
     <p><strong>{{ $t( 'label.Version' ) }} {{ version }}</strong></p>
@@ -46,7 +46,7 @@
 <script>
 import compareVersions from 'compare-versions'
 
-import { Access } from '@/constants'
+import { GuideURL, Access } from '@/constants'
 
 export default {
   props: {
@@ -56,8 +56,8 @@ export default {
     downloadUrl: String
   },
   computed: {
-    manualURL() {
-      return 'http://doc.mimec.org/webissues/1.1/en/index.html';
+    guideURL() {
+      return GuideURL;
     },
     isWeb() {
       return process.env.TARGET == 'web';
@@ -82,9 +82,9 @@ export default {
     close() {
       this.$form.close();
     },
-    openManual() {
+    openGuide() {
       if ( process.env.TARGET == 'electron' )
-        this.$client.openURL( this.manualURL );
+        this.$client.openURL( GuideURL );
     }
   }
 }

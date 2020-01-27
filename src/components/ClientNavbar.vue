@@ -39,7 +39,7 @@
               <button type="button" class="btn btn-info" v-bind:title="$t( 'title.AboutWebIssues' )" v-on:click="about">
                 <span class="fa fa-info-circle" aria-hidden="true"></span>
               </button>
-              <button type="button" class="btn btn-info" v-bind:title="$t( 'title.WebIssuesManual' )" v-on:click="openManual">
+              <button type="button" class="btn btn-info" v-bind:title="$t( 'title.WebIssuesGuide' )" v-on:click="openGuide">
                 <span class="fa fa-question-circle" aria-hidden="true"></span>
               </button>
             </div>
@@ -56,6 +56,8 @@
 </template>
 
 <script>
+import { GuideURL } from '@/constants'
+
 export default {
   props: {
     serverName: String,
@@ -69,17 +71,14 @@ export default {
   },
 
   computed: {
-    manualURL() {
-      return 'http://doc.mimec.org/webissues/1.1/en/index.html';
-    },
     version() {
       return this.$client.version;
     }
   },
 
   methods: {
-    openManual() {
-      this.$client.openURL( this.manualURL );
+    openGuide() {
+      this.$client.openURL( GuideURL );
     },
 
     clientSettings() {

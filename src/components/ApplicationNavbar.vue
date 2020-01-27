@@ -76,10 +76,10 @@
               <button type="button" class="btn btn-info" v-bind:title="$t( 'title.AboutWebIssues' )" v-on:click="about">
                 <span class="fa fa-info-circle" aria-hidden="true"></span>
               </button>
-              <a v-if="isWeb" type="button" class="btn btn-info" v-bind:title="$t( 'title.WebIssuesManual' )" v-bind:href="manualURL" target="_blank">
+              <a v-if="isWeb" type="button" class="btn btn-info" v-bind:title="$t( 'title.WebIssuesGuide' )" v-bind:href="guideURL" target="_blank">
                 <span class="fa fa-question-circle" aria-hidden="true"></span>
               </a>
-              <button v-else type="button" class="btn btn-info" v-bind:title="$t( 'title.WebIssuesManual' )" v-on:click="openManual">
+              <button v-else type="button" class="btn btn-info" v-bind:title="$t( 'title.WebIssuesGuide' )" v-on:click="openGuide">
                 <span class="fa fa-question-circle" aria-hidden="true"></span>
               </button>
             </div>
@@ -102,6 +102,8 @@
 <script>
 import { mapState, mapGetters } from 'vuex'
 
+import { GuideURL } from '@/constants'
+
 export default {
   data() {
     return {
@@ -119,8 +121,8 @@ export default {
       else
         return this.$t( 'text.AnonymousUser' );
     },
-    manualURL() {
-      return 'http://doc.mimec.org/webissues/1.1/en/index.html';
+    guideURL() {
+      return GuideURL;
     },
     isWeb() {
       return process.env.TARGET == 'web';
@@ -184,9 +186,9 @@ export default {
       this.$router.push( 'About' );
     },
 
-    openManual() {
+    openGuide() {
       if ( process.env.TARGET == 'electron' )
-        this.$client.openURL( this.manualURL );
+        this.$client.openURL( GuideURL );
     },
 
     toggle() {

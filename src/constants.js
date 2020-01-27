@@ -17,6 +17,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
+export const GuideURL = 'https://doc.mimec.org/webissues-guide/';
+
 export const Access = {
   NoAccess: 0,
   NormalAccess: 1,

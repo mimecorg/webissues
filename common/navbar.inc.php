@@ -31,6 +31,5 @@ class Common_Navbar extends System_Web_Component
 
     protected function execute()
     {
-        $this->manualUrl = 'http://doc.mimec.org/webissues/1.1/en/index.html';
     }
 }

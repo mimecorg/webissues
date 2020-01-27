@@ -1,8 +1,8 @@
 <?php if ( !defined( 'WI_VERSION' ) ) die( -1 ); ?>
 
 <?php $this->beginSlot( 'header' ) ?>
-<a type="button" href="<?php echo $this->url( $manualUrl ) ?>" target="_blank" class="btn btn-default">
-  <span aria-hidden="true" class="fa fa-question-circle"></span> <span class="hidden-xs"><?php echo $this->t( 'title.WebIssuesManual' ) ?></span>
+<a type="button" href="<?php echo WI_GUIDE_URL ?>" target="_blank" class="btn btn-default">
+  <span aria-hidden="true" class="fa fa-question-circle"></span> <span class="hidden-xs"><?php echo $this->t( 'title.WebIssuesGuide' ) ?></span>
 </a>
 <?php $this->endSlot() ?>
 

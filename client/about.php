@@ -32,8 +32,6 @@ class Client_About extends System_Web_Component
         $this->view->setDecoratorClass( 'Common_Window' );
         $this->view->setSlot( 'page_title', $this->t( 'title.AboutWebIssues' ) );
 
-        $this->manualUrl = 'http://doc.mimec.org/webissues/1.1/en/index.html';
-
         $this->form = new System_Web_Form( 'about', $this );
 
         if ( $this->form->loadForm() ) {

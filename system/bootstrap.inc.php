@@ -64,6 +64,11 @@ define( 'WI_SCRIPT_URL', System_Bootstrap::getScriptUrl() );
 */
 define( 'WI_BASE_URL', System_Bootstrap::getBaseUrl() );
 
+/**
+* The URL of the WebIssues Guide.
+*/
+define( 'WI_GUIDE_URL', 'https://doc.mimec.org/webissues-guide/' );
+
 /*@}*/
 
 /**
