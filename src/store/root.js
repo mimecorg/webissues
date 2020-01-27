@@ -90,6 +90,7 @@ function makeActions( router ) {
         commit( 'setMainRoute', route );
         commit( 'window/clear' );
         commit( 'events/clear' );
+        commit( 'issue/setUnread', false );
         if ( getters[ 'list/areFiltersEqual' ]( route.params ) ) {
           if ( state.loadingState != LoadingState.GlobalUpdate ) {
             if ( getters[ 'global/checkUpdate' ]() )

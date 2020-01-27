@@ -192,7 +192,8 @@ function makeActions( ajax ) {
         promise.then( data => {
           if ( promise == state.lastPromise ) {
             commit( 'setData', data );
-            if ( !state.unread && rootGetters[ 'list/isIssueModified' ]( state.issueId ) )
+            const wasModified = rootGetters[ 'list/isIssueModified' ]( state.issueId );
+            if ( !state.unread && wasModified || state.unread && !wasModified )
               commit( 'alerts/setDirty', null, { root: true } );
             commit( 'list/setIssueState', { issueId: state.issueId, stamp: state.unread ? 0 : data.details.stamp, subscribed: data.details.subscribed }, { root: true } );
             commit( 'setLastPromise', null );
