@@ -118,7 +118,7 @@ class Common_Mail_Notification extends System_Web_Component
                 $this->viewUrl = '/views/' . $this->viewId . '/issues';
         } else {
             if ( $this->folderId != null )
-                $this->viewUrl = '/types/' . $this->typeId . '/folders/' . $this->folderId . '/issues';
+                $this->viewUrl = '/folders/' . $this->folderId . '/issues';
             else if ( $this->projectId != null )
                 $this->viewUrl = '/types/' . $this->typeId . '/projects/' . $this->projectId . '/issues';
             else
