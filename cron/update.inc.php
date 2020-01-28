@@ -27,21 +27,16 @@ class Cron_Update extends System_Web_Base
         parent::__construct();
     }
 
-    public function run( $current )
+    public function run( $currentDate )
     {
         $serverManager = new System_Api_ServerManager();
         $last = $serverManager->getSetting( 'update_last' );
 
-        $currentDate = new DateTime( '@' . $current );
-
-        if ( $last != null )
-            $lastDate = new DateTime( '@' . $last );
-        else
-            $lastDate = null;
+        $lastDate = Cron_Job::getInstance()->createDateTime( $last );
 
         if ( $lastDate == null || $lastDate->format( 'Ymd' ) != $currentDate->format( 'Ymd' ) ) {
             $this->checkUpdate();
-            $serverManager->setSetting( 'update_last', $current );
+            $serverManager->setSetting( 'update_last', $currentDate->getTimestamp() );
         }
     }
 

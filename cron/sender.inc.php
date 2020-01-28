@@ -31,19 +31,12 @@ class Cron_Sender extends System_Web_Base
         parent::__construct();
     }
 
-    public function run( $current, $last )
+    public function run( $currentDate, $lastDate )
     {
         $this->mailEngine = new System_Mail_Engine();
         $this->mailEngine->loadSettings();
 
         $flags = 0;
-
-        $currentDate = new DateTime( '@' . $current );
-
-        if ( $last != null )
-            $lastDate = new DateTime( '@' . $last );
-        else
-            $lastDate = null;
 
         if ( $lastDate == null || $lastDate->format( 'YmdH' ) != $currentDate->format( 'YmdH' ) ) {
             $serverManager = new System_Api_ServerManager();

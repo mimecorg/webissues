@@ -48,10 +48,13 @@ class Cron_Job extends System_Core_Application
             $eventLog->addEvent( System_Api_EventLog::Cron, System_Api_EventLog::Warning, $eventLog->t( 'log.CronTimeout' ) );
         }
 
-        $this->last = $serverManager->getSetting( 'cron_last' );
-
         $this->current = time();
         $serverManager->setSetting( 'cron_current', $this->current );
+
+        $this->last = $serverManager->getSetting( 'cron_last' );
+
+        $currentDate = $this->createDateTime( $this->current );
+        $lastDate = $this->createDateTime( $this->last );
 
         $eventLog->addEvent( System_Api_EventLog::Cron, System_Api_EventLog::Information, $eventLog->t( 'log.CronStarted' ) );
 
@@ -61,7 +64,7 @@ class Cron_Job extends System_Core_Application
 
         if ( $email != null ) {
             $this->sender = new Cron_Sender();
-            $this->sender->run( $this->current, $this->last );
+            $this->sender->run( $currentDate, $lastDate );
         }
 
         $inboxManager = new System_Api_InboxManager();
@@ -78,7 +81,7 @@ class Cron_Job extends System_Core_Application
 
         if ( ini_get( 'allow_url_fopen' ) ) {
             $update = new Cron_Update();
-            $update->run( $this->current );
+            $update->run( $currentDate );
         }
     }
 
@@ -128,6 +131,28 @@ class Cron_Job extends System_Core_Application
         System_Api_Principal::setCurrent( null );
 
         $this->translator->setLanguage( System_Core_Translator::UserLanguage, null );
+    }
+
+    public function createDateTime( $stamp )
+    {
+        if ( $stamp != null ) {
+            $dateTime = new DateTime( '@' . $stamp );
+            $dateTime->setTimezone( $this->getServerTimeZone() );
+            return $dateTime;
+        } else {
+            return null;
+        }
+    }
+
+    private function getServerTimeZone()
+    {
+        $serverManager = new System_Api_ServerManager();
+        $timeZone = $serverManager->getSetting( 'time_zone' );
+
+        if ( $timeZone != null )
+            return new DateTimeZone( $timeZone );
+        else
+            return new DateTimeZone( date_default_timezone_get() );
     }
 }
 
