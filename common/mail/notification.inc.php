@@ -39,6 +39,7 @@ class Common_Mail_Notification extends System_Web_Component
         $this->viewId = $this->alert[ 'view_id' ];
         $this->projectId = $this->alert[ 'project_id' ];
         $this->folderId = $this->alert[ 'folder_id' ];
+        $this->alertType = $this->alert[ 'alert_type' ];
 
         $typeManager = new System_Api_TypeManager();
         $projectManager = new System_Api_ProjectManager();

@@ -182,4 +182,4 @@
 
 <?php endforeach ?>
 
-<p class="footer"><?php echo $this->t( 'prompt.AlertEmail' ) ?></p>
+<p class="footer"><?php echo $alertType == System_Const::Alert ? $this->t( 'prompt.AlertEmail' ) : $this->t( 'prompt.ReportEmail' ); ?></p>

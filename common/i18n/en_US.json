@@ -272,6 +272,7 @@
     "RegistrationComplete": "Thank you for registering. You will receive a verification email shortly with instructions how to complete registration.",
     "RegistrationRejected": "Your WebIssues account was rejected by the administrator.",
     "RegistrationVerified": "Your email adress was successfully verified. You will receive a message when your request is approved.",
+    "ReportEmail": "This is an automatic report from WebIssues. Please do not respond to this email.",
     "ResetPasswordComplete": "Your password was successfully changed. You can now log in to WebIssues using your login and the new password.",
     "ResetPasswordConfirm": "A password reset has been requested for login {0}. To enter your new password, please open the following URL:",
     "ResetPasswordEmail": "Please enter your email address to reset your password.",
