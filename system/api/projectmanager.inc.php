@@ -192,8 +192,8 @@ class System_Api_ProjectManager extends System_Api_Base
 
         $typeId = $type[ 'type_id' ];
 
-        $query = 'SELECT f.folder_id, f.project_id, f.folder_name, f.type_id, f.stamp_id, t.type_name FROM {folders} AS f';
-        $query .= ' JOIN {projects} AS p ON p.project_id = f.project_id'
+        $query = 'SELECT f.folder_id, f.project_id, f.folder_name, f.type_id, f.stamp_id, t.type_name FROM {folders} AS f'
+            . ' JOIN {projects} AS p ON p.project_id = f.project_id'
             . ' JOIN {issue_types} AS t ON t.type_id = f.type_id'
             . ' WHERE t.type_id = %3d AND p.is_archived = 0';
         if ( !$principal->isAdministrator() )
@@ -650,7 +650,7 @@ class System_Api_ProjectManager extends System_Api_Base
     {
         $projectId = $project[ 'project_id' ];
 
-        $query = 'SELECT f.folder_id, f.folder_name, f.type_id, t.type_name FROM {folders} AS f'
+        $query = 'SELECT f.folder_id, f.project_id, f.folder_name, f.type_id, f.stamp_id, t.type_name FROM {folders} AS f'
             . ' JOIN {issue_types} AS t ON t.type_id = f.type_id'
             . ' WHERE f.project_id = %d'
             . ' ORDER BY f.folder_name COLLATE LOCALE';
