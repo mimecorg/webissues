@@ -45,9 +45,9 @@ export default {
     submit() {
       this.$form.block();
 
-      const data = { alertId: this.alertId };
+      const data = { reportId: this.reportId };
 
-      this.$ajax.post( '/report/delete.php', data ).then( () => {
+      this.$ajax.post( '/reports/delete.php', data ).then( () => {
         this.returnToDetails();
       } ).catch( error => {
         this.$form.error( error );
