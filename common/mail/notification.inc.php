@@ -202,7 +202,7 @@ class Common_Mail_Notification extends System_Web_Component
 
                 $sinceStamp = $this->alert[ 'stamp_id' ];
 
-                if ( $sinceStamp < $issue[ 'read_id' ] )
+                if ( $this->alert[ 'alert_type' ] != System_Const::ChangeReport && $sinceStamp < $issue[ 'read_id' ] )
                     $sinceStamp = $issue[ 'read_id' ];
 
                 if ( $issue[ 'descr_id' ] > $sinceStamp ) {
