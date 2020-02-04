@@ -99,6 +99,7 @@ class System_Api_Error extends System_Core_Exception
     const UnknownInbox = '368 Unknown Inbox';
     const InvalidAlertType = '369 Invalid Alert Type';
     const InvalidAlertFrequency = '370 Invalid Alert Frequency';
+    const InvalidCsrfToken = '371 Invalid Csrf Token';
 
     public function __construct( $message, $wrappedException = null )
     {

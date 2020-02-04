@@ -44,7 +44,7 @@ class Server_Api_Application extends System_Core_Application
                 $headerCsrfToken = $this->request->getCsrfToken();
                 $sessionCsrfToken = $this->session->getValue( 'CSRF_TOKEN' );
                 if ( $headerCsrfToken == null || $sessionCsrfToken == null || $headerCsrfToken != $sessionCsrfToken )
-                    throw new System_Api_Error( Server_Error::SyntaxError );
+                    throw new System_Api_Error( System_Api_Error::InvalidCsrfToken );
             } else {
                 if ( $this->session->isDestroyed() || $serverManager->getSetting( 'anonymous_access' ) != 1 )
                     throw new System_Api_Error( System_Api_Error::LoginRequired );

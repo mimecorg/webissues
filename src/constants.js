@@ -159,7 +159,8 @@ export const ErrorCode = {
   InvalidResetKey: 367,
   UnknownInbox: 368,
   InvalidAlertType: 369,
-  InvalidAlertFrequency: 370
+  InvalidAlertFrequency: 370,
+  InvalidCsrfToken: 371
 };
 
 export const Reason = {

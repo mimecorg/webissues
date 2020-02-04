@@ -48,6 +48,8 @@ export default {
               return this.$t( 'title.LoginRequired' );
           } else if ( this.error.errorCode == ErrorCode.AccessDenied ) {
             return this.$t( 'title.AccessDenied' );
+          } else if ( this.error.errorCode == ErrorCode.InvalidCsrfToken ) {
+            return this.$t( 'title.SessionChanged' );
           } else {
             return this.$t( 'title.UnexpectedError' );
           }
@@ -71,6 +73,8 @@ export default {
               return this.$t( 'error.LoginRequired' );
           } else if ( this.error.errorCode == ErrorCode.AccessDenied ) {
             return this.$t( 'error.AccessDenied' );
+          } else if ( this.error.errorCode == ErrorCode.InvalidCsrfToken ) {
+            return this.$t( 'error.SessionChanged' );
           } else if ( this.$te( 'ErrorCode.' + this.error.errorCode ) ) {
             return this.$t( 'ErrorCode.' + this.error.errorCode );
           } else {
