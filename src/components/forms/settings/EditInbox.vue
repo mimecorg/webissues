@@ -172,7 +172,8 @@ export default {
   data() {
     return {
       projectId: this.getInitialProjectId(),
-      testStatus: null
+      testStatus: null,
+      testing: false
     };
   },
 
@@ -213,6 +214,7 @@ export default {
 
     submit() {
       this.testStatus = null;
+      this.testing = false;
 
       if ( !this.$fields.validate() )
         return;
@@ -259,6 +261,7 @@ export default {
 
     test() {
       this.testStatus = null;
+      this.testing = true;
 
       if ( !this.$fields.validate() )
         return;
@@ -298,13 +301,13 @@ export default {
     },
 
     checkRobot( value ) {
-      if ( value == null && this.allowExternal )
+      if ( value == null && this.allowExternal && !this.testing )
         throw makeParseError( this.$t( 'ErrorCode.' + ErrorCode.EmptyValue ) );
       return value;
     },
 
     checkDefaultFolder( value ) {
-      if ( value == null && !this.mapFolder )
+      if ( value == null && !this.mapFolder && !this.testing )
         throw makeParseError( this.$t( 'ErrorCode.' + ErrorCode.EmptyValue ) );
       return value;
     },
