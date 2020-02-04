@@ -50,10 +50,16 @@ class Cron_Receiver extends System_Web_Base
             }
         }
 
-        $this->inboxEngine = new System_Mail_InboxEngine();
-        $this->inboxEngine->setSettings( $inbox );
+        $eventLog = new System_Api_EventLog( $this );
 
-        $messages = $this->inboxEngine->getMessages();
+        try {
+            $this->inboxEngine = new System_Mail_InboxEngine();
+            $this->inboxEngine->setSettings( $inbox );
+
+            $messages = $this->inboxEngine->getMessages();
+        } catch ( Exception $e ) {
+            $eventLog->addErrorEvent( $e );
+        }
 
         if ( empty( $messages ) )
             return;
@@ -66,7 +72,6 @@ class Cron_Receiver extends System_Web_Base
         $typeManager = new System_Api_TypeManager();
         $subscriptionManager = new System_Api_SubscriptionManager();
         $parser = new System_Api_Parser();
-        $eventLog = new System_Api_EventLog( $this );
 
         $mapFolder = $inbox[ 'inbox_map_folder' ];
         $defaultFolderId = $inbox[ 'inbox_default_folder' ];
@@ -91,13 +96,20 @@ class Cron_Receiver extends System_Web_Base
             $processed = false;
             $ignore = false;
 
-            $headers = $this->inboxEngine->getHeaders( $msgno );
-
-            $fromEmail = $headers[ 'from' ][ 'email' ];
-
-            if ( $sender != null && mb_strtoupper( $fromEmail ) == mb_strtoupper( $serverEmail ) ) {
-                $eventLog->addEvent( System_Api_EventLog::Cron, System_Api_EventLog::Warning, $eventLog->t( 'log.EmailIgnored', array( $fromEmail ) ) );
+            try {
+                $headers = $this->inboxEngine->getHeaders( $msgno );
+            } catch ( Exception $e ) {
+                $eventLog->addErrorEvent( $e );
                 $ignore = true;
+            }
+
+            if ( !$ignore ) {
+                $fromEmail = $headers[ 'from' ][ 'email' ];
+
+                if ( $sender != null && mb_strtoupper( $fromEmail ) == mb_strtoupper( $serverEmail ) ) {
+                    $eventLog->addEvent( System_Api_EventLog::Cron, System_Api_EventLog::Warning, $eventLog->t( 'log.EmailIgnored', array( $fromEmail ) ) );
+                    $ignore = true;
+                }
             }
 
             if ( !$ignore ) {
@@ -173,9 +185,9 @@ class Cron_Receiver extends System_Web_Base
                 $issueId = null;
 
                 if ( $issue != null || $folder != null ) {
-                    $parts = $this->inboxEngine->getStructure( $msgno );
-
                     try {
+                        $parts = $this->inboxEngine->getStructure( $msgno );
+
                         $text = $this->formatHeaders( $headers );
 
                         foreach ( $parts as $part ) {
@@ -272,7 +284,7 @@ class Cron_Receiver extends System_Web_Base
                                     $subscriptionManager->setSubscriptionForChange( $fileId, $subscriptionId );
                             }
                         }
-                    } catch ( System_Api_Error $e ) {
+                    } catch ( Exception $e ) {
                         $eventLog->addErrorEvent( $e );
                     }
 
@@ -297,13 +309,21 @@ class Cron_Receiver extends System_Web_Base
                 $job->undoImpersonation();
             }
 
-            if ( $leaveMessages != 1 )
-                $this->inboxEngine->markAsDeleted( $msgno );
-            else if ( !$processed )
-                $this->inboxEngine->markAsProcessed( $msgno );
+            try {
+                if ( $leaveMessages != 1 )
+                    $this->inboxEngine->markAsDeleted( $msgno );
+                else if ( !$processed )
+                    $this->inboxEngine->markAsProcessed( $msgno );
+            } catch ( Exception $e ) {
+                $eventLog->addErrorEvent( $e );
+            }
         }
 
-        $this->inboxEngine->close();
+        try {
+            $this->inboxEngine->close();
+        } catch ( Exception $e ) {
+            $eventLog->addErrorEvent( $e );
+        }
 
         if ( $received > 0 )
             $eventLog->addEvent( System_Api_EventLog::Cron, System_Api_EventLog::Information, $eventLog->t( 'log.InboxEmailsProcessed', array( $received ) ) );
