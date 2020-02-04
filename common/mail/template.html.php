@@ -8,4 +8,8 @@
 
 <?php $this->insertContent() ?>
 
+<?php if ( !empty( $footer ) ): ?>
+<p class="footer"><?php echo $footer ?></p>
+<?php else: ?>
 <p class="footer"><?php echo $this->t( 'prompt.NotificationEmail' ) ?></p>
+<?php endif ?>

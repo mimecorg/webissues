@@ -32,5 +32,6 @@ class Common_Mail_Template extends System_Web_Component
         $this->view->setDecoratorClass( 'Common_Mail_Layout' );
 
         $this->userName = $this->view->getSlot( 'user_name' );
+        $this->footer = $this->view->getSlot( 'footer' );
     }
 }

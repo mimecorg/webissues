@@ -262,6 +262,7 @@
     "InstallNewServer": "The new server will be installed in the selected database.",
     "InstallationCompleted": "Installation of your WebIssues server was successfully completed.",
     "InstallationMode": "You can create new database tables or connect to an existing database.",
+    "IssueCreatedEmail": "This is an automatic email inbox notification from WebIssues.",
     "LogInToUpdate": "Log in as administrator in order to update the server.",
     "NotificationEmail": "This is an automatic notification from WebIssues. Please do not respond to this email.",
     "PendingRegistrationRequests": "You have the following new registration requests pending for approval:",

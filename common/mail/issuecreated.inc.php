@@ -42,6 +42,7 @@ class Common_Mail_IssueCreated extends System_Web_Component
         $this->view->setSlot( 'subject', $this->t( 'subject.Notification', array( $subject ) ) );
 
         $this->view->setSlot( 'user_name', $this->data[ 'user_name' ] );
+        $this->view->setSlot( 'footer', $this->t( 'prompt.IssueCreatedEmail' ) );
 
         $this->issueId = $this->issue[ 'issue_id' ];
         $this->issueName = $this->issue[ 'issue_name' ];
