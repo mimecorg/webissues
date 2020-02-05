@@ -136,7 +136,7 @@ function convertInitialValue( value, attribute, userName ) {
     const offset = value.substr( 7 );
     if ( offset != '' )
       date.setDate( date.getDate() + Number( offset ) );
-    return formatDate( date, { withTime: attribute.time == 1 }, invariantSettings );
+    return formatDate( date, { withTime: attribute.time == 1, toUTC: attribute.local == 1 }, invariantSettings );
   }
 
   return value;
