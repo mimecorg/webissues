@@ -276,6 +276,7 @@
     "NoArchivedProjects": "There are no archived projects.",
     "NoAttributes": "This issue type has no attributes.",
     "NoAvailableProjects": "There are no available projects.",
+    "NoAvailableIssueTypes": "There are no available issue types.",
     "NoAvailableUsers": "There are no more available users to add.",
     "NoComments": "This issue has no comments.",
     "NoCommentsOrFiles": "This issue has no comments or attached files.",

@@ -23,7 +23,7 @@
       <button v-if="isAdministrator" type="button" class="btn btn-success" v-on:click="addType"><span class="fa fa-plus" aria-hidden="true"></span> {{ $t( 'cmd.Add' ) }}</button>
     </template>
     <Grid v-if="types.length > 0" v-bind:items="types" v-bind:columns="columns" v-on:row-click="rowClick"/>
-    <Prompt v-else path="info.NoIssueTypes"/>
+    <Prompt v-else v-bind:path="isAdministrator ? 'info.NoIssueTypes' : 'info.NoAvailableIssueTypes'"/>
   </BaseForm>
 </template>
 
