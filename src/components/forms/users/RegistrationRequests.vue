@@ -44,7 +44,7 @@ export default {
       if ( this.requests.length > 0 )
         return 'large';
       else
-        return 'small';
+        return 'normal';
     },
     columns() {
       return {
