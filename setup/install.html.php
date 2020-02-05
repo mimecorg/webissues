@@ -106,7 +106,7 @@ case 'server': ?>
 </div>
 <div class="panel-body">
 
-<?php $form->renderText( $this->t( 'ServerName' ), 'serverName' ) ?>
+<?php $form->renderText( $this->t( 'label.ServerName' ), 'serverName' ) ?>
 
 <?php $form->renderRadioGroup( $this->t( 'label.InitialConfiguration' ), 'initialData', $dataOptions ) ?>
 
