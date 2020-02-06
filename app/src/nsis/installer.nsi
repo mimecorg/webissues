@@ -1,7 +1,7 @@
 /**************************************************************************
 * This file is part of the WebIssues Server program
 * Copyright (C) 2006 Michał Męciński
-* Copyright (C) 2007-2017 WebIssues Team
+* Copyright (C) 2007-2020 WebIssues Team
 *
 * This program is free software: you can redistribute it and/or modify
 * it under the terms of the GNU Affero General Public License as published by
@@ -84,7 +84,7 @@ VIProductVersion "${BUILDVERSION}"
 VIAddVersionKey /LANG=${LANG_ENGLISH} "CompanyName" "WebIssues Team"
 VIAddVersionKey /LANG=${LANG_ENGLISH} "FileDescription" "WebIssues Setup"
 VIAddVersionKey /LANG=${LANG_ENGLISH} "FileVersion" "${VERSION}"
-VIAddVersionKey /LANG=${LANG_ENGLISH} "LegalCopyright" "Copyright (C) 2007-2017 WebIssues Team"
+VIAddVersionKey /LANG=${LANG_ENGLISH} "LegalCopyright" "Copyright (C) 2007-2020 WebIssues Team"
 VIAddVersionKey /LANG=${LANG_ENGLISH} "OriginalFilename" "${OUTFILE}"
 VIAddVersionKey /LANG=${LANG_ENGLISH} "ProductName" "WebIssues"
 VIAddVersionKey /LANG=${LANG_ENGLISH} "ProductVersion" "${VERSION}"

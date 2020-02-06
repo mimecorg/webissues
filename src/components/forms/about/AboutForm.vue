@@ -1,7 +1,7 @@
 <!--
 * This file is part of the WebIssues Server program
 * Copyright (C) 2006 Michał Męciński
-* Copyright (C) 2007-2017 WebIssues Team
+* Copyright (C) 2007-2020 WebIssues Team
 *
 * This program is free software: you can redistribute it and/or modify
 * it under the terms of the GNU Affero General Public License as published by
@@ -38,7 +38,7 @@
     <p class="about-link"><span class="fa fa-info-circle" aria-hidden="true"></span> <a href="https://webissues.mimec.org" target="_blank">webissues.mimec.org</a></p>
     <p class="about-link"><span class="fa fa-github" aria-hidden="true"></span> <a href="https://github.com/mimecorg/webissues" target="_blank">github.com/mimecorg/webissues</a></p>
     <hr>
-    <p>Copyright &copy; 2006 Michał Męciński<br>Copyright &copy; 2007-2017 WebIssues Team</p>
+    <p>Copyright &copy; 2006 Michał Męciński<br>Copyright &copy; 2007-2020 WebIssues Team</p>
     <p>{{ $t( 'text.License' ) }}</p>
   </BaseForm>
 </template>

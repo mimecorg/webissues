@@ -2,7 +2,7 @@
 /**************************************************************************
 * This file is part of the WebIssues Server program
 * Copyright (C) 2006 Michał Męciński
-* Copyright (C) 2007-2017 WebIssues Team
+* Copyright (C) 2007-2020 WebIssues Team
 *
 * This program is free software: you can redistribute it and/or modify
 * it under the terms of the GNU Affero General Public License as published by
@@ -123,5 +123,5 @@ class System_Web_ArrayEscaper extends System_Web_Escaper implements Iterator, Ar
     public function count()
     {
         return count( $this->value );
-    } 
+    }
 }

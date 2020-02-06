@@ -2,7 +2,7 @@
 /**************************************************************************
 * This file is part of the WebIssues Server program
 * Copyright (C) 2006 Michał Męciński
-* Copyright (C) 2007-2017 WebIssues Team
+* Copyright (C) 2007-2020 WebIssues Team
 *
 * This program is free software: you can redistribute it and/or modify
 * it under the terms of the GNU Affero General Public License as published by
@@ -31,7 +31,7 @@ if ( !defined( 'WI_VERSION' ) ) die( -1 );
 *    connection options; it is usually created using the setup script.
 *
 * Normally there is only one site called 'default', but a single installation
-* can host multiple sites. 
+* can host multiple sites.
 *
 * Options which should be configurable by the site administrator should be stored in
 * the database instead using System_Api_ServerManager.
