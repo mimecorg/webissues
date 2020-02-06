@@ -1,79 +1,71 @@
 # WebIssues
 
-**WebIssues** is an open source, multi-platform system for issue tracking and team collaboration. It can be used to store, share and track issues with various attributes, description, comments and file attachments. It is easy to install and use but has many capabilities and is highly customizable.
+The official WebIssues website is https://webissues.mimec.org.
 
-Website: https://webissues.mimec.org
-
-## Prototype version :construction:
-
-Note that this is the prototype of version 2.0 of WebIssues. It is currently under development. Please do not use it for production purposes.
-
-The latest stable version of the WebIssues Server can be found [here](https://github.com/mimecorg/webissues-server). The WebIssues Desktop Client can be found [here](https://github.com/mimecorg/webissues-client).
+The documentation for users and administrators can be found at https://doc.mimec.org/webissues-guide/.
 
 ## Requirements
 
-* Web server with PHP version 5.6 or newer
-
-* The following PHP extensions:
-  * mbstring (required)
-  * mysqli (required when using MySQL database)
-  * pgsql (required when using PostgreSQL database)
-  * com_dotnet (required when using SQL Server database)
-
-* One of the following database servers:
-  * MySQL (version 5.0.15 or newer)
-  * PostgreSQL (version 8.0 or newer)
-  * Microsoft SQL Server (version 2005 or newer)
+* PHP version 5.6 or newer
+* MySQL, PostgreSQL or SQL Server database
 
 ## Installation
+
+In order to install WebIssues on your server, download the pre-built WebIssues server package unless you are planning to build WebIssues yourself.
 
 Quick steps:
 
 1. Copy the entire WebIssues server package to the root directory of the web server.
 
-2. Create a database and a user account with sufficient privileges to create tables in that database.
+    **NOTE:** If you are updating an existing installation of WebIssues server, make sure that you don't delete the `data/` subdirectory.
 
-3. Make sure that the `data/` subdirectory is writable for the web server.
+2. Create a database and a database user with privileges for accessing and modifying it.
 
-4. Point your browser to the URL of the WebIssues server and follow the instructions.
+3. Point your browser to the URL of the WebIssues server and follow the instructions.
 
-For more information, please refer to the [WebIssues Manual](http://doc.mimec.org/webissues/1.1/en/).
+For more information, please refer to the [WebIssues Guide](https://doc.mimec.org/webissues-guide/).
 
 ## Development
 
-In addition to the above requirements, you will also need Node.js and npm to build and run WebIssues from the source code.
+Download the source code or clone it from the git repository and run the following command:
 
-Use the following command to build the static JavaScript and CSS assets required to run WebIssues:
-
-```
-npm run build
+```bash
+npm install
 ```
 
-Use the following command to start the development server:
+In addition to the requirements listed above, you will also need Node.js version 8 or newer.
 
-```
-npm run dev
+To run the development server, use the following command:
+
+```bash
+npm run dev:web
 ```
 
-In order to use the development server instead of the static assets, create a file called `data/site.ini` with the following content:
+To use the development server instead of the static assets, create a file called `data/site.ini` with the following content:
 
-```
+```ini
 [default]
 dev_mode = on
 ```
 
-## Credits
+Then point your browser to the URL of the WebIssues server.
 
-Maintainer: Michał Męciński (https://www.mimec.org)
+## Building
 
-Contributors:
- * Francine Lai Doo Woo
- * Patrick Matthäi
- * Filipe Azevedo
- * Yvan Rodrigues
+Use the following command to build the static JavaScript and CSS assets from the source code:
 
-License: Affero GPL v3.0
+```bash
+npm run build:web
+```
 
-Copyrights:
- * (C) 2006 Michał Męciński
- * (C) 2007-2017 WebIssues Team
+## Support
+
+If you have problems related to installing, configuring and using WebIssues, or some other questions, please visit the [Support forum](https://webissues.mimec.org/forum/general) on the WebIssues website.
+
+Ideas and suggestions for improvements can be submitted using the [Feature requests forum](https://webissues.mimec.org/forum/tracker) on the WebIssues website.
+
+Use the [Issues tracker](https://github.com/mimecorg/webissues/issues) on GitHub to submit bugs. Please include the WebIssues version, information about your environment and detailed steps and symptoms of the problem.
+
+## Translations
+
+If you would like to help in translating WebIssues to your language, please join the [Crowdin project](https://crowdin.com/project/webissues).
