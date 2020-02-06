@@ -1,11 +1,13 @@
 {
   "name": "webissues",
-  "productName": "WebIssues",
-  "description": "WebIssues team collaboration system",
   "version": "2.0.0-beta.1",
+  "description": "WebIssues team collaboration system",
+  "productName": "WebIssues",
+  "main": "assets/js/main.min.js",
   "author": "WebIssues Team",
+  "license": "AGPL-3.0-or-later",
+  "homepage": "https://webissues.mimec.org",
   "private": true,
-  "main": "./assets/js/main.min.js",
   "dependencies": {
   }
 }

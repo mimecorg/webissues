@@ -1,9 +1,8 @@
 {
   "name": "webissues",
-  "description": "WebIssues team collaboration system",
   "version": "2.0.0-beta.1",
-  "author": "WebIssues Team",
-  "private": true,
+  "description": "WebIssues team collaboration system",
+  "productName": "WebIssues",
   "scripts": {
     "build": "npm run build:web && npm run build:electron && npm run build:main",
     "build:web": "webpack --config src/build/webpack.config.js --env.production",
@@ -22,6 +21,14 @@
     "test": "cross-env NODE_ENV=test mocha --require @babel/register src/test.js src/**/*.spec.js",
     "test:watch": "cross-env NODE_ENV=test mocha --require @babel/register --watch src/test.js src/**/*.spec.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mimecorg/webissues.git"
+  },
+  "author": "WebIssues Team",
+  "license": "AGPL-3.0-or-later",
+  "homepage": "https://webissues.mimec.org",
+  "private": true,
   "dependencies": {
     "bootstrap": "^3.4.1",
     "compare-versions": "^3.5.1",
