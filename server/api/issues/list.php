@@ -150,7 +150,7 @@ class Server_Api_Issues_List
 
         $principal = System_Api_Principal::getCurrent();
 
-        if ( $principal->isAuthenticated() ) {
+        if ( $principal->isAuthenticated() && !$principal->isDemoUser() ) {
             if ( $view != null )
                 $viewManager->setViewPreference( $type, 'initial_view', $view[ 'view_id' ] );
             else

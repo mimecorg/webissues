@@ -91,8 +91,7 @@ class System_Api_PreferencesManager extends System_Api_Base
         if ( $newValue == $oldValue )
             return false;
 
-        if ( System_Core_Application::getInstance()->getSite()->getConfig( 'demo_mode' ) )
-            System_Api_Principal::getCurrent()->checkAdministrator();
+        System_Api_Principal::getCurrent()->checkNoDemoUser();
 
         if ( $key == 'email' && $newValue != '' ) {
             $query = 'SELECT user_id FROM {preferences} WHERE pref_key = %s AND UPPER( pref_value ) = %s';

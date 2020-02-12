@@ -538,6 +538,8 @@ class System_Api_ViewManager extends System_Api_Base
         if ( $newValue == $oldValue )
             return false;
 
+        $principal->checkNoDemoUser();
+
         $typeId = $type[ 'type_id' ];
 
         if ( $oldValue == '' )

@@ -113,8 +113,10 @@ class Server_Api_Issues_Load
                 $stateManager = new System_Api_StateManager();
                 $stateManager->setIssueRead( $issue, $unread ? 0 : $issue[ 'stamp_id' ] );
 
-                $preferencesManager = new System_Api_PreferencesManager();
-                $preferencesManager->setPreference( 'history_filter', $filter );
+                if ( !$principal->isDemoUser() ) {
+                    $preferencesManager = new System_Api_PreferencesManager();
+                    $preferencesManager->setPreference( 'history_filter', $filter );
+                }
             }
 
             $result[ 'history' ] = array();

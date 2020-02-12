@@ -313,10 +313,11 @@ class System_Api_UserManager extends System_Api_Base
     */
     public function changePassword( $password, $newPassword )
     {
-        if ( System_Core_Application::getInstance()->getSite()->getConfig( 'demo_mode' ) )
-            System_Api_Principal::getCurrent()->checkAdministrator();
+        $principal = System_Api_Principal::getCurrent();
 
-        $userId = System_Api_Principal::getCurrent()->getUserId();
+        $principal->checkNoDemoUser();
+
+        $userId = $principal->getUserId();
 
         $transaction = $this->connection->beginTransaction( System_Db_Transaction::RepeatableRead, 'users' );
 
@@ -343,7 +344,7 @@ class System_Api_UserManager extends System_Api_Base
             throw $ex;
         }
 
-        $name = System_Api_Principal::getCurrent()->getUserName();
+        $name = $principal->getUserName();
 
         $eventLog = new System_Api_EventLog( $this );
         $eventLog->addEvent( System_Api_EventLog::Audit, System_Api_EventLog::Information, $eventLog->t( 'log.UserOwnPasswordChanged', array( $name ) ) );
@@ -424,6 +425,8 @@ class System_Api_UserManager extends System_Api_Base
 
         if ( $newName == $oldName && $newLogin == $oldLogin && $newEmail == $oldEmail && $newLanguage == $oldLanguage )
             return false;
+
+        System_Api_Principal::getCurrent()->checkNoDemoUser();
 
         $transaction = $this->connection->beginTransaction( System_Db_Transaction::Serializable, 'users' );
 

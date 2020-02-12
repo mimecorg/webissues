@@ -504,8 +504,7 @@ class System_Api_IssueManager extends System_Api_Base
     {
         $principal = System_Api_Principal::getCurrent();
 
-        if ( System_Core_Application::getInstance()->getSite()->getConfig( 'demo_mode' ) )
-            $principal->checkAdministrator();
+        $principal->checkNoDemoUser();
 
         $issueId = $issue[ 'issue_id' ];
         $folderId = $issue[ 'folder_id' ];

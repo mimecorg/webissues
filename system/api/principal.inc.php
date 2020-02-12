@@ -146,4 +146,21 @@ class System_Api_Principal
         if ( !$this->isAdministrator() )
             throw new System_Api_Error( System_Api_Error::AccessDenied );
     }
+
+    /**
+    * Return @c true if demo mode is enabled and the user is not an administrator.
+    */
+    public function isDemoUser()
+    {
+        return !$this->isAdministrator() && System_Core_Application::getInstance()->getSite()->getConfig( 'demo_mode' );
+    }
+
+    /**
+    * Throw a System_Api_Error if if demo mode is enabled and the user is not an administrator.
+    */
+    public function checkNoDemoUser()
+    {
+        if ( !$this->isAdministrator() && System_Core_Application::getInstance()->getSite()->getConfig( 'demo_mode' ) )
+            throw new System_Api_Error( System_Api_Error::AccessDenied );
+    }
 }
