@@ -76,6 +76,11 @@ class System_Db_Pgsql_Engine implements System_Db_IEngine
         return new System_Db_Pgsql_Result( $this->executeQuery( $query, $params ) );
     }
 
+    public function executeRaw( $query )
+    {
+        $this->execute( $query, array() );
+    }
+
     private function executeQuery( $query, $params )
     {
         if ( $this->result ) {

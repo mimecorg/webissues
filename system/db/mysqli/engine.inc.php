@@ -112,6 +112,12 @@ class System_Db_Mysqli_Engine implements System_Db_IEngine
             $this->handleError( $this->statement );
     }
 
+    public function executeRaw( $query )
+    {
+        if ( !$this->connection->query( $query ) )
+            $this->handleError( $this->connection );
+    }
+
     public function escapeArgument( $arg, $type, &$params )
     {
         switch( $type ) {

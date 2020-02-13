@@ -191,7 +191,7 @@ class System_Db_Connection
     */
     public function executeRaw( $query )
     {
-        $this->engine->execute( $query, array() );
+        $this->engine->executeRaw( $query );
     }
 
     /**

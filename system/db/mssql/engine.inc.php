@@ -108,6 +108,11 @@ class System_Db_Mssql_Engine implements System_Db_IEngine
         return new System_Db_Mssql_Result( $rs );
     }
 
+    public function executeRaw( $query )
+    {
+        $this->execute( $query, array() );
+    }
+
     private function createCommand( $query, $params )
     {
         $command = new COM( 'ADODB.Command', null, CP_UTF8 );

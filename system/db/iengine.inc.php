@@ -55,6 +55,11 @@ interface System_Db_IEngine
     public function query( $query, $params );
 
     /**
+    * Execute the query without additional processing.
+    */
+    public function executeRaw( $query );
+
+    /**
     * Insert an argument into the query. This method should apply appropriate
     * escaping of the value. It can also return a parameter placeholder and
     * append the value to the array of parameters is the database supports
