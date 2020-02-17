@@ -102,10 +102,10 @@ export default {
     getCellValue( columnKey, issue ) {
       let value = issue.cells[ columnKey ];
       if ( this.columns[ columnKey ].id == Column.Name ) {
+        if ( issue.subscribed && this.settings.subscriptions )
+          value = ' <span class="fa fa-envelope-o issue-subscribed" aria-hidden="true"></span>' + value;
         if ( issue.read < issue.stamp )
           value = '<span class="fa fa-circle issue-' + ( issue.read > 0 ? 'modified' : 'unread' ) + '" aria-hidden="true"></span> ' + value;
-        if ( issue.subscribed && this.settings.subscriptions )
-          value += ' <span class="fa fa-envelope-o issue-subscribed" aria-hidden="true"></span>';
       }
       return value;
     },
