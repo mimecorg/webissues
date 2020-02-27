@@ -129,7 +129,9 @@ class System_Core_Attachment
     public function outputData()
     {
         $fileName = $this->fileName;
-        if ( strpos( $_SERVER[ 'HTTP_USER_AGENT' ], 'MSIE' ) !== false )
+
+        $userAgent = $_SERVER[ 'HTTP_USER_AGENT' ];
+        if ( strpos( $userAgent, 'MSIE' ) !== false || strpos( $userAgent, 'Trident' ) !== false || strpos( $userAgent, 'Edge' ) !== false )
             $fileName = rawurlencode( $fileName );
 
         header( 'Content-Length: ' . $this->size );
