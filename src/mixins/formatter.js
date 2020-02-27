@@ -71,7 +71,7 @@ function convertLinks( text ) {
   const mail = '\\b(?:mailto:)?[\\w.%+-]+@[\\w.-]+\\.[a-z]{2,}\\b';
   const url = '(?:\\b(?:(?:https?|ftp|file):\\/\\/|www\\.|ftp\\.)|\\\\\\\\)(?:\\([\\w+&@#\\/\\\\%=~|$?!:,.-]*\\)|[\\w+&@#\\/\\\\%=~|$?!:,.-])*(?:\\([\w+&@#\\/\\\\%=~|$?!:,.-]*\\)|[\\w+&@#\\/\\\\%=~|$])';
   const id = '#\\d+\\b';
-  const pattern = new RegExp( mail + '|' + url + '|' + id, 'uig' );
+  const pattern = new RegExp( mail + '|' + url + '|' + id, 'ig' );
 
   let result = '';
   let i = 0;
