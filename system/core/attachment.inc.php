@@ -132,13 +132,8 @@ class System_Core_Attachment
         if ( strpos( $_SERVER[ 'HTTP_USER_AGENT' ], 'MSIE' ) !== false )
             $fileName = rawurlencode( $fileName );
 
-        if ( preg_match( '/\.(png|jpe?g|gif|bmp|ico|svg)$/i', $this->fileName ) )
-            $disposition = 'inline';
-        else
-            $disposition = 'attachment';
-
         header( 'Content-Length: ' . $this->size );
-        header( 'Content-Disposition: ' . $disposition . '; filename="' . $fileName . '"' );
+        header( 'Content-Disposition: attachment; filename="' . $fileName . '"' );
 
         if ( $this->data !== null )
             echo $this->data;

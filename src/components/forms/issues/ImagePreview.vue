@@ -27,7 +27,6 @@
       </div>
     </div>
     <div class="form-buttons">
-      <button v-if="loaded" class="btn btn-primary" v-on:click="open">{{ $t( 'cmd.Open' ) }}</button>
       <button v-if="loaded" class="btn btn-primary" v-on:click="saveAs">{{ $t( 'cmd.Save' ) }}</button>
       <button class="btn btn-default" v-on:click="returnToDetails">{{ $t( 'cmd.Cancel' ) }}</button>
     </div>
@@ -65,13 +64,6 @@ export default {
     }
   },
   methods: {
-    open() {
-      const link = document.createElement( 'a' );
-      link.href = this.fileURL;
-      link.target = '_blank';
-      link.click();
-      this.returnToDetails();
-    },
     saveAs() {
       FileSaver.saveAs( this.fileURL, this.name );
       this.returnToDetails();
