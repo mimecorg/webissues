@@ -29,6 +29,7 @@
     "InvalidAlertEmail": "Nieprawidłowe ustawienie alertu.",
     "InvalidAlertFrequency": "Nieprawidłowa częstotliwość alertu.",
     "InvalidAlertType": "Nieprawidłowy typ alertu.",
+    "InvalidCsrfToken": "Nieprawidłowy token CSRF.",
     "InvalidDate": "Data jest niepoprawna.",
     "InvalidDefinition": "Definicja jest niepoprawna.",
     "InvalidEmail": "Adres e-mail jest niepoprawny.",
@@ -264,6 +265,7 @@
     "SaveError": "Plik nie mógł zostać zapisany.",
     "ServerError": "Wystąpił wewnętrzny błąd serwera.",
     "ServerNotConfigured": "Serwer nie został poprawnie skonfigurowany.",
+    "SessionChanged": "Twoja sesja uległa zmianie. Spróbuj ponownie.",
     "SessionExpired": "Twoja sesja wygasła. Zaloguj się ponownie.",
     "UnknownError": "Wystąpił nieznany błąd.",
     "UnsupportedVersion": "Wersja serwera nie jest obsługiwana.",
@@ -274,6 +276,7 @@
     "NoArchivedProjects": "Nie ma zarchiwizowanych projektów.",
     "NoAttributes": "Ten typ sprawy nie ma atrybutów.",
     "NoAvailableProjects": "Nie ma dostępnych projektów.",
+    "NoAvailableIssueTypes": "Nie ma dostępnych typów spraw.",
     "NoAvailableUsers": "Nie ma więcej dostępnych użytkowników.",
     "NoComments": "Ta sprawa nie ma komentarzy.",
     "NoCommentsOrFiles": "Ta sprawa nie ma komentarzy ani załączników.",
@@ -681,6 +684,7 @@
     "ServerConfiguration": "Konfiguracja serwera",
     "ServerInformation": "Informacje o serwerze",
     "ServerSettings": "Ustawienia serwera",
+    "SessionChanged": "Sesja zmieniona",
     "SessionExpired": "Sesja wygasła",
     "Severity": "Krytyczność",
     "SortBy": "Sortuj według",
@@ -695,7 +699,7 @@
     "UserRegistration": "Rejestracja użytkowników",
     "Users": "Użytkownicy",
     "ViewSettings": "Ustawienia widoków",
-    "WebIssuesManual": "Podręcznik WebIssues",
+    "WebIssuesGuide": "Poradnik WebIssues",
     "WebIssuesSettings": "Ustawienia WebIssues"
   }
 }

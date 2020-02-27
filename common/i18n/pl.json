@@ -22,6 +22,7 @@
     "InvalidAlertEmail": "Nieprawidłowe ustawienie alertu.",
     "InvalidAlertFrequency": "Nieprawidłowa częstotliwość alertu.",
     "InvalidAlertType": "Nieprawidłowy typ alertu.",
+    "InvalidCsrfToken": "Nieprawidłowy token CSRF.",
     "InvalidDate": "Data jest niepoprawna.",
     "InvalidDefinition": "Definicja jest niepoprawna.",
     "InvalidEmail": "Adres e-mail jest niepoprawny.",
@@ -262,6 +263,7 @@
     "InstallNewServer": "Nowy serwer zotanie zainstalowany w wybranej bazie danych.",
     "InstallationCompleted": "Instalacja twojego serwera WebIssues została pomyślnie zakończona.",
     "InstallationMode": "Możesz utworzyć nowe tabele w bazie danych lub połączyć się z istniejącą bazą danych.",
+    "IssueCreatedEmail": "To jest automatyczne powiadomienie skrzynki odbiorczej z systemu WebIssues.",
     "LogInToUpdate": "Zaloguj się jako administrator aby zaktualizować serwer.",
     "NotificationEmail": "To jest automatyczne powiadomienie z systemu WebIssues. Prosimy nie odpowiadać na tego maila.",
     "PendingRegistrationRequests": "Masz następujące nowe zgłoszenia rejestracji czekające na zatwierdzenie:",
@@ -272,6 +274,7 @@
     "RegistrationComplete": "Dziękujemy za rejestrację. Wkrótce otrzymasz wiadomość z instrukcjami, jak zakończyć rejestrację.",
     "RegistrationRejected": "Twoje konto WebIssues zostało odrzucone przez administratora.",
     "RegistrationVerified": "Twój adres e-mail został potwierdzony. Otrzymasz powiadomienie, gdy twoje zgłoszenie zostanie zatwierdzone.",
+    "ReportEmail": "To jest automatyczny raport z systemu WebIssues. Prosimy nie odpowiadać na tego maila.",
     "ResetPasswordComplete": "Twoje hasło zostało pomyślnie zmienione. Możesz teraz zalogować się do systemu WebIssues używając swojego loginu i nowego hasła.",
     "ResetPasswordConfirm": "Został zgłoszony reset hasła dla loginu {0}. Aby podać swoje nowe hasło, proszę otworzyć następujący adres:",
     "ResetPasswordEmail": "Proszę podać swój adres e-mail aby zresetować hasło.",
@@ -280,7 +283,7 @@
     "ServerAlreadyConfigured": "Ten serwer WebIssues został już skonfigurowany.",
     "ServerAlreadyUpdated": "Baza danych tego serwera WebIssues została już zaktualizowana.",
     "ServerConfiguration": "Podaj parametry nowego serwera.",
-    "SubsriptionEmail": "To jest powiadomienie subskrypcji WebIssues.",
+    "SubsriptionEmail": "To jest automatyczne powiadomienie subskrypcji z systemu WebIssues.",
     "TablePrefix": "Możesz podać opcjonalny prefiks dla nazw tabel. Pozwala to zainstalować wiele serwerów używając tej samej bazy danych.",
     "TestMessage": "To jest wiadomość testowa wysłana przez WebIssues w celu sprawdzenia połączenia z serwerem SMTP.",
     "UpdateCompleted": "Aktualizacja twojego serwera WebIssues została zakończona pomyślnie.",
@@ -363,7 +366,7 @@
     "UpdateRequired": "Wymagana aktualizacja",
     "UserName": "Nazwa użytkownika",
     "WebClient": "Klient webowy",
-    "WebIssuesManual": "Podręcznik WebIssues",
+    "WebIssuesGuide": "Poradnik WebIssues",
     "WelcomeToWebIssues": "Witaj w WebIssues"
   }
 }

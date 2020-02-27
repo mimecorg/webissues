@@ -33,6 +33,7 @@ const translationModules = {
   fr: () => import( /* webpackChunkName: "i18n-fr" */ '@/i18n/fr' ),
   hu: () => import( /* webpackChunkName: "i18n-hu" */ '@/i18n/hu' ),
   it: () => import( /* webpackChunkName: "i18n-it" */ '@/i18n/it' ),
+  ko: () => import( /* webpackChunkName: "i18n-ko" */ '@/i18n/ko' ),
   nb: () => import( /* webpackChunkName: "i18n-nb" */ '@/i18n/nb' ),
   nl: () => import( /* webpackChunkName: "i18n-nl" */ '@/i18n/nl' ),
   pl: () => import( /* webpackChunkName: "i18n-pl" */ '@/i18n/pl' ),
