@@ -65,8 +65,12 @@ export default {
   },
   methods: {
     saveAs() {
-      FileSaver.saveAs( this.fileURL, this.name );
-      this.returnToDetails();
+      if ( /iPad|iPhone/.test( navigator.userAgent ) || ( navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1 ) ) {
+        this.$router.redirect( this.fileURL );
+      } else {
+        FileSaver.saveAs( this.fileURL, this.name );
+        this.returnToDetails();
+      }
     },
     returnToDetails() {
       this.$router.push( 'IssueDetails', { issueId: this.issueId } );
