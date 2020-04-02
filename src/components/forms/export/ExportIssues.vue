@@ -29,6 +29,14 @@
         <label><input type="radio" v-model="exportType" v-bind:value="1"> {{ $t( 'text.TableWithAllColumns' ) }}</label>
       </div>
     </FormGroup>
+    <FormGroup v-if="type != null" v-bind:label="$t( 'label.Delimiter' )" required>
+      <div class="radio">
+        <label><input type="radio" v-model="delimiter" value=","> {{ $t( 'text.Comma' ) }}</label>
+      </div>
+      <div class="radio">
+        <label><input type="radio" v-model="delimiter" value=";"> {{ $t( 'text.Semicolon' ) }}</label>
+      </div>
+    </FormGroup>
   </BaseForm>
 </template>
 
@@ -46,6 +54,10 @@ export default {
         value: 0,
         type: Number
       },
+      delimiter: {
+        value: ',',
+        type: String
+      }
     };
   },
 
@@ -92,7 +104,7 @@ export default {
 
       const data = [ String.fromCharCode( 0xFEFF ) ];
 
-      data.push( columns.map( column => column.name ).map( escapeCSV ).join( ',' ) );
+      data.push( columns.map( column => column.name ).map( this.escapeCSV ).join( this.delimiter ) );
       data.push( '\r\n' );
 
       for ( const i in issues ) {
@@ -104,21 +116,21 @@ export default {
             return this.$formatter.convertAttributeValue( value, attributes[ index ] );
           else
             return value;
-        } ).map( escapeCSV ).join( ',' ) );
+        } ).map( this.escapeCSV ).join( this.delimiter ) );
         data.push( '\r\n' );
       }
 
       return data;
     },
-  }
-}
 
-function escapeCSV( value ) {
-  if ( value == '' )
-    return value;
-  else if ( value.startsWith( ' ' ) || value.endsWith( ' ' ) || value.includes( '"' ) || value.includes( ',' ) || value.includes( '\n' ) || value == 'ID' )
-    return '"' + value.replace( /"/g, '""' ) + '"';
-  else
-    return value;
+    escapeCSV( value ) {
+      if ( value == '' )
+        return value;
+      else if ( value.startsWith( ' ' ) || value.endsWith( ' ' ) || value.includes( '"' ) || value.includes( this.delimiter ) || value.includes( '\n' ) || value == 'ID' )
+        return '"' + value.replace( /"/g, '""' ) + '"';
+      else
+        return value;
+    }
+  }
 }
 </script>
