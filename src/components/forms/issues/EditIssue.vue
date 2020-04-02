@@ -58,6 +58,9 @@ export default {
   },
 
   fields() {
+    const project = this.initialProjectId != null ? this.$store.state.global.projects.find( t => t.id == this.initialProjectId ) : null;
+    const folders = project != null ? project.folders.filter( f => f.typeId == this.typeId ) : null;
+
     const fields = {
       name: {
         value: this.initialName,
@@ -67,7 +70,7 @@ export default {
       },
       folderId: {
         condition: this.mode == 'add' || this.mode == 'clone',
-        value: this.initialFolderId,
+        value: ( this.initialFolderId == null && folders != null && folders.length == 1 ) ? folders[ 0 ].id : this.initialFolderId,
         type: Number,
         required: true,
         requiredError: this.$t( 'error.NoFolderSelected' )
