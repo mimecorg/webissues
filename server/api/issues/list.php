@@ -195,7 +195,7 @@ class Server_Api_Issues_List
                         if ( $html )
                             $cells[] = htmlspecialchars( $row[ 'project_name' ] ) . ' &mdash; ' . htmlspecialchars( $value );
                         else
-                            $cells[] = $row[ 'project_name' ] . " \xE2\x80\x94 " . $value;
+                            $cells[] = $row[ 'project_name' ] . " - " . $value;
                         break;
 
                     case System_Api_Column::CreatedDate:
