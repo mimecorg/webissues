@@ -70,5 +70,6 @@ export function startApplication( { baseURL, csrfToken, locale, ...initialState 
 export function destroyApplication() {
   app.$destroy();
   app.$options.router.destroy();
+  app.$options.store.commit( 'alerts/destroy' );
   app = null;
 }

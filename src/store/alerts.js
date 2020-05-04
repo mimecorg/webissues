@@ -65,6 +65,12 @@ function makeMutations() {
       state.dirty = false;
       state.loading = false;
       state.timer = null;
+    },
+    destroy( state ) {
+      if ( state.timer != null ) {
+        clearTimeout( state.timer );
+        state.timer = null;
+      }
     }
   };
 }
