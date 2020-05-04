@@ -31,6 +31,8 @@ let configSaved = false;
 
 let mainWindow = null;
 
+app.allowRendererProcessReuse = true;
+
 app.on( 'ready', () => {
   loadConfiguraton( () => {
     initializeAttachments( () => {
