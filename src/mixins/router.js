@@ -17,7 +17,7 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-import pathToRegexp from 'path-to-regexp'
+import { parse, tokensToRegexp, tokensToFunction } from 'path-to-regexp'
 import Vue from 'vue'
 
 Vue.mixin( {
@@ -110,13 +110,13 @@ export default function makeRouter() {
 
 function addRoute( routes, name, path, handler ) {
   const keys = [];
-  const tokens = pathToRegexp.parse( path );
+  const tokens = parse( path );
   for ( let i = 0; i < tokens.length; i++ ) {
     if ( typeof tokens[ i ] == 'object' )
       tokens[ i ].pattern = '[1-9][0-9]*';
   }
-  const regexp = pathToRegexp.tokensToRegExp( tokens, keys, { sensitive: true, strict: true } );
-  const buildPath = pathToRegexp.tokensToFunction( tokens );
+  const regexp = tokensToRegexp( tokens, keys, { sensitive: true, strict: true } );
+  const buildPath = tokensToFunction( tokens );
   routes.push( { name, keys, regexp, buildPath, handler } );
 }
 
