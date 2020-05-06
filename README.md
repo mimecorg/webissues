@@ -25,6 +25,10 @@ Quick steps:
 
 For more information, please refer to the [WebIssues Guide](https://doc.mimec.org/webissues-guide/).
 
+## Updating
+
+You can find information related to updating the WebIssues server in the [Updating WebIssues](https://doc.mimec.org/webissues-guide/system-administration.html#updating-webissues) section of the WebIssues Guide.
+
 ## Development
 
 Download the source code or clone it from the git repository and run the following command:
