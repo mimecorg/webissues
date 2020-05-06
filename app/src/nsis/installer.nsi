@@ -99,20 +99,23 @@ Section
 
     SetOutPath "$INSTDIR"
 
+    Delete "$INSTDIR\natives_blob.bin"
+
     File "${SRCDIR}\WebIssues.exe"
 
     File "${SRCDIR}\d3dcompiler_47.dll"
     File "${SRCDIR}\ffmpeg.dll"
     File "${SRCDIR}\libEGL.dll"
     File "${SRCDIR}\libGLESv2.dll"
+    File "${SRCDIR}\vk_swiftshader.dll"
 
     File "${SRCDIR}\chrome_100_percent.pak"
     File "${SRCDIR}\chrome_200_percent.pak"
     File "${SRCDIR}\icudtl.dat"
-    File "${SRCDIR}\natives_blob.bin"
     File "${SRCDIR}\resources.pak"
     File "${SRCDIR}\snapshot_blob.bin"
     File "${SRCDIR}\v8_context_snapshot.bin"
+    File "${SRCDIR}\vk_swiftshader_icd.json"
 
     File "${SRCDIR}\LICENSE"
     File "${SRCDIR}\LICENSE.electron"
@@ -181,6 +184,7 @@ Section "Uninstall"
     Delete "$INSTDIR\ffmpeg.dll"
     Delete "$INSTDIR\libEGL.dll"
     Delete "$INSTDIR\libGLESv2.dll"
+    Delete "$INSTDIR\vk_swiftshader.dll"
 
     Delete "$INSTDIR\chrome_100_percent.pak"
     Delete "$INSTDIR\chrome_200_percent.pak"
@@ -189,6 +193,7 @@ Section "Uninstall"
     Delete "$INSTDIR\resources.pak"
     Delete "$INSTDIR\snapshot_blob.bin"
     Delete "$INSTDIR\v8_context_snapshot.bin"
+    Delete "$INSTDIR\vk_swiftshader_icd.json"
 
     Delete "$INSTDIR\LICENSE"
     Delete "$INSTDIR\LICENSE.electron"
