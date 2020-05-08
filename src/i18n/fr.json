@@ -111,10 +111,21 @@
       "Thursday": "Jeudi",
       "Tuesday": "Mardi",
       "Wednesday": "Mercredi"
+    },
+    "weekday_abbr": {
+      "Fr": "Ven",
+      "Mo": "Lun",
+      "Sa": "Sam",
+      "Su": "Di",
+      "Th": "Jeu",
+      "Tu": "Mar",
+      "We": "Mer"
     }
   },
   "cmd": {
+    "Add": "Ajouter",
     "AddAttribute": "Ajouter un attribut",
+    "AddColumn": "Ajouter une colonne",
     "AddComment": "Ajouter un commentaire",
     "AddDescription": "Ajouter une Description",
     "AddFolder": "Ajouter un dossier",
