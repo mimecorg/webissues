@@ -139,13 +139,13 @@ class System_Api_TypeManager extends System_Api_Base
             . ' INNER JOIN {issue_types} AS t ON t.type_id = a.type_id'
             . ' WHERE attr_id = %1d';
         if ( !$principal->isAuthenticated() ) {
-            $query .= ' AND type_id IN ( SELECT f.type_id FROM {folders} AS f'
+            $query .= ' AND t.type_id IN ( SELECT f.type_id FROM {folders} AS f'
                 . ' JOIN {projects} AS p ON p.project_id = f.project_id'
                 . ' WHERE p.is_archived = 0 AND p.is_public = 1 )';
         } else if ( !$principal->isAdministrator() ) {
             $query .= ' AND ( EXISTS( SELECT * FROM {rights}'
                 . ' WHERE user_id = %2d AND project_access = %3d AND project_id IN ( SELECT project_id FROM {projects} WHERE is_archived = 0 ) )'
-                . ' OR type_id IN ( SELECT f.type_id FROM {folders} AS f'
+                . ' OR t.type_id IN ( SELECT f.type_id FROM {folders} AS f'
                 . ' JOIN {projects} AS p ON p.project_id = f.project_id'
                 . ' WHERE p.is_archived = 0 AND ( p.project_id IN ( SELECT project_id FROM {rights} WHERE user_id = %2d ) OR p.is_public = 1 ) ) )';
         }
