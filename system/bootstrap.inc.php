@@ -33,7 +33,7 @@ if ( !function_exists( 'mb_strlen' ) )
 /**
 * Current version of WebIssues Server.
 */
-define( 'WI_VERSION', '2.0.0' );
+define( 'WI_VERSION', '2.0.1' );
 
 /**
 * Current version of the WebIssues database schema.
