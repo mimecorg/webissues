@@ -1,5 +1,6 @@
 {
   "ErrorCode": {
+    "AccessDenied": "Accesso negado.",
     "AlertAlreadyExists": "Ya existe esa alerta.",
     "AttributeAlreadyExists": "Ya existe un atributo con este nombre.",
     "CannotDeleteAttribute": "El atributo no puede ser eliminado.",
@@ -19,6 +20,9 @@
     "InvalidAccessLevel": "Nivel de acceso invalido.",
     "InvalidActivationKey": "La llave de activación es invalida.",
     "InvalidAlertEmail": "Configuración invalida para la alerta de correo.",
+    "InvalidAlertFrequency": "Frecuencia de alerta inválida.",
+    "InvalidAlertType": "Tipo de alerta inválido.",
+    "InvalidCsrfToken": "Token CSRF inválido.",
     "InvalidDate": "La fecha es incorrecta.",
     "InvalidDefinition": "Definición invalida.",
     "InvalidEmail": "La dirección electrónica es incorrecta.",
