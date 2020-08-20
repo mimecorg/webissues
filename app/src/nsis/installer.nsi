@@ -108,6 +108,7 @@ Section
     File "${SRCDIR}\libEGL.dll"
     File "${SRCDIR}\libGLESv2.dll"
     File "${SRCDIR}\vk_swiftshader.dll"
+    File "${SRCDIR}\vulkan-1.dll"
 
     File "${SRCDIR}\chrome_100_percent.pak"
     File "${SRCDIR}\chrome_200_percent.pak"
@@ -185,6 +186,7 @@ Section "Uninstall"
     Delete "$INSTDIR\libEGL.dll"
     Delete "$INSTDIR\libGLESv2.dll"
     Delete "$INSTDIR\vk_swiftshader.dll"
+    Delete "$INSTDIR\vulkan-1.dll"
 
     Delete "$INSTDIR\chrome_100_percent.pak"
     Delete "$INSTDIR\chrome_200_percent.pak"
