@@ -17,7 +17,7 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-const { app, BrowserWindow, ipcMain, Menu, shell } = require( 'electron' );
+const { app, BrowserWindow, ipcMain, Menu, shell, nativeImage } = require( 'electron' );
 
 const path = require( 'path' );
 const url = require( 'url' );
@@ -87,14 +87,6 @@ function createWindow() {
   const position = config.position;
   adjustPosition( position );
 
-  let icon = null;
-  if ( process.platform == 'linux' ) {
-    if ( process.env.NODE_ENV == 'production' )
-      icon = path.join( __dirname, '../images/webissues-logo.png' );
-    else
-      icon = path.join( __dirname, '../../src/images/webissues-logo.png' );
-  }
-
   mainWindow = new BrowserWindow( {
     x: position.x,
     y: position.y,
@@ -104,11 +96,17 @@ function createWindow() {
     minHeight: 120,
     show: !position.maximized,
     title: 'WebIssues',
-    icon,
     webPreferences: {
       nodeIntegration: true
     }
   } );
+
+  if ( process.platform == 'linux' ) {
+    if ( process.env.NODE_ENV == 'production' )
+      mainWindow.setIcon( nativeImage.createFromPath( path.join( __dirname, '../images/webissues-logo.png' ) ) );
+    else
+      mainWindow.setIcon( nativeImage.createFromPath( path.join( __dirname, '../../src/images/webissues-logo.png' ) ) );
+  }
 
   if ( position.maximized ) {
     mainWindow.maximize();
