@@ -95,13 +95,17 @@ export default {
           const items = this.$refs.menu.querySelectorAll( 'li a' );
           if ( items.length > 0 ) {
             let index = indexOfElement( items, e.target );
-            if ( e.keyCode == KeyCode.Up && index > 0 )
-              index--;
-            else if ( e.keyCode == KeyCode.Down && index < items.length - 1 )
-              index++;
-            if ( index < 0 )
-              index = 0;
-            items[ index ].focus();
+            if ( e.keyCode == KeyCode.Up && index == 0 ) {
+              this.$emit( 'focus-above' );
+            } else {
+              if ( e.keyCode == KeyCode.Up && index > 0 )
+                index--;
+              else if ( e.keyCode == KeyCode.Down && index < items.length - 1 )
+                index++;
+              if ( index < 0 )
+                index = 0;
+              items[ index ].focus();
+            }
           }
         }
         e.preventDefault();

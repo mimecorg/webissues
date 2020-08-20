@@ -18,7 +18,7 @@
 -->
 
 <template>
-  <DropdownButton ref="dropdown" v-bind="$attrs" v-on:open="open">
+  <DropdownButton ref="dropdown" v-bind="$attrs" v-on:open="open" v-on:focus-above="focusAbove">
     <template v-slot:button>
       <slot name="button"/>
     </template>
@@ -85,6 +85,10 @@ export default {
           this.scrollItemToView();
       } );
       this.$emit( 'open' );
+    },
+
+    focusAbove() {
+      this.$emit( 'focus-filter' );
     },
 
     scrollItemToView() {

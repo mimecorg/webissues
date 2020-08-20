@@ -30,17 +30,17 @@
     <FormInput ref="name" id="name" v-bind:label="$t( 'label.Name' )" v-bind="$field( 'name' )" v-model="name"/>
     <FormGroup v-if="mode == 'add'" v-bind:label="$t( 'label.Type' )" v-bind="$field( 'typeId' )">
       <div class="dropdown-filters">
-        <DropdownScrollButton ref="type" fa-class="fa-table" v-bind:text="typeName" v-bind:title="typeTitle">
+        <DropdownFilterButton ref="type" fa-class="fa-table" v-bind:text="typeName" v-bind:title="typeTitle" v-bind:filter.sync="typesFilter">
           <li v-bind:class="{ active: type == null }">
             <HyperLink v-on:click="selectType( null )">{{ $t( 'text.SelectType' ) }}</HyperLink>
           </li>
-          <template v-if="types.length > 0">
+          <template v-if="filteredTypes.length > 0">
             <li role="separator" class="divider"></li>
-            <li v-for="t in types" v-bind:key="t.id" v-bind:class="{ active: type != null && t.id == type.id }">
+            <li v-for="t in filteredTypes" v-bind:key="t.id" v-bind:class="{ active: type != null && t.id == type.id }">
               <HyperLink v-on:click="selectType( t )">{{ t.name }}</HyperLink>
             </li>
           </template>
-        </DropdownScrollButton>
+        </DropdownFilterButton>
       </div>
     </FormGroup>
   </BaseForm>
@@ -50,6 +50,7 @@
 import { mapState } from 'vuex'
 
 import { MaxLength, ErrorCode, Reason } from '@/constants'
+import filterItems from '@/utils/filter'
 
 export default {
   props: {
@@ -58,6 +59,12 @@ export default {
     projectName: String,
     folderId: Number,
     initialName: String
+  },
+
+  data() {
+    return {
+      typesFilter: '',
+    };
   },
 
   fields() {
@@ -79,6 +86,9 @@ export default {
 
   computed: {
     ...mapState( 'global', [ 'types' ] ),
+    filteredTypes() {
+      return filterItems( this.types, this.typesFilter );
+    },
     title() {
       if ( this.mode == 'rename' )
         return this.$t( 'cmd.RenameFolder' );

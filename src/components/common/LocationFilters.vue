@@ -19,28 +19,28 @@
 
 <template>
   <div class="dropdown-filters">
-    <DropdownScrollButton ref="project" fa-class="fa-briefcase" v-bind:text="projectName" v-bind:title="projectTitle">
+    <DropdownFilterButton ref="project" fa-class="fa-briefcase" v-bind:text="projectName" v-bind:title="projectTitle" v-bind:filter.sync="projectsFilter">
       <li v-bind:class="{ active: project == null }">
         <HyperLink v-on:click="selectProject( null )">{{ projectLabel || $t( 'text.SelectProject' ) }}</HyperLink>
       </li>
-      <template v-if="availableProjects.length > 0">
+      <template v-if="filteredProjects.length > 0">
         <li role="separator" class="divider"></li>
-        <li v-for="p in availableProjects" v-bind:key="p.id" v-bind:class="{ active: project != null && p.id == project.id }">
+        <li v-for="p in filteredProjects" v-bind:key="p.id" v-bind:class="{ active: project != null && p.id == project.id }">
           <HyperLink v-on:click="selectProject( p )">{{ p.name }}</HyperLink>
         </li>
       </template>
-    </DropdownScrollButton>
-    <DropdownScrollButton v-if="folderVisible" ref="folder" fa-class="fa-folder-open-o" v-bind:text="folderName" v-bind:title="folderTitle">
+    </DropdownFilterButton>
+    <DropdownFilterButton v-if="folderVisible" ref="folder" fa-class="fa-folder-open-o" v-bind:text="folderName" v-bind:title="folderTitle" v-bind:filter.sync="projectsFilter">
       <li v-bind:class="{ active: folder == null }">
         <HyperLink v-on:click="selectFolder( null )">{{ folderLabel || $t( 'text.SelectFolder' ) }}</HyperLink>
       </li>
-      <template v-if="availableFolders.length > 0">
+      <template v-if="filteredFolders.length > 0">
         <li role="separator" class="divider"></li>
-        <li v-for="f in availableFolders" v-bind:key="f.id" v-bind:class="{ active: folder != null && f.id == folder.id }">
+        <li v-for="f in filteredFolders" v-bind:key="f.id" v-bind:class="{ active: folder != null && f.id == folder.id }">
           <HyperLink v-on:click="selectFolder( f )">{{ f.name }}</HyperLink>
         </li>
       </template>
-    </DropdownScrollButton>
+    </DropdownFilterButton>
   </div>
 </template>
 
@@ -48,6 +48,7 @@
 import { mapState } from 'vuex'
 
 import { Access } from '@/constants'
+import filterItems from '@/utils/filter'
 
 export default {
   props: {
@@ -62,8 +63,16 @@ export default {
     autoExpand: Boolean
   },
 
+  data() {
+    return {
+      projectsFilter: '',
+      foldersFilter: ''
+    };
+  },
+
   computed: {
     ...mapState( 'global', [ 'userAccess' ] ),
+
     availableProjects() {
       const projects = this.projects != null ? this.projects : this.$store.state.global.projects;
       if ( this.requireAdmin && this.userAccess != Access.AdministratorAccess )
@@ -81,6 +90,14 @@ export default {
         return [];
       }
     },
+
+    filteredProjects() {
+      return filterItems( this.availableProjects, this.projectsFilter );
+    },
+    filteredFolders() {
+      return filterItems( this.availableFolders, this.foldersFilter );
+    },
+
     project() {
       if ( this.projectId != null )
         return this.availableProjects.find( p => p.id == this.projectId );
@@ -93,6 +110,7 @@ export default {
       else
         return null;
     },
+
     projectName() {
       if ( this.project != null )
         return this.project.name;
@@ -105,6 +123,7 @@ export default {
       else
         return this.projectLabel || this.$t( 'text.SelectProject' );
     },
+
     folderName() {
       if ( this.folder != null )
         return this.folder.name;

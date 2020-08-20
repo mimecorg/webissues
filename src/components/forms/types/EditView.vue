@@ -31,9 +31,10 @@
     <Prompt v-else v-bind:path="promptPath"><strong>{{ initialName }}</strong></Prompt>
     <FormInput v-if="mode == 'add' || mode == 'edit' || mode == 'clone'" ref="name" id="name" v-bind:label="$t( 'label.Name' )" v-bind="$field( 'name' )" v-model="name"/>
     <FormSection v-bind:title="$t( 'title.Columns' )">
-      <DropdownScrollButton v-if="availableColumns.length > 0" fa-class="fa-plus" menu-class="dropdown-menu-right" v-bind:title="$t( 'cmd.AddColumn' )">
-        <li v-for="column in availableColumns" v-bind:key="column"><HyperLink v-on:click="addColumn( column )">{{ getColumnName( column ) }}</HyperLink></li>
-      </DropdownScrollButton>
+      <DropdownFilterButton v-if="availableColumns.length > 0" fa-class="fa-plus" menu-class="dropdown-menu-right" v-bind:title="$t( 'cmd.AddColumn' )"
+                            v-bind:filter.sync="availableFilter">
+        <li v-for="column in filteredAvailableColumns" v-bind:key="column"><HyperLink v-on:click="addColumn( column )">{{ getColumnName( column ) }}</HyperLink></li>
+      </DropdownFilterButton>
     </FormSection>
     <Draggable class="draggable-container" handle=".draggable-handle" v-bind:move="canMoveColumn" v-model="columns">
       <div v-for="column in columns" v-bind:key="column" class="draggable-item">
@@ -44,7 +45,7 @@
       </div>
     </Draggable>
     <Panel v-bind:title="$t( 'title.SortOrder' )">
-      <FormDropdown v-bind:label="$t( 'label.Column' )" v-bind:items="columns" v-bind:item-names="columnNames" v-model="sortColumn"/>
+      <FormDropdown v-bind:label="$t( 'label.Column' )" v-bind:items="columns" v-bind:item-names="columnNames" v-model="sortColumn" with-filter/>
       <FormGroup v-bind:label="$t( 'label.Order' )">
         <div class="radio">
           <label><input type="radio" v-model="sortAscending" v-bind:value="true"> {{ $t( 'text.Ascending' ) }}</label>
@@ -56,9 +57,9 @@
     </Panel>
     <template v-if="mode == 'add' || mode == 'edit' || mode == 'clone'">
       <FormSection v-bind:title="$t( 'title.Filters' )">
-        <DropdownScrollButton fa-class="fa-plus" menu-class="dropdown-menu-right" v-bind:title="$t( 'cmd.AddFilter' )">
-          <li v-for="column in allColumns" v-bind:key="column"><HyperLink v-on:click="addFilter( column )">{{ getColumnName( column ) }}</HyperLink></li>
-        </DropdownScrollButton>
+        <DropdownFilterButton fa-class="fa-plus" menu-class="dropdown-menu-right" v-bind:title="$t( 'cmd.AddFilter' )" v-bind:filter.sync="allFilter">
+          <li v-for="column in filteredAllColumns" v-bind:key="column"><HyperLink v-on:click="addFilter( column )">{{ getColumnName( column ) }}</HyperLink></li>
+        </DropdownFilterButton>
       </FormSection>
       <Draggable v-if="filters.length > 0" class="filters" handle=".filters-name" v-model="filters">
         <div v-for="filter in filters" v-bind:key="filter.id" class="row">
@@ -126,7 +127,9 @@ export default {
     const data = {
       columns: this.initialView.columns,
       filters: [],
-      nextId: 1
+      nextId: 1,
+      availableFilter: '',
+      allFilter: ''
     };
 
     if ( this.initialView.filters != null )
@@ -137,6 +140,7 @@ export default {
 
   computed: {
     ...mapGetters( 'global', [ 'isAdministrator' ] ),
+
     title() {
       if ( this.mode == 'default' )
         return this.$t( 'title.DefaultView' );
@@ -157,6 +161,7 @@ export default {
       else if ( this.mode == 'clone' )
         return this.isPublic ? 'prompt.ClonePublicView' : 'prompt.ClonePersonalView';
     },
+
     allColumns() {
       return [
         Column.ID, Column.Name, Column.CreatedDate, Column.CreatedBy, Column.ModifiedDate, Column.ModifiedBy,
@@ -166,6 +171,14 @@ export default {
     availableColumns() {
       return this.allColumns.filter( c => !this.columns.includes( c ) );
     },
+
+    filteredAllColumns() {
+      return this.filterColumns( this.allColumns, this.allFilter );
+    },
+    filteredAvailableColumns() {
+      return this.filterColumns( this.availableColumns, this.availableFilter );
+    },
+
     columnNames() {
       return this.columns.map( c => this.getColumnName( c ) );
     }
@@ -233,6 +246,15 @@ export default {
     },
 
     getColumnName,
+
+    filterColumns( columns, filter ) {
+      if ( filter == '' ) {
+        return columns;
+      } else {
+        filter = filter.toUpperCase();
+        return columns.filter( c => this.getColumnName( c ).toUpperCase().includes( filter ) );
+      }
+    },
 
     canMoveColumn( e ) {
       return !this.isFixedColumn( e.relatedContext.element );

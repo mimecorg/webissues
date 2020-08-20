@@ -22,70 +22,70 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-xs-12 col-lg-4 dropdown-filters">
-          <DropdownScrollButton v-if="types.length > 0" fa-class="fa-table" btn-class="btn-primary" v-bind:text="typeName" v-bind:title="typeTitle">
-            <li v-for="t in types" v-bind:key="t.id" v-bind:class="{ active: type != null && t.id == type.id }">
+          <DropdownFilterButton v-if="types.length > 0" fa-class="fa-table" btn-class="btn-primary" v-bind:text="typeName" v-bind:title="typeTitle" v-bind:filter.sync="typesFilter">
+            <li v-for="t in filteredTypes" v-bind:key="t.id" v-bind:class="{ active: type != null && t.id == type.id }">
               <HyperLink v-on:click="selectType( t )">{{ t.name }}</HyperLink>
             </li>
-          </DropdownScrollButton>
-          <DropdownScrollButton v-if="type != null" fa-class="fa-binoculars" v-bind:text="viewName" v-bind:title="viewTitle">
+          </DropdownFilterButton>
+          <DropdownFilterButton v-if="type != null" fa-class="fa-binoculars" v-bind:text="viewName" v-bind:title="viewTitle" v-bind:filter.sync="viewsFilter">
             <li v-bind:class="{ active: view == null }">
               <HyperLink v-on:click="selectView( null )">{{ $t( 'text.AllIssues' ) }}</HyperLink>
             </li>
-            <template v-if="personalViews.length > 0">
+            <template v-if="filteredPersonalViews.length > 0">
               <li role="separator" class="divider"></li>
               <li class="dropdown-header">{{ $t( 'title.PersonalViews' ) }}</li>
-              <li v-for="v in personalViews" v-bind:key="v.id" v-bind:class="{ active: view != null && v.id == view.id }">
+              <li v-for="v in filteredPersonalViews" v-bind:key="v.id" v-bind:class="{ active: view != null && v.id == view.id }">
                 <HyperLink v-on:click="selectView( v )">{{ v.name }}</HyperLink>
               </li>
             </template>
-            <template v-if="publicViews.length > 0">
+            <template v-if="filteredPublicViews.length > 0">
               <li role="separator" class="divider"></li>
               <li class="dropdown-header">{{ $t( 'title.PublicViews' ) }}</li>
-              <li v-for="v in publicViews" v-bind:key="v.id" v-bind:class="{ active: view != null && v.id == view.id }">
+              <li v-for="v in filteredPublicViews" v-bind:key="v.id" v-bind:class="{ active: view != null && v.id == view.id }">
                 <HyperLink v-on:click="selectView( v )">{{ v.name }}</HyperLink>
               </li>
             </template>
-          </DropdownScrollButton>
+          </DropdownFilterButton>
         </div>
         <div v-if="type != null" class="col-xs-12 col-sm-6 col-lg-4 dropdown-filters">
-          <DropdownScrollButton fa-class="fa-briefcase" v-bind:text="projectName" v-bind:title="projectTitle">
+          <DropdownFilterButton fa-class="fa-briefcase" v-bind:text="projectName" v-bind:title="projectTitle" v-bind:filter.sync="projectsFilter">
             <li v-bind:class="{ active: project == null }">
               <HyperLink v-on:click="selectProject( null )">{{ $t( 'text.AllProjects' ) }}</HyperLink>
             </li>
-            <template v-if="projects.length > 0">
+            <template v-if="filteredProjects.length > 0">
               <li role="separator" class="divider"></li>
-              <li v-for="p in projects" v-bind:key="p.id" v-bind:class="{ active: project != null && p.id == project.id }">
+              <li v-for="p in filteredProjects" v-bind:key="p.id" v-bind:class="{ active: project != null && p.id == project.id }">
                 <HyperLink v-on:click="selectProject( p )">{{ p.name }}</HyperLink>
               </li>
             </template>
-          </DropdownScrollButton>
-          <DropdownScrollButton fa-class="fa-folder-open-o" v-bind:text="folderName" v-bind:title="folderTitle">
+          </DropdownFilterButton>
+          <DropdownFilterButton fa-class="fa-folder-open-o" v-bind:text="folderName" v-bind:title="folderTitle" v-bind:filter.sync="foldersFilter">
             <li v-bind:class="{ active: folder == null }">
               <HyperLink v-on:click="selectFolder( null )">{{ $t( 'text.AllFolders' ) }}</HyperLink>
             </li>
-            <template v-if="folders.length > 0">
+            <template v-if="filteredFolders.length > 0">
               <li role="separator" class="divider"></li>
-              <li v-for="f in folders" v-bind:key="f.id" v-bind:class="{ active: folder != null && f.id == folder.id }">
+              <li v-for="f in filteredFolders" v-bind:key="f.id" v-bind:class="{ active: folder != null && f.id == folder.id }">
                 <HyperLink v-on:click="selectFolder( f )">{{ f.name }}</HyperLink>
               </li>
             </template>
-          </DropdownScrollButton>
+          </DropdownFilterButton>
         </div>
         <div v-if="type != null" class="col-xs-12 col-sm-6 col-lg-4">
           <div class="toolbar-group">
             <div class="toolbar-element toolbar-element-wide">
               <div class="input-group" v-bind:class="{ 'has-error': searchError }">
-                <DropdownScrollButton class="input-group-btn" fa-class="fa-chevron-down" v-bind:title="searchTitle">
-                  <li v-for="c in systemColumns" v-bind:key="'c' + c.id" v-bind:class="{ active: isSearchColumn( c ) }">
+                <DropdownFilterButton class="input-group-btn" fa-class="fa-chevron-down" v-bind:title="searchTitle" v-bind:filter.sync="searchFilter">
+                  <li v-for="c in filteredSystemColumns" v-bind:key="'c' + c.id" v-bind:class="{ active: isSearchColumn( c ) }">
                     <HyperLink v-on:click="setSearchColumn( c )">{{ c.name }}</HyperLink>
                   </li>
-                  <template v-if="type.attributes.length > 0">
+                  <template v-if="filteredAttributes.length > 0">
                     <li role="separator" class="divider"></li>
-                    <li v-for="a in type.attributes" v-bind:key="'a' + a.id" v-bind:class="{ active: isSearchAttribute( a ) }">
+                    <li v-for="a in filteredAttributes" v-bind:key="'a' + a.id" v-bind:class="{ active: isSearchAttribute( a ) }">
                       <HyperLink v-on:click="setSearchAttribute( a )">{{ a.name }}</HyperLink>
                     </li>
                   </template>
-                </DropdownScrollButton>
+                </DropdownFilterButton>
                 <input ref="search" type="search" class="form-control" v-bind:placeholder="searchName" v-bind:maxlength="searchLength"
                        v-bind:value="searchText" v-on:input="setSearchText( $event.target.value )" v-on:keydown.enter="search">
                 <div class="input-group-btn">
@@ -117,10 +117,16 @@
 import { mapState, mapGetters } from 'vuex'
 
 import { Column, MaxLength } from '@/constants'
+import filterItems from '@/utils/filter'
 
 export default {
   data() {
     return {
+      typesFilter: '',
+      viewsFilter: '',
+      projectsFilter: '',
+      foldersFilter: '',
+      searchFilter: '',
       searchLength: MaxLength.Value
     };
   },
@@ -130,6 +136,31 @@ export default {
     ...mapGetters( 'global', [ 'isAuthenticated' ] ),
     ...mapState( 'list', [ 'searchColumn', 'searchText', 'searchValue', 'searchError', 'totalCount' ] ),
     ...mapGetters( 'list', [ 'type', 'view', 'publicViews', 'personalViews', 'project', 'folder', 'folders' ] ),
+
+    filteredTypes() {
+      return filterItems( this.types, this.typesFilter );
+    },
+    filteredPublicViews() {
+      return filterItems( this.publicViews, this.viewsFilter );
+    },
+    filteredPersonalViews() {
+      return filterItems( this.personalViews, this.viewsFilter );
+    },
+    filteredProjects() {
+      return filterItems( this.projects, this.projectsFilter );
+    },
+    filteredFolders() {
+      return filterItems( this.folders, this.foldersFilter );
+    },
+    filteredSystemColumns() {
+      return filterItems( this.systemColumns, this.searchFilter );
+    },
+    filteredAttributes() {
+      if ( this.type != null )
+        return filterItems( this.type.attributes, this.searchFilter );
+      else
+        return [];
+    },
 
     typeName() {
       if ( this.type != null )

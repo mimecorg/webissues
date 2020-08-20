@@ -19,41 +19,43 @@
 
 <template>
   <div class="dropdown-filters">
-    <DropdownScrollButton ref="type" fa-class="fa-table" v-bind:text="typeName" v-bind:title="typeTitle">
+    <DropdownFilterButton ref="type" fa-class="fa-table" v-bind:text="typeName" v-bind:title="typeTitle" v-bind:filter.sync="typesFilter">
       <li v-bind:class="{ active: type == null }">
         <HyperLink v-on:click="selectType( null )">{{ $t( 'text.SelectType' ) }}</HyperLink>
       </li>
-      <template v-if="types.length > 0">
+      <template v-if="filteredTypes.length > 0">
         <li role="separator" class="divider"></li>
-        <li v-for="t in types" v-bind:key="t.id" v-bind:class="{ active: type != null && t.id == type.id }">
+        <li v-for="t in filteredTypes" v-bind:key="t.id" v-bind:class="{ active: type != null && t.id == type.id }">
           <HyperLink v-on:click="selectType( t )">{{ t.name }}</HyperLink>
         </li>
       </template>
-    </DropdownScrollButton>
-    <DropdownScrollButton ref="view" fa-class="fa-binoculars" v-bind:text="viewName" v-bind:title="viewTitle">
+    </DropdownFilterButton>
+    <DropdownFilterButton ref="view" fa-class="fa-binoculars" v-bind:text="viewName" v-bind:title="viewTitle" v-bind:filter.sync="viewsFilter">
       <li v-bind:class="{ active: view == null }">
         <HyperLink v-on:click="selectView( null )">{{ $t( 'text.AllIssues' ) }}</HyperLink>
       </li>
-      <template v-if="availablePersonalViews.length > 0">
+      <template v-if="filteredPersonalViews.length > 0">
         <li role="separator" class="divider"></li>
         <li class="dropdown-header">{{ $t( 'title.PersonalViews' ) }}</li>
-        <li v-for="v in availablePersonalViews" v-bind:key="v.id" v-bind:class="{ active: view != null && v.id == view.id }">
+        <li v-for="v in filteredPersonalViews" v-bind:key="v.id" v-bind:class="{ active: view != null && v.id == view.id }">
           <HyperLink v-on:click="selectView( v )">{{ v.name }}</HyperLink>
         </li>
       </template>
-      <template v-if="availablePublicViews.length > 0">
+      <template v-if="filteredPublicViews.length > 0">
         <li role="separator" class="divider"></li>
         <li class="dropdown-header">{{ $t( 'title.PublicViews' ) }}</li>
-        <li v-for="v in availablePublicViews" v-bind:key="v.id" v-bind:class="{ active: view != null && v.id == view.id }">
+        <li v-for="v in filteredPublicViews" v-bind:key="v.id" v-bind:class="{ active: view != null && v.id == view.id }">
           <HyperLink v-on:click="selectView( v )">{{ v.name }}</HyperLink>
         </li>
       </template>
-    </DropdownScrollButton>
+    </DropdownFilterButton>
   </div>
 </template>
 
 <script>
 import { mapState } from 'vuex'
+
+import filterItems from '@/utils/filter'
 
 export default {
   props: {
@@ -62,8 +64,16 @@ export default {
     showPersonal: Boolean
   },
 
+  data() {
+    return {
+      typesFilter: '',
+      viewsFilter: ''
+    };
+  },
+
   computed: {
     ...mapState( 'global', [ 'types' ] ),
+
     availablePublicViews() {
       if ( this.type != null )
         return this.type.views.filter( v => v.public );
@@ -76,6 +86,17 @@ export default {
       else
         return [];
     },
+
+    filteredTypes() {
+      return filterItems( this.types, this.typesFilter );
+    },
+    filteredPublicViews() {
+      return filterItems( this.availablePublicViews, this.viewsFilter );
+    },
+    filteredPersonalViews() {
+      return filterItems( this.availablePersonalViews, this.viewsFilter );
+    },
+
     type() {
       if ( this.typeId != null )
         return this.types.find( t => t.id == this.typeId );
@@ -88,6 +109,7 @@ export default {
       else
         return null;
     },
+
     typeName() {
       if ( this.type != null )
         return this.type.name;
@@ -100,6 +122,7 @@ export default {
       else
         return this.$t( 'text.SelectType' );
     },
+
     viewName() {
       if ( this.view != null )
         return this.view.name;

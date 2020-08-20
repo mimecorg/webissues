@@ -23,12 +23,7 @@
     <p>{{ $t( 'prompt.TimeZone' ) }}</p>
     <FormGroup v-bind:label="$t( 'label.TimeZone' )">
       <div class="dropdown-select">
-        <DropdownScrollButton ref="dropdown" v-bind:text="timeZoneName" v-on:open="dropdownOpen">
-          <template v-slot:filter>
-            <div class="dropdown-menu-filter">
-              <input ref="filter" type="text" class="form-control" v-bind:value="filter" v-on:input="setFilter( $event.target.value )">
-            </div>
-          </template>
+        <DropdownFilterButton ref="dropdown" v-bind:text="timeZoneName" v-bind:filter.sync="filter" preserve-on-open>
           <li v-bind:class="{ active: timeZone == '' }">
             <HyperLink v-on:click="timeZone = ''">{{ defaultTimeZoneName }}</HyperLink>
           </li>
@@ -39,7 +34,7 @@
               <HyperLink v-on:click="timeZone = name">{{ convertTimeZoneName( name ) }}</HyperLink>
             </li>
           </template>
-        </DropdownScrollButton>
+        </DropdownFilterButton>
       </div>
     </FormGroup>
     <Panel v-bind:title="$t( 'title.Formats' )">
@@ -171,19 +166,6 @@ export default {
         }
       } ).catch( error => {
         this.$form.error( error );
-      } );
-    },
-
-    dropdownOpen() {
-      this.$nextTick( () => {
-        this.$refs.filter.focus();
-      } );
-    },
-
-    setFilter( text ) {
-      this.filter = text;
-      this.$nextTick( () => {
-        this.$refs.dropdown.toggleShadow();
       } );
     },
 
