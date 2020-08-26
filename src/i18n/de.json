@@ -521,7 +521,7 @@
     "DoNotValidateCertificate": "Serverzertifikat nicht validieren",
     "EnableAnonymousAccess": "Anonymen Zugriff aktivieren",
     "EnableAutomaticApproval": "Automatische Genehmigung aktivieren",
-    "EnableSendingEmails": "Fehler beim Versand der E-Mail",
+    "EnableSendingEmails": "E-Mail-Versand aktivieren",
     "EnableUserRegistration": "Benutzerregistrieren aktivieren",
     "Enabled": "Aktiv",
     "Error": "Fehler",
