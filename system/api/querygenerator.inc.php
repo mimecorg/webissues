@@ -679,7 +679,7 @@ class System_Api_QueryGenerator extends System_Api_Base
                 return "$expression LIKE %s ESCAPE '!'";
             case 'IN':
                 $items = explode( ', ', $value );
-                if ( count( $items >= 2 ) ) {
+                if ( count( $items ) >= 2 ) {
                     $this->arguments[] = $items;
                     return "$expression IN ( %%s )";
                 } else {
