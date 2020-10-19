@@ -73,7 +73,7 @@
             </DropdownScrollButton>
           </div>
           <div v-bind:class="'col-xs-12 col-sm-4' + ( filter.error != null ? ' form-group has-error' : '' )">
-            <ValueEditor v-bind:ref="'filter' + filter.id" v-bind:attribute="getAttributeForEditor( filter.column )" with-expressions v-model="filter.value"/>
+            <ValueEditor v-bind:ref="'filter' + filter.id" v-bind:attribute="getAttributeForEditor( filter )" with-expressions v-model="filter.value"/>
             <p v-if="filter.error != null" class="help-block">{{ filter.error }}</p>
           </div>
         </div>
@@ -294,16 +294,19 @@ export default {
       }
     },
 
-    getAttributeForEditor( column ) {
-      const type = this.getColumnType( column );
+    getAttributeForEditor( filter ) {
+      const type = this.getColumnType( filter.column );
 
       const result = { type };
 
       if ( type == 'ENUM' ) {
-        const attribute = this.attributes.find( a => a.id == column - Column.UserDefined );
+        const attribute = this.attributes.find( a => a.id == filter.column - Column.UserDefined );
         if ( attribute != null )
           result.items = attribute.items;
       }
+
+      if ( filter.operator == 'IN' )
+        result[ 'multi-select' ] = 1;
 
       return result;
     },
@@ -333,6 +336,9 @@ export default {
 
       if ( filter.operator != 'EQ' && filter.operator != 'NEQ' )
         result.required = 1;
+
+      if ( filter.operator == 'IN' )
+        result[ 'multi-select' ] = 1;
 
       return result;
     },
