@@ -132,8 +132,13 @@ export default {
       allFilter: ''
     };
 
-    if ( this.initialView.filters != null )
-      data.filters = this.initialView.filters.map( f => ( { id: data.nextId++,column: f.column, operator: f.operator, value: f.value, error: null } ) );
+    if ( this.initialView.filters != null ) {
+      data.filters = this.initialView.filters.map( filter => {
+        const attribute = this.getAttributeForParser( filter );
+        const value = this.$formatter.formatExpression( filter.value, attribute );
+        return { id: data.nextId++,column: filter.column, operator: filter.operator, value, error: null };
+      } );
+    }
 
     return data;
   },
@@ -219,8 +224,13 @@ export default {
       data.columns = columns;
       data.sortColumn = this.sortColumn;
       data.sortAscending = this.sortAscending;
-      if ( this.mode == 'add' || this.mode == 'edit' || this.mode == 'clone' )
-        data.filters = this.filters.map( f => ( { column: f.column, operator: f.operator, value: f.value } ) );
+      if ( this.mode == 'add' || this.mode == 'edit' || this.mode == 'clone' ) {
+        data.filters = this.filters.map( filter => {
+          const attribute = this.getAttributeForParser( filter );
+          const value = this.$parser.convertExpression( filter.value, attribute );
+          return { column: filter.column, operator: filter.operator, value };
+        } );
+      }
 
       this.$form.block();
 
