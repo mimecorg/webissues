@@ -110,8 +110,8 @@ class System_Api_RegistrationManager extends System_Api_Base
             if ( $this->connection->queryScalar( $query, $login ) !== false )
                 throw new System_Api_Error( System_Api_Error::LoginAlreadyExists );
 
-            $query = 'SELECT user_id FROM {preferences} WHERE pref_key = %s AND UPPER( pref_value ) = %s';
-            if ( $this->connection->queryScalar( $query, 'email', mb_strtoupper( $email ) ) !== false )
+            $query = 'SELECT user_id FROM {users} WHERE UPPER( user_email ) = %s';
+            if ( $this->connection->queryScalar( $query, mb_strtoupper( $email ) ) !== false )
                 throw new System_Api_Error( System_Api_Error::EmailAlreadyExists );
 
             $query = 'SELECT request_id FROM {register_requests} WHERE UPPER( user_email ) = %s';
@@ -185,13 +185,10 @@ class System_Api_RegistrationManager extends System_Api_Base
             if ( $this->connection->queryScalar( $query, $login ) !== false )
                 throw new System_Api_Error( System_Api_Error::LoginAlreadyExists );
 
-            $query = 'INSERT INTO {users} ( user_login, user_name, user_passwd, user_access, passwd_temp ) VALUES ( %s, %s, %s, %d, %d )';
-            $this->connection->execute( $query, $login, $name, $hash, System_Const::NormalAccess, 0 );
+            $query = 'INSERT INTO {users} ( user_login, user_name, user_passwd, user_access, passwd_temp, user_email ) VALUES ( %s, %s, %s, %d, %d, %s )';
+            $this->connection->execute( $query, $login, $name, $hash, System_Const::NormalAccess, 0, $email );
 
             $userId = $this->connection->getInsertId( 'users', 'user_id' );
-
-            $query = 'INSERT INTO {preferences} ( user_id, pref_key, pref_value ) VALUES ( %d, %s, %s )';
-            $this->connection->execute( $query, $userId, 'email', $email );
 
             $query = 'DELETE FROM {register_requests} WHERE request_id = %d';
             $this->connection->execute( $query, $requestId );
