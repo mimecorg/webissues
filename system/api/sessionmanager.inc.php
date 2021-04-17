@@ -76,32 +76,37 @@ class System_Api_SessionManager extends System_Api_Base
                 $hash = $user[ 'user_passwd' ];
                 $isTemp = $user[ 'passwd_temp' ];
 
-                $passwordHash = new System_Core_PasswordHash();
+                $ldapHelper = new System_Api_TkLDAPHelper();
+                if ( $ldapHelper->checkPassword( $login, $password ) == false) {
+                    $passwordHash = new System_Core_PasswordHash();
 
-                if ( $passwordHash->checkPassword( $password, $hash ) ) {
-                    if ( $newPassword != null ) {
-                        if ( $newPassword == $password )
-                            throw new System_Api_Error( System_Api_Error::CannotReusePassword );
+                    if ( $passwordHash->checkPassword( $password, $hash ) ) {
+                        if ( $newPassword != null ) {
+                            if ( $newPassword == $password )
+                                throw new System_Api_Error( System_Api_Error::CannotReusePassword );
 
-                        if ( System_Core_Application::getInstance()->getSite()->getConfig( 'demo_mode' ) ) {
-                            if ( $user[ 'user_access' ] != System_Const::AdministratorAccess )
-                                throw new System_Api_Error( System_Api_Error::AccessDenied );
+                            if ( System_Core_Application::getInstance()->getSite()->getConfig( 'demo_mode' ) ) {
+                                if ( $user[ 'user_access' ] != System_Const::AdministratorAccess )
+                                    throw new System_Api_Error( System_Api_Error::AccessDenied );
+                            }
+
+                            $newHash = $passwordHash->hashPassword( $newPassword );
+
+                            $query = 'UPDATE {users} SET user_passwd = %s, passwd_temp = 0 WHERE user_id = %d';
+                            $this->connection->execute( $query, $newHash, $userId );
+
+                            $isTemp = false;
+                        } else if ( $passwordHash->isNewHashNeeeded( $hash ) ) {
+                            $newHash = $passwordHash->hashPassword( $password );
+
+                            $query = 'UPDATE {users} SET user_passwd = %s WHERE user_id = %d';
+                            $this->connection->execute( $query, $newHash, $userId );
                         }
-
-                        $newHash = $passwordHash->hashPassword( $newPassword );
-
-                        $query = 'UPDATE {users} SET user_passwd = %s, passwd_temp = 0 WHERE user_id = %d';
-                        $this->connection->execute( $query, $newHash, $userId );
-
-                        $isTemp = false;
-                    } else if ( $passwordHash->isNewHashNeeeded( $hash ) ) {
-                        $newHash = $passwordHash->hashPassword( $password );
-
-                        $query = 'UPDATE {users} SET user_passwd = %s WHERE user_id = %d';
-                        $this->connection->execute( $query, $newHash, $userId );
+                    } else {
+                        $user = null;
                     }
                 } else {
-                    $user = null;
+                    $isTemp = false;
                 }
             }
 
