@@ -44,17 +44,12 @@ class System_Core_Request
     }
 
     /**
-    * Load input parameters and strip slashes if necessary.
+    * Load input parameters.
     */
     public function initialize()
     {
-        if ( get_magic_quotes_gpc() ) {
-            $this->queryStrings = self::stripSlashesDeep( $_GET );
-            $this->formFields = self::stripSlashesDeep( $_POST );
-        } else {
-            $this->queryStrings = $_GET;
-            $this->formFields = $_POST;
-        }
+        $this->queryStrings = $_GET;
+        $this->formFields = $_POST;
         $this->uploadedFiles = $_FILES;
     }
 
@@ -245,12 +240,5 @@ class System_Core_Request
     public function getCsrfToken()
     {
         return isset( $_SERVER[ 'HTTP_X_CSRF_TOKEN' ] ) ? $_SERVER[ 'HTTP_X_CSRF_TOKEN' ] : null;
-    }
-
-    private static function stripSlashesDeep( $value )
-    {
-        if ( is_array( $value ) )
-            return array_map( array( 'System_Core_Request', 'stripSlashesDeep' ), $value );
-        return stripslashes( $value );
     }
 }
