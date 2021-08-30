@@ -65,6 +65,8 @@ class Server_Api_Settings_Email_Test
             $engine->send( $emailFrom, '', $subject, $body );
             $status = true;
         } catch ( PHPMailer\PHPMailer\Exception $ex ) {
+            $eventLog = new System_Api_EventLog();
+            $eventLog->addErrorEvent( $ex );
             $status = false;
         }
 
