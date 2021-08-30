@@ -136,15 +136,18 @@ function createWindow() {
     mainWindow.webContents.send( 'start-client', config.settings, app.getLocale() );
   } );
 
-  mainWindow.webContents.on( 'will-navigate', handleLink );
-  mainWindow.webContents.on( 'new-window', handleLink );
-
-  function handleLink( event, url ) {
+  mainWindow.webContents.on( 'will-navigate', ( event, url ) => {
     if ( url != mainWindow.webContents.getURL() ) {
-      event.preventDefault();
       shell.openExternal( url );
+      event.preventDefault();
     }
-  }
+  } );
+
+  mainWindow.webContents.setWindowOpenHandler( ( { url } ) => {
+    if ( url != mainWindow.webContents.getURL() )
+      shell.openExternal( url );
+    return { action: 'deny' };
+  } );
 
   mainWindow.webContents.on( 'context-menu', makeContextMenuHandler( mainWindow ) );
 
