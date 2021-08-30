@@ -22,15 +22,10 @@ const webpack = require( 'webpack' );
 
 const version = require( '../../../package' ).version;
 
-module.exports = function( { production } = {} ) {
-  if ( production )
-    process.env.NODE_ENV = 'production';
-
+function makeConfig( entry, target, production ) {
   const config = {
     mode: production ? 'production' : 'development',
-    entry: {
-      main: './app/src/main.js'
-    },
+    entry,
     output: {
       path: path.resolve( __dirname, '../../assets' ),
       filename: production ? 'js/[name].min.js?[chunkhash]' : 'js/[name].js'
@@ -63,7 +58,7 @@ module.exports = function( { production } = {} ) {
       __filename: false
     },
     devtool: production ? false : '#cheap-module-eval-source-map',
-    target: 'electron-main'
+    target
   };
 
   if ( production ) {
@@ -73,4 +68,14 @@ module.exports = function( { production } = {} ) {
   }
 
   return config;
+}
+
+module.exports = function( { production } = {} ) {
+  if ( production )
+    process.env.NODE_ENV = 'production';
+
+  const mainConfig = makeConfig( { main: './app/src/main.js' }, 'electron-main', production );
+  const preloadConfig = makeConfig( { preload: './app/src/preload.js' }, 'electron-preload', production );
+
+  return [ mainConfig, preloadConfig ];
 };

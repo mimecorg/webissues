@@ -116,7 +116,7 @@ module.exports = function( { electron, production } = {} ) {
       modules: false
     },
     devtool: production ? false : '#cheap-module-eval-source-map',
-    target: electron ? 'electron-renderer' : 'web'
+    target: 'web'
   };
 
   if ( production ) {

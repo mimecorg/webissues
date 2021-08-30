@@ -120,7 +120,7 @@ ipcMain.on( 'abort-attachment', ( event ) => {
 
 ipcMain.on( 'save-attachment', ( event, sourcePath, name ) => {
   dialog.showSaveDialog( currentWindow, { defaultPath: name } ).then( ( { filePath } ) => {
-    if ( filePath == null ) {
+    if ( filePath == null || filePath == '' ) {
       event.sender.send( 'save-attachment-result', null, null );
       return;
     }

@@ -19,10 +19,6 @@
 
 import '@/styles/global.less'
 
-import { shell, ipcRenderer } from 'electron'
-
-import url from 'url'
-
 import Vue from 'vue'
 
 import '@/components/common'
@@ -41,13 +37,15 @@ import { version } from '../package.json'
 if ( process.env.NODE_ENV == 'production' )
   __webpack_public_path__ = './assets/';
 
+const ipcAPI = window.__WI_API;
+
 Vue.prototype.$client = makeClientAPI();
 
 let settings = null;
 
 let client = null;
 
-ipcRenderer.on( 'start-client', ( event, initialSettings, sytemLocale ) => {
+ipcAPI.onStartClient( ( initialSettings, sytemLocale ) => {
   if ( client != null )
     throw new Error( 'Client already started' );
 
@@ -77,9 +75,6 @@ function makeClientAPI() {
 
   let sessionData = null;
 
-  let progressHandler = null;
-  let doneHandler = null;
-
   const clientAPI = {
     get version() {
       return version;
@@ -90,7 +85,7 @@ function makeClientAPI() {
     },
 
     saveSettings() {
-      ipcRenderer.send( 'save-settings', settings );
+      ipcAPI.saveSettings( settings );
     },
 
     startApplication( { userId, userName, userAccess, csrfToken, locale } ) {
@@ -133,19 +128,19 @@ function makeClientAPI() {
         window.location.hash = '';
       }
 
-      ipcRenderer.send( 'restart-client', settings );
+      ipcAPI.restartClient( settings );
     },
 
     openURL( url ) {
-      shell.openExternal( url );
+      ipcAPI.openURL( url );
     },
 
     openFile( path ) {
-      shell.openExternal( clientAPI.pathToURL( path ) );
+      ipcAPI.openURL( ipcAPI.pathToURL( path ) );
     },
 
     pathToURL( path ) {
-      return url.format( { pathname: path, protocol: 'file:', slashes: true } );
+      return ipcAPI.pathToURL( path );
     },
 
     isSupportedVersion( serverVersion ) {
@@ -153,87 +148,27 @@ function makeClientAPI() {
     },
 
     findAttachment( serverUUID, fileId ) {
-      return new Promise( ( resolve, reject ) => {
-        ipcRenderer.once( 'find-attachment-result', ( event, errorMessage, filePath ) => {
-          if ( errorMessage != null )
-            return reject( new Error( errorMessage ) );
-          resolve( filePath );
-        } );
-
-        ipcRenderer.send( 'find-attachment', serverUUID, fileId );
-      } );
+      return ipcAPI.findAttachment( serverUUID, fileId );
     },
 
     downloadAttachment( serverUUID, fileId, name, size, url, progressCallback, doneCallback ) {
-      progressHandler = ( event, received ) => {
-        progressCallback( received );
-      }
-
-      doneHandler = ( event, errorMessage, filePath ) => {
-        if ( errorMessage != null )
-          doneCallback( new Error( errorMessage ), null );
-        else
-          doneCallback( null, filePath );
-
-        ipcRenderer.removeListener( 'download-attachment-progress', progressHandler );
-
-        doneHandler = null;
-        progressHandler = null;
-      };
-
-      ipcRenderer.on( 'download-attachment-progress', progressHandler );
-      ipcRenderer.once( 'download-attachment-result', doneHandler );
-
-      ipcRenderer.send( 'download-attachment', serverUUID, fileId, name, size, url );
+      ipcAPI.downloadAttachment( serverUUID, fileId, name, size, url, progressCallback, doneCallback );
     },
 
     abortAttachment() {
-      if ( progressHandler != null )
-        ipcRenderer.removeListener( 'download-attachment-progress', progressHandler );
-      if ( doneHandler != null )
-        ipcRenderer.removeListener( 'download-attachment-result', doneHandler );
-
-      progressHandler = null;
-      doneHandler = null;
-
-      ipcRenderer.send( 'abort-attachment' );
+      ipcAPI.abortAttachment();
     },
 
     saveAttachment( filePath, name ) {
-      return new Promise( ( resolve, reject ) => {
-        ipcRenderer.once( 'save-attachment-result', ( event, errorMessage, targetPath ) => {
-          if ( errorMessage != null )
-            reject( new Error( errorMessage ) );
-          else
-            resolve( targetPath );
-        } );
-
-        ipcRenderer.send( 'save-attachment', filePath, name );
-      } );
+      return ipcAPI.saveAttachment( filePath, name );
     },
 
     loadIssue( serverUUID, issueId ) {
-      return new Promise( ( resolve, reject ) => {
-        ipcRenderer.once( 'load-issue-result', ( event, errorMessage, data ) => {
-          if ( errorMessage != null )
-            return reject( new Error( errorMessage ) );
-          resolve( data );
-        } );
-
-        ipcRenderer.send( 'load-issue', serverUUID, issueId );
-      } );
+      return ipcAPI.loadIssue( serverUUID, issueId );
     },
 
     saveIssue( serverUUID, issueId, data ) {
-      return new Promise( ( resolve, reject ) => {
-        ipcRenderer.once( 'save-issue-result', ( event, errorMessage ) => {
-          if ( errorMessage != null )
-            return reject( new Error( errorMessage ) );
-          resolve();
-        } );
-
-        ipcRenderer.send( 'save-issue', serverUUID, issueId, data );
-      } );
+      return ipcAPI.saveIssue( serverUUID, issueId, data );
     }
   };
 

@@ -79,6 +79,13 @@ ipcMain.on( 'restart-client', ( event, settings ) => {
 } );
 
 function createWindow() {
+  let preloadPath;
+
+  if ( process.env.NODE_ENV == 'production' )
+    preloadPath = path.join( __dirname, 'preload.min.js' );
+  else
+    preloadPath = path.join( __dirname, 'preload.js' );
+
   if ( process.platform == 'darwin' )
     makeDarwinMenu();
   else if ( process.env.NODE_ENV == 'production' )
@@ -97,7 +104,9 @@ function createWindow() {
     show: !position.maximized,
     title: 'WebIssues',
     webPreferences: {
-      nodeIntegration: true
+      nodeIntegration: false,
+      contextIsolation: true,
+      preload: preloadPath
     }
   } );
 
