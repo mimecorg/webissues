@@ -33,6 +33,14 @@ class System_Mail_PHPMailer extends PHPMailer\PHPMailer\PHPMailer
     public function __construct()
     {
         parent::__construct( true );
+
+        $debug = System_Core_Application::getInstance()->getDebug();
+        if ( $debug->checkLevel( DEBUG_SMTP ) ) {
+            $this->SMTPDebug = PHPMailer\PHPMailer\SMTP::DEBUG_CONNECTION;
+            $this->Debugoutput = function ( $str, $level ) use ( $debug ) {
+                $debug->write( 'SMTP: ' . rtrim( $str ) . "\n" );
+            };
+        }
     }
 
     /**

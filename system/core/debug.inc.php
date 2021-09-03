@@ -31,10 +31,12 @@ define( 'DEBUG_ERRORS',   1 );
 define( 'DEBUG_REQUESTS', 2 );
 /** Debug commands from the client and responses. */
 define( 'DEBUG_COMMANDS', 3 );
+/** Debug SMTP connection and communication. */
+define( 'DEBUG_SMTP',     4 );
 /** Debug all SQL queries. */
-define( 'DEBUG_SQL',      4 );
+define( 'DEBUG_SQL',      5 );
 /** Maximum available debugging level. */
-define( 'DEBUG_ALL',      4 );
+define( 'DEBUG_ALL',      5 );
 /*@}*/
 
 /**
