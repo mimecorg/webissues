@@ -51,6 +51,6 @@ class Common_Mail_IssueCreated extends System_Web_Component
             $this->subscribe = true;
 
         if ( self::getLinkMode() != self::NoInternalLinks )
-            $this->linkUrl = $this->url( '/client/index.php#/issues/' . $this->issueId );
+            $this->linkUrl = $this->url( '/client/index.php?path=/issues/' . $this->issueId );
     }
 }

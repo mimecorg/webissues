@@ -42,8 +42,15 @@ class Client_Index extends System_Web_Component
                 $session->setValue( 'CSRF_TOKEN', $csrfToken );
             }
         } else {
-            if ( $session->isDestroyed() || $serverManager->getSetting( 'anonymous_access' ) != 1 )
-                $this->response->redirect( '/index.php' );
+            if ( $session->isDestroyed() || $serverManager->getSetting( 'anonymous_access' ) != 1 ) {
+                $path = $this->request->getQueryString( 'path' );
+                if ( $path != null ) {
+                    $url = '/client/index.php#' . $path;
+                    $this->response->redirect( '/index.php?url=' . urlencode( $url ) );
+                } else {
+                    $this->response->redirect( '/index.php' );
+                }
+            }
             $csrfToken = null;
         }
 

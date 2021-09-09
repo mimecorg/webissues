@@ -63,6 +63,8 @@ export default function makeRouter() {
     callHandlers( handlers, getCurrentRoute(), fromRoute );
   }
 
+  convertParameterToHash();
+
   window.addEventListener( 'hashchange', onHashChange );
 
   return {
@@ -180,5 +182,17 @@ function callHandlers( handlers, route, fromRoute ) {
   for ( let i = handlers.length - 1; i >= 0; i-- ) {
     if ( handlers[ i ]( route, fromRoute ) )
       break;
+  }
+}
+
+function convertParameterToHash() {
+  const match = /[?#]path=([^&#]+)/.exec( window.location.search );
+  if ( match != null ) {
+    const path = decodeURIComponent( match[ 1 ] );
+    const href = window.location.href.slice( 0, window.location.href.indexOf( '?' ) );
+    if ( window.history != null && window.history.replaceState != null )
+      window.history.replaceState( null, null, href + '#' + path );
+    else
+      window.location.replace( href + '#' + path );
   }
 }

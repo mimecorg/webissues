@@ -6,7 +6,7 @@
 <?php endif ?>
 
 <h1>
-<?php echo $this->mailLink( '/client/index.php#/issues/' . $issueId, $details[ 'issue_name' ] ); ?>
+<?php echo $this->mailLink( '/client/index.php?path=/issues/' . $issueId, $details[ 'issue_name' ] ); ?>
 </h1>
 
 <h3><?php echo $this->t( 'title.Properties' ) ?></h3>

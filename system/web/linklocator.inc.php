@@ -122,7 +122,7 @@ class System_Web_LinkLocator extends System_Web_Base
             $mode = self::getLinkMode();
 
             if ( $mode == self::AutoLinks )
-                return WI_BASE_URL . '/client/index.php#/items/' . substr( $url, 1 );
+                return WI_BASE_URL . '/client/index.php?path=/items/' . substr( $url, 1 );
             else if ( $mode == self::RouteLinks )
                 return '#/items/' . substr( $url, 1 );
             else
