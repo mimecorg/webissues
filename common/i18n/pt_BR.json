@@ -22,6 +22,7 @@
     "InvalidAlertEmail": "Inválido alerta de configuração de e-mail.",
     "InvalidAlertFrequency": "Frequência de alerta inválida.",
     "InvalidAlertType": "Tipo de alerta inválido.",
+    "InvalidCsrfToken": "Token CSRF inválido.",
     "InvalidDate": "Data não está correta.",
     "InvalidDefinition": "Definição é inválida.",
     "InvalidEmail": "Endereço de email inválido.",
@@ -262,6 +263,7 @@
     "InstallNewServer": "O novo servidor será instalado no banco de dados selecionado.",
     "InstallationCompleted": "A instalação do seu servidor de WebIssues foi concluída com sucesso.",
     "InstallationMode": "Você pode criar novas tabelas de banco de dados ou conectar a um banco de dados existente.",
+    "IssueCreatedEmail": "Esta é uma notificação automática da caixa de entrada de e-mail da WebIssues.",
     "LogInToUpdate": "Faça login como administrador para atualizar seu servidor.",
     "NotificationEmail": "Esta é uma notificação de alerta automática de WebIssues. Por favor, não responda a este e-mail.",
     "PendingRegistrationRequests": "Você tem os seguintes novos pedidos de registro pendentes de aprovação:",
@@ -272,6 +274,7 @@
     "RegistrationComplete": "Obrigado por se registrar. Em breve você receberá um e-mail de verificação com instruções sobre como concluir o cadastro.",
     "RegistrationRejected": "Sua conta de WebIssues foi rejeitada pelo administrador.",
     "RegistrationVerified": "Seu endereço de e-mail foi verificado com sucesso. Você receberá uma mensagem quando seu pedido for aprovado.",
+    "ReportEmail": "Este é um relatório automático de WebIssues. Não responda a este e-mail.",
     "ResetPasswordComplete": "Sua senha foi alterada com sucesso. Agora você pode entrar em WebIssues usando seu login e a nova senha.",
     "ResetPasswordConfirm": "Foi solicitada uma redefinição de senha para o login {0}. Para inserir sua nova senha, por favor, abra a seguinte URL:",
     "ResetPasswordEmail": "Por favor, insira seu endereço de e-mail para redefinir sua senha.",
@@ -363,6 +366,7 @@
     "UpdateRequired": "Atualização Necessária",
     "UserName": "Nome do Usuário",
     "WebClient": "Cliente Web",
+    "WebIssuesGuide": "Guia de WebIssues",
     "WelcomeToWebIssues": "Bem-vindo à WebIssues"
   }
 }

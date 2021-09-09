@@ -29,6 +29,7 @@
     "InvalidAlertEmail": "Inválido alerta de configuração de e-mail.",
     "InvalidAlertFrequency": "Frequência de alerta inválida.",
     "InvalidAlertType": "Tipo de alerta inválido.",
+    "InvalidCsrfToken": "Token CSRF inválido.",
     "InvalidDate": "Data não está correta.",
     "InvalidDefinition": "Definição é inválida.",
     "InvalidEmail": "Endereço de email inválido.",
@@ -264,6 +265,7 @@
     "SaveError": "Arquivo não pôde ser salvo.",
     "ServerError": "Ocorreu um erro interno no servidor.",
     "ServerNotConfigured": "Servidor não está configurado corretamente.",
+    "SessionChanged": "Sua sessão mudou. Por favor, tente novamente.",
     "SessionExpired": "Sua sessão expirou. Efetue o login novamente.",
     "UnknownError": "Ocorreu um erro desconhecido.",
     "UnsupportedVersion": "A versão do servidor não é suportada.",
@@ -274,6 +276,7 @@
     "NoArchivedProjects": "Não há projetos arquivados.",
     "NoAttributes": "Este tipo de problema não tem atributos.",
     "NoAvailableProjects": "Não há projetos disponíveis.",
+    "NoAvailableIssueTypes": "Não há tipos de problema disponíveis.",
     "NoAvailableUsers": "Não existem mais usuários disponíveis para adicionar.",
     "NoComments": "Este problema não tem comentários.",
     "NoCommentsOrFiles": "Este problema não tem comentários ou arquivos anexados.",
@@ -684,6 +687,7 @@
     "ServerConfiguration": "Configuração do Servidor",
     "ServerInformation": "Informações do Servidor",
     "ServerSettings": "Configurações do Servidor",
+    "SessionChanged": "Sessão Alterada",
     "SessionExpired": "Sessão Expirada",
     "Severity": "Severidade",
     "SortBy": "Classificado Por",
@@ -698,6 +702,7 @@
     "UserRegistration": "Registro de usuário",
     "Users": "Usuários",
     "ViewSettings": "Ver Configurações",
+    "WebIssuesGuide": "Guia do WebIssues",
     "WebIssuesSettings": "Configurações de WebIssues"
   }
 }
