@@ -62,6 +62,10 @@
         <LocationFilters ref="defaultFolder" folder-visible auto-expand v-bind:projectId.sync="projectId" v-bind:folderId.sync="defaultFolder"/>
       </FormGroup>
     </Panel>
+    <Panel v-bind:title="$t( 'title.EmailSettings' )">
+      <FormDropdown ref="format" v-bind:label="$t( 'label.EmailFormat' )" v-bind="$field( 'format' )"
+                    v-bind:items="formatItems" v-bind:item-names="formatItemNames" v-model="format"/>
+    </Panel>
     <Panel v-if="hasEmail" v-bind:title="$t( 'title.SendingEmails' )">
       <FormCheckbox v-bind:label="$t( 'text.SendResponses' )" v-model="respond"/>
       <FormCheckbox v-bind:label="$t( 'text.SubscribeSenders' )" v-model="subscribe"/>
@@ -72,7 +76,7 @@
 <script>
 import { mapState } from 'vuex'
 
-import { MaxLength, ErrorCode } from '@/constants'
+import { EmailFormat, MaxLength, ErrorCode } from '@/constants'
 import { makeParseError } from '@/utils/errors'
 
 export default {
@@ -87,6 +91,9 @@ export default {
 
   fields() {
     const details = this.mode == 'edit' ? this.initialDetails : {};
+
+    if ( details.format == null )
+      details.format = EmailFormat.SeparateAttachmentsFormat;
 
     return {
       engine: {
@@ -158,6 +165,10 @@ export default {
         type: Number,
         parse: this.checkDefaultFolder
       },
+      format: {
+        value: details.format,
+        type: Number
+      },
       respond: {
         value: details.respond,
         type: Boolean
@@ -199,7 +210,13 @@ export default {
     },
     userNames() {
       return this.users.map( u => u.name );
-    }
+    },
+    formatItems() {
+      return [ EmailFormat.SeparateAttachmentsFormat, EmailFormat.EmlFormat ];
+    },
+    formatItemNames() {
+      return [ this.$t( 'text.SeparateAttachmentsFormat' ), this.$t( 'text.EmlFormat' ) ];
+    },
   },
 
   methods: {
@@ -245,6 +262,7 @@ export default {
         data.robot = this.robot;
       data.mapFolder = this.mapFolder;
       data.defaultFolder = this.defaultFolder;
+      data.format = this.format;
       if ( this.hasEmail ) {
         data.respond = this.respond;
         data.subscribe = this.subscribe;

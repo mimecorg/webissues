@@ -81,6 +81,11 @@ export const TextFormat = {
   TextWithMarkup: 1
 };
 
+export const EmailFormat = {
+  SeparateAttachmentsFormat: 0,
+  EmlFormat: 1
+};
+
 export const MaxLength = {
   Name: 40,
   Value: 255,
