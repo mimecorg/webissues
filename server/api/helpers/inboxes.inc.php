@@ -22,7 +22,7 @@ if ( !defined( 'WI_VERSION' ) ) die( -1 );
 
 class Server_Api_Helpers_Inboxes
 {
-    public function validateBasic( $engine, $email, $server, $port, $encryption, $user, $password, $mailbox )
+    public function validateBasic( $engine, $email, $server, $port, $encryption, $user, $password, $mailbox, $format )
     {
         $validator = new System_Api_Validator();
         $validator->checkString( $engine, System_Const::ValueMaxLength );
@@ -36,6 +36,7 @@ class Server_Api_Helpers_Inboxes
         $validator->checkString( $user, System_Const::ValueMaxLength, System_Api_Validator::AllowEmpty );
         $validator->checkString( $password, System_Const::ValueMaxLength, System_Api_Validator::AllowEmpty );
         $validator->checkString( $mailbox, System_Const::ValueMaxLength, System_Api_Validator::AllowEmpty );
+        $validator->checkEmailFormat( $format );
     }
 
     public function validateExtended( $engine, $leaveMessages, $allowExternal, $robot, $mapFolder, $defaultFolder )

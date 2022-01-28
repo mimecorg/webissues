@@ -41,17 +41,21 @@ class Server_Api_Settings_Inboxes_Edit
         'mapFolder' => 'bool',
         'defaultFolder' => 'int',
         'respond' => 'bool',
-        'subscribe' => 'bool'
+        'subscribe' => 'bool',
+        'format' => 'int'
     );
 
     public function run( $inboxId, $engine, $email, $server, $port, $encryption, $user, $password, $mailbox, $noValidate, $leaveMessages, $allowExternal, $robot,
-                         $mapFolder, $defaultFolder, $respond, $subscribe )
+                         $mapFolder, $defaultFolder, $respond, $subscribe, $format )
     {
         $inboxManager = new System_Api_InboxManager();
         $inbox = $inboxManager->getInbox( $inboxId );
 
+        if ( $format === null )
+            $format = $inbox[ 'inbox_format' ];
+
         $helper = new Server_Api_Helpers_Inboxes();
-        $helper->validateBasic( $engine, $email, $server, $port, $encryption, $user, $password, $mailbox );
+        $helper->validateBasic( $engine, $email, $server, $port, $encryption, $user, $password, $mailbox, $format );
         $helper->validateExtended( $engine, $leaveMessages, $allowExternal, $robot, $mapFolder, $defaultFolder );
 
         $newInbox = array(
@@ -70,7 +74,8 @@ class Server_Api_Settings_Inboxes_Edit
             'inbox_map_folder' => $mapFolder ? 1 : 0,
             'inbox_default_folder' => $defaultFolder,
             'inbox_respond' => $respond,
-            'inbox_subscribe' => $subscribe
+            'inbox_subscribe' => $subscribe,
+            'inbox_format' => $format
         );
 
         $changed = $inboxManager->modifyInbox( $inbox, $newInbox );

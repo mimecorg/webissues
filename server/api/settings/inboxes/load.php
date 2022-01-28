@@ -60,6 +60,7 @@ class Server_Api_Settings_Inboxes_Load
                 $resultDetails[ 'respond' ] = $inbox[ 'inbox_respond' ] == 1;
                 $resultDetails[ 'subscribe' ] = $inbox[ 'inbox_subscribe' ] == 1;
             }
+            $resultDetails[ 'format' ] = $inbox[ 'inbox_format' ];
 
             $result[ 'details' ] = $resultDetails;
 

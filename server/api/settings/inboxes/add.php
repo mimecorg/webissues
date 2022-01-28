@@ -40,14 +40,15 @@ class Server_Api_Settings_Inboxes_Add
         'mapFolder' => 'bool',
         'defaultFolder' => 'int',
         'respond' => 'bool',
-        'subscribe' => 'bool'
+        'subscribe' => 'bool',
+        'format' => array( 'type' => 'int', 'default' => System_Const::SeparateAttachmentsFormat )
     );
 
     public function run( $engine, $email, $server, $port, $encryption, $user, $password, $mailbox, $noValidate, $leaveMessages, $allowExternal, $robot,
-                         $mapFolder, $defaultFolder, $respond, $subscribe )
+                         $mapFolder, $defaultFolder, $respond, $subscribe, $format )
     {
         $helper = new Server_Api_Helpers_Inboxes();
-        $helper->validateBasic( $engine, $email, $server, $port, $encryption, $user, $password, $mailbox );
+        $helper->validateBasic( $engine, $email, $server, $port, $encryption, $user, $password, $mailbox, $format );
         $helper->validateExtended( $engine, $leaveMessages, $allowExternal, $robot, $mapFolder, $defaultFolder );
 
         $inboxManager = new System_Api_InboxManager();
@@ -68,7 +69,8 @@ class Server_Api_Settings_Inboxes_Add
             'inbox_map_folder' => $mapFolder ? 1 : 0,
             'inbox_default_folder' => $defaultFolder,
             'inbox_respond' => $respond,
-            'inbox_subscribe' => $subscribe
+            'inbox_subscribe' => $subscribe,
+            'inbox_format' => $format
         );
 
         $inboxId = $inboxManager->addInbox( $inbox );

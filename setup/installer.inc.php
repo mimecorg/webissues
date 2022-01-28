@@ -118,6 +118,7 @@ class Setup_Installer extends System_Web_Base
                 'inbox_default_folder' => 'INTEGER null=1 ref-table="folders" ref-column="folder_id" on-delete="set-null"',
                 'inbox_respond'     => 'INTEGER size="tiny"',
                 'inbox_subscribe'   => 'INTEGER size="tiny"',
+                'inbox_format'      => 'INTEGER size="tiny" default=0',
                 'pk'                => 'PRIMARY columns={"inbox_id"}'
             ),
             'files' => array(

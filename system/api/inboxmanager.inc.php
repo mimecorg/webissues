@@ -42,7 +42,7 @@ class System_Api_InboxManager extends System_Api_Base
     public function getInboxes()
     {
         $query = 'SELECT inbox_id, inbox_engine, inbox_email, inbox_server, inbox_port, inbox_encryption, inbox_user, inbox_password, inbox_mailbox, inbox_no_validate,'
-            . ' inbox_leave_messages, inbox_allow_external, inbox_robot, inbox_map_folder, inbox_default_folder, inbox_respond, inbox_subscribe'
+            . ' inbox_leave_messages, inbox_allow_external, inbox_robot, inbox_map_folder, inbox_default_folder, inbox_respond, inbox_subscribe, inbox_format'
             . ' FROM {email_inboxes}';
 
         return $this->connection->queryTable( $query );
@@ -59,7 +59,7 @@ class System_Api_InboxManager extends System_Api_Base
             $inbox = self::$inboxes[ $inboxId ];
         } else {
             $query = 'SELECT inbox_id, inbox_engine, inbox_email, inbox_server, inbox_port, inbox_encryption, inbox_user, inbox_password, inbox_mailbox, inbox_no_validate,'
-                . ' inbox_leave_messages, inbox_allow_external, inbox_robot, inbox_map_folder, inbox_default_folder, inbox_respond, inbox_subscribe'
+                . ' inbox_leave_messages, inbox_allow_external, inbox_robot, inbox_map_folder, inbox_default_folder, inbox_respond, inbox_subscribe, inbox_format'
                 . ' FROM {email_inboxes}'
                 . ' WHERE inbox_id = %d';
 
@@ -88,13 +88,14 @@ class System_Api_InboxManager extends System_Api_Base
                 throw new System_Api_Error( System_Api_Error::EmailAlreadyExists );
 
             $query = 'INSERT INTO {email_inboxes} ( inbox_engine, inbox_email, inbox_server, inbox_port, inbox_encryption, inbox_user, inbox_password, inbox_mailbox,'
-                . ' inbox_no_validate, inbox_leave_messages, inbox_allow_external, inbox_robot, inbox_map_folder, inbox_default_folder, inbox_respond, inbox_subscribe )'
-                . ' VALUES ( %s, %s, %s, %d, %s?, %s?, %s?, %s?, %d, %d, %d, %d?, %d, %d?, %d, %d )';
+                . ' inbox_no_validate, inbox_leave_messages, inbox_allow_external, inbox_robot, inbox_map_folder, inbox_default_folder, inbox_respond, inbox_subscribe,'
+                . ' inbox_format )'
+                . ' VALUES ( %s, %s, %s, %d, %s?, %s?, %s?, %s?, %d, %d, %d, %d?, %d, %d?, %d, %d, %d )';
 
             $this->connection->execute( $query, $inbox[ 'inbox_engine' ], $inbox[ 'inbox_email' ], $inbox[ 'inbox_server' ], $inbox[ 'inbox_port' ],
                 $inbox[ 'inbox_encryption' ], $inbox[ 'inbox_user' ], $inbox[ 'inbox_password' ], $inbox[ 'inbox_mailbox' ], $inbox[ 'inbox_no_validate' ],
                 $inbox[ 'inbox_leave_messages' ], $inbox[ 'inbox_allow_external' ], $inbox[ 'inbox_robot' ], $inbox[ 'inbox_map_folder' ],
-                $inbox[ 'inbox_default_folder' ], $inbox[ 'inbox_respond' ], $inbox[ 'inbox_subscribe' ] );
+                $inbox[ 'inbox_default_folder' ], $inbox[ 'inbox_respond' ], $inbox[ 'inbox_subscribe' ], $inbox[ 'inbox_format' ] );
 
             $inboxId = $this->connection->getInsertId( 'email_inboxes', 'inbox_id' );
 
@@ -139,13 +140,13 @@ class System_Api_InboxManager extends System_Api_Base
             $query = 'UPDATE {email_inboxes}'
                 . ' SET inbox_engine = %s, inbox_email = %s, inbox_server = %s, inbox_port = %d, inbox_encryption = %s!, inbox_user = %s!, inbox_password = %s!,'
                 . ' inbox_mailbox = %s!, inbox_no_validate = %d, inbox_leave_messages = %d, inbox_allow_external = %d, inbox_robot = %d!, inbox_map_folder = %d,'
-                . ' inbox_default_folder = %d!, inbox_respond = %d, inbox_subscribe = %d'
+                . ' inbox_default_folder = %d!, inbox_respond = %d, inbox_subscribe = %d, inbox_format = %d'
                 . ' WHERE inbox_id = %d';
 
             $this->connection->execute( $query, $newInbox[ 'inbox_engine' ], $newInbox[ 'inbox_email' ], $newInbox[ 'inbox_server' ], $newInbox[ 'inbox_port' ],
                 $newInbox[ 'inbox_encryption' ], $newInbox[ 'inbox_user' ], $newInbox[ 'inbox_password' ], $newInbox[ 'inbox_mailbox' ], $newInbox[ 'inbox_no_validate' ],
                 $newInbox[ 'inbox_leave_messages' ], $newInbox[ 'inbox_allow_external' ], $newInbox[ 'inbox_robot' ], $newInbox[ 'inbox_map_folder' ],
-                $newInbox[ 'inbox_default_folder' ], $newInbox[ 'inbox_respond' ], $newInbox[ 'inbox_subscribe' ], $inboxId );
+                $newInbox[ 'inbox_default_folder' ], $newInbox[ 'inbox_respond' ], $newInbox[ 'inbox_subscribe' ], $newInbox[ 'inbox_format' ], $inboxId );
 
             $transaction->commit();
         } catch ( Exception $ex ) {

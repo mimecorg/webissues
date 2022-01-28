@@ -110,6 +110,16 @@ class System_Const
     /*@}*/
 
     /**
+    * @name Email Formats
+    */
+    /*@{*/
+    /** Separate attachments. */
+    const SeparateAttachmentsFormat = 0;
+    /** Single attachment in EML format. */
+    const EmlFormat = 1;
+    /*@}*/
+
+    /**
     * Limits
     */
     /*@{*/

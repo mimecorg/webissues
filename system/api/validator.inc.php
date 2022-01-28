@@ -135,6 +135,17 @@ class System_Api_Validator
     }
 
     /**
+    * Check if the argument is a valid email format constant as defined in
+    * System_Const.
+    * @param $format The integer argument to validate.
+    */
+    public function checkEmailFormat( $format )
+    {
+        if ( !is_int( $format ) || $format < System_Const::SeparateAttachmentsFormat || $format > System_Const::EmlFormat )
+            throw new System_Api_Error( System_Api_Error::InvalidSetting );
+    }
+
+    /**
     * Check if the argument is either 0 or 1.
     * @param $value The integer argument to validate.
     */
