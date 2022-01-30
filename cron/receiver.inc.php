@@ -86,6 +86,7 @@ class Cron_Receiver extends System_Web_Base
         $leaveMessages = $inbox[ 'inbox_leave_messages' ];
         $respond = $inbox[ 'inbox_respond' ];
         $subscribe = $inbox[ 'inbox_subscribe' ];
+        $format = $inbox[ 'inbox_format' ];
 
         $anonymousAccess = $serverManager->getSetting( 'anonymous_access' );
 
@@ -186,7 +187,12 @@ class Cron_Receiver extends System_Web_Base
 
                 if ( $issue != null || $folder != null ) {
                     try {
-                        $parts = $this->inboxEngine->getStructure( $msgno );
+                        if ( $format == System_Const::SeparateAttachmentsFormat ) {
+                            $parts = $this->inboxEngine->getStructure( $msgno );
+                        } else {
+                            $rawMessage = $this->inboxEngine->getRawMessage( $msgno );
+                            $parts = $this->inboxEngine->getPlainStructure( $msgno );
+                        }
 
                         $text = $this->formatHeaders( $headers );
 
@@ -283,6 +289,24 @@ class Cron_Receiver extends System_Web_Base
                                 if ( $subscriptionId != null )
                                     $subscriptionManager->setSubscriptionForChange( $fileId, $subscriptionId );
                             }
+                        }
+
+                        if ( $format == System_Const::EmlFormat ) {
+                            $size = strlen( $rawMessage );
+
+                            if ( $size > $serverManager->getSetting( 'file_max_size' ) ) {
+                                $eventLog->addEvent( System_Api_EventLog::Cron, System_Api_EventLog::Warning, $eventLog->t( 'log.EmailAttachmentTooLarge', array( $emailId, $fromEmail ) ) );
+                                continue;
+                            }
+
+                            $name = 'message.eml';
+                            $description = $this->t( 'text.EmailMessage', array( $emailId ) );
+
+                            $attachment = new System_Core_Attachment( $rawMessage, $size, $name );
+                            $fileId = $issueManager->addFile( $issue, $attachment, $name, $description );
+
+                            if ( $subscriptionId != null )
+                                $subscriptionManager->setSubscriptionForChange( $fileId, $subscriptionId );
                         }
                     } catch ( Exception $e ) {
                         $eventLog->addErrorEvent( $e );

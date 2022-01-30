@@ -307,6 +307,7 @@
     "AttachmentForEmail": "Attachment for email {0}",
     "CreateNewTables": "Create new database tables",
     "DefaultIssueTypes": "Install the default set of issue types",
+    "EmailMessage": "Email message {0}",
     "HTMLMessageForEmail": "HTML message for email {0}",
     "License": "This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.",
     "MB": "{0} MB",

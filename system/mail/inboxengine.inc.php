@@ -29,6 +29,12 @@ class System_Mail_InboxEngine
 
     private $expunge = false;
 
+    private $headers = null;
+    private $headersMsgno = null;
+
+    private $body = null;
+    private $bodyMsgno = null;
+
     /**
     * Constructor.
     */
@@ -128,6 +134,9 @@ class System_Mail_InboxEngine
         if ( $raw === false )
             $this->handleError();
 
+        $this->headers = $raw;
+        $this->headersMsgno = $msgno;
+
         $headers = imap_rfc822_parse_headers( $raw );
 
         $result = array();
@@ -194,6 +203,31 @@ class System_Mail_InboxEngine
     }
 
     /**
+    * Return the raw message headers and body.
+    */
+    public function getRawMessage( $msgno )
+    {
+        if ( $this->headersMsgno == $msgno ) {
+            $headers = $this->headers;
+        } else {
+            $headers = @imap_fetchheader( $this->mailbox, $msgno );
+
+            if ( $headers === false )
+                $this->handleError();
+        }
+
+        $body = @imap_body( $this->mailbox, $msgno );
+
+        if ( $body === false )
+            $this->handleError();
+
+        $this->body = $body;
+        $this->bodyMsgno = $msgno;
+
+        return $headers . $body;
+    }
+
+    /**
     * Return an array representing the structure of the message with given number.
     */
     public function getStructure( $msgno )
@@ -222,6 +256,45 @@ class System_Mail_InboxEngine
                 $this->processPart( $part, $msgno, $section . '.' . ( $key + 1 ) , $result );
         } else {
             $result[] = $this->convertPart( $structure, imap_fetchbody( $this->mailbox, $msgno, $section ) );
+        }
+    }
+
+    /**
+    * Return an array representing the plain text parts of the message with given number.
+    */
+    public function getPlainStructure( $msgno )
+    {
+        $structure = @imap_fetchstructure( $this->mailbox, $msgno );
+
+        if ( $structure === false )
+            $this->handleError();
+
+        $result = array();
+
+        if ( isset( $structure->parts ) ) {
+            foreach ( $structure->parts as $key => $part )
+                $this->processPlainPart( $part, $msgno, $key + 1, $result );
+        } else {
+            if ( $structure->type == 0 && $structure->ifsubtype && strtoupper( $structure->subtype ) == 'PLAIN' ) {
+                if ( $this->bodyMsgno == $msgno )
+                    $body = $this->body;
+                else
+                    $body = imap_body( $this->mailbox, $msgno );
+                $result[] = $this->convertPart( $structure, $body );
+            }
+        }
+
+        return $result;
+    }
+
+    private function processPlainPart( $structure, $msgno, $section, &$result )
+    {
+        if ( isset( $structure->parts ) ) {
+            foreach ( $structure->parts as $key => $part )
+                $this->processPlainPart( $part, $msgno, $section . '.' . ( $key + 1 ) , $result );
+        } else {
+            if ( $structure->type == 0 && $structure->ifsubtype && strtoupper( $structure->subtype ) == 'PLAIN' )
+                $result[] = $this->convertPart( $structure, imap_fetchbody( $this->mailbox, $msgno, $section ) );
         }
     }
 
