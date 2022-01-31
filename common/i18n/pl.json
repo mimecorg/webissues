@@ -307,6 +307,7 @@
     "AttachmentForEmail": "Załącznik do e-maila {0}",
     "CreateNewTables": "Utwórz nowe tabele",
     "DefaultIssueTypes": "Zainstaluj domyślny zestaw typów spraw",
+    "EmailMessage": "Wiadomość e-mail {0}",
     "HTMLMessageForEmail": "Wiadomość HTML dla e-maila {0}",
     "License": "Niniejszy program jest wolnym oprogramowaniem; możesz go rozprowadzać dalej i/lub modyfikować na warunkach Powszechnej Licencji Publicznej Affero GNU, wydanej przez Fundację Wolnego Oprogramowania - według wersji 3-ciej tej Licencji lub (według twojego wyboru) którejś z późniejszych wersji.",
     "MB": "{0} MB",
