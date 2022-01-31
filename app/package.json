@@ -1,6 +1,6 @@
 {
   "name": "webissues",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "description": "WebIssues team collaboration system",
   "productName": "WebIssues",
   "main": "assets/js/main.min.js",
