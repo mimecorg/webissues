@@ -75,6 +75,7 @@
 
 <script>
 import { mapState } from 'vuex'
+import compareVersions from 'compare-versions'
 
 import { EmailFormat, MaxLength, ErrorCode } from '@/constants'
 import { makeParseError } from '@/utils/errors'
@@ -189,7 +190,7 @@ export default {
   },
 
   computed: {
-    ...mapState( 'global', [ 'users' ] ),
+    ...mapState( 'global', [ 'serverVersion', 'users' ] ),
     title() {
       if ( this.mode == 'edit' )
         return this.$t( 'cmd.EditEmailInbox' );
@@ -212,7 +213,10 @@ export default {
       return this.users.map( u => u.name );
     },
     formatItems() {
-      return [ EmailFormat.SeparateAttachmentsFormat, EmailFormat.EmlFormat ];
+      const items = [ EmailFormat.SeparateAttachmentsFormat ];
+      if ( compareVersions( this.serverVersion, '2.0.4' ) >= 0 )
+        items.push( EmailFormat.EmlFormat );
+      return items;
     },
     formatItemNames() {
       return [ this.$t( 'text.SeparateAttachmentsFormat' ), this.$t( 'text.EmlFormat' ) ];
