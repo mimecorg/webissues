@@ -217,6 +217,9 @@ class Cron_Receiver extends System_Web_Base
                         if ( mb_strlen( $text ) > $maxLength )
                             $text = mb_substr( $text, 0, $maxLength - 3 ) . '...';
 
+                        // remove 4-byte UTF-8 sequences from text
+                        $text = preg_replace( '/[\xF0-\xF7].../s', "\xEF\xBF\xBD", $text );
+
                         $subscriptionId = null;
 
                         if ( $issue == null ) {
