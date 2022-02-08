@@ -48,8 +48,8 @@ class Server_Api_Settings_Inboxes_Add
                          $mapFolder, $defaultFolder, $respond, $subscribe, $format )
     {
         $helper = new Server_Api_Helpers_Inboxes();
-        $helper->validateBasic( $engine, $email, $server, $port, $encryption, $user, $password, $mailbox, $format );
-        $helper->validateExtended( $engine, $leaveMessages, $allowExternal, $robot, $mapFolder, $defaultFolder );
+        $helper->validateBasic( $engine, $email, $server, $port, $encryption, $user, $password, $mailbox );
+        $helper->validateExtended( $engine, $leaveMessages, $allowExternal, $robot, $mapFolder, $defaultFolder, $format );
 
         $inboxManager = new System_Api_InboxManager();
 
