@@ -307,6 +307,7 @@
     "AttachmentForEmail": "Anhang für E-Mail {0}",
     "CreateNewTables": "Neue Datenbanktabellen erstellen",
     "DefaultIssueTypes": "Standardaufgabentypen installieren",
+    "EmailMessage": "E-Mailtext {0}",
     "HTMLMessageForEmail": "HTML-Nachricht für E-Mail {0}",
     "License": "Dieses Programm ist eine freie Software: Sie können diese verbreiten und/oder verändern unter den Bedingungen der GNU Affero General Public License wie sie von der Free Software Foundation veröffentlicht ist. Es gilt entweder Version 3 der Lizenz oder eine spätere Version (soweit von Ihnen gewünscht).",
     "MB": "{0} MB",

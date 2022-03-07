@@ -307,6 +307,7 @@
     "AttachmentForEmail": "Anexo para email {0}",
     "CreateNewTables": "Criar novas tabelas de banco de dados",
     "DefaultIssueTypes": "Instale o conjunto padrão de tipos de ocorrência",
+    "EmailMessage": "Mensagem de email {0}",
     "HTMLMessageForEmail": "Mensagem HTML para e-mail {0}",
     "License": "Este programa é software livre: você pode redistribuí-lo e/ou modificá-lo sob os termos da licença GNU Affero General Public License conforme publicada pela Free Software Foundation, tanto a versão 3 da Licença, ou (a seu critério) qualquer versão posterior.",
     "MB": "{0} MB",
