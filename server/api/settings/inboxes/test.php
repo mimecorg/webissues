@@ -59,6 +59,8 @@ class Server_Api_Settings_Inboxes_Test
             $inboxEngine->getMessagesCount();
             $status = true;
         } catch ( Exception $ex ) {
+            $eventLog = new System_Api_EventLog();
+            $eventLog->addErrorEvent( $ex );
             $status = false;
         }
 
