@@ -417,7 +417,7 @@ class System_Api_AlertManager extends System_Api_Base
 
         $query = 'SELECT u.user_id, u.user_name, u.user_access, u.user_email, u.user_language'
             . ' FROM {users} AS u'
-            . ' WHERE u.user_access > %1d AND EXISTS ( SELECT f.folder_id FROM {folders} AS f'
+            . ' WHERE u.user_access > %1d AND u.user_email IS NOT NULL AND EXISTS ( SELECT f.folder_id FROM {folders} AS f'
             . ' JOIN {projects} AS p ON p.project_id = f.project_id';
         if ( $folderId != null ) {
             $query .= ' WHERE f.folder_id = %5d';
