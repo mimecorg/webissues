@@ -93,7 +93,7 @@ class System_Core_PasswordHash
      *
      * @return bool @c true if a new hash should be calculated.
      */
-    public function isNewHashNeeeded($storedHash)
+    public function isNewHashNeeded($storedHash)
     {
         return password_needs_rehash($storedHash, PASSWORD_BCRYPT);
     }

@@ -94,7 +94,7 @@ class System_Api_SessionManager extends System_Api_Base
                         $this->connection->execute( $query, $newHash, $userId );
 
                         $isTemp = false;
-                    } else if ( $passwordHash->isNewHashNeeeded( $hash ) ) {
+                    } else if ( $passwordHash->isNewHashNeeded( $hash ) ) {
                         $newHash = $passwordHash->hashPassword( $password );
 
                         $query = 'UPDATE {users} SET user_passwd = %s WHERE user_id = %d';
