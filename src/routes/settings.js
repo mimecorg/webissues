@@ -22,13 +22,14 @@ import { makeError } from '@/utils/errors'
 
 export default function routeSettings( route, ajax, store ) {
   route( 'ServerSettings', '/settings', () => {
-    return ajax.post( '/settings/load.php', { inboxes: true } ).then( ( { serverName, settings, inboxes, hasImap } ) => {
+    return ajax.post( '/settings/load.php', { inboxes: true } ).then( ( { serverName, settings, inboxes, hasImap, hasOAuth } ) => {
       return {
         form: 'settings/ServerSettings',
         serverName,
         settings,
         inboxes,
-        hasImap
+        hasImap,
+        hasOAuth,
       };
     } );
   } );
@@ -131,6 +132,16 @@ export default function routeSettings( route, ajax, store ) {
         form: 'settings/DeleteInbox',
         inboxId,
         email
+      };
+    } );
+  } );
+
+  route( 'OAuthSettings', '/settings/oauth', () => {
+    return ajax.post( '/settings/oauth/load.php' ).then( ( { authorizationUrl, isValid } ) => {
+      return {
+        form: 'settings/OAuthSettings',
+        authorizationUrl,
+        isValid
       };
     } );
   } );

@@ -153,6 +153,24 @@ class System_Core_Site
         $this->configLoaded = true;
     }
 
+    /**
+    * Load an additional site configuration file.
+    */
+    public function loadNamedConfigFile( $name )
+    {
+        $siteDir = $this->getPath( 'site_dir' );
+        $path = $siteDir . '/' . $name . '.inc.php';
+
+        if ( $path == null || !file_exists( $path ) )
+            return null;
+
+        $$name = array();
+
+        include( $path );
+
+        return $$name;
+    }
+
     private function resolveSiteByName( $name, $sites )
     {
         if ( !isset( $sites[ $name ] ) )

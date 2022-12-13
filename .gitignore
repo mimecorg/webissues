@@ -5,3 +5,4 @@ data/sites
 data/site.ini
 node_modules
 packages
+vendor

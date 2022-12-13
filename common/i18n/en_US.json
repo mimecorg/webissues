@@ -245,6 +245,8 @@
   "prompt": {
     "AccountCreated": "A user account has been created for you with login {0}. To set your password, please open the following URL:",
     "AlertEmail": "This is an automatic alert notification from WebIssues. Please do not respond to this email.",
+    "AuthenticationFailed": "Authentication failed.",
+    "AuthenticationSucceeded": "Authentication succeeded. You can close this window.",
     "ContinueConfiguration": "Go to the {0} to continue the configuration of this server.",
     "Credentials": "Enter login and password for your new account.",
     "DatabaseConfiguration": "Please enter information required to connect to the database.",
@@ -326,6 +328,7 @@
     "AccountRegistered": "Account Registered",
     "AdministratorAccount": "Administrator Account",
     "Attributes": "Attributes",
+    "Authentication": "Authentication",
     "ConfigurationError": "Configuration Error",
     "ConfirmInstallation": "Confirm Installation",
     "ConfirmUpdate": "Confirm Update",

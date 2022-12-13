@@ -77,6 +77,11 @@ class Server_Api_Settings_Load
 
         $result[ 'hasImap' ] = function_exists( 'imap_open' );
 
+        $site = System_Core_Application::getInstance()->getSite();
+        $oauth = $site->loadNamedConfigFile( 'oauth' );
+
+        $result[ 'hasOAuth' ] = $oauth != null;
+
         return $result;
     }
 }

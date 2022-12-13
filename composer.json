@@ -1,0 +1,6 @@
+{
+  "require": {
+    "php": ">=5.6.0",
+    "league/oauth2-client": "^2.6"
+  }
+}

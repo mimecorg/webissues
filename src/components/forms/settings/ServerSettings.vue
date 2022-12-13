@@ -106,6 +106,11 @@
     </FormSection>
     <Prompt path="prompt.AdvancedSettings" alert-class="alert-default"/>
 
+    <FormSection v-if="hasOAuth" v-bind:title="$t( 'title.OAuthConfiguration' )">
+      <button type="button" class="btn btn-default" v-on:click="oauthSettings"><span class="fa fa-pencil" aria-hidden="true"></span> {{ $t( 'cmd.Edit' ) }}</button>
+    </FormSection>
+    <Prompt v-if="hasOAuth" path="prompt.OAuthConfiguration" alert-class="alert-default"/>
+
   </BaseForm>
 </template>
 
@@ -117,7 +122,8 @@ export default {
     serverName: String,
     settings: Object,
     inboxes: Array,
-    hasImap: Boolean
+    hasImap: Boolean,
+    hasOAuth: Boolean,
   },
 
   computed: {
@@ -190,6 +196,9 @@ export default {
     },
     advancedSettings() {
       this.$router.push( 'AdvancedSettings' );
+    },
+    oauthSettings() {
+      this.$router.push( 'OAuthSettings' );
     },
     cronSettings() {
       this.$router.push( 'CronSettings' );
