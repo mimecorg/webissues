@@ -73,7 +73,7 @@
     "vue-template-compiler": "^2.6.12",
     "webpack": "^4.44.1",
     "webpack-cli": "^3.3.12",
-    "webpack-dev-server": "^3.11.0"
+    "webpack-dev-server": "^3.11.3"
   },
   "optionalDependencies": {
     "electron-installer-debian": "^2.0.1",
