@@ -1,6 +1,7 @@
 {
   "require": {
     "php": ">=5.6.0",
-    "league/oauth2-client": "^2.6"
+    "league/oauth2-client": "^2.6",
+    "webklex/php-imap": "^4.1"
   }
 }

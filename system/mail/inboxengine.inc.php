@@ -20,26 +20,41 @@
 
 if ( !defined( 'WI_VERSION' ) ) die( -1 );
 
+require_once( WI_ROOT_DIR . '/vendor/autoload.php' );
+
 /**
 * Engine for receiving email messages using the IMAP extension.
 */
 class System_Mail_InboxEngine
 {
-    private $mailbox = null;
+    /** @var Webklex\PHPIMAP\ClientManager */
+    private $clientManager = null;
+
+    /** @var Webklex\PHPIMAP\Client */
+    private $client = null;
+
+    /** @var Webklex\PHPIMAP\Folder */
+    private $folder = null;
+
+    /** @var Webklex\PHPIMAP\Message */
+    private $message = null;
+
+    private $msgno = null;
+
+    private $parsed = false;
 
     private $expunge = false;
-
-    private $headers = null;
-    private $headersMsgno = null;
-
-    private $body = null;
-    private $bodyMsgno = null;
 
     /**
     * Constructor.
     */
     public function __construct()
     {
+        $debug = System_Core_Application::getInstance()->getDebug();
+
+        $this->clientManager = new Webklex\PHPIMAP\ClientManager( [
+            'options' => [ 'debug' => $debug->checkLevel( DEBUG_MAIL ) ]
+        ] );
     }
 
     /**
@@ -57,34 +72,33 @@ class System_Mail_InboxEngine
     */
     public function setSettings( $settings )
     {
-        $address = $settings[ 'inbox_server' ] . ':' . $settings[ 'inbox_port' ] . '/' . $settings[ 'inbox_engine' ];
+        $config = [
+            'host' => $settings[ 'inbox_server' ],
+            'post' => $settings[ 'inbox_port' ],
+            'protocol' => $settings[ 'inbox_engine' ],
+        ];
 
         if ( !empty( $settings[ 'inbox_encryption' ] ) )
-            $address .= '/' . $settings[ 'inbox_encryption' ];
+            $config[ 'encryption' ] = $settings[ 'inbox_encryption' ];
 
-        if ( !empty( $settings[ 'inbox_no_validate' ] ) )
-            $address .= '/novalidate-cert';
-
-        $address = '{' . $address . '}';
-
-        if ( !empty( $settings[ 'inbox_mailbox' ] ) )
-            $address .= imap_utf7_encode( $settings[ 'inbox_mailbox' ] );
+        $config[ 'validate_cert' ] = empty( $settings[ 'inbox_no_validate' ] );
 
         if ( !empty( $settings[ 'inbox_user' ] ) ) {
-            $user = $settings[ 'inbox_user' ];
-            $password = $settings[ 'inbox_password' ];
-        } else {
-            $user = '';
-            $password = '';
+            $config[ 'username' ] = $settings[ 'inbox_user' ];
+            $config[ 'password' ] = $settings[ 'inbox_password' ];
         }
 
-        if ( version_compare( phpversion(), '5.3.2', '>=' ) )
-            $this->mailbox = @imap_open( $address, $user, $password, 0, 1, array( 'DISABLE_AUTHENTICATOR' => 'GSSAPI' ) );
-        else
-            $this->mailbox = @imap_open( $address, $user, $password, 0, 1 );
+        $this->client = $this->clientManager->make( $config );
 
-        if ( $this->mailbox === false )
-            $this->handleError();
+        $this->client->connect();
+
+        if ( !empty( $settings[ 'inbox_mailbox' ] ) )
+            $this->folder = $this->client->getFolder( $settings[ 'inbox_mailbox' ] );
+        else
+            $this->folder = $this->client->getFolder( 'INBOX' );
+
+        if ( $this->folder == null )
+            throw new System_Core_Exception( 'Mailbox not found' );
     }
 
     /**
@@ -92,12 +106,12 @@ class System_Mail_InboxEngine
     */
     public function getMessagesCount()
     {
-        $info = @imap_check( $this->mailbox );
+        $query = $this->folder->messages();
 
-        if ( $info === false )
-            $this->handleError();
+        $query->whereUndeleted();
+        $query->whereUnseen();
 
-        return $info->Nmsgs;
+        return $query->count();
     }
 
     /**
@@ -105,23 +119,14 @@ class System_Mail_InboxEngine
     */
     public function getMessages()
     {
-        $count = $this->getMessagesCount();
+        $query = $this->folder->messages();
 
-        $result = array();
+        $query->whereUndeleted();
+        $query->whereUnseen();
 
-        if ( $count > 0 ) {
-            $messages = @imap_fetch_overview( $this->mailbox, '1:' . $count, 0 );
+        $rawQuery = $query->generate_query();
 
-            if ( $messages === false )
-                $this->handleError();
-
-            foreach ( $messages as $message ) {
-                if ( !$message->deleted && !$message->seen )
-                    $result[] = $message->msgno;
-            }
-        }
-
-        return $result;
+        return $this->client->getConnection()->search( [ $rawQuery ] );
     }
 
     /**
@@ -129,76 +134,17 @@ class System_Mail_InboxEngine
     */
     public function getHeaders( $msgno )
     {
-        $raw = @imap_fetchheader( $this->mailbox, $msgno );
+        $message = $this->getMessage( $msgno );
 
-        if ( $raw === false )
-            $this->handleError();
+        $headers = $message->getHeader();
 
-        $this->headers = $raw;
-        $this->headersMsgno = $msgno;
+        $result[ 'from' ] = $this->convertFirstAddress( $headers->from );
 
-        $headers = imap_rfc822_parse_headers( $raw );
+        $result[ 'subject' ] = $headers->subject;
 
-        $result = array();
+        $result[ 'to' ] = $this->convertAddresses( $headers->to );
+        $result[ 'cc' ] = $this->convertAddresses( $headers->cc );
 
-        if ( !empty( $headers->from[ 0 ]->mailbox ) && !empty( $headers->from[ 0 ]->host ) ) {
-            $result[ 'from' ] = $this->convertAddress( $headers->from[ 0 ] );
-        } else {
-            foreach ( $headers->from as $addr ) {
-                if ( !empty( $addr->mailbox ) && !empty( $addr->host ) ) {
-                    $result[ 'from' ][ 'email' ] = $addr->mailbox . '@' . $addr->host;
-                    break;
-                }
-            }
-        }
-
-        $result[ 'subject' ] = $this->decodeHeader( $headers->subject );
-
-        $result[ 'to' ] = array();
-        if ( !empty( $headers->to ) ) {
-            foreach ( $headers->to as $addr )
-                $result[ 'to' ][] = $this->convertAddress( $addr );
-        }
-
-        $result[ 'cc' ] = array();
-        if ( !empty( $headers->cc ) ) {
-            foreach ( $headers->cc as $addr )
-                $result[ 'cc' ][] = $this->convertAddress( $addr );
-        }
-
-        if ( !empty( $headers->reply_to[ 0 ]->mailbox ) && !empty( $headers->reply_to[ 0 ]->host ) )
-            $result[ 'reply_to' ] = $this->convertAddress( $headers->reply_to[ 0 ] );
-
-        return $result;
-    }
-
-    private function decodeHeader( $header )
-    {
-        // NOTE: imap_utf8 returns denormalized UTF-8 in some cases
-        // NOTE: mb_decode_mimeheader incorrectly handles '_' in Q encoding
-
-        $parts = imap_mime_header_decode( $header );
-
-        if ( $parts === false )
-            return '';
-
-        $result = '';
-
-        foreach ( $parts as $part ) {
-            if ( $part->charset == 'default' )
-                $result .= $part->text;
-            else
-                $result .= @mb_convert_encoding( $part->text, 'UTF-8', $part->charset );
-        }
-
-        return $result;
-    }
-
-    private function convertAddress( $addr )
-    {
-        $result[ 'email' ] = $addr->mailbox . '@' . $addr->host;
-        if ( isset( $addr->personal ) )
-            $result[ 'name' ] = $this->decodeHeader( $addr->personal );
         return $result;
     }
 
@@ -207,22 +153,11 @@ class System_Mail_InboxEngine
     */
     public function getRawMessage( $msgno )
     {
-        if ( $this->headersMsgno == $msgno ) {
-            $headers = $this->headers;
-        } else {
-            $headers = @imap_fetchheader( $this->mailbox, $msgno );
+        $message = $this->getMessageWithBody( $msgno );
 
-            if ( $headers === false )
-                $this->handleError();
-        }
+        $headers = $message->getHeader()->raw;
 
-        $body = @imap_body( $this->mailbox, $msgno );
-
-        if ( $body === false )
-            $this->handleError();
-
-        $this->body = $body;
-        $this->bodyMsgno = $msgno;
+        $body = $message->getRawBody();
 
         return $headers . $body;
     }
@@ -232,31 +167,24 @@ class System_Mail_InboxEngine
     */
     public function getStructure( $msgno )
     {
-        $structure = @imap_fetchstructure( $this->mailbox, $msgno );
-
-        if ( $structure === false )
-            $this->handleError();
+        $message = $this->getMessageWithBody( $msgno );
 
         $result = array();
 
-        if ( isset( $structure->parts ) ) {
-            foreach ( $structure->parts as $key => $part )
-                $this->processPart( $part, $msgno, $key + 1, $result );
-        } else {
-            $result[] = $this->convertPart( $structure, imap_body( $this->mailbox, $msgno ) );
+        $text = $message->getTextBody();
+        if ( $text != null )
+            $result[] = [ 'type' => 'plain', 'body' => $text ];
+
+        $html = $message->getHTMLBody();
+        if ( $html != null )
+            $result[] = [ 'type' => 'html', 'body' => $html ];
+
+        if ( $message->hasAttachments() ) {
+            foreach ( $message->getAttachments() as $attachment )
+                $result[] = [ 'type' => 'attachment', 'body' => $attachment->content, 'name' => $attachment->name != 'undefined' ? $attachment->name : null ];
         }
 
         return $result;
-    }
-
-    private function processPart( $structure, $msgno, $section, &$result )
-    {
-        if ( isset( $structure->parts ) ) {
-            foreach ( $structure->parts as $key => $part )
-                $this->processPart( $part, $msgno, $section . '.' . ( $key + 1 ) , $result );
-        } else {
-            $result[] = $this->convertPart( $structure, imap_fetchbody( $this->mailbox, $msgno, $section ) );
-        }
     }
 
     /**
@@ -264,74 +192,13 @@ class System_Mail_InboxEngine
     */
     public function getPlainStructure( $msgno )
     {
-        $structure = @imap_fetchstructure( $this->mailbox, $msgno );
-
-        if ( $structure === false )
-            $this->handleError();
+        $message = $this->getMessageWithBody( $msgno );
 
         $result = array();
 
-        if ( isset( $structure->parts ) ) {
-            foreach ( $structure->parts as $key => $part )
-                $this->processPlainPart( $part, $msgno, $key + 1, $result );
-        } else {
-            if ( $structure->type == 0 && $structure->ifsubtype && strtoupper( $structure->subtype ) == 'PLAIN' ) {
-                if ( $this->bodyMsgno == $msgno )
-                    $body = $this->body;
-                else
-                    $body = imap_body( $this->mailbox, $msgno );
-                $result[] = $this->convertPart( $structure, $body );
-            }
-        }
-
-        return $result;
-    }
-
-    private function processPlainPart( $structure, $msgno, $section, &$result )
-    {
-        if ( isset( $structure->parts ) ) {
-            foreach ( $structure->parts as $key => $part )
-                $this->processPlainPart( $part, $msgno, $section . '.' . ( $key + 1 ) , $result );
-        } else {
-            if ( $structure->type == 0 && $structure->ifsubtype && strtoupper( $structure->subtype ) == 'PLAIN' )
-                $result[] = $this->convertPart( $structure, imap_fetchbody( $this->mailbox, $msgno, $section ) );
-        }
-    }
-
-    private function convertPart( $structure, $body )
-    {
-        $result = array();
-
-        if ( $structure->encoding == 3 )
-            $body = imap_base64( $body );
-        else if ( $structure->encoding == 4 )
-            $body = imap_qprint( $body );
-
-        $result[ 'body' ] = $body;
-
-        $allParameters = array();
-
-        if ( $structure->ifparameters ) {
-            foreach ( $structure->parameters as $param )
-                $allParameters[ strtoupper( $param->attribute ) ] = $param->value;
-        }
-
-        if ( $structure->ifdparameters ) {
-            foreach ( $structure->dparameters as $param )
-                $allParameters[ strtoupper( $param->attribute ) ] = $param->value;
-        }
-
-        if ( isset( $allParameters[ 'FILENAME' ] ) || isset( $allParameters[ 'NAME' ] ) ) {
-            $result[ 'type' ] = 'attachment';
-            $result[ 'name' ] = $this->decodeHeader( isset( $allParameters[ 'FILENAME' ] ) ? $allParameters[ 'FILENAME' ] : $allParameters[ 'NAME' ] );
-        } else if ( $structure->type == 0 && $structure->ifsubtype && strtoupper( $structure->subtype ) == 'PLAIN' ) {
-            $result[ 'type' ] = 'plain';
-            $result[ 'charset' ] = isset( $allParameters[ 'CHARSET' ] ) ? $allParameters[ 'CHARSET' ] : null;
-        } else if ( $structure->type == 0 && $structure->ifsubtype && strtoupper( $structure->subtype ) == 'HTML' ) {
-            $result[ 'type' ] = 'html';
-        } else {
-            $result[ 'type' ] = 'unknown';
-        }
+        $text = $message->getTextBody();
+        if ( $text != null )
+            $result[] = [ 'type' => 'plain', 'body' => $text ];
 
         return $result;
     }
@@ -341,7 +208,7 @@ class System_Mail_InboxEngine
     */
     public function convertToUtf8( $part )
     {
-        return @mb_convert_encoding( $part[ 'body' ], 'UTF-8', $part[ 'charset' ] );
+        return $part[ 'body' ];
     }
 
     /**
@@ -349,7 +216,9 @@ class System_Mail_InboxEngine
     */
     public function markAsProcessed( $msgno )
     {
-        @imap_setflag_full( $this->mailbox, $msgno, '\Seen' );
+        $message = $this->getMessage( $msgno );
+
+        $message->setFlag( 'Seen' );
     }
 
     /**
@@ -357,7 +226,9 @@ class System_Mail_InboxEngine
     */
     public function markAsDeleted( $msgno )
     {
-        @imap_delete( $this->mailbox, $msgno );
+        $message = $this->getMessage( $msgno );
+
+        $message->setFlag( 'Deleted' );
 
         $this->expunge = true;
     }
@@ -367,24 +238,81 @@ class System_Mail_InboxEngine
     */
     public function close()
     {
-        if ( $this->mailbox == null )
+        if ( $this->client == null )
             return;
 
         if ( $this->expunge )
-            @imap_expunge( $this->mailbox );
+            $this->client->expunge();
 
-        @imap_close( $this->mailbox );
+        $this->client->disconnect();
+        $this->client = null;
 
-        $this->mailbox = null;
+        $this->folder = null;
+        $this->message = null;
+        $this->msgno = null;
+        $this->parsed = false;
+        $this->expunge = false;
     }
 
-    private function handleError()
+    private function getMessage( $msgno )
     {
-        $errors = imap_errors();
+        if ( $msgno === $this->msgno )
+            return $this->message;
 
-        if ( $errors === false )
-            throw new System_Core_Exception( 'Unknown inbox error' );
+        $query = $this->folder->messages();
 
-        throw new System_Core_Exception( 'Inbox error: ' . $errors[ 0 ] );
+        $query->setFetchBody( false );
+        $query->markAsRead();
+
+        $message = $query->getMessageByUid( $msgno );
+
+        $this->message = $message;
+        $this->msgno = $msgno;
+        $this->parsed = false;
+
+        return $message;
+    }
+
+    private function getMessageWithBody( $msgno )
+    {
+        $message = $this->getMessage( $msgno );
+
+        if ( $this->parsed == false ) {
+            $message->parseBody();
+            $this->parsed = true;
+        }
+
+        return $message;
+    }
+
+    private function convertAddresses( $attr )
+    {
+        $result = array();
+        if ( $attr != null ) {
+            foreach ( $attr->toArray() as $addr ) {
+                if ( !empty( $addr->mail ) )
+                    $result[] = $this->convertAddress( $addr );
+            }
+        }
+        return $result;
+    }
+
+    private function convertFirstAddress( $attr )
+    {
+        if ( $attr != null ) {
+            foreach ( $attr->toArray() as $addr ) {
+                if ( !empty( $addr->mail ) )
+                    return $this->convertAddress( $addr );
+            }
+        }
+        return [ 'email' => 'unknown' ];
+    }
+
+    private function convertAddress( $addr )
+    {
+        $result[ 'email' ] = $addr->mail;
+        if ( !empty( $addr->personal ) )
+            $result[ 'name' ] = $addr->personal;
+        return $result;
     }
 }

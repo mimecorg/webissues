@@ -31,7 +31,8 @@ define( 'DEBUG_ERRORS',   1 );
 define( 'DEBUG_REQUESTS', 2 );
 /** Debug commands from the client and responses. */
 define( 'DEBUG_COMMANDS', 3 );
-/** Debug SMTP connection and communication. */
+/** Debug SMTP and IMAP connection and communication. */
+define( 'DEBUG_MAIL',     4 );
 define( 'DEBUG_SMTP',     4 );
 /** Debug all SQL queries. */
 define( 'DEBUG_SQL',      5 );
