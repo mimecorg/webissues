@@ -35,6 +35,7 @@ class Server_Api_Settings_Inboxes_Edit
         'password' => 'string',
         'mailbox' => 'string',
         'noValidate' => 'bool',
+        'useOAuth' => 'bool',
         'leaveMessages' => 'bool',
         'allowExternal' => 'bool',
         'robot' => 'int',
@@ -45,7 +46,7 @@ class Server_Api_Settings_Inboxes_Edit
         'format' => 'int'
     );
 
-    public function run( $inboxId, $engine, $email, $server, $port, $encryption, $user, $password, $mailbox, $noValidate, $leaveMessages, $allowExternal, $robot,
+    public function run( $inboxId, $engine, $email, $server, $port, $encryption, $user, $password, $mailbox, $noValidate, $useOAuth, $leaveMessages, $allowExternal, $robot,
                          $mapFolder, $defaultFolder, $respond, $subscribe, $format )
     {
         $inboxManager = new System_Api_InboxManager();
@@ -68,6 +69,7 @@ class Server_Api_Settings_Inboxes_Edit
             'inbox_password' => $password,
             'inbox_mailbox' => $mailbox,
             'inbox_no_validate' => $noValidate ? 1 : 0,
+            'inbox_use_oauth' => $useOAuth ? 1 : 0,
             'inbox_leave_messages' => $leaveMessages ? 1 : 0,
             'inbox_allow_external' => $allowExternal ? 1 : 0,
             'inbox_robot' => $robot,

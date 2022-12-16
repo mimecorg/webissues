@@ -110,6 +110,7 @@ class Setup_Installer extends System_Web_Base
                 'inbox_user'        => 'VARCHAR length=255 null=1',
                 'inbox_password'    => 'VARCHAR length=255 null=1',
                 'inbox_mailbox'     => 'VARCHAR length=255 null=1',
+                'inbox_use_oauth'   => 'INTEGER size="tiny"',
                 'inbox_no_validate' => 'INTEGER size="tiny"',
                 'inbox_leave_messages' => 'INTEGER size="tiny"',
                 'inbox_allow_external' => 'INTEGER size="tiny"',

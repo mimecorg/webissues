@@ -50,6 +50,7 @@ class Server_Api_Settings_Inboxes_Load
             $resultDetails[ 'user' ] = $inbox[ 'inbox_user' ];
             $resultDetails[ 'password' ] = $inbox[ 'inbox_password' ];
             $resultDetails[ 'mailbox' ] = $inbox[ 'inbox_mailbox' ];
+            $resultDetails[ 'useOAuth' ] = $inbox[ 'inbox_use_oauth' ];
             $resultDetails[ 'noValidate' ] = $inbox[ 'inbox_no_validate' ] == 1;
             $resultDetails[ 'leaveMessages' ] = $inbox[ 'inbox_leave_messages' ] == 1;
             $resultDetails[ 'allowExternal' ] = $inbox[ 'inbox_allow_external' ] == 1;
@@ -65,6 +66,13 @@ class Server_Api_Settings_Inboxes_Load
             $result[ 'details' ] = $resultDetails;
 
             $result[ 'emailEngine' ] = $engine;
+
+            $result[ 'hasPop3' ] = function_exists( 'imap_open' );
+
+            $site = System_Core_Application::getInstance()->getSite();
+            $oauth = $site->loadNamedConfigFile( 'oauth' );
+
+            $result[ 'hasOAuth' ] = $oauth != null;
         }
 
         return $result;

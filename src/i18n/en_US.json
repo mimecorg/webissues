@@ -510,6 +510,7 @@
     "AnonymousUser": "Anonymous User",
     "Ascending": "Ascending",
     "AttributeIsRequired": "Attribute is required",
+    "AuthenticateUsingOAuth": "Authenticate using OAuth",
     "ChangeReport": "Change report",
     "Characters": "{0} characters",
     "Comma": "Comma",

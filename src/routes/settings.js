@@ -100,20 +100,22 @@ export default function routeSettings( route, ajax, store ) {
   } );
 
   route( 'AddInbox', '/settings/inboxes/add', () => {
-    return ajax.post( '/settings/load.php' ).then( ( { settings, hasImap } ) => {
+    return ajax.post( '/settings/load.php' ).then( ( { settings, hasImap, hasPop3, hasOAuth } ) => {
       if ( !hasImap )
         return Promise.reject( makeError( ErrorCode.AccessDenied ) );
       return {
         form: 'settings/EditInbox',
         mode: 'add',
         initialEngine: 'imap',
-        emailEngine: settings.emailEngine
+        emailEngine: settings.emailEngine,
+        hasPop3,
+        hasOAuth
       };
     } );
   } );
 
   route( 'EditInbox', '/settings/inboxes/:inboxId/edit', ( { inboxId } ) => {
-    return ajax.post( '/settings/inboxes/load.php', { inboxId, details: true } ).then( ( { engine, email, details, emailEngine } ) => {
+    return ajax.post( '/settings/inboxes/load.php', { inboxId, details: true } ).then( ( { engine, email, details, emailEngine, hasPop3, hasOAuth } ) => {
       return {
         form: 'settings/EditInbox',
         mode: 'edit',
@@ -121,7 +123,9 @@ export default function routeSettings( route, ajax, store ) {
         initialEngine: engine,
         initialEmail: email,
         initialDetails: details,
-        emailEngine
+        emailEngine,
+        hasPop3,
+        hasOAuth
       };
     } );
   } );

@@ -85,7 +85,16 @@ class System_Mail_InboxEngine
 
         if ( !empty( $settings[ 'inbox_user' ] ) ) {
             $config[ 'username' ] = $settings[ 'inbox_user' ];
-            $config[ 'password' ] = $settings[ 'inbox_password' ];
+            if ( empty( $settings[ 'inbox_use_oauth' ] ) ) {
+                $config[ 'password' ] = $settings[ 'inbox_password' ];
+            } else {
+                $oauthManager = new System_Api_OAuthManager();
+                $token = $oauthManager->getAccessToken( true );
+                if ( $token == null )
+                    throw new System_Core_Exception( 'OAuth token missing or expired' );
+                $config[ 'password' ] = $token;
+                $config[ 'authentication' ] = 'oauth';
+            }
         }
 
         $this->client = $this->clientManager->make( $config );

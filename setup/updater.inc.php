@@ -536,6 +536,18 @@ class Setup_Updater extends System_Web_Base
             $generator->updateReferences();
         }
 
+        if ( version_compare( $version, '2.0.010' ) < 0 ) {
+            $newFields = array(
+                'inbox_use_oauth'   => 'INTEGER size="tiny" default=0',
+            );
+
+            $generator = $this->connection->getSchemaGenerator();
+
+            $generator->addFields( 'email_inboxes', $newFields );
+
+            $generator->updateReferences();
+        }
+
         $query = 'DELETE FROM {sessions}';
         $this->connection->execute( $query );
 

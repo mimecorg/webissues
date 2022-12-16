@@ -33,10 +33,11 @@ class Server_Api_Settings_Inboxes_Test
         'user' => 'string',
         'password' => 'string',
         'mailbox' => 'string',
-        'noValidate' => 'bool'
+        'noValidate' => 'bool',
+        'useOAuth' => 'bool',
     );
 
-    public function run( $engine, $email, $server, $port, $encryption, $user, $password, $mailbox, $noValidate )
+    public function run( $engine, $email, $server, $port, $encryption, $user, $password, $mailbox, $noValidate, $useOAuth )
     {
         $helper = new Server_Api_Helpers_Inboxes();
         $helper->validateBasic( $engine, $email, $server, $port, $encryption, $user, $password, $mailbox );
@@ -50,7 +51,8 @@ class Server_Api_Settings_Inboxes_Test
             'inbox_user' => $user,
             'inbox_password' => $password,
             'inbox_mailbox' => $mailbox,
-            'inbox_no_validate' => $noValidate ? 1 : 0
+            'inbox_no_validate' => $noValidate ? 1 : 0,
+            'inbox_use_oauth' => $useOAuth ? 1 : 0
         );
 
         try {

@@ -31,7 +31,7 @@
         <label><input type="radio" v-model="engine" value="imap"> {{ $t( 'text.IMAP' ) }}</label>
       </div>
       <div class="radio">
-        <label><input type="radio" v-model="engine" value="pop3"> {{ $t( 'text.POP3' ) }}</label>
+        <label><input type="radio" v-model="engine" value="pop3" v-bind:disabled="!hasPop3"> {{ $t( 'text.POP3' ) }}</label>
       </div>
     </FormGroup>
     <FormInput ref="email" id="email" v-bind:label="$t( 'label.EmailAddress' )" v-bind="$field( 'email' )" v-model="email"/>
@@ -41,8 +41,10 @@
       <FormDropdown ref="encryption" v-bind:label="$t( 'label.EncryptionMode' )" v-bind="$field( 'encryption' )"
                     v-bind:items="encryptionItems" v-bind:item-names="encryptionItemNames" v-model="encryption"/>
       <FormInput ref="user" id="user" v-bind:label="$t( 'label.UserName' )" v-bind="$field( 'user' )" v-model="user"/>
-      <FormInput ref="password" id="password" type="password" v-bind:label="$t( 'label.Password' )" v-bind="$field( 'password' )" v-model="password"/>
+      <FormInput ref="password" id="password" type="password" v-bind:label="$t( 'label.Password' )" v-bind="$field( 'password' )"
+                 v-bind:disabled="isPasswordDisabled" v-model="password"/>
       <FormInput ref="mailbox" id="mailbox" v-bind:label="$t( 'label.MailboxName' )" v-bind="$field( 'mailbox' )" v-model="mailbox"/>
+      <FormCheckbox v-bind:label="$t( 'text.AuthenticateUsingOAuth' )" v-bind:disabled="!hasOAuth || engine != 'imap'" v-model="useOAuth"/>
       <FormCheckbox v-bind:label="$t( 'text.DoNotValidateCertificate' )" v-bind:disabled="encryption == ''" v-model="noValidate"/>
       <FormCheckbox v-bind:label="$t( 'text.LeaveProcessedMessages' )" v-bind:disabled="engine != 'imap'" v-model="leaveMessages"/>
       <div class="panel-buttons">
@@ -87,7 +89,9 @@ export default {
     initialEngine: String,
     initialEmail: String,
     initialDetails: Object,
-    emailEngine: String
+    emailEngine: String,
+    hasPop3: Boolean,
+    hasOAuth: Boolean
   },
 
   fields() {
@@ -139,6 +143,10 @@ export default {
         value: details.mailbox,
         type: String,
         maxLength: MaxLength.Value
+      },
+      useOAuth: {
+        value: details.useOAuth,
+        type: Boolean
       },
       noValidate: {
         value: details.noValidate,
@@ -221,6 +229,9 @@ export default {
     formatItemNames() {
       return [ this.$t( 'text.SeparateAttachmentsFormat' ), this.$t( 'text.EmlFormat' ) ];
     },
+    isPasswordDisabled() {
+      return this.useOAuth && this.hasOAuth && this.engine == 'imap';
+    }
   },
 
   methods: {
@@ -255,12 +266,14 @@ export default {
       data.port = Number( this.port );
       data.encryption = this.encryption;
       data.user = this.user;
-      data.password = this.password;
+      data.password = this.isPasswordDisabled ? '' : this.password;
       data.mailbox = this.mailbox;
       if ( this.encryption != '' )
         data.noValidate = this.noValidate;
       if ( this.engine == 'imap' )
         data.leaveMessages = this.leaveMessages;
+      if ( this.engine == 'imap' && this.hasOAuth )
+        data.useOAuth = this.useOAuth;
       data.allowExternal = this.allowExternal;
       if ( this.allowExternal )
         data.robot = this.robot;
@@ -295,12 +308,15 @@ export default {
         port: Number( this.port ),
         encryption: this.encryption,
         user: this.user,
-        password: this.password,
-        mailbox: this.mailbox
+        password: this.isPasswordDisabled ? '' : this.password,
+        mailbox: this.mailbox,
       };
 
       if ( this.encryption != '' )
         data.noValidate = this.noValidate;
+
+      if ( this.engine == 'imap' && this.hasOAuth )
+        data.useOAuth = this.useOAuth;
 
       this.$form.block();
 

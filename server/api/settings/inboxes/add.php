@@ -34,6 +34,7 @@ class Server_Api_Settings_Inboxes_Add
         'password' => 'string',
         'mailbox' => 'string',
         'noValidate' => 'bool',
+        'useOAuth' => 'bool',
         'leaveMessages' => 'bool',
         'allowExternal' => 'bool',
         'robot' => 'int',
@@ -44,7 +45,7 @@ class Server_Api_Settings_Inboxes_Add
         'format' => array( 'type' => 'int', 'default' => System_Const::SeparateAttachmentsFormat )
     );
 
-    public function run( $engine, $email, $server, $port, $encryption, $user, $password, $mailbox, $noValidate, $leaveMessages, $allowExternal, $robot,
+    public function run( $engine, $email, $server, $port, $encryption, $user, $password, $mailbox, $noValidate, $useOAuth, $leaveMessages, $allowExternal, $robot,
                          $mapFolder, $defaultFolder, $respond, $subscribe, $format )
     {
         $helper = new Server_Api_Helpers_Inboxes();
@@ -63,6 +64,7 @@ class Server_Api_Settings_Inboxes_Add
             'inbox_password' => $password,
             'inbox_mailbox' => $mailbox,
             'inbox_no_validate' => $noValidate ? 1 : 0,
+            'inbox_use_oauth' => $useOAuth ? 1 : 0,
             'inbox_leave_messages' => $leaveMessages ? 1 : 0,
             'inbox_allow_external' => $allowExternal ? 1 : 0,
             'inbox_robot' => $robot,
