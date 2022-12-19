@@ -78,6 +78,10 @@ ipcMain.on( 'restart-client', ( event, settings ) => {
   } );
 } );
 
+ipcMain.on( 'open-url', ( event, externalUrl ) => {
+  shell.openExternal( externalUrl );
+} );
+
 function createWindow() {
   let preloadPath;
 

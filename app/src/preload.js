@@ -1,4 +1,4 @@
-const { contextBridge, shell, ipcRenderer } = require( 'electron' );
+const { contextBridge, ipcRenderer } = require( 'electron' );
 
 const url = require( 'url' );
 
@@ -13,7 +13,7 @@ const ipcAPI = {
   },
 
   openURL( url ) {
-    shell.openExternal( url );
+    ipcRenderer.send( 'open-url', url );
   },
 
   pathToURL( path ) {
