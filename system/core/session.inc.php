@@ -53,7 +53,7 @@ class System_Core_Session
     * was passed. Note that a new session is not automatically created until
     * createSession() is explicitly called.
     */
-    public function initialize()
+    public function initialize( $crossSiteSession )
     {
         ini_set( 'session.use_cookies', 1 );
         ini_set( 'session.use_only_cookies', 1 );
@@ -85,10 +85,15 @@ class System_Core_Session
         $path = isset( $url[ 'path' ] ) ? $url[ 'path' ] . '/' : '/';
         // same domain as originator is assumed (this works for localhost, IP addresses, etc.)
         $domain = '';
-        // don't send cookie over usecured connection if HTTPS is used
-        $secure = ( $url[ 'scheme' ] == 'https' );
 
-        session_set_cookie_params( 0, $path, $domain, $secure );
+        if ( $crossSiteSession ) {
+            session_set_cookie_params( 0, $path . '; SameSite=None', $domain, true, true );
+        } else {
+            // don't send cookie over usecured connection if HTTPS is used
+            $secure = ( $url[ 'scheme' ] == 'https' );
+
+            session_set_cookie_params( 0, $path, $domain, $secure, true );
+        }
 
         // session is not implicitly started unless the cookie is passed
         if ( isset( $_COOKIE[ session_name() ] ) ) {

@@ -28,6 +28,8 @@ class Server_Api_Application extends System_Core_Application
     {
         parent::__construct();
 
+        $this->setCrossSiteSession( true );
+
         $this->command = new $commandClass();
     }
 

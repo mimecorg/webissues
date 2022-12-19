@@ -43,6 +43,7 @@ abstract class System_Core_Application
     protected $translator = null;
 
     private $siteName = null;
+    private $crossSiteSession = false;
 
     private $errors = array();
     private $fatalError = null;
@@ -273,6 +274,14 @@ abstract class System_Core_Application
     }
 
     /**
+    * Enable or disable SameSite=None for session cookie.
+    */
+    protected function setCrossSiteSession( $crossSiteSession )
+    {
+        $this->crossSiteSession = $crossSiteSession;
+    }
+
+    /**
     * Connect to the database, check its version and initialize
     * the server and session.
     */
@@ -335,7 +344,7 @@ abstract class System_Core_Application
     */
     public function initializeSession()
     {
-        $this->session->initialize();
+        $this->session->initialize( $this->crossSiteSession );
 
         $sessionManager = new System_Api_SessionManager();
         $sessionManager->initializePrincipal();
