@@ -30,10 +30,11 @@ class Server_Api_Settings_Email_Test
         'smtpPort' => array( 'type' => 'int', 'required' => true ),
         'smtpEncryption' => 'string',
         'smtpUser' => 'string',
-        'smtpPassword' => 'string'
+        'smtpPassword' => 'string',
+        'smtpUseOAuth' => 'bool'
     );
 
-    public function run( $emailFrom, $smtpServer, $smtpPort, $smtpEncryption, $smtpUser, $smtpPassword )
+    public function run( $emailFrom, $smtpServer, $smtpPort, $smtpEncryption, $smtpUser, $smtpPassword, $smtpUseOAuth )
     {
         $validator = new System_Api_Validator();
         $validator->checkString( $emailFrom, System_Const::ValueMaxLength );
@@ -52,7 +53,8 @@ class Server_Api_Settings_Email_Test
             'smtp_port' => $smtpPort,
             'smtp_encryption' => $smtpEncryption,
             'smtp_user' => $smtpUser,
-            'smtp_password' => $smtpPassword
+            'smtp_password' => $smtpPassword,
+            'smtp_use_oauth' => $smtpUseOAuth ? 1 : 0
         );
 
         $mail = System_Web_Component::createComponent( 'Common_Mail_TestMessage' );

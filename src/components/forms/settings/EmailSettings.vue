@@ -28,7 +28,9 @@
       <FormDropdown ref="encryption" v-bind:label="$t( 'label.EncryptionMode' )" v-bind="$field( 'encryption' )"
                     v-bind:items="encryptionItems" v-bind:item-names="encryptionItemNames" v-model="encryption"/>
       <FormInput ref="user" id="user" v-bind:label="$t( 'label.UserName' )" v-bind="$field( 'user' )" v-model="user"/>
-      <FormInput ref="password" id="password" type="password" v-bind:label="$t( 'label.Password' )" v-bind="$field( 'password' )" v-model="password"/>
+      <FormInput ref="password" id="password" type="password" v-bind:label="$t( 'label.Password' )" v-bind="$field( 'password' )"
+                 v-bind:disabled="isPasswordDisabled" v-model="password"/>
+      <FormCheckbox v-bind:label="$t( 'text.AuthenticateUsingOAuth' )" v-bind:disabled="!hasOAuth" v-model="useOAuth"/>
       <div class="panel-buttons">
         <button class="btn btn-default" v-on:click="test">{{ $t( 'cmd.Test' ) }}</button>
       </div>
@@ -43,7 +45,8 @@ import { MaxLength } from '@/constants'
 
 export default {
   props: {
-    settings: Object
+    settings: Object,
+    hasOAuth: Boolean
   },
 
   fields() {
@@ -92,6 +95,10 @@ export default {
         value: this.settings.smtpPassword,
         type: String,
         maxLength: MaxLength.Value
+      },
+      useOAuth: {
+        value: this.settings.smtpUseOAuth,
+        type: Boolean
       }
     };
   },
@@ -108,6 +115,9 @@ export default {
     },
     encryptionItemNames() {
       return [ this.$t( 'text.None' ), this.$t( 'text.SSL' ), this.$t( 'text.TLS' ) ];
+    },
+    isPasswordDisabled() {
+      return this.useOAuth && this.hasOAuth;
     }
   },
 
@@ -129,11 +139,12 @@ export default {
         data.emailEngine = this.customServer ? 'smtp' : 'standard';
         data.emailFrom = this.from;
         if ( this.customServer ) {
-          data.smtpServer =  this.server;
-          data.smtpPort =  Number( this.port );
-          data.smtpEncryption =  this.encryption;
-          data.smtpUser =  this.user;
-          data.smtpPassword =  this.password;
+          data.smtpServer = this.server;
+          data.smtpPort = Number( this.port );
+          data.smtpEncryption = this.encryption;
+          data.smtpUser = this.user;
+          data.smtpPassword = this.isPasswordDisabled ? '' : this.password;
+          data.smtpUseOAuth = this.useOAuth;
         }
       } else {
         data.emailEngine = '';
@@ -162,7 +173,8 @@ export default {
         smtpPort: Number( this.port ),
         smtpEncryption: this.encryption,
         smtpUser: this.user,
-        smtpPassword: this.password
+        smtpPassword: this.isPasswordDisabled ? '' : this.password,
+        smtpUseOAuth: this.useOAuth
       };
 
       this.$form.block();

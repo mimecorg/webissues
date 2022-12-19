@@ -42,9 +42,15 @@ class Server_Api_Settings_Email_Load
             $settings[ 'smtpEncryption' ] = $serverManager->getSetting( 'smtp_encryption' );
             $settings[ 'smtpUser' ] = $serverManager->getSetting( 'smtp_user' );
             $settings[ 'smtpPassword' ] = $serverManager->getSetting( 'smtp_password' );
+            $settings[ 'smtpUseOAuth' ] = $serverManager->getSetting( 'smtp_use_oauth' ) == 1;
         }
 
         $result[ 'settings' ] = $settings;
+
+        $site = System_Core_Application::getInstance()->getSite();
+        $oauth = $site->loadNamedConfigFile( 'oauth' );
+
+        $result[ 'hasOAuth' ] = $oauth != null;
 
         return $result;
     }

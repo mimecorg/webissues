@@ -52,10 +52,11 @@ export default function routeSettings( route, ajax, store ) {
   } );
 
   route( 'EmailSettings', '/settings/email', () => {
-    return ajax.post( '/settings/email/load.php' ).then( ( { settings } ) => {
+    return ajax.post( '/settings/email/load.php' ).then( ( { settings, hasOAuth } ) => {
       return {
         form: 'settings/EmailSettings',
-        settings
+        settings,
+        hasOAuth
       };
     } );
   } );

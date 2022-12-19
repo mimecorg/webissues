@@ -31,10 +31,11 @@ class Server_Api_Settings_Email_Edit
         'smtpPort' => 'int',
         'smtpEncryption' => 'string',
         'smtpUser' => 'string',
-        'smtpPassword' => 'string'
+        'smtpPassword' => 'string',
+        'smtpUseOAuth' => 'bool'
     );
 
-    public function run( $emailEngine, $emailFrom, $smtpServer, $smtpPort, $smtpEncryption, $smtpUser, $smtpPassword )
+    public function run( $emailEngine, $emailFrom, $smtpServer, $smtpPort, $smtpEncryption, $smtpUser, $smtpPassword, $smtpUseOAuth )
     {
         $validator = new System_Api_Validator();
         $validator->checkString( $emailEngine, System_Const::ValueMaxLength, System_Api_Validator::AllowEmpty );
@@ -63,7 +64,8 @@ class Server_Api_Settings_Email_Edit
             'smtp_port' => $smtpPort,
             'smtp_encryption' => $smtpEncryption,
             'smtp_user' => $smtpUser,
-            'smtp_password' => $smtpPassword
+            'smtp_password' => $smtpPassword,
+            'smtp_use_oauth' => $smtpUseOAuth ? 1 : 0
         );
 
         $serverManager = new System_Api_ServerManager();

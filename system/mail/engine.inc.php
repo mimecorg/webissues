@@ -20,37 +20,7 @@
 
 if ( !defined( 'WI_VERSION' ) ) die( -1 );
 
-function System_Mail_Autoload( $className )
-{
-    if ( substr( $className, 0, 20 ) == 'PHPMailer\\PHPMailer\\' )
-        require_once( WI_ROOT_DIR . '/system/mail/phpmailer/src/' . substr( $className, 20 ) . '.php' );
-}
-
-spl_autoload_register( 'System_Mail_Autoload' );
-
-class System_Mail_PHPMailer extends PHPMailer\PHPMailer\PHPMailer
-{
-    public function __construct()
-    {
-        parent::__construct( true );
-
-        $debug = System_Core_Application::getInstance()->getDebug();
-        if ( $debug->checkLevel( DEBUG_MAIL ) ) {
-            $this->SMTPDebug = PHPMailer\PHPMailer\SMTP::DEBUG_CONNECTION;
-            $this->Debugoutput = function ( $str, $level ) use ( $debug ) {
-                $debug->write( 'SMTP: ' . rtrim( $str ) . "\n" );
-            };
-        }
-    }
-
-    /**
-     * Do not validate the address becaue WebIssues already handles it.
-     */
-    public static function validateAddress( $address, $patternselect = null )
-    {
-        return true;
-    }
-};
+require_once( WI_ROOT_DIR . '/vendor/autoload.php' );
 
 /**
 * Engine for sending email messages using PHPMailer.
@@ -66,7 +36,20 @@ class System_Mail_Engine
     */
     public function __construct()
     {
-        $this->mailer = new System_Mail_PHPMailer();
+        $this->mailer = new PHPMailer\PHPMailer\PHPMailer( true );
+
+        // do not validate the address becaue WebIssues already handles it
+        PHPMailer\PHPMailer\PHPMailer::$validator = function( $address ) {
+            return true;
+        };
+
+        $debug = System_Core_Application::getInstance()->getDebug();
+        if ( $debug->checkLevel( DEBUG_MAIL ) ) {
+            $this->mailer->SMTPDebug = PHPMailer\PHPMailer\SMTP::DEBUG_CONNECTION;
+            $this->mailer->Debugoutput = function ( $str, $level ) use ( $debug ) {
+                $debug->write( 'SMTP: ' . rtrim( $str ) . "\n" );
+            };
+        }
 
         $this->mailer->CharSet = 'UTF-8';
         $this->mailer->Encoding = 'quoted-printable';
@@ -75,7 +58,7 @@ class System_Mail_Engine
         $language = $translator->getLanguage( System_Core_Translator::SystemLanguage );
 
         if ( $language != null && $language != 'en_US' )
-            $this->mailer->setLanguage( strtolower( $language ), WI_ROOT_DIR . '/system/mail/phpmailer/language/' );
+            $this->mailer->setLanguage( strtolower( $language ) );
     }
 
     /**
@@ -113,8 +96,17 @@ class System_Mail_Engine
                     $this->mailer->SMTPAutoTLS = false;
                 if ( !empty( $settings[ 'smtp_user' ] ) ) {
                     $this->mailer->SMTPAuth = true;
-                    $this->mailer->Username = $settings[ 'smtp_user' ];
-                    $this->mailer->Password = $settings[ 'smtp_password' ];
+                    if ( empty( $settings[ 'smtp_use_oauth' ] ) ) {
+                        $this->mailer->Username = $settings[ 'smtp_user' ];
+                        $this->mailer->Password = $settings[ 'smtp_password' ];
+                    } else {
+                        $this->mailer->AuthType = 'XOAUTH2';
+                        $oauthManager = new System_Api_OAuthManager();
+                        $token = $oauthManager->getAccessToken( true );
+                        if ( $token == null )
+                            throw new System_Core_Exception( 'OAuth token missing or expired' );
+                        $this->mailer->setOAuth( new System_Mail_OAuthTokenProvider( $settings[ 'smtp_user' ], $token ) );
+                    }
                 }
                 $this->mailer->SMTPKeepAlive = true;
                 break;
