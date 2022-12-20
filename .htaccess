@@ -7,6 +7,9 @@ RewriteBase /
 RewriteCond %{REQUEST_FILENAME} -f
 RewriteRule ^(assets|common/images)/ - [L]
 
+# Deny access to all content in vendor/
+RewriteRule ^vendor/ common/errors/handle404.php [L]
+
 # Allow access to all .php files except .html.php and .inc.php
 RewriteCond %{REQUEST_URI} !\.(html|inc)\.php$
 RewriteCond %{REQUEST_FILENAME} -f
