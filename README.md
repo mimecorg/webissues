@@ -31,10 +31,11 @@ You can find information related to updating the WebIssues server in the [Updati
 
 ## Development
 
-Download the source code or clone it from the git repository and run the following command:
+Download the source code or clone it from the git repository and run the following commands:
 
 ```bash
 npm install
+composer install
 ```
 
 In addition to the requirements listed above, you will also need Node.js version 8 or newer.

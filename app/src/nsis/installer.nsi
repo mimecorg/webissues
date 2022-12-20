@@ -36,6 +36,9 @@ OutFile "${OUTDIR}\${OUTFILE}"
 !define MULTIUSER_INSTALLMODE_INSTDIR "WebIssues Client\2.0"
 !define MULTIUSER_INSTALLMODE_INSTDIR_REGISTRY_KEY "${UNINST_KEY}"
 !define MULTIUSER_INSTALLMODE_INSTDIR_REGISTRY_VALUENAME "InstallLocation"
+!if ${ARCHITECTURE} == "x64"
+    !define MULTIUSER_USE_PROGRAMFILES64
+!endif
 !include "MultiUser.nsh"
 
 Name "WebIssues"
@@ -89,7 +92,17 @@ VIAddVersionKey /LANG=${LANG_ENGLISH} "OriginalFilename" "${OUTFILE}"
 VIAddVersionKey /LANG=${LANG_ENGLISH} "ProductName" "WebIssues"
 VIAddVersionKey /LANG=${LANG_ENGLISH} "ProductVersion" "${VERSION}"
 
+!if ${ARCHITECTURE} == "x64"
+    !define SUFFIX "(64-bit)"
+!else
+    !define SUFFIX "(32-bit)"
+!endif
+
 Function .onInit
+
+!if ${ARCHITECTURE} == "x64"
+    SetRegView 64
+!endif
 
     !insertmacro MULTIUSER_INIT
 
@@ -140,10 +153,7 @@ Section
 
     File /r "${SRCDIR}\resources\app\assets\*.*"
 
-    SetOutPath "$INSTDIR\swiftshader"
-
-    File "${SRCDIR}\swiftshader\libEGL.dll"
-    File "${SRCDIR}\swiftshader\libGLESv2.dll"
+    RMDir /r "$INSTDIR\swiftshader"
 
     SetOutPath "$INSTDIR"
 
@@ -153,7 +163,7 @@ Section
     CreateShortCut "$DESKTOP\WebIssues.lnk" "$INSTDIR\WebIssues.exe"
 
     WriteRegStr SHCTX "${UNINST_KEY}" "DisplayIcon" '"$INSTDIR\WebIssues.exe"'
-    WriteRegStr SHCTX "${UNINST_KEY}" "DisplayName" "WebIssues ${VERSION}"
+    WriteRegStr SHCTX "${UNINST_KEY}" "DisplayName" "WebIssues ${VERSION} ${SUFFIX}"
     WriteRegStr SHCTX "${UNINST_KEY}" "DisplayVersion" "${VERSION}"
     WriteRegStr SHCTX "${UNINST_KEY}" "UninstallString" '"$INSTDIR\uninstall.exe" /$MultiUser.InstallMode'
     WriteRegStr SHCTX "${UNINST_KEY}" "InstallLocation" "$INSTDIR"
@@ -167,6 +177,10 @@ Section
 SectionEnd
 
 Function un.onInit
+
+!if ${ARCHITECTURE} == "x64"
+    SetRegView 64
+!endif
 
     !insertmacro MULTIUSER_UNINIT
 
@@ -212,11 +226,6 @@ Section "Uninstall"
 
     RMDir "$INSTDIR\resources\app"
     RMDir "$INSTDIR\resources"
-
-    Delete "$INSTDIR\swiftshader\libEGL.dll"
-    Delete "$INSTDIR\swiftshader\libGLESv2.dll"
-
-    RMDir "$INSTDIR\swiftshader"
 
     Delete "$INSTDIR\uninstall.exe"
 

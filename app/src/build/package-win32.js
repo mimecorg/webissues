@@ -26,8 +26,7 @@ const archiver = require( 'archiver' );
 async function buildPlatformPackage( { out, dirName, version, buildVersion, arch } ) {
   await buildArchive( out, dirName );
 
-  if ( arch == 'ia32' )
-    await buildInstaller( out, dirName, version, buildVersion );
+  await buildInstaller( out, dirName, version, buildVersion, arch );
 }
 
 async function buildArchive( out, dirName ) {
@@ -41,7 +40,7 @@ async function buildArchive( out, dirName ) {
   await archive.finalize();
 }
 
-async function buildInstaller( out, dirName, version, buildVersion ) {
+async function buildInstaller( out, dirName, version, buildVersion, arch ) {
   console.log( 'Building installer' );
 
   const makensisPath = findMakensis();
@@ -54,6 +53,7 @@ async function buildInstaller( out, dirName, version, buildVersion ) {
     '/DOUTFILE=' + dirName + '.exe',
     '/DVERSION=' + version,
     '/DBUILDVERSION=' + buildVersion,
+    '/DARCHITECTURE=' + arch,
     'installer.nsi'
   ];
 

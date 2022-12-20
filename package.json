@@ -13,10 +13,13 @@
     "start": "electron ./app/assets/js/main.min.js",
     "start:dev": "electron ./app/src/main.js",
     "package": "node ./app/src/build/package.js",
-    "package:win32": "node ./app/src/build/package.js win32 ia32",
-    "package:darwin": "node ./app/src/build/package.js darwin x64",
-    "package:linux-ia32": "node ./app/src/build/package.js linux ia32",
+    "package:win32-x64": "node ./app/src/build/package.js win32 x64",
+    "package:win32-ia32": "node ./app/src/build/package.js win32 ia32",
+    "package:darwin-x64": "node ./app/src/build/package.js darwin x64",
+    "package:darwin-arm64": "node ./app/src/build/package.js darwin arm64",
     "package:linux-x64": "node ./app/src/build/package.js linux x64",
+    "package:linux-arm64": "node ./app/src/build/package.js linux arm64",
+    "package:linux-armv7l": "node ./app/src/build/package.js linux armv7l",
     "package:server": "node ./src/build/package.js",
     "test": "cross-env NODE_ENV=test mocha --require @babel/register src/test.js src/**/*.spec.js",
     "test:watch": "cross-env NODE_ENV=test mocha --require @babel/register --watch src/test.js src/**/*.spec.js"
@@ -76,8 +79,8 @@
     "webpack-dev-server": "^3.11.3"
   },
   "optionalDependencies": {
-    "electron-installer-debian": "^2.0.1",
-    "electron-installer-dmg": "^3.0.0",
-    "electron-installer-redhat": "^2.0.0"
+    "electron-installer-debian": "^3.1.0",
+    "electron-installer-dmg": "^4.0.0",
+    "electron-installer-redhat": "^3.3.0"
   }
 }

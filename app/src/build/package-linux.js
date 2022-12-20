@@ -46,7 +46,13 @@ async function buildArchive( out, dirName ) {
 async function buildDebianInstaller( out, dirName, version, arch ) {
   console.log( 'Building deb package' );
 
-  const debianArch = ( arch == 'x64' ) ? 'amd64' : 'i386';
+  const debianArchMap = {
+    x64: 'amd64',
+    arm64: 'arm64',
+    armv7l: 'armhf',
+  };
+
+  const debianArch = debianArchMap[ arch ];
 
   await debianInstaller( {
     src: path.join( out, dirName ),
@@ -74,7 +80,13 @@ async function buildDebianInstaller( out, dirName, version, arch ) {
 async function buildRedhatInstaller( out, dirName, version, arch ) {
   console.log( 'Building rpm package' );
 
-  const redhatArch = ( arch == 'x64' ) ? 'x86_64' : 'i686';
+  const redhatArchMap = {
+    x64: 'x86_64',
+    arm64: 'aarch64',
+    armv7l: 'armv7hl',
+  };
+
+  const redhatArch = redhatArchMap[ arch ];
 
   await redhatInstaller( {
     src: path.join( out, dirName ),

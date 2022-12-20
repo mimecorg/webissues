@@ -48,7 +48,7 @@ async function buildPackage() {
 
   [ 'LICENSE', 'README.md', '.htaccess', 'index.php', 'web.config' ].forEach( name => fs.copyFileSync( path.join( rootPath, name ), path.join( dirPath, name ) ) );
 
-  [ 'assets', 'client', 'common', 'cron', 'server', 'setup', 'system', 'users' ].forEach( name => {
+  [ 'assets', 'client', 'common', 'cron', 'server', 'setup', 'system', 'users', 'vendor' ].forEach( name => {
     glob.sync( name + '/**', { cwd: rootPath, nodir: true, dot: true } ).forEach( match => {
       const srcPath = path.join( rootPath, match );
       const destPath = path.join( dirPath, match );
