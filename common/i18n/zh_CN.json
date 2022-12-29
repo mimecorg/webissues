@@ -1,5 +1,6 @@
 {
   "ErrorCode": {
+    "AccessDenied": "访问被拒绝。",
     "AlertAlreadyExists": "警告已存在。",
     "AttributeAlreadyExists": "相同名称的属性已经存在。",
     "CannotDeleteAttribute": "无法删除属性。",

@@ -245,6 +245,8 @@
   "prompt": {
     "AccountCreated": "Zostało utworzone dla ciebie konto użytkownika z loginem {0}. Aby ustawić swoje hasło, proszę otworzyć następujący adres:",
     "AlertEmail": "To jest automatyczne powiadomienie alertu WebIssues. Prosimy nie odpowiadać na tego maila.",
+    "AuthenticationFailed": "Uwierzytelnianie nie powiodło się.",
+    "AuthenticationSucceeded": "Uwierzytelnianie powiodło się. Możesz zamknąć to okno.",
     "ContinueConfiguration": "Przejdź do {0} aby kontynuować konfigurację serwera.",
     "Credentials": "Podaj login i hasło dla nowego konta.",
     "DatabaseConfiguration": "Podaj informacje konieczne do połączenia z bazą danych.",
@@ -326,6 +328,7 @@
     "AccountRegistered": "Konto zarejestrowane",
     "AdministratorAccount": "Konto administratora",
     "Attributes": "Atrybuty",
+    "Authentication": "Uwierzytelnianie",
     "ConfigurationError": "Błąd konfiguracji",
     "ConfirmInstallation": "Potwierdź instalację",
     "ConfirmUpdate": "Potwierdź aktualizację",

@@ -245,6 +245,8 @@
   "prompt": {
     "AccountCreated": "Un compte a été créé pour vous avec l'identifiant utilisateur {0}. Pour configurer votre mot de passe, veuillez ouvrir le lien suivant :",
     "AlertEmail": "Ceci est une notification automatique d'alerte de WebIssues. Veuillez ne pas répondre à ce message.",
+    "AuthenticationFailed": "L'authentification a échoué.",
+    "AuthenticationSucceeded": "Authentification réussie. Vous pouvez fermer cette fenêtre.",
     "ContinueConfiguration": "Ouvrez le {0} pour continuer la configuration de ce serveur.",
     "Credentials": "Saisissez un identifiant utilisateur et un mot de passe pour votre nouveau compte.",
     "DatabaseConfiguration": "Veuillez saisir les informations de connexion à la base de données.",
@@ -326,6 +328,7 @@
     "AccountRegistered": "Compte enregistré",
     "AdministratorAccount": "Compte administrateur",
     "Attributes": "Attributs",
+    "Authentication": "Authentification",
     "ConfigurationError": "Erreur de configuration",
     "ConfirmInstallation": "Confirmer l'installation",
     "ConfirmUpdate": "Confirmer la mise à jour",

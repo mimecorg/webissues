@@ -245,6 +245,8 @@
   "prompt": {
     "AccountCreated": "Uma conta de usuário foi criada para você com o login {0}. Para definir sua senha, por favor, abra a seguinte URL:",
     "AlertEmail": "Esta é uma notificação de alerta automática de WebIssues. Por favor, não responda a este e-mail.",
+    "AuthenticationFailed": "A autenticação falhou.",
+    "AuthenticationSucceeded": "Autenticação bem-sucedida. Você pode fechar esta janela.",
     "ContinueConfiguration": "Ir para {0} para continuar a configuração deste servidor.",
     "Credentials": "Digite login e senha para a sua nova conta.",
     "DatabaseConfiguration": "Por favor insira as informações necessárias para se conectar ao banco de dados.",
@@ -326,6 +328,7 @@
     "AccountRegistered": "Conta registrada",
     "AdministratorAccount": "Administrador da Conta",
     "Attributes": "Atributos",
+    "Authentication": "Autenticação",
     "ConfigurationError": "Erro de configuração",
     "ConfirmInstallation": "Confirmar Instalação",
     "ConfirmUpdate": "Confirmar Atualização",
